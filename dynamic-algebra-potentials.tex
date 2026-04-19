@@ -1,0 +1,638 @@
+\documentclass[11pt, one side, article]{memoir}
+
+
+\settrims{0pt}{0pt} % page and stock same size
+\settypeblocksize{*}{36.1pc}{*} % {height}{width}{ratio}
+\setlrmargins{*}{*}{1} % {spine}{edge}{ratio}
+\setulmarginsandblock{.98in}{.98in}{*} % height of typeblock computed
+\setheadfoot{\onelineskip}{2\onelineskip} % {headheight}{footskip}
+\setheaderspaces{*}{1.5\onelineskip}{*} % {headdrop}{headsep}{ratio}
+\checkandfixthelayout
+
+
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+\usepackage[inline]{enumitem}
+\usepackage{ifthen}
+\usepackage[utf8]{inputenc} %allows non-ascii in bib file
+\usepackage{xcolor}
+
+\usepackage[backend=biber, backref=true, maxbibnames = 10, style = alphabetic]{biblatex}
+\usepackage[bookmarks=true, colorlinks=true, linkcolor=blue!50!black,
+citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperref}
+\usepackage[capitalize]{cleveref}
+
+\usepackage{tikz}
+
+\usepackage{amssymb}
+\usepackage{newpxtext}
+\usepackage[varg,bigdelims]{newpxmath}
+\usepackage{mathrsfs}
+\usepackage{dutchcal}
+\usepackage{fontawesome}
+\usepackage{ebproof}
+\usepackage{stmaryrd}
+
+% cleveref %
+  \newcommand{\creflastconjunction}{, and\nobreakspace} % serial comma
+  \crefformat{enumi}{\card#2#1#3}
+  \crefalias{chapter}{section}
+
+
+% biblatex %
+  \addbibresource{Library20260419.bib}
+
+% hyperref %
+  \hypersetup{final}
+
+% enumitem %
+  \setlist{nosep}
+  \setlistdepth{6}
+
+
+
+% tikz %
+
+  \usetikzlibrary{
+  	cd,
+  	math,
+  	decorations.markings,
+		decorations.pathreplacing,
+  	positioning,
+  	arrows.meta,
+  	shapes,
+		shadows,
+		shadings,
+  	calc,
+  	fit,
+  	quotes,
+  	intersections,
+  }
+
+  \tikzset{
+biml/.tip={Glyph[glyph math command=triangleleft, glyph length=.95ex]},
+bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
+}
+
+\tikzset{
+	tick/.style={postaction={
+  	decorate,
+    decoration={markings, mark=at position 0.5 with
+    	{\draw[-] (0,.4ex) -- (0,-.4ex);}}}
+  }
+}
+\tikzset{
+	slash/.style={postaction={
+  	decorate,
+    decoration={markings, mark=at position 0.5 with
+    	{\draw[-] (.3ex,.3ex) -- (-.3ex,-.3ex);}}}
+  }
+}
+
+\newcommand{\upp}{\begin{tikzcd}[row sep=6pt]~\\~\ar[u, bend left=50pt, looseness=1.3, start anchor=east, end anchor=east]\end{tikzcd}}
+
+\newcommand{\bito}[1][]{
+	\begin{tikzcd}[ampersand replacement=\&, cramped]\ar[r, biml-bimr, "#1"]\&~\end{tikzcd}
+}
+\newcommand{\bifrom}[1][]{
+	\begin{tikzcd}[ampersand replacement=\&, cramped]\ar[r, bimr-biml, "{#1}"]\&~\end{tikzcd}
+}
+\newcommand{\bifromlong}[2][]{
+	\begin{tikzcd}[ampersand replacement=\&, column sep=#2, cramped]\ar[r, bimr-biml, "#1"]\&~\end{tikzcd}
+}
+
+% Adjunctions
+\newcommand{\adj}[5][30pt]{%[size] Cat L, Left, Right, Cat R.
+\begin{tikzcd}[ampersand replacement=\&, column sep=#1]
+  #2\ar[r, shift left=7pt, "#3"]
+  \ar[r, phantom, "\scriptstyle\Rightarrow"]\&
+  #5\ar[l, shift left=7pt, "#4"]
+\end{tikzcd}
+}
+
+\newcommand{\adjr}[5][30pt]{%[size] Cat R, Right, Left, Cat L.
+\begin{tikzcd}[ampersand replacement=\&, column sep=#1]
+  #2\ar[r, shift left=7pt, "#3"]\&
+  #5\ar[l, shift left=7pt, "#4"]
+  \ar[l, phantom, "\scriptstyle\Leftarrow"]
+\end{tikzcd}
+}
+
+\newcommand{\xtickar}[1]{\begin{tikzcd}[baseline=-0.5ex,cramped,sep=small,ampersand
+replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
+\newcommand{\xslashar}[1]{\begin{tikzcd}[baseline=-0.5ex,cramped,sep=small,ampersand
+replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
+
+
+
+  % amsthm + aliascnt (so cleveref prints the correct environment name) %
+\usepackage{aliascnt}
+
+\theoremstyle{definition}
+\newtheorem{definitionx}{Definition}[chapter]
+
+\newaliascnt{examplex}{definitionx}
+\newtheorem{examplex}[examplex]{Example}
+\aliascntresetthe{examplex}
+\crefname{examplex}{Example}{Examples}
+
+\newaliascnt{remarkx}{definitionx}
+\newtheorem{remarkx}[remarkx]{Remark}
+\aliascntresetthe{remarkx}
+\crefname{remarkx}{Remark}{Remarks}
+
+\newaliascnt{notation}{definitionx}
+\newtheorem{notation}[notation]{Notation}
+\aliascntresetthe{notation}
+\crefname{notation}{Notation}{Notations}
+
+\newaliascnt{conventionx}{definitionx}
+\newtheorem{conventionx}[conventionx]{Convention}
+\aliascntresetthe{conventionx}
+\crefname{conventionx}{Convention}{Conventions}
+
+\theoremstyle{plain}
+
+\newaliascnt{theorem}{definitionx}
+\newtheorem{theorem}[theorem]{Theorem}
+\aliascntresetthe{theorem}
+\crefname{theorem}{Theorem}{Theorems}
+
+\newaliascnt{proposition}{definitionx}
+\newtheorem{proposition}[proposition]{Proposition}
+\aliascntresetthe{proposition}
+\crefname{proposition}{Proposition}{Propositions}
+
+\newaliascnt{corollary}{definitionx}
+\newtheorem{corollary}[corollary]{Corollary}
+\aliascntresetthe{corollary}
+\crefname{corollary}{Corollary}{Corollaries}
+
+\newaliascnt{lemma}{definitionx}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\crefname{lemma}{Lemma}{Lemmas}
+
+\newaliascnt{warning}{definitionx}
+\newtheorem{warning}[warning]{Warning}
+\aliascntresetthe{warning}
+\crefname{warning}{Warning}{Warnings}
+
+\newaliascnt{fact}{definitionx}
+\newtheorem{fact}[fact]{Fact}
+\aliascntresetthe{fact}
+\crefname{fact}{Fact}{Facts}
+
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{warning*}{Warning}
+
+\newenvironment{example}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\examplex}
+  {\popQED\endexamplex}
+
+ \newenvironment{remark}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\remarkx}
+  {\popQED\endremarkx}
+
+  \newenvironment{definition}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\definitionx}
+  {\popQED\enddefinitionx}
+
+  \newenvironment{convention}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\conventionx}
+  {\popQED\endconventionx}
+
+
+%-------- Single symbols --------%
+
+\DeclareSymbolFont{stmry}{U}{stmry}{m}{n}
+\DeclareMathSymbol\fatsemi\mathop{stmry}{"23}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+
+
+%-------- Renewed commands --------%
+
+\renewcommand{\ss}{\subseteq}
+
+%-------- Other Macros --------%
+
+
+\DeclarePairedDelimiter{\present}{\langle}{\rangle}
+\DeclarePairedDelimiter{\copair}{[}{]}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\corners}{\ulcorner}{\urcorner}
+\DeclarePairedDelimiter{\ihom}{[}{]}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Mor}{Mor}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\cod}{cod}
+\DeclareMathOperator{\idy}{idy}
+\DeclareMathOperator*{\colim}{colim}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\ob}{Ob}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\el}{El}
+
+
+
+
+\newcommand{\const}[1]{\texttt{#1}}%a constant, or named element of a set
+\newcommand{\Set}[1]{\mathsf{#1}}%a named set
+\newcommand{\ord}[1]{\mathsf{#1}}%an ordinal
+\newcommand{\cat}[1]{\mathcal{#1}}%a generic category
+\newcommand{\Cat}[1]{\mathbf{#1}}%a named category
+\newcommand{\fun}[1]{\mathrm{#1}}%a function
+\newcommand{\Fun}[1]{\mathsf{#1}}%a named functor
+
+
+
+
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\then}{\mathbin{\fatsemi}}
+
+\newcommand{\cocolon}{:\!}
+
+
+\newcommand{\iso}{\cong}
+\newcommand{\too}{\longrightarrow}
+\newcommand{\tto}{\rightrightarrows}
+\newcommand{\To}[2][]{\xrightarrow[#1]{#2}}
+\renewcommand{\Mapsto}[1]{\xmapsto{#1}}
+\newcommand{\Tto}[3][13pt]{\begin{tikzcd}[sep=#1, cramped, ampersand replacement=\&, text height=1ex, text depth=.3ex]\ar[r, shift left=2pt, "#2"]\ar[r, shift right=2pt, "#3"']\&{}\end{tikzcd}}
+\newcommand{\Too}[1]{\xrightarrow{\;\;#1\;\;}}
+\newcommand{\from}{\leftarrow}
+\newcommand{\fromm}{\longleftarrow}
+\newcommand{\ffrom}{\leftleftarrows}
+\newcommand{\From}[1]{\xleftarrow{#1}}
+\newcommand{\Fromm}[1]{\xleftarrow{\;\;#1\;\;}}
+\newcommand{\surj}{\twoheadrightarrow}
+\newcommand{\inj}{\rightarrowtail}
+\newcommand{\wavyto}{\rightsquigarrow}
+\newcommand{\lollipop}{\multimap}
+\newcommand{\imp}{\Rightarrow}
+\renewcommand{\iff}{\Leftrightarrow}
+\newcommand{\down}{\mathbin{\downarrow}}
+\newcommand{\fromto}{\leftrightarrows}
+\newcommand{\tickar}{\xtickar{}}
+\newcommand{\slashar}{\xslashar{}}
+\newcommand{\card}{\,^{\#}}
+\newcommand{\bk}[1]{\overset{\scriptscriptstyle\leftarrow}{#1}}
+
+
+\newcommand{\inv}{^{-1}}
+\newcommand{\op}{^\tn{op}}
+
+\newcommand{\tn}[1]{\textnormal{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\wc}[1]{\widecheck{#1}}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+
+
+\newcommand{\bb}{\mathbb{B}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\rr}{\mathbb{R}}
+
+
+\newcommand{\finset}{\Cat{Fin}}
+\newcommand{\smset}{\Cat{Set}}
+\newcommand{\smcat}{\Cat{Cat}}
+\newcommand{\catsharp}{\Cat{Cat}^{\sharp}}
+\newcommand{\en}{\Cat{End}}
+
+\newcommand{\List}{\Fun{List}}
+\newcommand{\set}{\tn{-}\Cat{Set}}
+
+\newcommand{\act}{\tn{act}}
+\newcommand{\upd}{\tn{upd}}
+
+
+\newcommand{\yon}{\mathcal{y}}
+\newcommand{\poly}{\Cat{Poly}}
+\newcommand{\polycart}{\poly^{\tn{cart}}}
+\newcommand{\tri}{\mathbin{\triangleleft}}
+
+% lenses
+\newcommand{\biglens}[2]{
+     \begin{bmatrix}{\vphantom{f_f^f}#2} \\ {\vphantom{f_f^f}#1} \end{bmatrix}
+}
+\newcommand{\littlelens}[2]{
+     \begin{bsmallmatrix}{\vphantom{f}#2} \\ {\vphantom{f}#1} \end{bsmallmatrix}
+}
+\newcommand{\lens}[2]{
+  \relax\if@display
+     \biglens{#1}{#2}
+  \else
+     \littlelens{#1}{#2}
+  \fi
+}
+
+
+\newcommand{\slogan}[1]{\begin{center}\textit{#1}\end{center}}
+
+\newcommand{\qand}{\quad\text{and}\quad}
+\newcommand{\qqand}{\qquad\text{and}\qquad}
+
+
+\newcommand{\coto}{\nrightarrow}
+\newcommand{\cofun}{{\raisebox{2pt}{\resizebox{2.5pt}{2.5pt}{$\setminus$}}}}
+
+\newcommand{\coalg}{\tn{-}\Cat{Coalg}}
+
+\newcommand{\org}{{\mathbb{O}\Cat{rg}}}
+
+\newcommand{\idcoalg}[1]{{\{\id_{#1}\}}}
+
+\newcommand{\dnote}[1]{{\quad \color{blue}$\lozenge$\;David says:}~#1\;{\color{blue}$\lozenge$}\quad}
+
+%-------- Paper-specific macros --------%
+
+\newcommand{\mfd}{\Cat{Mfd}}
+\newcommand{\plenspot}{\Cat{PLensPot}}
+\newcommand{\boxx}{\Fun{Box}}
+\renewcommand{\cot}{\fun{cot}}
+\newcommand{\ev}{\fun{ev}}
+\newcommand{\pr}{\fun{pr}}
+\newcommand{\Ad}{\fun{Ad}}
+\newcommand{\ad}{\fun{ad}}
+\newcommand{\lie}[1]{\mathfrak{#1}}
+
+% ---- Changeable document parameters ---- %
+
+\linespread{1.1}
+\allowdisplaybreaks
+\setsecnumdepth{section}
+\settocdepth{section}
+\setlength{\parindent}{15pt}
+\setcounter{tocdepth}{1}
+
+
+
+%--------------- Document ---------------%
+\begin{document}
+
+\title{Dynamic Algebra of Potentials}
+
+\author{David I. Spivak}
+
+\date{\vspace{-.2in}}
+
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\tableofcontents
+
+%--------------------------------------------------------------------
+\chapter{Introduction}\label{ch:intro}
+%--------------------------------------------------------------------
+
+% TODO: write introduction
+
+
+%--------------------------------------------------------------------
+\chapter{Background}\label{ch:background}
+%--------------------------------------------------------------------
+
+\section{The symmetric monoidal closed category $\poly$}\label{sec:poly}
+
+We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment and~\cite{spivak2026changing} for a concise reference.
+
+A \emph{polynomial functor} is an endofunctor $p\colon\smset\to\smset$ of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
+\begin{equation}\label{eqn:poly}
+p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
+\end{equation}
+We use juxtaposition for scalar multiplication: $pq\coloneqq p\times q$, and we write $1=\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m:M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
+
+One can derive from the universal property of coproducts and the Yoneda lemma that natural transformations $\varphi\colon p\to q$ are given by:
+\begin{equation}\label{eqn:poly_map}
+\poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
+\end{equation}
+The outer $\prod_i\sum_j$ yields an ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function $\bk{\varphi}_i\colon q[\varphi_1(i)]\to p[i]$. We take the morphisms $p\to q$ in $\poly$ to be the natural transformations between the underlying functors.
+
+For polynomials $p,q$, their \emph{Dirichlet tensor product} is
+\begin{equation}\label{eqn:dirichlet}
+p\otimes q\coloneqq\sum_{(i,j):p(1)\times q(1)}\yon^{p[i]\times q[j]}\;.
+\end{equation}
+The unit is $\yon=\yon^1$. The Dirichlet product is symmetric monoidal and closed: the \emph{internal hom} is
+\begin{equation}\label{eqn:dirichlet_hom}
+\ihom{p,q}=\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
+\end{equation}
+satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn:dirichlet_hom} with \eqref{eqn:poly_map}. A direction at $\varphi:\ihom{p,q}(1)$ consists of a pair $(i,e)$, where $i:p(1)$ is a $p$-position and $e:q[\varphi_1(i)]$ is a $q$-direction.
+
+\section{Polynomial comonads as categories}\label{sec:comonads}
+
+The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$, with unit $\yon$. Using the expanded form of \eqref{eqn:poly}:
+\begin{equation}\label{eqn:substitution}
+p\tri q=\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon.
+\end{equation}
+A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$.
+
+A \emph{$\tri$-comonoid} in $\poly$ is a comonoid for the substitution product: a polynomial $c$ equipped with a counit $\epsilon\colon c\to\yon$ and comultiplication $\delta\colon c\to c\tri c$ satisfying coassociativity and counitality. Since the substitution product is composition of endofunctors on $\smset$, a $\tri$-comonoid is equivalently a comonad on $\smset$ whose underlying endofunctor is polynomial; we call it a \emph{polynomial comonad}.
+
+Polynomial comonads are---up to isomorphism---small categories. Writing $c=\sum_{i:c(1)}\yon^{c[i]}$, the positions $c(1)$ are the objects of some category $\cat{C}$, and for each object $i:c(1)$, the directions $c[i]$ are the morphisms of $\cat{C}$ with domain $i$:
+\[
+c[i]\coloneqq\sum_{j\in c(1)}\cat{C}(i,j).
+\]
+The counit $\epsilon\colon c\to\yon$ picks out an identity morphism $\id_i\in c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f\in c[i]$, the on-positions component of $\delta$ returns $\cod(f)\in c(1)$, and given a further morphism $g\in c[\cod(f)]$, the on-directions component returns the composite $f\then g\in c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative.
+
+\begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop:comonads-cats}
+The above correspondence defines an isomorphism between polynomial comonads and small categories.
+\end{proposition}
+
+\begin{example}[The store comonad and the pair groupoid]\label{ex:store}
+For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times-\;\dashv\;(-)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. We can also write
+\begin{equation}\label{eqn:store-decomp}
+S\yon^S\;\cong\;\ihom{S\yon,\yon}\otimes S\yon
+\end{equation}
+since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1}\cong S\yon^S$. The counit $\epsilon\colon S\yon^S\to\yon$ sends each position $s:S$ to the identity $\id_s\coloneqq s\in S=c[s]$. The comultiplication $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$ acts as follows: on positions, $\delta$ sends $s:S$ to the pair $(s,\cod)$ where $\cod\colon S\to S$ is the identity---so $\cod(t)=t$ for all $t:S$. On directions, given $s:S$ and $t\in c[s]=S$, the codomain is $\cod(t)=t$, and given a further $u\in c[t]=S$, the composite is $t\then u\coloneqq u$.
+
+By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t)\in S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete groupoid}) on $S$.
+\end{example}
+
+\section{The bicategory $\org$}\label{sec:org}
+
+We recall the bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}(S))$, specifying for each $s:S$ an action $\act(s):\poly(p,q)$ and an update $\upd_s\colon\ihom{p,q}[\act(s)]\to S$ assigning a successor state to each direction.
+
+\begin{definition}\label{def:pq-coalg}
+The category $\ihom{p,q}\coalg$ has as objects pairs $(S,\beta)$ where $S$ is a set and $\beta\colon S\to\ihom{p,q}\tri S$ is a function, and where a morphism from $(S,\beta)$ to $(S',\beta')$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. We refer to $S$ as the \emph{state set}.
+\end{definition}
+
+Unwinding this, $\beta$ decomposes as $\beta\coloneqq(\act^\beta,\upd^\beta)$, an \emph{action} function
+\[\act^\beta\colon S\to\poly(p,q)=\ihom{p,q}(1)\]
+and, for each state $s\in S$, an \emph{update} function
+\[\upd^\beta_s\colon\sum_{I\in p(1)}q\left[\act^\beta_s(I)\right]\to S.\]
+For a state $s\in S$ and position $I\in p(1)$ we often write $\act^\beta_s\colon p\to q$ and $\upd^\beta_s(I)\colon q[\act^\beta_s(I)]\to S$. We may suppress $\beta$ when clear from context.
+
+\begin{proposition}[\cite{spivak2021learners}]\label{prop:org}
+The categories $\ihom{p,q}\coalg$ form the hom-categories in a bicategory $\org$, which has polynomials as objects.
+\end{proposition}
+
+The identity 1-cell in $\org(p,p)=\ihom{p,p}\coalg$ is the one-state coalgebra $\idcoalg{p}$. The composite of a $\ihom{p,q}$-coalgebra $(S,\beta)$ and a $\ihom{q,r}$-coalgebra $(T,\gamma)$ is a $\ihom{p,r}$-coalgebra $(S\times T,\,\beta\then\gamma)$ with action
+\[\act^{\beta\then\gamma}_{s,t}\coloneqq(\act^\beta_s\then\act^\gamma_t)\colon p\to q\to r\]
+and update: for $(s,t):S\times T$ and $i:p(1)$, setting $j\coloneqq\act^\beta_s{}_1(i)$ and $k\coloneqq\act^\gamma_t{}_1(j)$; for $f:r[k]$, setting $e\coloneqq\bk{\act}^\gamma_{t,j}(f)$ and $d\coloneqq\bk{\act}^\beta_{s,i}(e)$,
+\[\upd_{\beta\then\gamma}((s,t),i,f)\coloneqq\big(\upd^\beta_s(i,e),\;\upd^\gamma_t(j,f)\big).\]
+
+\section{The cotangent functor}\label{sec:cot}
+
+The category of smooth manifolds provides the source of polynomials relevant to physics. Each manifold has a cotangent bundle, and each smooth map has a Jacobian transpose; combining these gives a functor into $\poly$. We follow the treatment in~\cite{spivak2026dynprop}.
+
+\begin{definition}[Cotangent functor]\label{def:cot}
+The \emph{cotangent functor} $\cot\colon\mfd\to\poly$ sends a smooth manifold $M$ to
+\begin{equation}\label{eqn:cot_def}
+\cot(M)\coloneqq\sum_{m:M}\yon^{T^*_mM}
+\end{equation}
+where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cot(f)\colon\cot(M)\to\cot(N)$ with forward part $f$ and backward part $(Df_m)^\top\colon T^*_{f(m)}N\to T^*_mM$ (the Jacobian transpose at $m$).
+\end{definition}
+
+\begin{proposition}\label{prop:cot-monoidal}
+The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
+\[
+\cot(\mathbb{R}^0)\cong\yon
+\qqand
+\cot(M\times N)\cong\cot(M)\otimes\cot(N).
+\]
+\end{proposition}
+
+\begin{proof}
+\textit{Functoriality.} The identity map $\id_M\colon M\to M$ has Jacobian $D(\id_M)_m=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cot(\id_M)=\id_{\cot(M)}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $D(g\circ f)_m=Dg_{f(m)}\circ Df_m$, so
+\[
+(D(g\circ f)_m)^\top=(Df_m)^\top\circ(Dg_{f(m)})^\top=\bk{\cot(f)}_m\circ\bk{\cot(g)}_{f(m)},
+\]
+which is the backward part of $\cot(f)\then\cot(g)$. (Note: $\cot$ is covariant precisely because it takes Jacobian \emph{transposes}, which reverses the backward direction.)
+
+\textit{Unit.} The one-point manifold $\mathbb{R}^0=\{*\}$ has $T^*_*\mathbb{R}^0=0$, so $\cot(\mathbb{R}^0)=\sum_{*:1}\yon^0=\yon$.
+
+\textit{Products.} The cotangent space of a product splits: $T^*_{(m,n)}(M\times N)\cong T^*_mM\times T^*_nN$. Thus
+\[
+\cot(M\times N)=\sum_{(m,n):M\times N}\yon^{T^*_mM\times T^*_nN}=\cot(M)\otimes\cot(N)
+\]
+using the definition of the Dirichlet product \eqref{eqn:dirichlet}.
+
+\textit{Naturality.} For a product map $(f,g)\colon M\times N\to M'\times N'$, the Jacobian is block-diagonal: $D(f,g)_{(m,n)}=Df_m\oplus Dg_n$. Hence $(D(f,g)_{(m,n)})^\top=(Df_m)^\top\times(Dg_n)^\top$, so the isomorphism $\cot(M\times N)\cong\cot(M)\otimes\cot(N)$ is natural in $M$ and~$N$.
+
+\textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
+\end{proof}
+
+\begin{remark}\label{rmk:cot-forgets-linear}
+\cref{prop:cot-monoidal} relies on $\poly$'s forgetfulness of the linear structure on $T^*_mM$: $\cot$ factors through the forgetful map from vector bundles to set-bundles, which turns direct sums into products. The linear structure is partially recovered by the $\otimes$-comonoid structure on $\cot(M)$; see \cref{lem:cot-comonoid}.
+\end{remark}
+
+\begin{lemma}\label{lem:cot-comonoid}
+For any smooth manifold $M$, the polynomial $\cot(M)$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication
+\[
+\cot(\Delta_M)\colon\cot(M)\to\cot(M)\otimes\cot(M)
+\]
+sends each $m:M$ to $(m,m)$ on positions and acts on directions by
+\[
+\bk{\cot(\Delta_M)}_m\colon T^*_mM\times T^*_mM\to T^*_mM,\qquad (\xi,\eta)\mapsto\xi+\eta,
+\]
+i.e.\ fibrewise addition. The counit $\cot(!_M)\colon\cot(M)\to\yon$ sends each $m:M$ to the unique position of $\yon$, and on directions picks out the zero covector $0\in T^*_mM$. Thus the $\otimes$-comonoid structure on $\cot(M)$ recovers the additive structure of each cotangent space.
+\end{lemma}
+
+\begin{proof}
+Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop:cot-monoidal}), it preserves comonoid structures (cf.\ \cref{prop:preserve-comonoid}). For the backward map: the Jacobian of $\Delta_M$ at $m$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $(T_mM)^*\times(T_mM)^*\to(T_mM)^*$. The Jacobian of $!_M$ at $m$ is $T_mM\to 0$, whose transpose $0\to T^*_mM$ picks out $0$.
+\end{proof}
+
+\begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop:cot-hopf}
+Let $G$ be a Lie group with multiplication $\mu\colon G\times G\to G$, unit $e\colon\mathbb{R}^0\to G$, and inversion $\iota\colon G\to G$. Then $\cot(G)$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
+\[
+\cot(\mu)\colon\cot(G)\otimes\cot(G)\to\cot(G),\qquad\cot(e)\colon\yon\to\cot(G),
+\]
+the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\cot(\iota)\colon\cot(G)\to\cot(G)$.
+\end{proposition}
+
+\begin{proof}
+The group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\mu,e)$ become monoid axioms for $(\cot(\mu),\cot(e))$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=e\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
+\end{proof}
+
+\section{SCAN Lie groups}\label{sec:scan}
+
+\begin{definition}\label{def:scn}
+A \emph{simply connected nilpotent} (SCN) Lie group is a connected, simply connected, finite-dimensional real Lie group whose Lie algebra is nilpotent.
+\end{definition}
+
+\begin{lemma}[Malcev]\label{lem:malcev}
+For any SCN Lie group $G$, the exponential map $\exp_G\colon\lie{g} \to G$ is a diffeomorphism.
+\end{lemma}
+
+\begin{proof}
+Corwin--Greenleaf~\cite[Theorem 1.2.1]{corwin1990representations}.
+\end{proof}
+
+\begin{definition}\label{def:scan}
+A \emph{simply connected anchored nilpotent} (SCAN) is a pair $(G, \sharp_G)$ where $G$ is SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{anchor}.
+\end{definition}
+
+\begin{remark}\label{rmk:anchor-chosen}
+The anchor is part of the data of a SCAN group; distinct choices of $\sharp_G$ give distinct SCAN structures on the same underlying SCN group. \Cref{prop:canonical-anchor} below produces a canonical anchor for cotangent bundles of SCN groups, but this is one valid choice among many.
+\end{remark}
+
+\begin{proposition}\label{prop:scan-polynomial}
+For $(G, \sharp_G)$ SCAN, $\cot(G) \cong G \yon^G$ in $\poly$.
+\end{proposition}
+
+\begin{proof}
+Positions on both sides are $G$. For each $g \in G$, compose bijections
+\[
+T^*_g G \xrightarrow{(dL_g|_e)^*} \lie{g}^* \xrightarrow{\sharp_G} \lie{g} \xrightarrow{\exp_G} G,
+\]
+using that $(dL_g|_e)^*\colon T^*_g G \to \lie{g}^*$ is a linear iso (inverse of the transpose of left translation), $\sharp_G$ is a linear iso by \cref{def:scan}, and $\exp_G$ is a bijection by \cref{lem:malcev}.
+\end{proof}
+
+\begin{proposition}\label{prop:TstarG-scn}
+For any SCN Lie group $G$, $T^*G$ is a SCN Lie group under left-trivialization.
+\end{proposition}
+
+\begin{proof}
+Left-trivialize $T^*G \cong G \times \lie{g}^*$ via $(g, \xi) \leftrightarrow (g, (dL_g|_e)^*\xi)$. Give $G \times \lie{g}^*$ the operation
+\[
+(g_1, \xi_1) \cdot (g_2, \xi_2) := (g_1 g_2, \; \Ad^*_{g_2\inv}\xi_1 + \xi_2),
+\]
+with unit $(e, 0)$ and inverse $(g, \xi)\inv = (g\inv, -\Ad^*_g \xi)$. Associativity uses $\Ad^*_{g_3\inv} \Ad^*_{g_2\inv} = \Ad^*_{(g_2 g_3)\inv}$ (contravariance of coadjoint); smoothness is clear. Simple connectedness: $G$ is simply connected and $\lie{g}^*$ is contractible, so the product is simply connected.
+
+The Lie algebra at $(e, 0)$ is $\lie{g} \oplus \lie{g}^*$ with bracket
+\[
+[(X_1, \nu_1), (X_2, \nu_2)] = ([X_1, X_2]_\lie{g}, \; \ad^*_{X_2}\nu_1 - \ad^*_{X_1}\nu_2),
+\]
+obtained by differentiating the product law. Nilpotency: if $\lie{g}$ has nilpotency class $c$, then $\ad^c = 0$ on $\lie{g}$, hence $(\ad^*)^c = 0$ on $\lie{g}^*$; by induction on bracket depth, iterated brackets of depth $\geq c+1$ vanish in $\lie{g} \oplus \lie{g}^*$.
+\end{proof}
+
+\begin{proposition}\label{prop:canonical-anchor}
+The canonical symplectic form $\omega$ on $T^*G$ (Abraham--Marsden~\cite[\S3.2]{abraham1978foundations}; Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}) induces a canonical anchor $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical SCAN structure.
+\end{proposition}
+
+\begin{proof}
+In left-trivialized coordinates with tangent vector $(X, \dot\xi) \in \lie{g} \oplus \lie{g}^*$ at $(g, \xi) \in T^*G$, the Liouville 1-form is $\theta_{(g, \xi)}(X, \dot\xi) = \xi(X)$. At $(e, 0)$, $\omega := -d\theta$ is
+\[
+\omega_{(e, 0)}((X_1, \dot\xi_1), (X_2, \dot\xi_2)) = \dot\xi_2(X_1) - \dot\xi_1(X_2),
+\]
+which is non-degenerate (direct verification). Its flat map is $(X, \dot\xi) \mapsto (-\dot\xi, X) \in \lie{g}^* \oplus \lie{g} = (\lie{g} \oplus \lie{g}^*)^*$; the inverse is the linear iso $\sharp_{T^*G}\colon(\alpha, Z) \mapsto (Z, -\alpha)$.
+\end{proof}
+
+\printbibliography
+
+\end{document}
