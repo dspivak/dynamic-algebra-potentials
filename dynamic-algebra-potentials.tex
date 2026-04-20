@@ -238,6 +238,8 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \DeclarePairedDelimiter{\ihom}{[}{]}
 
 \DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\Mor}{Mor}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\cod}{cod}
@@ -527,9 +529,9 @@ which is the backward part of $\cot(f)\then\cot(g)$. (Note: $\cot$ is covariant 
 \textit{Unit.} The one-point manifold $\mathbb{R}^0=\{*\}$ has $T^*_*\mathbb{R}^0=0$, so $\cot(\mathbb{R}^0)=\sum_{*:1}\yon^0=\yon$.
 
 \textit{Products.} The cotangent space of a product splits: $T^*_{(m,n)}(M\times N)\cong T^*_mM\times T^*_nN$. Thus
-\[
+\begin{equation}\label{eqn.cot_times}
 \cot(M\times N)=\sum_{(m,n):M\times N}\yon^{T^*_mM\times T^*_nN}=\cot(M)\otimes\cot(N)
-\]
+\end{equation}
 using the definition of the Dirichlet product \eqref{eqn:dirichlet}.
 
 \textit{Naturality.} For a product map $(f,g)\colon M\times N\to M'\times N'$, the Jacobian is block-diagonal: $D(f,g)_{(m,n)}=Df_m\oplus Dg_n$. Hence $(D(f,g)_{(m,n)})^\top=(Df_m)^\top\times(Dg_n)^\top$, so the isomorphism $\cot(M\times N)\cong\cot(M)\otimes\cot(N)$ is natural in $M$ and~$N$.
@@ -537,46 +539,153 @@ using the definition of the Dirichlet product \eqref{eqn:dirichlet}.
 \textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
 \end{proof}
 
-\begin{remark}\label{rmk:cot-forgets-linear}
-\cref{prop:cot-monoidal} relies on $\poly$'s forgetfulness of the linear structure on $T^*_mM$: $\cot$ factors through the forgetful map from vector bundles to set-bundles, which turns direct sums into products. The linear structure is partially recovered by the $\otimes$-comonoid structure on $\cot(M)$; see \cref{lem:cot-comonoid}.
-\end{remark}
+\Cref{prop:cot-monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem:cot-comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot(M)$.
 
 \begin{lemma}\label{lem:cot-comonoid}
-For any smooth manifold $M$, the polynomial $\cot(M)$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication
+For any smooth manifold $M$, the polynomial $\cot(M)$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
 \[
 \cot(\Delta_M)\colon\cot(M)\to\cot(M)\otimes\cot(M)
+\qqand
+ \cot(!_M)\colon\cot(M)\to\yon
 \]
-sends each $m:M$ to $(m,m)$ on positions and acts on directions by
+sends each position $m:M$ to $(m,m)$. On directions, each cotangent fibre $T^*_mM$ carries the induced cocommutative comonoid structure
 \[
-\bk{\cot(\Delta_M)}_m\colon T^*_mM\times T^*_mM\to T^*_mM,\qquad (\xi,\eta)\mapsto\xi+\eta,
+T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\eta)\mapsto\xi+\eta
+\qqand 1\to T^*_mM,\quad *\mapsto 0,
 \]
-i.e.\ fibrewise addition. The counit $\cot(!_M)\colon\cot(M)\to\yon$ sends each $m:M$ to the unique position of $\yon$, and on directions picks out the zero covector $0\in T^*_mM$. Thus the $\otimes$-comonoid structure on $\cot(M)$ recovers the additive structure of each cotangent space.
+i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cot(M)$ recovers the additive structure of each cotangent space.
 \end{lemma}
 
 \begin{proof}
-Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop:cot-monoidal}), it preserves comonoid structures (cf.\ \cref{prop:preserve-comonoid}). For the backward map: the Jacobian of $\Delta_M$ at $m$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $(T_mM)^*\times(T_mM)^*\to(T_mM)^*$. The Jacobian of $!_M$ at $m$ is $T_mM\to 0$, whose transpose $0\to T^*_mM$ picks out $0$.
+Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop:cot-monoidal}), it preserves comonoid structures. On positions this gives $m\mapsto(m,m)$ and $m\mapsto *$. For the backward maps: the Jacobian of $\Delta_M$ at $m$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The Jacobian of $!_M$ at $m$ is $T_mM\to 0$, whose transpose is the map $1\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
 \begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop:cot-hopf}
-Let $G$ be a Lie group with multiplication $\mu\colon G\times G\to G$, unit $e\colon\mathbb{R}^0\to G$, and inversion $\iota\colon G\to G$. Then $\cot(G)$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
+Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cot(G)$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
 \[
-\cot(\mu)\colon\cot(G)\otimes\cot(G)\to\cot(G),\qquad\cot(e)\colon\yon\to\cot(G),
+\cot(\eta)\colon\yon\to\cot(G),\qquad \cot(\mu)\colon\cot(G)\otimes\cot(G)\to\cot(G),
 \]
 the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\cot(\iota)\colon\cot(G)\to\cot(G)$.
 \end{proposition}
 
 \begin{proof}
-The group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\mu,e)$ become monoid axioms for $(\cot(\mu),\cot(e))$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=e\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
+The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot(\eta),\cot(\mu))$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
-\section{SCAN Lie groups}\label{sec:scan}
+\section{Lie groups and notation}\label{sec:lie-groups}
+
+Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We write
+\[
+e\coloneqq \eta(*)\in G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
+\]
+The Lie algebra of $G$ is the tangent space at the identity,
+The \emph{Lie algebra of $G$} is the tangent space at the identity:
+\[
+\lie{g}\coloneqq T_eG.
+\]
+For each $g\in G$, left translation is the diffeomorphism
+\[
+L_g\colon G\to G,\qquad h\mapsto gh.
+\]
+Its differential at the identity is a linear isomorphism and we denote it and its transpose by
+\[
+dL_g|_e\colon \lie{g}\to T_gG
+\qqand
+(dL_g|_e)^*\colon T^*_gG\to \lie{g}^*.
+\]
+Thus every cotangent fiber $T^*_gG$ is canonically identified with the single vector space $\lie{g}^*$ by pulling covectors back along left translation. Collecting these fiberwise identifications gives a vector-bundle isomorphism over $G$:
+\begin{equation}\label{eqn.left_triv}
+T^*G \cong G\times\lie{g}^*,\qquad \xi\mapsto (g,(dL_g|_e)^*\xi)\quad\text{for }\xi\in T^*_gG.
+\end{equation}
+We refer to this bundle isomorphism as the \emph{left-trivialization} of $T^*G$.
+
+Conjugation by $g$ is the Lie group automorphism
+\[
+c_g\colon G\to G,\qquad h\mapsto ghg\inv.
+\]
+Its differential at the identity is the adjoint action, and the transpose of the adjoint action is the coadjoint action:
+\[
+\Ad_g\coloneqq dc_g|_e\colon \lie{g}\to \lie{g}
+\qqand
+\Ad_g^*\coloneqq (dc_g|_e)^*\colon \lie{g}^*\to \lie{g}^*.
+\]
+
+\begin{lemma}\label{lem:Ad-facts}
+The adjoint and coadjoint actions define group homomorphisms
+\[
+\Ad\colon G\to \Aut(\lie{g})
+\qqand
+\Ad^*\colon G\op\to \Aut(\lie{g}^*).
+\]
+\end{lemma}
+
+\begin{proof}
+To say that $\Ad$ is a group homomorphism is exactly to say that it preserves the unit and multiplication. Unwinding this gives:
+\[
+\Ad_e=\id_{\lie{g}}
+\qqand
+\Ad_{gh}=\Ad_g\circ \Ad_h.
+\]
+Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h\in G$, so differentiating at $e$ gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes gives
+\[
+\Ad_e^*=\id_{\lie{g}^*}
+\qqand
+\Ad_{gh}^*=\Ad_h^*\circ \Ad_g^*.
+\]
+This yields the required group homomorphism.
+\end{proof}
+
+Note that if $V$ is a finite-dimensional vector space, so is the space $\End(V)$ of linear maps $V\to V$, so we may regard $\End(V)$ as a manifold. Moreover, for any finite-dimensional vector space $W$, the tangent space $T_wW$ at any point $w\in W$ is canonically identified with $W$ itself. In particular, $\End(\lie{g})$ and $\End(\lie{g}^*)$ are smooth manifolds, and a tangent vector to either one is canonically an element of the same vector space. 
+
+Hence the assignments
+\[
+\Ad\colon G\to\End(\lie{g})
+\qqand
+\Ad^*\colon G\to\End(\lie{g}^*)
+\]
+given by $g\mapsto \Ad_g$ and $g\mapsto \Ad_g^*$ are smooth maps.
+Differentiating $\Ad$ and $\Ad^*$ at the identity gives
+\[
+\ad\colon \lie{g}\to \End(\lie{g}),
+\qqand
+\ad^*\colon \lie{g}\to \End(\lie{g}^*).
+\]
+For each $X\in\lie{g}$ we write
+\[
+\ad_X\colon \lie{g}\to \lie{g}
+\qqand
+\ad_X^*\colon \lie{g}^*\to \lie{g}^*
+\]
+for what are called the \emph{adjoint operator} and \emph{coadjoint operator} associated to $X$. Note that the transpose operation $(-)^*\colon \End(\lie{g})\to \End(\lie{g}^*)$ is linear, so differentiating $\Ad_g^*=(\Ad_g)^*$ at the identity gives $\ad_X^*=(\ad_X)^*$.
+
+The Lie bracket on $\lie{g}$ is defined by
+\[
+[X,Y]\coloneqq \ad_X(Y),
+\]
+which makes $\lie{g}$ into a Lie algebra. However, because we use brackets $[p,q]$ for internal hom of polynomials and have little use for Lie brackets in the paper, we will never again use the bracket notation for Lie algebras, using $\ad$ instead. 
+
+Define a map
+\[
+\exp_G\colon \lie{g}\to G
+\]
+by setting $\exp_G(X)\coloneqq \gamma_X(1)$, where $\gamma_X\colon \rr\to G$ is the unique integral curve through $e$ of the left-invariant vector field on $G$ determined by $X$; this is called the \emph{exponential map}.
+
+\subsection{SCAN Lie groups}\label{sec:scan}
+
+For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot(G)$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category; \cref{rmk:scan-fiberwise-addition} explains where this category structure on $\cot(G)$ comes from in the SCAN case.
 
 \begin{definition}\label{def:scn}
-A \emph{simply connected nilpotent} (SCN) Lie group is a connected, simply connected, finite-dimensional real Lie group whose Lie algebra is nilpotent.
+A \emph{simply connected nilpotent} (SCN) Lie group, or simply a \emph{SCN}, is a connected, simply connected, finite-dimensional real Lie group for which there exists $n\in\nn$ such that, for all $X_1,\ldots,X_n\in\lie{g}$, the iterated composite of adjoint operators is zero:
+\[
+\ad_{X_1}\circ\ad_{X_2}\circ\cdots\circ\ad_{X_n}=0\colon \lie{g}\to\lie{g}.
+\]
+The least such $n$ is called the \emph{nilpotency class} of $\lie{g}$.
 \end{definition}
 
+Note that $\lie{g}$ has nilpotency class $n$ iff $\lie{g}^*$ does.
+
 \begin{lemma}[Malcev]\label{lem:malcev}
-For any SCN Lie group $G$, the exponential map $\exp_G\colon\lie{g} \to G$ is a diffeomorphism.
+For any SCN $G$, the exponential map $\exp_G\colon\lie{g} \to G$ is a diffeomorphism.
 \end{lemma}
 
 \begin{proof}
@@ -584,53 +693,91 @@ Corwin--Greenleaf~\cite[Theorem 1.2.1]{corwin1990representations}.
 \end{proof}
 
 \begin{definition}\label{def:scan}
-A \emph{simply connected anchored nilpotent} (SCAN) is a pair $(G, \sharp_G)$ where $G$ is SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{anchor}.
+A \emph{simply connected anchored nilpotent} (SCAN) Lie group, or simply a \emph{SCAN}, is a pair $(G, \sharp_G)$ where $G$ is a SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{anchor}.
 \end{definition}
 
 \begin{remark}\label{rmk:anchor-chosen}
-The anchor is part of the data of a SCAN group; distinct choices of $\sharp_G$ give distinct SCAN structures on the same underlying SCN group. \Cref{prop:canonical-anchor} below produces a canonical anchor for cotangent bundles of SCN groups, but this is one valid choice among many.
+In Lie theory, a map $\lie{g}^*\to\lie{g}$ of the above sort is usually just regarded as a chosen identification of $\lie{g}^*$ with $\lie{g}$, often arising from a nondegenerate bilinear form $\lie{g}\times\lie{g}\to\rr$. We call $\sharp_G$ an \emph{anchor} by analogy with the anchor maps of Poisson geometry and Lie algebroid theory, though here we restrict to the case where it is a linear isomorphism. The anchor is part of the data of a SCAN; distinct choices of $\sharp_G$ give distinct SCAN structures on the same underlying SCN. \Cref{prop:canonical-anchor} below produces a canonical anchor for cotangent bundles of SCNs, but this is one valid choice among many.
 \end{remark}
 
 \begin{proposition}\label{prop:scan-polynomial}
-For $(G, \sharp_G)$ SCAN, $\cot(G) \cong G \yon^G$ in $\poly$.
+For $(G, \sharp_G)$ SCAN, there is an isomorphism $\cot(G) \cong G \yon^G$ in $\poly$.
 \end{proposition}
 
 \begin{proof}
 Positions on both sides are $G$. For each $g \in G$, compose bijections
-\[
+\begin{equation}\label{eqn.directions_malcev}
 T^*_g G \xrightarrow{(dL_g|_e)^*} \lie{g}^* \xrightarrow{\sharp_G} \lie{g} \xrightarrow{\exp_G} G,
-\]
+\end{equation}
 using that $(dL_g|_e)^*\colon T^*_g G \to \lie{g}^*$ is a linear iso (inverse of the transpose of left translation), $\sharp_G$ is a linear iso by \cref{def:scan}, and $\exp_G$ is a bijection by \cref{lem:malcev}.
 \end{proof}
 
+\begin{remark}\label{rmk:scan-fiberwise-addition}
+For a SCAN $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot(G)\cong G\yon^G$ from \cref{prop:scan-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
+
+By \cref{prop:comonads-cats}, to give a $\tri$-comonoid structure on $G\yon^G$ is to give a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. The map $F_g$ is most naturally interpreted in terms of the translation category of $G$ acting on itself by left multiplication: an element $x\in G$ is viewed as an arrow out of $g$ with codomain $gx$. This category is isomorphic to the pair groupoid, but it is this translation-category presentation that matches \eqref{eqn.directions_malcev}. Thus we have maps
+\[
+\epsilon\colon\cot(G)\to\yon
+\qqand
+\delta\colon\cot(G)\to\cot(G)\tri\cot(G).
+\]
+The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi\in T^*_gG$ is sent to the point
+\[
+\cod_g(\xi)\coloneqq gF_g(\xi)\in G,
+\]
+and for $\xi'\in T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determined by group multiplication:
+\[
+F_g(\xi\then\xi') =F_g(\xi)\,F_{\cod_g(\xi)}(\xi').
+\]
+Thus the chosen anchor $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot(G)$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those who know the Baker--Campbell--Hausdorff formula on SCNs, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot(G)$ is given by the BCH product.
+\end{remark}
+
 \begin{proposition}\label{prop:TstarG-scn}
-For any SCN Lie group $G$, $T^*G$ is a SCN Lie group under left-trivialization.
+For any SCN $G$, the cotangent bundle manifold $T^*G$ is a SCN under left-trivialization.
 \end{proposition}
 
 \begin{proof}
-Left-trivialize $T^*G \cong G \times \lie{g}^*$ via $(g, \xi) \leftrightarrow (g, (dL_g|_e)^*\xi)$. Give $G \times \lie{g}^*$ the operation
+Left-trivialize $T^*G \cong G \times \lie{g}^*$ via $(g, \xi) \leftrightarrow (g, (dL_g|_e)^*\xi)$ as in \eqref{eqn.left_triv}. Give $G \times \lie{g}^*$ the operation
 \[
-(g_1, \xi_1) \cdot (g_2, \xi_2) := (g_1 g_2, \; \Ad^*_{g_2\inv}\xi_1 + \xi_2),
+(g_1, \xi_1) \cdot (g_2, \xi_2) := (g_1 g_2, \; \xi_1 + (\Ad^*_{g_1\inv}\xi_2)),
 \]
-with unit $(e, 0)$ and inverse $(g, \xi)\inv = (g\inv, -\Ad^*_g \xi)$. Associativity uses $\Ad^*_{g_3\inv} \Ad^*_{g_2\inv} = \Ad^*_{(g_2 g_3)\inv}$ (contravariance of coadjoint); smoothness is clear. Simple connectedness: $G$ is simply connected and $\lie{g}^*$ is contractible, so the product is simply connected.
+with unit $(e, 0)$ and inverse $(g, \xi)\inv = (g\inv, -\Ad^*_g \xi)$. The unit and associativity both follow from \cref{lem:Ad-facts}; in particular,
+\[
+\Ad_e^*=\id_{\lie{g}^*}
+\qqand
+\Ad^*_{g_2\inv}\circ\Ad^*_{g_1\inv}=\Ad^*_{(g_2g_1)\inv}.
+\]
+The cotangent bundle is well-known to be a smooth manifold. Since $G$ is simply connected and $\lie{g}^*$ is contractible, the product is simply connected. It remains to show nilpotency.
 
-The Lie algebra at $(e, 0)$ is $\lie{g} \oplus \lie{g}^*$ with bracket
+The Lie algebra of $G\times\lie{g}^*$ is its tangent space at the identity element $(e,0)$, namely
 \[
-[(X_1, \nu_1), (X_2, \nu_2)] = ([X_1, X_2]_\lie{g}, \; \ad^*_{X_2}\nu_1 - \ad^*_{X_1}\nu_2),
+T_{(e,0)}(G\times\lie{g}^*) \cong T_eG\oplus T_0(\lie{g}^*)=\lie{g}\oplus\lie{g}^*.
 \]
-obtained by differentiating the product law. Nilpotency: if $\lie{g}$ has nilpotency class $c$, then $\ad^c = 0$ on $\lie{g}$, hence $(\ad^*)^c = 0$ on $\lie{g}^*$; by induction on bracket depth, iterated brackets of depth $\geq c+1$ vanish in $\lie{g} \oplus \lie{g}^*$.
+Its adjoint action is
+\[
+\ad_{(X_1,\nu_1)}(X_2,\nu_2)=\big(\ad_{X_1}(X_2), \; \ad^*_{X_2}\nu_1 - \ad^*_{X_1}\nu_2\big),
+\]
+obtained by differentiating the product law. Relative to the decomposition $\lie{g}\oplus\lie{g}^*$, each operator $\ad_{(X,\nu)}$ has block form
+\[
+\ad_{(X,\nu)}=
+\begin{bmatrix}
+\ad_X & 0\\
+* & -\ad_X^*
+\end{bmatrix}.
+\]
+If $\lie{g}$ has nilpotency class $n$, then every $n$-fold composite of operators $\ad_X$ is zero on $\lie{g}$, and hence every $n$-fold composite of operators $\ad_X^*$ is zero on $\lie{g}^*$. Therefore any $(2n-1)$-fold composite of operators $\ad_{(X,\nu)}$ is zero: its $(1,1)$ and $(2,2)$ blocks are zero, and every term in its $(2,1)$ block contains either an $n$-fold composite of operators $\ad_X$ or an $n$-fold composite of operators $\ad_X^*$ as a factor. Thus $\lie{g}\oplus\lie{g}^*$ is nilpotent.
 \end{proof}
 
 \begin{proposition}\label{prop:canonical-anchor}
-The canonical symplectic form $\omega$ on $T^*G$ (Abraham--Marsden~\cite[\S3.2]{abraham1978foundations}; Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}) induces a canonical anchor $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical SCAN structure.
+The canonical symplectic form $\omega$ on $T^*G$ induces a canonical anchor $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical SCAN structure.
 \end{proposition}
 
 \begin{proof}
-In left-trivialized coordinates with tangent vector $(X, \dot\xi) \in \lie{g} \oplus \lie{g}^*$ at $(g, \xi) \in T^*G$, the Liouville 1-form is $\theta_{(g, \xi)}(X, \dot\xi) = \xi(X)$. At $(e, 0)$, $\omega := -d\theta$ is
+This is standard; see Abraham--Marsden~\cite[\S3.2]{abraham1978foundations} or Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}. The canonical symplectic form on $T^*G$ is nondegenerate, so at $(e,0)$ it induces an isomorphism
 \[
-\omega_{(e, 0)}((X_1, \dot\xi_1), (X_2, \dot\xi_2)) = \dot\xi_2(X_1) - \dot\xi_1(X_2),
+\flat_\omega\colon \lie{g}\oplus\lie{g}^* \to (\lie{g}\oplus\lie{g}^*)^*,
 \]
-which is non-degenerate (direct verification). Its flat map is $(X, \dot\xi) \mapsto (-\dot\xi, X) \in \lie{g}^* \oplus \lie{g} = (\lie{g} \oplus \lie{g}^*)^*$; the inverse is the linear iso $\sharp_{T^*G}\colon(\alpha, Z) \mapsto (Z, -\alpha)$.
+whose inverse is the required anchor $\sharp_{T^*G}$.
 \end{proof}
 
 \printbibliography
