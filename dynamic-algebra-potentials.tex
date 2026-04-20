@@ -1,4 +1,4 @@
-\documentclass[11pt, one side, article]{memoir}
+\documentclass[11pt, oneside, article]{memoir}
 
 
 \settrims{0pt}{0pt} % page and stock same size
@@ -68,6 +68,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
   	fit,
   	quotes,
   	intersections,
+  	circuits.logic.US,
   }
 
   \tikzset{
@@ -436,6 +437,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\Ad}{\fun{Ad}}
 \newcommand{\ad}{\fun{ad}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
+\newcommand{\tpow}[1]{^{\otimes #1}}
 
 % ---- Changeable document parameters ---- %
 
@@ -460,6 +462,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \maketitle
 
 \begin{abstract}
+We construct a symmetric monoidal functor $F\colon\plenspot\to\org$ from a category of potential lenses between smooth manifolds into the Shapiro--Spivak monoidal bicategory of polynomial coalgebras. The state of each $F(\ell)$ is the cotangent bundle of a SCAN parameter group, and the state-update is Hamilton's equations on that bundle, decomposed into force-like contributions from the lens's data. The construction and its functoriality are structural consequences of three general facts about strong symmetric monoidal functors from a cartesian category into a symmetric monoidal closed category, specialized to the cotangent functor $\cot\colon\mfd\to\poly$.
 \end{abstract}
 
 \tableofcontents
@@ -469,6 +472,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 %--------------------------------------------------------------------
 
 % TODO: write introduction
+\emph{[Introduction to be written.]}
 
 
 %--------------------------------------------------------------------
@@ -491,7 +495,9 @@ One can derive from the universal property of coproducts and the Yoneda lemma th
 \begin{equation}\label{eqn:poly_map}
 \poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
 \end{equation}
-The outer $\prod_i\sum_j$ yields an ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function $\bk{\varphi}_i\colon q[\varphi_1(i)]\to p[i]$. We take the morphisms $p\to q$ in $\poly$ to be the natural transformations between the underlying functors.
+The outer $\prod_i\sum_j$ yields an ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote this function
+\[\bk{\varphi}_i\colon q[\varphi_1(i)]\to p[i],\]
+writing the overline-bracket $\bk{(\,\cdot\,)}$ for the backward component throughout. We take the morphisms $p\to q$ in $\poly$ to be the natural transformations between the underlying functors.
 
 For polynomials $p,q$, their \emph{Dirichlet tensor product} is
 \begin{equation}\label{eqn:dirichlet}
@@ -499,9 +505,13 @@ p\otimes q\coloneqq\sum_{(i,j):p(1)\times q(1)}\yon^{p[i]\times q[j]}\;.
 \end{equation}
 The unit is $\yon=\yon^1$. The Dirichlet product is symmetric monoidal and closed: the \emph{internal hom} is
 \begin{equation}\label{eqn:dirichlet_hom}
-\ihom{p,q}=\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
+\ihom{p,q}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
 \end{equation}
-satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn:dirichlet_hom} with \eqref{eqn:poly_map}. A direction at $\varphi:\ihom{p,q}(1)$ consists of a pair $(i,e)$, where $i:p(1)$ is a $p$-position and $e:q[\varphi_1(i)]$ is a $q$-direction.
+satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn:dirichlet_hom} with \eqref{eqn:poly_map}. We can rewrite it as
+\[
+\ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
+\]
+A direction at $\varphi:\ihom{p,q}(1)$ consists of a pair $(i,e)$, where $i:p(1)$ is a $p$-position and $e:q[\varphi_1(i)]$ is a $q$-direction.
 
 \subsection{Polynomial comonads as categories}\label{sec:comonads}
 
@@ -509,15 +519,15 @@ The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is def
 \begin{equation}\label{eqn:substitution}
 p\tri q=\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon.
 \end{equation}
-A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$.
+A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, substitution recovers evaluation: $p\tri S=p(S)$.
 
 A \emph{$\tri$-comonoid} in $\poly$ is a comonoid for the substitution product: a polynomial $c$ equipped with a counit $\epsilon\colon c\to\yon$ and comultiplication $\delta\colon c\to c\tri c$ satisfying coassociativity and counitality. Since the substitution product is composition of endofunctors on $\smset$, a $\tri$-comonoid is equivalently a comonad on $\smset$ whose underlying endofunctor is polynomial; we call it a \emph{polynomial comonad}.
 
 Polynomial comonads are---up to isomorphism---small categories. Writing $c=\sum_{i:c(1)}\yon^{c[i]}$, the positions $c(1)$ are the objects of some category $\cat{C}$, and for each object $i:c(1)$, the directions $c[i]$ are the morphisms of $\cat{C}$ with domain $i$:
 \[
-c[i]\coloneqq\sum_{j\in c(1)}\cat{C}(i,j).
+c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
-The counit $\epsilon\colon c\to\yon$ picks out an identity morphism $\id_i\in c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f\in c[i]$, the on-positions component of $\delta$ returns $\cod(f)\in c(1)$, and given a further morphism $g\in c[\cod(f)]$, the on-directions component returns the composite $f\then g\in c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative.
+The counit $\epsilon\colon c\to\yon$ picks out an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $f\then g:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative.
 
 \begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop:comonads-cats}
 The above correspondence defines an isomorphism between polynomial comonads and small categories.
@@ -528,16 +538,37 @@ For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adj
 \begin{equation}\label{eqn:store-decomp}
 S\yon^S\;\cong\;\ihom{S\yon,\yon}\otimes S\yon
 \end{equation}
-since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1}\cong S\yon^S$. The counit $\epsilon\colon S\yon^S\to\yon$ sends each position $s:S$ to the identity $\id_s\coloneqq s\in S=c[s]$. The comultiplication $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$ acts as follows: on positions, $\delta$ sends $s:S$ to the pair $(s,\cod)$ where $\cod\colon S\to S$ is the identity---so $\cod(t)=t$ for all $t:S$. On directions, given $s:S$ and $t\in c[s]=S$, the codomain is $\cod(t)=t$, and given a further $u\in c[t]=S$, the composite is $t\then u\coloneqq u$.
+since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1}\cong S\yon^S$. The counit $\epsilon\colon S\yon^S\to\yon$ sends each position $s:S$ to the identity $\id_s\coloneqq s:S=c[s]$. The comultiplication $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$ acts as follows: on positions, $\delta$ sends $s:S$ to the pair $(s,\cod)$ where $\cod\colon S\to S$ is the identity---so $\cod(t)=t$ for all $t:S$. On directions, given $s:S$ and $t:c[s]=S$, the codomain is $\cod(t)=t$, and given a further $u:c[t]=S$, the composite is $t\then u\coloneqq u$.
 
-By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t)\in S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete groupoid}) on $S$.
+By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete groupoid}) on $S$.
 \end{example}
+
+
+\begin{proposition}[{\cite{niu2025polynomial}}]\label{prop:lens}
+$\poly$ has a left Kan operation $\lens{p}{q}$ with
+\[
+\poly(p,q'\tri q)\cong\poly\left(\lens{p}{q},q'\right)
+\]
+given by the formula
+\begin{equation}\label{eqn.lens}
+\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}.
+\end{equation}
+\end{proposition}
+
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec:coalgebras}
 
 For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\smset$ is a set and $\beta\colon S\to p(S)$ is a function. We call elements of $S$ states; given a state $s:S$, the map assigns a \emph{readout} position $r_s\coloneqq\beta_1(s):p(1)$ and an \emph{update} function $\bk{\beta}_s\colon p[r_s]\to S$ sending each direction at $r_s$ to a new state. For example when $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{spivak2020poly,niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
+
+\begin{example}[Coalgebras as polynomial maps]\label{ex:coalg-as-poly-map}
+A $p$-coalgebra $\beta\colon S\to p\tri S$ can be identified via \cref{prop:lens} as a map $\lens{S}{S}\to p$. By the formula \eqref{eqn.lens}, $\lens{S}{S}=S\yon^S$, so $\beta$ can be rewritten as a map
+\[
+\beta'\colon S\yon^S\to p.
+\qedhere\]
+\end{example}
+
 
 
 \section{Manifolds, Lie groups, and SCANs}\label{sec:lie-scan-bg}
@@ -620,13 +651,13 @@ The Lie group axioms are equations in $\mfd$; applying the strong monoidal funct
 
 Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We write
 \[
-e\coloneqq \eta(*)\in G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
+e\coloneqq \eta(*):G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
 \]
 The \emph{Lie algebra of $G$} is the tangent space at the identity:
 \[
 \lie{g}\coloneqq T_eG.
 \]
-For each $g\in G$, left translation is the diffeomorphism
+For each $g:G$, left translation is the diffeomorphism
 \[
 L_g\colon G\to G,\qquad h\mapsto gh.
 \]
@@ -638,7 +669,7 @@ dL_g|_e\colon \lie{g}\to T_gG
 \]
 Thus every cotangent fiber $T^*_gG$ is canonically identified with the single vector space $\lie{g}^*$ by pulling covectors back along left translation. Collecting these fiberwise identifications gives a vector-bundle isomorphism over $G$:
 \begin{equation}\label{eqn.left_triv}
-T^*G \cong G\times\lie{g}^*,\qquad \xi\mapsto (g,(dL_g|_e)^*\xi)\quad\text{for }\xi\in T^*_gG.
+T^*G \cong G\times\lie{g}^*,\qquad \xi\mapsto (g,(dL_g|_e)^*\xi)\quad\text{for }\xi:T^*_gG.
 \end{equation}
 We refer to this bundle isomorphism as the \emph{left-trivialization} of $T^*G$.
 
@@ -669,7 +700,7 @@ To say that $\Ad$ is a group homomorphism is exactly to say that it preserves th
 \qqand
 \Ad_{gh}=\Ad_g\circ \Ad_h.
 \]
-Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h\in G$, so differentiating at $e$ gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes gives
+Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h:G$, so differentiating at $e$ gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes gives
 \[
 \Ad_e^*=\id_{\lie{g}^*}
 \qqand
@@ -678,7 +709,7 @@ Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$
 This yields the required group homomorphism.
 \end{proof}
 
-Note that if $V$ is a finite-dimensional vector space, so is the space $\End(V)$ of linear maps $V\to V$, so we may regard $\End(V)$ as a manifold. Moreover, for any finite-dimensional vector space $W$, the tangent space $T_wW$ at any point $w\in W$ is canonically identified with $W$ itself. In particular, $\End(\lie{g})$ and $\End(\lie{g}^*)$ are smooth manifolds, and a tangent vector to either one is canonically an element of the same vector space. 
+Note that if $V$ is a finite-dimensional vector space, so is the space $\End(V)$ of linear maps $V\to V$, so we may regard $\End(V)$ as a manifold. Moreover, for any finite-dimensional vector space $W$, the tangent space $T_wW$ at any point $w:W$ is canonically identified with $W$ itself. In particular, $\End(\lie{g})$ and $\End(\lie{g}^*)$ are smooth manifolds, and a tangent vector to either one is canonically an element of the same vector space. 
 
 Hence the assignments
 \[
@@ -693,7 +724,7 @@ Differentiating $\Ad$ and $\Ad^*$ at the identity gives
 \qqand
 \ad^*\colon \lie{g}\to \End(\lie{g}^*).
 \]
-For each $X\in\lie{g}$ we write
+For each $X:\lie{g}$ we write
 \[
 \ad_X\colon \lie{g}\to \lie{g}
 \qqand
@@ -718,7 +749,7 @@ by setting $\exp_G(X)\coloneqq \gamma_X(1)$, where $\gamma_X\colon \rr\to G$ is 
 For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot(G)$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category; \cref{rmk:scan-fiberwise-addition} explains where this category structure on $\cot(G)$ comes from in the SCAN case.
 
 \begin{definition}\label{def:scn}
-A \emph{simply connected nilpotent} (SCN) Lie group, or simply a \emph{SCN}, is a connected, simply connected, finite-dimensional real Lie group for which there exists $n\in\nn$ such that, for all $X_1,\ldots,X_n\in\lie{g}$, the iterated composite of adjoint operators is zero:
+A \emph{simply connected nilpotent} (SCN) Lie group, or simply a \emph{SCN}, is a connected, simply connected, finite-dimensional real Lie group for which there exists $n:\nn$ such that, for all $X_1,\ldots,X_n:\lie{g}$, the iterated composite of adjoint operators is zero:
 \[
 \ad_{X_1}\circ\ad_{X_2}\circ\cdots\circ\ad_{X_n}=0\colon \lie{g}\to\lie{g}.
 \]
@@ -740,15 +771,21 @@ A \emph{simply connected anchored nilpotent} (SCAN) Lie group, or simply a \emph
 \end{definition}
 
 \begin{remark}\label{rmk:anchor-chosen}
-In Lie theory, a map $\lie{g}^*\to\lie{g}$ of the above sort is usually just regarded as a chosen identification of $\lie{g}^*$ with $\lie{g}$, often arising from a nondegenerate bilinear form $\lie{g}\times\lie{g}\to\rr$. We call $\sharp_G$ an \emph{anchor} by analogy with the anchor maps of Poisson geometry and Lie algebroid theory, though here we restrict to the case where it is a linear isomorphism. The anchor is part of the data of a SCAN; distinct choices of $\sharp_G$ give distinct SCAN structures on the same underlying SCN. \Cref{prop:canonical-anchor} below produces a canonical anchor for cotangent bundles of SCNs, but this is one valid choice among many.
+In Lie theory, a map $\lie{g}^*\to\lie{g}$ of the above sort is usually just regarded as a chosen identification of $\lie{g}^*$ with $\lie{g}$, often arising from a nondegenerate bilinear form $\lie{g}\times\lie{g}\to\rr$. We call $\sharp_G$ an \emph{anchor} by analogy with the anchor maps of Poisson geometry and Lie algebroid theory, where an anchor is a bundle map to $TG$; the usual Poisson anchor need not be an isomorphism, but the present setting forces it: $\sharp_G$ is required to be a linear isomorphism, providing an identification of $\lie{g}^*$ with $\lie{g}$. The anchor is part of the data of a SCAN; distinct choices of $\sharp_G$ give distinct SCAN structures on the same underlying SCN. \Cref{prop:canonical-anchor} below produces a canonical anchor for cotangent bundles of SCNs, but this is one valid choice among many.
 \end{remark}
+
+\begin{example}\label{ex:Rn-scan}
+The additive group $(\mathbb{R}^n,+)$ is a SCN Lie group for any $n:\nn$: abelian, hence nilpotent of class~$1$; simply connected and contractible. Its Lie algebra is $\lie{g}=T_0\mathbb{R}^n=\mathbb{R}^n$, the exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ is the identity, and left translation $L_p\colon q\mapsto p+q$ has differential the identity, so $(dL_p|_e)^*=\id$ at every $p$. 
+
+Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as an anchor. Under the resulting SCAN structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:scan-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot(\mathbb{R}^n)\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
+\end{example}
 
 \begin{proposition}\label{prop:scan-polynomial}
 For $(G, \sharp_G)$ SCAN, there is an isomorphism $\cot(G) \cong G \yon^G$ in $\poly$.
 \end{proposition}
 
 \begin{proof}
-Positions on both sides are $G$. For each $g \in G$, compose bijections
+Positions on both sides are $G$. For each $g:G$, compose bijections
 \begin{equation}\label{eqn.directions_malcev}
 T^*_g G \xrightarrow{(dL_g|_e)^*} \lie{g}^* \xrightarrow{\sharp_G} \lie{g} \xrightarrow{\exp_G} G,
 \end{equation}
@@ -758,17 +795,17 @@ using that $(dL_g|_e)^*\colon T^*_g G \to \lie{g}^*$ is a linear iso (inverse of
 \begin{remark}\label{rmk:scan-fiberwise-addition}
 For a SCAN $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot(G)\cong G\yon^G$ from \cref{prop:scan-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
 
-By \cref{prop:comonads-cats}, to give a $\tri$-comonoid structure on $G\yon^G$ is to give a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. The map $F_g$ is most naturally interpreted in terms of the translation category of $G$ acting on itself by left multiplication: an element $x\in G$ is viewed as an arrow out of $g$ with codomain $gx$. This category is isomorphic to the pair groupoid, but it is this translation-category presentation that matches \eqref{eqn.directions_malcev}. Thus we have maps
+By \cref{prop:comonads-cats}, a $\tri$-comonoid structure on $G\yon^G$ is a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. We describe such a category, the \emph{translation category} of $G$ acting on itself by left multiplication: objects are elements of $G$, a morphism $g\to h$ is an element $x:G$ satisfying $h=gx$ (there is exactly one such $x$, namely $g\inv h$), identities are $e:G$, and composition is group multiplication. This category is isomorphic to the pair groupoid on $G$, but the translation-category presentation is the one that matches \eqref{eqn.directions_malcev}: the bijection $F_g\colon T^*_gG\to G$ identifies a cotangent vector at $g$ with a morphism $g\to gF_g(\xi)$ in the translation category. Thus we have maps
 \[
 \epsilon\colon\cot(G)\to\yon
 \qqand
 \delta\colon\cot(G)\to\cot(G)\tri\cot(G).
 \]
-The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi\in T^*_gG$ is sent to the point
+The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi:T^*_gG$ is sent to the point
 \[
-\cod_g(\xi)\coloneqq gF_g(\xi)\in G,
+\cod_g(\xi)\coloneqq gF_g(\xi):G,
 \]
-and for $\xi'\in T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determined by group multiplication:
+and for $\xi':T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determined by group multiplication:
 \[
 F_g(\xi\then\xi') =F_g(\xi)\,F_{\cod_g(\xi)}(\xi').
 \]
@@ -808,7 +845,15 @@ obtained by differentiating the product law. Relative to the decomposition $\lie
 * & -\ad_X^*
 \end{bmatrix}.
 \]
-If $\lie{g}$ has nilpotency class $n$, then every $n$-fold composite of operators $\ad_X$ is zero on $\lie{g}$, and hence every $n$-fold composite of operators $\ad_X^*$ is zero on $\lie{g}^*$. Therefore any $(2n-1)$-fold composite of operators $\ad_{(X,\nu)}$ is zero: its $(1,1)$ and $(2,2)$ blocks are zero, and every term in its $(2,1)$ block contains either an $n$-fold composite of operators $\ad_X$ or an $n$-fold composite of operators $\ad_X^*$ as a factor. Thus $\lie{g}\oplus\lie{g}^*$ is nilpotent.
+Suppose $\lie{g}$ has nilpotency class $n$, so every $n$-fold composite of operators $\ad_X$ is zero on $\lie{g}$; transposing, every $n$-fold composite of operators $\ad_X^*$ is zero on $\lie{g}^*$. We show that any $(2n-1)$-fold composite $A_k\cdots A_1$ (where $A_i=\ad_{(X_i,\nu_i)}$) is zero.
+
+Write $A_i=\begin{bsmallmatrix}\ad_{X_i} & 0\\ *_i & -\ad_{X_i}^*\end{bsmallmatrix}$. A product of lower-triangular block matrices is lower-triangular, with diagonal blocks the products of diagonal blocks. So the $(1,1)$ entry of $A_k\cdots A_1$ is $\ad_{X_k}\cdots\ad_{X_1}$, which is zero for $k\geq n$; similarly for the $(2,2)$ entry $(-1)^k\ad^*_{X_k}\cdots\ad^*_{X_1}$.
+
+For the $(2,1)$ entry: expanding the matrix product, each term in the $(2,1)$ entry of $A_k\cdots A_1$ is a product
+\[
+D_k^{(2,2)}\cdots D_{j+1}^{(2,2)}\cdot *_j\cdot D_{j-1}^{(1,1)}\cdots D_1^{(1,1)}
+\]
+for some choice of $j:\{1,\ldots,k\}$, where $D_i^{(1,1)}=\ad_{X_i}$ and $D_i^{(2,2)}=-\ad^*_{X_i}$. When $k=2n-1$, either $j-1\geq n$ (the right factor contains an $n$-fold $\ad$-composite and vanishes) or $k-j\geq n$ (the left factor contains an $n$-fold $\ad^*$-composite and vanishes). So every term is zero, and $\lie{g}\oplus\lie{g}^*$ has nilpotency class at most $2n-1$.
 \end{proof}
 
 \begin{proposition}\label{prop:canonical-anchor}
@@ -825,9 +870,9 @@ whose inverse is the required anchor $\sharp_{T^*G}$.
 
 \section{Dynamic category-like structures}
 
-Categories, monoidal categories, traced categories, etc.\ can be understood in terms of the sorts of compositions they allow. For example:
+Categories, monoidal categories, traced categories, operads, etc.\ can be understood in terms of the sorts of compositions they allow. For example:
 \begin{equation}\label{eqn.wd_examples}
-\begin{tikzpicture}
+\begin{tikzpicture}[baseline=(Catg)]
 \begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
   \begin{scope}[oriented WD, bb port sep=1, bb port length=0, bb min width=.4cm, bby=.2cm, inner xsep=.2cm, x=.5cm, y=.3cm]
   	\node[bb={1}{1}] (Catf) {$f_1$};
@@ -844,8 +889,8 @@ Categories, monoidal categories, traced categories, etc.\ can be understood in t
   		node[right=3pt of Cat_out1] {$C$}
   	;
   %
-  	\node[bb={1}{2}, above right=-1.5 and 7 of Catf] (Monf) {$f_1$};
-  	\node[bb={2}{1}, below right=-1 and 1 of Monf] (Mong) {$f_2$};
+  	\node[bb={1}{2}, above right=-1 and 6.5 of Catf] (Monf) {$f_1$};
+  	\node[bb={2}{1}, below right=-.5 and 1 of Monf] (Mong) {$f_2$};
   	\node[bb={0}{0}, fit=(Monf) (Mong)] (Mon) {};
   	\node[coordinate] at (Mon.west|-Monf_in1) (Mon_in1) {};
   	\node[coordinate] at (Mon.west|-Mong_in2) (Mon_in2) {};
@@ -864,7 +909,7 @@ Categories, monoidal categories, traced categories, etc.\ can be understood in t
   		node[right=3pt of Mon_out2] {$E$}
   	;
   %
-  	\node[bb={2}{1}, right= 7 of Monf] (Trf) {$f_1$};
+  	\node[bb={2}{1}, below right= -1.75 and 6.5 of Monf] (Trf) {$f_1$};
   	\node[bb={2}{2}, below right=-1 and 1 of Trf] (Trg) {$f_2$};
   	\node[bb={0}{0}, fit={($(Trf.north west)+(-.5,2)$) ($(Trg.south east)+(.5,0)$)}] (Tr) {};
   	\node[coordinate] at (Tr.west|-Trf_in2) (Tr_in1) {};
@@ -885,58 +930,121 @@ Categories, monoidal categories, traced categories, etc.\ can be understood in t
   		node at ($(Trf.north)+(0,1.5)$) {$C$}
   	;
   \end{scope}
+  \begin{scope}[circuit logic US, thick, every to/.style={out=0,in=180}]
+  	\node[and gate, draw, above right=-.2 and 3 of Trf] (Opdf) {$f_1$};
+  	\node[and gate, draw, below right=-.1 and 0.5 of Opdf] (Opdg) {$f_2$};
+  	\node[and gate, inner ysep=-4pt, draw, fit={($(Opdf.north west)+(0,-.2)$) ($(Opdg.south east)+(0,.2)$)}] (Opd) {};
+  	\node[coordinate] at (Opd.input 1|-Opdf.west) (Opd_in1) {};
+  	\node[coordinate] at (Opd.input 1|-Opdg.input 2) (Opd_in2) {};
+  	\node[coordinate] at (Opd.output) (Opd_out) {};
+  	\draw (Opd_in1) to (Opdf.west);
+  	\draw (Opd_in2) to (Opdg.input 2);
+  	\draw (Opdf.output) to (Opdg.input 1);
+  	\draw (Opdg.output) to (Opd_out);
+  	\draw[label]
+  		node[left=3pt of Opd_in1] {$A$}
+  		node[left=3pt of Opd_in2] {$B$}
+  		node at ($(Opdf.output)!.5!(Opdg.input 1)+(.1,.25)$) {$C$}
+  		node[right=3pt of Opd_out] {$D$}
+  	;
+  \end{scope}
 	\node[below=.3 of Cat.south] (Cat name) {category};
 	\node[text width=1.5cm, align=center] at (Cat name-|Mon) {monoidal\\category};
 	\node[text width=2.5cm, align=center] at (Cat name-|Tr) {traced monoidal\\category};
+	\node at (Cat name-|Opd) {operad};
 \end{scope}
 \end{tikzpicture}
 \end{equation}
-In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-objet-labeled-ports) and whose morphisms $\phi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of boxes in a box. In $\cat{W}_{\tn{O-Cat}}$, for example, a box is represented simply by an ordered pair, e.g.\ $(A,B)\in O^2$, the labels on its left and right side. A $\cat{W}$-algebra $\cat{C}\colon\cat{W}\to\smset$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for little boxes to a filler of the big box.%
-\footnote{By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$.} Above we showed a 2-ary arrangement in three different operads $\cat{W}_{\tn{O-Cat}}$, $\cat{W}_{\tn{O-MnCat}}$, and $\cat{W}_{\tn{O-TrCat}}$. 
+\smallskip
+
+\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-objet-labeled-ports) and whose morphisms $\phi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of boxes in a box. That is, there are operads $\cat{W}_{\tn{O-Cat}}$, $\cat{W}_{\tn{O-MnCat}}$, $\cat{W}_{\tn{O-TrCat}}$, and $\cat{W}_{\tn{O-Opd}}$ each with a 2-ary morphism that can be drawn as above.%
+\footnote{
+There is a potentially-confusing level-shift in that there is an operad $\cat{W}_{\tn{O-Opd}}$ for which algebras are operads with object set $O$. In case it's helpful, the object set for $\cat{W}_{\tn{O-Opd}}$ would be $\List(O)\times O$, because every ``box'' has a list of inputs and an output.
+}
+
+A $\cat{W}$-algebra $\cat{C}\colon\cat{W}\to\smset$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for little boxes to a filler of the big box.%
+\footnote{By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$.}
 
 \begin{example}
 For a set $O$, let $\ob\cat{W}_{\tn{O-Cat}}\coloneqq O\times O$ and
 \[\cat{W}_{\tn{O-Cat}}((o_0',o_1),(o_1',o_2),\ldots(o_{K-1}',o_K);(o_0,o_K'))\coloneqq
 \begin{cases}
-\{1\}&\tn{ if }o_k=o_k'\quad \forall 0\leq k\leq K\\
+\{1\}&\tn{ if }o_k=o_k'\quad \forall\; 0\leq k\leq K\\
 \varnothing&\tn{ otherwise}
 \end{cases}
 \]
-Thus the first diagram shown in \eqref{eqn.wd_examples} represents a map $\phi\colon (A,B),(B,C)\to(A,C)$ in $\cat{W}_{\tn{O-Cat}}$ for some $O$ with $A,B,C\in O$. If $\cat{C}\colon\cat{W}_{\tn{O-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1\in \cat{C}(A,B)$, $f_2\in\cat{C}(B,C)$ and $\phi(f_1,f_2)\in\cat{C}(A,C)$. In other words the diagram $\phi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to teh category of $\cat{W}_{\tn{O-Cat}}$-algebras.
+Thus the first diagram shown in \eqref{eqn.wd_examples} represents a map $\phi\colon (A,B),(B,C)\to(A,C)$ in $\cat{W}_{\tn{O-Cat}}$ for some $O$ with $A,B,C:O$. If $\cat{C}\colon\cat{W}_{\tn{O-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1:\cat{C}(A,B)$, $f_2:\cat{C}(B,C)$ and $\phi(f_1,f_2):\cat{C}(A,C)$. In other words the diagram $\phi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{\tn{O-Cat}}$-algebras.
 \end{example}
 
-Wiring diagram operads also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\Cat{Vect}$-enriched category with object set $O$ is an opeard functor $\cat{W}_{\tn{O-Cat}}\to\Cat{Vect}$.
+A variety of examples of these ideas---wiring-diagram operads whose algebras are structured categories---can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
 
-A variety of examples of these ideas---wiring-diagram operads and their algebras---can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
-
-Another advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
+An advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
 consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine: it is the suboperad comprising the left class of a certain factorization system on $1\tn{-}\Cat{Cob}$.
 
-INTRODUCE NEXT SUBSECTIONS: our enrichment base, dynamic blahs using W-algebras instead of categories enriched, and our operad of wds.
+Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\Cat{Vect}$-enriched category with object set $O$ is an opeard functor $\cat{W}_{\tn{O-Cat}}\to\Cat{Vect}$.
 
-\subsection{The bicategory $\org$}\label{sec:org}
 
-We recall the bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}(S))$, specifying for each $s:S$ an action $\act(s):\poly(p,q)$ and an update $\upd_s\colon\ihom{p,q}[\act(s)]\to S$ assigning a successor state to each direction.
+One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras.  In \cite{shapiro2022dynamic}, a dynamic category is a category enriched in $\org$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
+\[
+\cat{W}_{\tn{O-Cat}}\to\org
+\qquad
+\cat{W}_{\tn{O-MnCat}}\to\org
+\qquad
+\cat{W}_{\tn{O-Opd}}\to\org
+\] 
+for some $O$. Our next goal then is to recall $\org$.
+
+\subsection{The monoidal bicategory $\org$}\label{sec:org}
+
+We recall the monoidal bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials, and for polynomials $p,q$ the hom-category is
+\[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
+Its monoidal structure is induced by the tensor product of polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}(S))$, specifying for each $s:S$ an action $\act(s):\poly(p,q)$ and an update $\upd_s\colon\ihom{p,q}[\act(s)]\to S$ assigning a successor state to each direction.
 
 \begin{definition}\label{def:pq-coalg}
 The category $\ihom{p,q}\coalg$ has as objects pairs $(S,\beta)$ where $S$ is a set and $\beta\colon S\to\ihom{p,q}\tri S$ is a function, and where a morphism from $(S,\beta)$ to $(S',\beta')$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. We refer to $S$ as the \emph{state set}.
 \end{definition}
 
-Unwinding this, $\beta$ decomposes as $\beta\coloneqq(\act^\beta,\upd^\beta)$, an \emph{action} function
+Unwinding this using \eqref{eqn:dirichlet}, $\beta=(\act^\beta,\upd^\beta)$ decomposes as an \emph{action} function
 \[\act^\beta\colon S\to\poly(p,q)=\ihom{p,q}(1)\]
-and, for each state $s\in S$, an \emph{update} function
-\[\upd^\beta_s\colon\sum_{I\in p(1)}q\left[\act^\beta_s(I)\right]\to S.\]
-For a state $s\in S$ and position $I\in p(1)$ we often write $\act^\beta_s\colon p\to q$ and $\upd^\beta_s(I)\colon q[\act^\beta_s(I)]\to S$. We may suppress $\beta$ when clear from context.
+and, for each state $s:S$, an \emph{update} function
+\[\upd^\beta_s\colon\sum_{I:p(1)}q\left[\act^\beta_s(I)\right]\to S.\]
+For a state $s:S$ and position $I:p(1)$ we often write $\act^\beta_s\colon p\to q$ and $\upd^\beta_s(I)\colon q[\act^\beta_s(I)]\to S$. We may suppress $\beta$ when clear from context.
 
-\begin{proposition}[\cite{spivak2021learners}]\label{prop:org}
-The categories $\ihom{p,q}\coalg$ form the hom-categories in a bicategory $\org$, which has polynomials as objects.
+\begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop:org}
+The hom-categories $\ihom{p,q}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects and tensor product induced by the tensor product of polynomials.
 \end{proposition}
 
-The identity 1-cell in $\org(p,p)=\ihom{p,p}\coalg$ is the one-state coalgebra $\idcoalg{p}$. The composite of a $\ihom{p,q}$-coalgebra $(S,\beta)$ and a $\ihom{q,r}$-coalgebra $(T,\gamma)$ is a $\ihom{p,r}$-coalgebra $(S\times T,\,\beta\then\gamma)$ with action
-\[\act^{\beta\then\gamma}_{s,t}\coloneqq(\act^\beta_s\then\act^\gamma_t)\colon p\to q\to r\]
-and update: for $(s,t):S\times T$ and $i:p(1)$, setting $j\coloneqq\act^\beta_s{}_1(i)$ and $k\coloneqq\act^\gamma_t{}_1(j)$; for $f:r[k]$, setting $e\coloneqq\bk{\act}^\gamma_{t,j}(f)$ and $d\coloneqq\bk{\act}^\beta_{s,i}(e)$,
-\[\upd_{\beta\then\gamma}((s,t),i,f)\coloneqq\big(\upd^\beta_s(i,e),\;\upd^\gamma_t(j,f)\big).\]
+This structure arises from the fact that $\coalg\colon(\poly,\yon,\otimes)\to(\smcat,1,\times)$ is lax monoidal:
+\[
+1\to\yon\coalg
+\qqand
+p\coalg\times q\coalg\to(p\otimes q)\coalg.
+\]
+Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce the identity and composition functors
+\[
+1\to[p,p]\coalg
+\qqand
+[p,q]\coalg\times[q,r]\coalg\to[p,r]\coalg.
+\]
 
+\subsection{Example: deep learning as a dynamic monoidal category}\label{sec:deep-learning}
+
+We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and SCAN Lie groups. Take the object set $O\coloneqq\nn$ and assign to each $n:\nn$ the polynomial $\cot(\mathbb{R}^n)\cong\cot(\mathbb{R})\tpow n$; a layer $m\to n$ will be an $\ihom{\cot(\mathbb{R}^m),\cot(\mathbb{R}^n)}$-coalgebra.
+
+The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a SCAN Lie group with anchor $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex:Rn-scan}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop:cot-monoidal}) gives a polynomial map
+\[\cot(P)\otimes\cot(\mathbb{R}^m)\to\cot(\mathbb{R}^n),\]
+which by closedness of $\poly$ is equivalently a map $\cot(P)\to\ihom{\cot(\mathbb{R}^m),\cot(\mathbb{R}^n)}$. By \cref{ex:Rn-scan}, $\cot(P)\cong P\yon^P$, so \cref{ex:coalg-as-poly-map} presents it as an $\ihom{\cot(\mathbb{R}^m),\cot(\mathbb{R}^n)}$-coalgebra with state set $P$.
+
+Unwinding: the action at $p:P$ is $\cot(f_p)\colon\cot(\mathbb{R}^m)\to\cot(\mathbb{R}^n)$ (forward part $x\mapsto f_p(x)$, backward part $(Df_p)_x^\top$), and the update at $p$ on direction $(x,\nu):\mathbb{R}^m\times T^*_{f_p(x)}\mathbb{R}^n$ is
+\[
+\upd_p(x,\nu)=p+\sharp_P\bigl((\partial_Pf)_{(p,x)}^\top\nu\bigr)=p-\eta\cdot(\partial_Pf)_{(p,x)}^\top\nu,
+\]
+using \cref{ex:Rn-scan}'s codomain map on $\cot(P)\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
+
+Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop:cot-monoidal} to $\cot(\mathbb{R}^m)\otimes\cot(\mathbb{R}^{m'})\cong\cot(\mathbb{R}^{m+m'})$, and the whole assembles into an operad functor
+\[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
+
+\chapter{Potentials...?[rename later]}
 
 \printbibliography
 
