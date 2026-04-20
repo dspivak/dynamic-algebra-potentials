@@ -90,6 +90,62 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
   }
 }
 
+% oriented WD style (Schultz--Spivak wiring diagrams)
+\tikzset{
+	oriented WD/.style={
+		every to/.style={out=0,in=180,draw},
+    label/.style={
+    	font=\everymath\expandafter{\the\everymath\scriptstyle},
+      inner sep=0pt,
+      node distance=2pt and -2pt},
+    semithick,
+    node distance=1 and 1,
+    decoration={markings, mark=at position \stringdecpos with \stringdec},
+    ar/.style={postaction={decorate}},
+    execute at begin picture={\tikzset{
+    	x=\bbx, y=\bby,
+      every fit/.style={inner xsep=\bbx, inner ysep=\bby}}}
+    },
+    string decoration/.store in=\stringdec,
+    string decoration={\arrow{stealth};},
+    string decoration pos/.store in=\stringdecpos,
+    string decoration pos=.7,
+    bbx/.store in=\bbx,
+    bbx = 1.5cm,
+    bby/.store in=\bby,
+    bby = 1.5ex,
+    bb port sep/.store in=\bbportsep,
+    bb port sep=1.5,
+    bb port length/.store in=\bbportlen,
+    bb port length=4pt,
+    bb penetrate/.store in=\bbpenetrate,
+    bb penetrate=0,
+    bb min width/.store in=\bbminwidth,
+    bb min width=1cm,
+    bb rounded corners/.store in=\bbcorners,
+    bb rounded corners=2pt,
+    bb small/.style={
+    	bb port sep=1, bb port length=2.5pt, bbx=.4cm, bb min width=.4cm, bby=.7ex},
+    bb/.code 2 args={
+    	\pgfmathsetlengthmacro{\bbheight}{\bbportsep * (max(#1,#2)+1) * \bby}
+      \pgfkeysalso{draw,minimum height=\bbheight,minimum
+       width=\bbminwidth,outer sep=0pt,
+         rounded corners=\bbcorners,thick,
+         prefix after command={\pgfextra{\let\fixname\tikzlastnode}},
+         append after command={\pgfextra{\draw
+            \ifnum #1=0{} \else foreach \i in {1,...,#1} {
+            	($(\fixname.north west)!{\i/(#1+1)}!(\fixname.south west)$) +(-\bbportlen,0) coordinate (\fixname_in\i) -- +(\bbpenetrate,0) coordinate (\fixname_in\i')}\fi
+            \ifnum #2=0{} \else foreach \i in {1,...,#2} {
+            	($(\fixname.north east)!{\i/(#2+1)}!(\fixname.south east)$) +(-\bbpenetrate,0) coordinate (\fixname_out\i') -- +(\bbportlen,0) coordinate (\fixname_out\i)}\fi;
+           }}}
+		},
+		bb name/.style={
+     	append after command={
+				\pgfextra{\node[anchor=north] at (\fixname.north) {#1};}
+			}
+		}
+}
+
 \newcommand{\upp}{\begin{tikzcd}[row sep=6pt]~\\~\ar[u, bend left=50pt, looseness=1.3, start anchor=east, end anchor=east]\end{tikzcd}}
 
 \newcommand{\bito}[1][]{
@@ -419,7 +475,9 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \chapter{Background}\label{ch:background}
 %--------------------------------------------------------------------
 
-\section{The symmetric monoidal closed category $\poly$}\label{sec:poly}
+\section{Polynomial functors, comonads, and coalgebras}\label{sec:poly-dynamic-bg}
+
+\subsection{The symmetric monoidal closed category $\poly$}\label{sec:poly}
 
 We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment and~\cite{spivak2026changing} for a concise reference.
 
@@ -445,7 +503,7 @@ The unit is $\yon=\yon^1$. The Dirichlet product is symmetric monoidal and close
 \end{equation}
 satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn:dirichlet_hom} with \eqref{eqn:poly_map}. A direction at $\varphi:\ihom{p,q}(1)$ consists of a pair $(i,e)$, where $i:p(1)$ is a $p$-position and $e:q[\varphi_1(i)]$ is a $q$-direction.
 
-\section{Polynomial comonads as categories}\label{sec:comonads}
+\subsection{Polynomial comonads as categories}\label{sec:comonads}
 
 The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$, with unit $\yon$. Using the expanded form of \eqref{eqn:poly}:
 \begin{equation}\label{eqn:substitution}
@@ -475,30 +533,16 @@ since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1
 By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t)\in S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete groupoid}) on $S$.
 \end{example}
 
-\section{The bicategory $\org$}\label{sec:org}
+\subsection{Polynomial coalgebras as dynamical systems}\label{sec:coalgebras}
 
-We recall the bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}(S))$, specifying for each $s:S$ an action $\act(s):\poly(p,q)$ and an update $\upd_s\colon\ihom{p,q}[\act(s)]\to S$ assigning a successor state to each direction.
+For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\smset$ is a set and $\beta\colon S\to p(S)$ is a function. We call elements of $S$ states; given a state $s:S$, the map assigns a \emph{readout} position $r_s\coloneqq\beta_1(s):p(1)$ and an \emph{update} function $\bk{\beta}_s\colon p[r_s]\to S$ sending each direction at $r_s$ to a new state. For example when $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$.
 
-\begin{definition}\label{def:pq-coalg}
-The category $\ihom{p,q}\coalg$ has as objects pairs $(S,\beta)$ where $S$ is a set and $\beta\colon S\to\ihom{p,q}\tri S$ is a function, and where a morphism from $(S,\beta)$ to $(S',\beta')$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. We refer to $S$ as the \emph{state set}.
-\end{definition}
+A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{spivak2020poly,niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
-Unwinding this, $\beta$ decomposes as $\beta\coloneqq(\act^\beta,\upd^\beta)$, an \emph{action} function
-\[\act^\beta\colon S\to\poly(p,q)=\ihom{p,q}(1)\]
-and, for each state $s\in S$, an \emph{update} function
-\[\upd^\beta_s\colon\sum_{I\in p(1)}q\left[\act^\beta_s(I)\right]\to S.\]
-For a state $s\in S$ and position $I\in p(1)$ we often write $\act^\beta_s\colon p\to q$ and $\upd^\beta_s(I)\colon q[\act^\beta_s(I)]\to S$. We may suppress $\beta$ when clear from context.
 
-\begin{proposition}[\cite{spivak2021learners}]\label{prop:org}
-The categories $\ihom{p,q}\coalg$ form the hom-categories in a bicategory $\org$, which has polynomials as objects.
-\end{proposition}
+\section{Manifolds, Lie groups, and SCANs}\label{sec:lie-scan-bg}
 
-The identity 1-cell in $\org(p,p)=\ihom{p,p}\coalg$ is the one-state coalgebra $\idcoalg{p}$. The composite of a $\ihom{p,q}$-coalgebra $(S,\beta)$ and a $\ihom{q,r}$-coalgebra $(T,\gamma)$ is a $\ihom{p,r}$-coalgebra $(S\times T,\,\beta\then\gamma)$ with action
-\[\act^{\beta\then\gamma}_{s,t}\coloneqq(\act^\beta_s\then\act^\gamma_t)\colon p\to q\to r\]
-and update: for $(s,t):S\times T$ and $i:p(1)$, setting $j\coloneqq\act^\beta_s{}_1(i)$ and $k\coloneqq\act^\gamma_t{}_1(j)$; for $f:r[k]$, setting $e\coloneqq\bk{\act}^\gamma_{t,j}(f)$ and $d\coloneqq\bk{\act}^\beta_{s,i}(e)$,
-\[\upd_{\beta\then\gamma}((s,t),i,f)\coloneqq\big(\upd^\beta_s(i,e),\;\upd^\gamma_t(j,f)\big).\]
-
-\section{The cotangent functor}\label{sec:cot}
+\subsection{The cotangent functor}\label{sec:cot}
 
 The category of smooth manifolds provides the source of polynomials relevant to physics. Each manifold has a cotangent bundle, and each smooth map has a Jacobian transpose; combining these gives a functor into $\poly$. We follow the treatment in~\cite{spivak2026dynprop}.
 
@@ -572,13 +616,12 @@ the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\c
 The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot(\eta),\cot(\mu))$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
-\section{Lie groups and notation}\label{sec:lie-groups}
+\subsection{Lie groups and notation}\label{sec:lie-groups}
 
 Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We write
 \[
 e\coloneqq \eta(*)\in G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
 \]
-The Lie algebra of $G$ is the tangent space at the identity,
 The \emph{Lie algebra of $G$} is the tangent space at the identity:
 \[
 \lie{g}\coloneqq T_eG.
@@ -779,6 +822,121 @@ This is standard; see Abraham--Marsden~\cite[\S3.2]{abraham1978foundations} or M
 \]
 whose inverse is the required anchor $\sharp_{T^*G}$.
 \end{proof}
+
+\section{Dynamic category-like structures}
+
+Categories, monoidal categories, traced categories, etc.\ can be understood in terms of the sorts of compositions they allow. For example:
+\begin{equation}\label{eqn.wd_examples}
+\begin{tikzpicture}
+\begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
+  \begin{scope}[oriented WD, bb port sep=1, bb port length=0, bb min width=.4cm, bby=.2cm, inner xsep=.2cm, x=.5cm, y=.3cm]
+  	\node[bb={1}{1}] (Catf) {$f_1$};
+  	\node[bb={1}{1}, right=1 of Catf] (Catg) {$f_2$};
+  	\node[bb={0}{0}, fit=(Catf) (Catg)] (Cat) {};
+  	\node[coordinate] at (Cat.west|-Catf_in1) (Cat_in1) {};
+  	\node[coordinate] at (Cat.east|-Catg_out1) (Cat_out1) {};
+  	\draw (Cat_in1) -- (Catf_in1);
+  	\draw (Catf_out1) -- (Catg_in1);
+  	\draw (Catg_out1) -- (Cat_out1);
+  	\draw[label]
+  		node[left=3pt of Cat_in1] {$A$}
+  		node at ($(Catf_out1)!.5!(Catg_in1)+(0,.8)$) {$B$}
+  		node[right=3pt of Cat_out1] {$C$}
+  	;
+  %
+  	\node[bb={1}{2}, above right=-1.5 and 7 of Catf] (Monf) {$f_1$};
+  	\node[bb={2}{1}, below right=-1 and 1 of Monf] (Mong) {$f_2$};
+  	\node[bb={0}{0}, fit=(Monf) (Mong)] (Mon) {};
+  	\node[coordinate] at (Mon.west|-Monf_in1) (Mon_in1) {};
+  	\node[coordinate] at (Mon.west|-Mong_in2) (Mon_in2) {};
+  	\node[coordinate] at (Mon.east|-Monf_out1) (Mon_out1) {};
+  	\node[coordinate] at (Mon.east|-Mong_out1) (Mon_out2) {};
+  	\draw  (Mon_in1) -- (Monf_in1);
+  	\draw (Monf_out1) -- (Mon_out1);
+  	\draw (Monf_out2) to (Mong_in1);
+  	\draw (Mon_in2) -- (Mong_in2);
+  	\draw (Mong_out1) -- (Mon_out2);
+  	\draw[label]
+  		node[left=3pt of Mon_in1] {$A$}
+  		node[left=3pt of Mon_in2] {$B$}
+  		node[right=3pt of Mon_out1] {$C$}
+  		node at ($(Monf_out2)!.5!(Mong_in1)+(.2,.4)$) {$D$}
+  		node[right=3pt of Mon_out2] {$E$}
+  	;
+  %
+  	\node[bb={2}{1}, right= 7 of Monf] (Trf) {$f_1$};
+  	\node[bb={2}{2}, below right=-1 and 1 of Trf] (Trg) {$f_2$};
+  	\node[bb={0}{0}, fit={($(Trf.north west)+(-.5,2)$) ($(Trg.south east)+(.5,0)$)}] (Tr) {};
+  	\node[coordinate] at (Tr.west|-Trf_in2) (Tr_in1) {};
+  	\node[coordinate] at (Tr.west|-Trg_in2) (Tr_in2) {};
+  	\node[coordinate] at (Tr.east|-Trf_out1) (Tr_out1) {};
+  	\node[coordinate] at (Tr.east|-Trg_out2) (Tr_out2) {};
+  	\draw (Tr_in1) -- (Trf_in2);
+  	\draw (Trf_out1) to (Trg_in1);
+  	\draw (Tr_in2) -- (Trg_in2);
+  	\draw (Trg_out2) -- (Tr_out2);
+  	\draw let \p1=(Trg.east), \p2=(Trf.north west), \n1=\bbportlen, \n2=\bby in
+  		(Trg_out1) to[in=0] (\x1+\n1,\y2+\n2) -- (\x2-\n1,\y2+\n2) to[out=180] (Trf_in1);
+  	\draw[label]
+  		node[left=3pt of Tr_in1] {$A$}
+  		node[left=3pt of Tr_in2] {$B$}
+  		node at ($(Trf_out1)!.4!(Trg_in1)+(0,1)$) {$D$}
+  		node[right=3pt of Tr_out2] {$E$}
+  		node at ($(Trf.north)+(0,1.5)$) {$C$}
+  	;
+  \end{scope}
+	\node[below=.3 of Cat.south] (Cat name) {category};
+	\node[text width=1.5cm, align=center] at (Cat name-|Mon) {monoidal\\category};
+	\node[text width=2.5cm, align=center] at (Cat name-|Tr) {traced monoidal\\category};
+\end{scope}
+\end{tikzpicture}
+\end{equation}
+In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-objet-labeled-ports) and whose morphisms $\phi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of boxes in a box. In $\cat{W}_{\tn{O-Cat}}$, for example, a box is represented simply by an ordered pair, e.g.\ $(A,B)\in O^2$, the labels on its left and right side. A $\cat{W}$-algebra $\cat{C}\colon\cat{W}\to\smset$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for little boxes to a filler of the big box.%
+\footnote{By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$.} Above we showed a 2-ary arrangement in three different operads $\cat{W}_{\tn{O-Cat}}$, $\cat{W}_{\tn{O-MnCat}}$, and $\cat{W}_{\tn{O-TrCat}}$. 
+
+\begin{example}
+For a set $O$, let $\ob\cat{W}_{\tn{O-Cat}}\coloneqq O\times O$ and
+\[\cat{W}_{\tn{O-Cat}}((o_0',o_1),(o_1',o_2),\ldots(o_{K-1}',o_K);(o_0,o_K'))\coloneqq
+\begin{cases}
+\{1\}&\tn{ if }o_k=o_k'\quad \forall 0\leq k\leq K\\
+\varnothing&\tn{ otherwise}
+\end{cases}
+\]
+Thus the first diagram shown in \eqref{eqn.wd_examples} represents a map $\phi\colon (A,B),(B,C)\to(A,C)$ in $\cat{W}_{\tn{O-Cat}}$ for some $O$ with $A,B,C\in O$. If $\cat{C}\colon\cat{W}_{\tn{O-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1\in \cat{C}(A,B)$, $f_2\in\cat{C}(B,C)$ and $\phi(f_1,f_2)\in\cat{C}(A,C)$. In other words the diagram $\phi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to teh category of $\cat{W}_{\tn{O-Cat}}$-algebras.
+\end{example}
+
+Wiring diagram operads also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\Cat{Vect}$-enriched category with object set $O$ is an opeard functor $\cat{W}_{\tn{O-Cat}}\to\Cat{Vect}$.
+
+A variety of examples of these ideas---wiring-diagram operads and their algebras---can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
+
+Another advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
+consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine: it is the suboperad comprising the left class of a certain factorization system on $1\tn{-}\Cat{Cob}$.
+
+INTRODUCE NEXT SUBSECTIONS: our enrichment base, dynamic blahs using W-algebras instead of categories enriched, and our operad of wds.
+
+\subsection{The bicategory $\org$}\label{sec:org}
+
+We recall the bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}(S))$, specifying for each $s:S$ an action $\act(s):\poly(p,q)$ and an update $\upd_s\colon\ihom{p,q}[\act(s)]\to S$ assigning a successor state to each direction.
+
+\begin{definition}\label{def:pq-coalg}
+The category $\ihom{p,q}\coalg$ has as objects pairs $(S,\beta)$ where $S$ is a set and $\beta\colon S\to\ihom{p,q}\tri S$ is a function, and where a morphism from $(S,\beta)$ to $(S',\beta')$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. We refer to $S$ as the \emph{state set}.
+\end{definition}
+
+Unwinding this, $\beta$ decomposes as $\beta\coloneqq(\act^\beta,\upd^\beta)$, an \emph{action} function
+\[\act^\beta\colon S\to\poly(p,q)=\ihom{p,q}(1)\]
+and, for each state $s\in S$, an \emph{update} function
+\[\upd^\beta_s\colon\sum_{I\in p(1)}q\left[\act^\beta_s(I)\right]\to S.\]
+For a state $s\in S$ and position $I\in p(1)$ we often write $\act^\beta_s\colon p\to q$ and $\upd^\beta_s(I)\colon q[\act^\beta_s(I)]\to S$. We may suppress $\beta$ when clear from context.
+
+\begin{proposition}[\cite{spivak2021learners}]\label{prop:org}
+The categories $\ihom{p,q}\coalg$ form the hom-categories in a bicategory $\org$, which has polynomials as objects.
+\end{proposition}
+
+The identity 1-cell in $\org(p,p)=\ihom{p,p}\coalg$ is the one-state coalgebra $\idcoalg{p}$. The composite of a $\ihom{p,q}$-coalgebra $(S,\beta)$ and a $\ihom{q,r}$-coalgebra $(T,\gamma)$ is a $\ihom{p,r}$-coalgebra $(S\times T,\,\beta\then\gamma)$ with action
+\[\act^{\beta\then\gamma}_{s,t}\coloneqq(\act^\beta_s\then\act^\gamma_t)\colon p\to q\to r\]
+and update: for $(s,t):S\times T$ and $i:p(1)$, setting $j\coloneqq\act^\beta_s{}_1(i)$ and $k\coloneqq\act^\gamma_t{}_1(j)$; for $f:r[k]$, setting $e\coloneqq\bk{\act}^\gamma_{t,j}(f)$ and $d\coloneqq\bk{\act}^\beta_{s,i}(e)$,
+\[\upd_{\beta\then\gamma}((s,t),i,f)\coloneqq\big(\upd^\beta_s(i,e),\;\upd^\gamma_t(j,f)\big).\]
+
 
 \printbibliography
 
