@@ -445,8 +445,10 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
 \newcommand{\plm}{\Cat{PLM}}
-\newcommand{\inpt}[1]{#1_{\tn{inpt}}}
-\newcommand{\outp}[1]{#1_{\tn{outp}}}
+\newcommand{\inpt}[1]{#1_{\tn{i}}}
+\newcommand{\outp}[1]{#1_{\tn{o}}}
+\newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}% vertical lens-object notation; to revert, change to (\inpt{#1},\outp{#1})
+\newcommand{\lensobs}[2]{\binom{\inpt{#1}\times\inpt{#2}}{\outp{#1}\times\outp{#2}}}% monoidal product of two lens objects
 
 
 % ---- Changeable document parameters ---- %
@@ -493,7 +495,7 @@ We construct a symmetric monoidal functor $F\colon\plenspot\to\org$ from a categ
 
 \subsection{The symmetric monoidal closed category $\poly$}\label{sec:poly}
 
-We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment and~\cite{spivak2026changing} for a concise reference.
+We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
 
 A \emph{polynomial functor} is an endofunctor $p\colon\smset\to\smset$ of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
 \begin{equation}\label{eqn:poly}
@@ -570,7 +572,7 @@ given by the formula
 
 For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\smset$ is a set and $\beta\colon S\to p(S)$ is a function. We call elements of $S$ states; given a state $s:S$, the map assigns a \emph{readout} position $r_s\coloneqq\beta_1(s):p(1)$ and an \emph{update} function $\bk{\beta}_s\colon p[r_s]\to S$ sending each direction at $r_s$ to a new state. For example when $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$.
 
-A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{spivak2020poly,niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
+A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
 \begin{example}[Coalgebras as polynomial maps]\label{ex:coalg-as-poly-map}
 A $p$-coalgebra $\beta\colon S\to p\tri S$ can be identified via \cref{prop:lens} as a map $\lens{S}{S}\to p$. By the formula \eqref{eqn.lens}, $\lens{S}{S}=S\yon^S$, so $\beta$ can be rewritten as a map
@@ -585,7 +587,7 @@ A $p$-coalgebra $\beta\colon S\to p\tri S$ can be identified via \cref{prop:lens
 
 \subsection{The cotangent functor}\label{sec:cot}
 
-The category of smooth manifolds provides the source of polynomials relevant to physics. Each manifold has a cotangent bundle, and each smooth map has a Jacobian transpose; combining these gives a functor into $\poly$. We follow the treatment in~\cite{spivak2026dynprop}.
+The category of smooth manifolds provides the source of polynomials relevant to physics. Each manifold has a cotangent bundle, and each smooth map has a Jacobian transpose; combining these gives a functor into $\poly$.
 
 \begin{definition}[Cotangent functor]\label{def:cot}
 The \emph{cotangent functor} $\cot\colon\mfd\to\poly$ sends a smooth manifold $M$ to
@@ -625,6 +627,14 @@ using the definition of the Dirichlet product \eqref{eqn:dirichlet}.
 \end{proof}
 
 \Cref{prop:cot-monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem:cot-comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot(M)$.
+
+\begin{remark}
+In fact, $\cot$ also preserves coproducts,
+\[
+\cot(M)+\cot(N)\cong\cot(M+N).
+\]
+Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributive monoidal functor.
+\end{remark}
 
 \begin{lemma}\label{lem:cot-comonoid}
 For any smooth manifold $M$, the polynomial $\cot(M)$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
@@ -898,7 +908,7 @@ This is standard; see Abraham--Marsden~\cite[\S3.2]{abraham1978foundations} or M
 whose inverse is the required anchor $\sharp_{T^*G}$.
 \end{proof}
 
-\section{Dynamic category-like structures}
+\section{Dynamic category-like structures}\label{sec.dynamic_structures}
 
 Categories, monoidal categories, traced categories, operads, etc.\ can be understood in terms of the sorts of compositions they allow. For example:
 \begin{equation}\label{eqn.wd_examples}
@@ -1076,82 +1086,146 @@ Composition in $\org$ reproduces backpropagation; parallel composition of layers
 
 \chapter{Potentials...?[rename later]}\label{ch:potentials}
 
-\section{}
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \cref{sec:lenses-general} develops three constructions in general: lenses in a cartesian monoidal category, the backward-monad construction that turns a strong monad on the base into a comonad on its lenses, and the $\Para$ construction that parameterizes a category by a monoidal-acting category. \cref{sec:potlens-manifolds} specializes these to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the SCAN parameterization, synthesizing them as $\potlens$.
 
-\subsection{Manifold lenses}
-In this section, we define a symmetric monoidal category $\potlens$, of potentialized lenses. It begins with a standard construction of lenses, adds parameterization, and finally potentials.
+\section{Lenses, backward monads, and parameterization}\label{sec:lenses-general}
 
-We first recall the category $\Lens{\cat{M}}$ of lenses in a cartesian monoidal category $(\cat{M},1,\times)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $(\inpt M,\outp M)$. A morphism $g\colon(\inpt M,\outp M)\to(\inpt N,\outp N)$ consists of a pair of maps $g=(\outp g,\inpt g)$ where
+\subsection{Lenses}
+We first recall the category $\Lens{\cat{M}}$ of lenses in a cartesian monoidal category $(\cat{M},1,\times)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{A}$. A morphism $f\colon\lensob{A}\to\lensob{B}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
 \begin{equation}\label{eqn.lens_def}
-\outp g\colon \outp M\to\outp N
+\outp f\colon \outp A\to\outp B
 \qqand
-\inpt g\colon \outp M\times\inpt N\to\inpt M.
+\inpt f\colon \outp A\times\inpt B\to\inpt A.
 \end{equation}
 These can be depicted as follows
 \[
-\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(go)]
-  \node[bb={1}{1}] (go) {$\outp g$};
-  \node[bb={1}{2}, below left=6 and 1.5 of go] (gi) {$\inpt g$};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of go] (dot) {};
-  \coordinate (Mo) at ($(dot)+(-3,0)$);
-  \coordinate (No) at ($(go.east)+(1,0)$);
-  \coordinate (Mi) at (Mo |- gi_in1);
-  \coordinate (Ni) at (No |- gi_out2);
-  \node[left=0 of Mo] {$\outp M$};
-  \node[right=0 of No] {$\outp N$};
-  \node[left=0 of Mi] {$\inpt M$};
-  \node[right=0 of Ni] {$\inpt N$};
-  \draw[ar] (Mo) to (dot);
-  \draw[ar] (dot) to (go_in1);
-  \draw[ar] (go_out1) to (No);
-  \draw[ar] (gi_in1) to (Mi);
-  \draw[ar] (Ni) to (gi_out2);
-  \draw[ar] (dot) to[out=-30, in=0] (gi_out1);
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
+  \node[bb={1}{1}] (fo) {$\outp f$};
+  \node[bb={1}{2}, above left=6 and 1.5 of fo] (fi) {$\inpt f$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo] (dot) {};
+  \coordinate (Ao) at ($(dot)+(-3,0)$);
+  \coordinate (Bo) at ($(fo.east)+(1,0)$);
+  \coordinate (Ai) at (Ao |- fi_in1);
+  \coordinate (Bi) at (Bo |- fi_out1);
+  \node[left=0 of Ao] {$\outp A$};
+  \node[right=0 of Bo] {$\outp B$};
+  \node[left=0 of Ai] {$\inpt A$};
+  \node[right=0 of Bi] {$\inpt B$};
+  \draw[ar] (Ao) to (dot);
+  \draw[ar] (dot) to (fo_in1);
+  \draw[ar] (fo_out1) to (Bo);
+  \draw[ar] (fi_in1) to (Ai);
+  \draw[ar] (Bi) to (fi_out1);
+  \draw[ar] (dot) to[out=30, in=0] (fi_out2);
 \end{tikzpicture}
 \]
-Morphisms compose as follows: given also $f\colon (\inpt L,\outp L)\to(\inpt M,\outp M)$, the composite $f\then g$ is given by
+Morphisms compose as follows: given also $g\colon \lensob{B}\to\lensob{C}$, the composite $f\then g$ is given by
 \[
 \outp{(f\then g)}=\outp f\then\outp g
 \qqand
-\inpt{(f\then g)}(\ell,n')=\inpt f\bigl(\ell,\,\inpt g(\outp f(\ell),n')\bigr).
+\inpt{(f\then g)}(a,c')=\inpt f\bigl(a,\,\inpt g(\outp f(a),c')\bigr).
 \]
 This dense notation can be depicted in a string-diagram as follows:
 \begin{equation}\label{eqn.lens_pic}
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={1}{1}] (fo) {$\outp f$};
   \node[bb={1}{1}, right=5 of fo] (go) {$\outp g$\vphantom{$\inpt f$}};
-  \node[bb={1}{2}, below left=6 and 1.5 of fo] (fi) {$\inpt f$};
-  \node[bb={1}{2}, below left=6 and 1.5 of go] (gi) {$\inpt g$\vphantom{$\inpt f$}};
+  \node[bb={1}{2}, above left=6 and 1.5 of fo] (fi) {$\inpt f$};
+  \node[bb={1}{2}, above left=6 and 1.5 of go] (gi) {$\inpt g$\vphantom{$\inpt f$}};
   \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo] (dot1) {};
   \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fo.east)!.75!(go.west)$) (dot2) {};
-  \coordinate (Lo) at ($(dot1)+(-3,0)$);
-  \coordinate (No) at ($(go.east)+(1,0)$);
-  \coordinate (Li) at (Lo |- fi_in1);
-  \coordinate (Ni) at (No |- gi_out2);
-  \node[left=0 of Lo] {$\outp L$};
-  \node[right=0 of No] {$\outp N$};
-  \node[left=0 of Li] {$\inpt L$};
-  \node[right=0 of Ni] {$\inpt N$};
-  \draw[ar] (Lo) to (dot1);
+  \coordinate (Ao) at ($(dot1)+(-3,0)$);
+  \coordinate (Co) at ($(go.east)+(1,0)$);
+  \coordinate (Ai) at (Ao |- fi_in1);
+  \coordinate (Ci) at (Co |- gi_out1);
+  \node[left=0 of Ao] {$\outp A$};
+  \node[right=0 of Co] {$\outp C$};
+  \node[left=0 of Ai] {$\inpt A$};
+  \node[right=0 of Ci] {$\inpt C$};
+  \draw[ar] (Ao) to (dot1);
   \draw[ar] (dot1) to (fo_in1);
-  \draw[ar] (fo_out1) to node[above, font=\scriptsize] {$\outp M$} (dot2);
+  \draw[ar] (fo_out1) to node[above, font=\scriptsize] {$\outp B$} (dot2);
   \draw[ar] (dot2) to (go_in1);
-  \draw[ar] (go_out1) to (No);
-  \draw[ar] (fi_in1) to (Li);
-  \draw[ar] (Ni) to (gi_out2);
-  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt M$} (fi_out2);
-  \draw[ar] (dot1) to[out=-30, in=0] (fi_out1);
-  \draw[ar] (dot2) to[out=-30, in=0] (gi_out1);
+  \draw[ar] (go_out1) to (Co);
+  \draw[ar] (fi_in1) to (Ai);
+  \draw[ar] (Ci) to (gi_out1);
+  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt B$} (fi_out1);
+  \draw[ar] (dot1) to[out=30, in=0] (fi_out2);
+  \draw[ar] (dot2) to[out=30, in=0] (gi_out2);
 \end{tikzpicture}
 \end{equation}
-The identity on $(\outp M,\inpt M)$ is $(\id_{\outp M},\pi_{\inpt M})$, i.e.\ projection in the second argument. The category $\lmfd$ inherits a monoidal structure with unit $(1,1)$ and
+The identity on $\lensob{A}$ is $(\id_{\outp A},\pi_{\inpt A})$, i.e.\ projection in the second argument. The category $\Lens{\cat{M}}$ inherits a monoidal structure with unit $\binom{1}{1}$ and
 \[
-(\inpt M,\outp M)\otimes(\inpt N,\outp N)\coloneqq(\inpt M\times\inpt N,\outp M\times\outp N).
+\lensob{A}\otimes\lensob{B}\coloneqq\lensobs{A}{B}.
 \]
 
-\subsection{Scan-parameterized manifold lenses}
+\subsection{Backward monads on lenses}
 
-We next add the parameterization using the $\Para$ construction, introduced in~\cite[Section 2]{hermida2012monoidal} and further developed in~\cite{fong2019backprop,capucci2024actegories}. Given a symmetric monoidal category $(\cat{A},I,\otimes)$ and a monoidal action
+We will add a notion of potentials to our lenses by proving a more general result: any monad on $\cat{M}$ induces a comonad on $\Lens{\cat{M}}$ by applying it to the input / backward-pass part. We use the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
+
+Recall that a monad $\Fun{T}$ on a monoidal category is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. When the monoidal structure is cartesian, the naturality gives rise to an additional a projection formula $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$:
+\[
+\begin{tikzcd}
+X\times\Fun{T}Y\ar[r, "\sigma"]\ar[d, "\pi_{\Fun{T}Y}"']&
+\Fun{T}(X\times Y)\ar[d, "\Fun{T}\pi_Y"]\\
+\Fun{T}Y\ar[r, equal]&
+\Fun{T}Y
+\end{tikzcd}
+\]
+
+
+\begin{proposition}
+Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a cartesian category $(\cat{M},1,\times)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{M}}$ sending $\lensob{A}\mapsto \binom{\Fun{T}\inpt A}{\outp A}$ and sending a map $(\outp f,\inpt f)$ to $(\outp f, \sigma\then\Fun{T}\inpt f)$
+\[
+\outp A\times\Fun{T}\inpt B\To{\sigma}\Fun{T}(\outp A\times\inpt B)\To{\Fun{T}\inpt f}\Fun{T}\inpt A
+\]
+\end{proposition}
+\begin{proof}
+The counit and comultiplication of $\Lens{\Fun{T}}$ are given by the unit and multiplication of the monad, together with projection:
+\[
+\outp A\times\inpt A\to\inpt A\To{\eta}\Fun{T}\inpt A
+\qqand
+\outp A\times\Fun{T}\Fun{T}\inpt A\to\Fun{T}\Fun{T}\inpt A\To{\mu}\Fun{T}\inpt A
+\]
+We need to prove that $\Lens{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond precisely to the four axioms of a monad strength.
+%The unit axiom~\cite[(1.5)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
+
+We include only the least trivial here: preservation of composition. Writing $f_o,g_o$ for forward components and $f_i\colon\outp A\times\inpt B\to\inpt A$, $g_i\colon\outp B\times\inpt C\to\inpt B$ for backward components, we must show that the following commutes (after appending $\Fun{T}f_i\colon\Fun{T}(\outp A\times\inpt B)\to\Fun{T}\inpt A$ on the right):
+\[
+\begin{tikzcd}[column sep=1.6em, row sep=3em, every label/.append style={font=\scriptsize}, ampersand replacement=\&]
+\outp A\times\Fun{T}\inpt C
+  \ar[r, "\Delta\times\id"]
+  \ar[d, "\sigma"']
+\& (\outp A)^2\times\Fun{T}\inpt C
+  \ar[r, "\id\times f_o\times\id"]
+  \ar[d, "\sigma"]
+\&[5pt] \outp A\times\outp B\times\Fun{T}\inpt C
+  \ar[r, "\id\times\sigma"]
+  \ar[dr, "\sigma" description]
+\& \outp A\times\Fun{T}(\outp B\times\inpt C)
+  \ar[r, "\id\times\Fun{T}g_i"]
+  \ar[d, "\sigma"]
+\& \outp A\times\Fun{T}\inpt B
+  \ar[d, "\sigma"]
+\\
+\Fun{T}(\outp A\times\inpt C)
+  \ar[r, "\Fun{T}(\Delta\times\id)"']
+\& \Fun{T}((\outp A)^2\times\inpt C)
+  \ar[rr, "\Fun{T}(\id\times f_o\times\id)"']
+\&
+\& \Fun{T}(\outp A\times\outp B\times\inpt C)
+  \ar[r, "\Fun{T}(\id\times g_i)"']
+\& \Fun{T}(\outp A\times\inpt B)
+\end{tikzcd}
+\]
+The first two squares are naturality of $\sigma$ in its first argument; the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, which merges the nested $\sigma$'s; the last square is naturality of $\sigma$ in its second argument.
+\end{proof}
+
+We will be interested in the coKleisli category of $\Lens{\Fun{T}}$, which we denote $\Lens{\cat{M}}^{\Fun{T}}$. A map in $\Lens{\cat{M}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt A}{\outp A}\to\lensob{B}$ in $\Lens{\cat{M}}$.
+
+\subsection{The Para construction}\label{sec:para-general}
+
+We next add parameterization using the $\Para$ construction, introduced in~\cite[Section 2]{hermida2012monoidal} and further developed in~\cite{fong2019backprop,capucci2024actegories}. Given a symmetric monoidal category $(\cat{A},I,\otimes)$ and a monoidal action
 \[
 (\cdot)\colon\cat{A}\times\cat{M}\to\cat{M}
 \]
@@ -1161,64 +1235,102 @@ the category $\para{\cat{A}}{\cat{M}}$ is defined to have the same objects as $\
 \]
 When $\cat{M}$ is itself symmetric monoidal and the action $(\cdot)$ is strong symmetric monoidal, $\para{\cat{A}}{\cat{M}}$ inherits a symmetric monoidal structure in an obvious way.
 
-In our setting, $\cat{A}\coloneqq\scan$ acts on $\cat{M}\coloneqq\lmfd$ by the lift of \cref{prop:scan-smc-action}'s product action to the $\outp M$-slot:
-\[
-(\cdot)\colon\scan\times\lmfd\to\lmfd,\qquad Q\cdot(\inpt M,\outp M)\coloneqq(\inpt M,Q\times\outp M).
-\]
-We abbreviate $\plm\coloneqq\para{\scan}{\lmfd}$ (parameterized lens of manifolds). A morphism $g\colon(\inpt M,\outp M)\to(\inpt N,\outp N)$ in $\plm$ is a tuple $g=(Q,\outp g,\inpt g)$ with $Q$ a SCAN Lie group and
-\begin{equation}\label{eqn.map_paralens}
-\outp g\colon Q\times\outp M\to\outp N
-\qqand
-\inpt g\colon Q\times\outp M\times\inpt N\to\inpt M.
-\end{equation}
-\[
-\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(go)]
-  \node[bb={2}{1}] (go) {$\outp g$};
-  \node[bb={1}{3}, below left=6 and 1.5 of go] (gi) {$\inpt g$};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of go_in2] (dot) {};
-  \coordinate (Mo) at ($(dot)+(-3,0)$);
-  \coordinate (No) at ($(go.east)+(1,0)$);
-  \coordinate (Mi) at (Mo |- gi_in1);
-  \coordinate (Ni) at (No |- gi_out3);
-  \node[left=0 of Mo] {$\outp M$};
-  \node[right=0 of No] {$\outp N$};
-  \node[left=0 of Mi] {$\inpt M$};
-  \node[right=0 of Ni] {$\inpt N$};
-  \draw[ar] (Mo) to (dot);
-  \draw[ar] (dot) to (go_in2);
-  \draw[ar] (go_out1) to (No);
-  \draw[ar] (gi_in1) to (Mi);
-  \draw[ar] (Ni) to (gi_out3);
-  \draw[ar] (dot) to[out=-30, in=0] (gi_out2);
-  %
-  \node [above left=1 and 0 of Mo] (Q) {Q};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dot|-Q) (dot') {};
-  \draw (Q) to (dot');
-  \draw (dot') to (go_in1);
-  \draw (dot') to[in=0] (gi_out1);
-\end{tikzpicture}
-\]
-Given also $f=(P,\outp f,\inpt f)\colon(\inpt L,\outp L)\to(\inpt M,\outp M)$, the composite $f\then g$ has parameter $Q\times P$, with forward and backward parts inherited from $\lmfd$. The identity on $(\inpt M,\outp M)$ has parameter $\rr^0\in\scan$. The monoidal product is inherited from $\lmfd$.
+\section{Specialization to manifolds}\label{sec:potlens-manifolds}
 
-\subsection{Potentialized lenses}
-Finally we add potentials to $\lmfd$, defining a category $\potlens$ as follows. Its objects are the same, $\ob\potlens\coloneqq\ob\lmfd$. A morphism $g\colon(\inpt M,\outp M)\to(\inpt N,\outp N)$ is a tuple $g=(Q,\outp g,\inpt g,W)$ where $(Q,\outp g,\inpt g)$ is a map in $\plm$ (see \eqref{eqn.map_paralens}) and
+\subsection{Manifold lenses}\label{sec:manifold-lenses}
+
+Taking $\cat{M}\coloneqq\mfd$, the cartesian monoidal category of smooth manifolds and smooth maps, specializes the construction of \cref{sec:lenses-general} to the category $\lmfd\coloneqq\Lens{\mfd}$ of \emph{manifold lenses}. An object is a pair of manifolds $\lensob{M}$; a morphism is a pair $f=(\outp f,\inpt f)$ of smooth maps as in \eqref{eqn.lens_def}.
+
+\subsection{The potential monad from a Lie monoid}\label{sec:potential-monad}
+
+Any Lie monoid $(G,\cdot,e)$ (a monoid object in $\mfd$) gives rise to a strong monad $\Fun{T}_G$ on $\mfd$:
 \[
-W\colon Q\times\outp M\times\inpt N\to\rr
+\Fun{T}_G(X)\coloneqq X\times G,\qquad \eta_X(x)\coloneqq(x,e),\qquad \mu_X(x,g,g')\coloneqq(x,g\cdot g'),
 \]
-is a smooth map called the \emph{potential}. The identity on $(\inpt M,\outp M)$ is that on $\plm$ with $V=0$. Given also $f=(P,\outp f,\inpt f,V)\colon(\inpt L,\outp L)\to(\inpt M,\outp M)$, the composite $f\then g$ extends the $\plm$ composite by summing potentials along the backward pass:
-\begin{align*}
-V\bigl(p,\ell,\,\inpt g(q,\outp f(p,\ell),n')\bigr)+W\bigl(q,\outp f(p,\ell),n'\bigr),
-\end{align*}
-with parameter $Q\times P$.
+with strength $\sigma_{X,Y}\colon X\times(Y\times G)\To{\cong}(X\times Y)\times G$ given by reassociation. The strength axioms reduce to the monoid axioms for $G$.
+
+Applying the backward-monad construction of \cref{sec:lenses-general} yields a comonad $\Lens{\Fun{T}_G}$ on $\lmfd$. We denote the coKleisli category simply by $\lmfd^G$; a morphism in it is a lens $\lensob{L}\to\lensob{M}$ whose backward component takes the form
+\[
+\inpt f\colon\outp L\times\inpt M\to\inpt L\times G,
+\]
+i.e.\ a usual backward map augmented by a smooth $G$-valued map. coKleisli composition sums the $G$-components via the monoid multiplication on $G$.
+
+The case of primary interest is $G\coloneqq(\rr,+,0)$, the additive Lie group, which we call the \emph{potential monad}. The $\rr$-component of the augmented backward map is a smooth map
+\[
+V\colon\outp L\times\inpt M\to\rr
+\]
+called the \emph{potential}, and coKleisli composition adds potentials along the backward pass.
+
+\subsection{SCAN-parameterized potentialized lenses}\label{sec:potlens}
+
+The $\scan$-action on $\mfd$ from \cref{prop:scan-smc-action} lifts to the $\outp M$-slot of $\lmfd$:
+\[
+(\cdot)\colon\scan\times\lmfd\to\lmfd,\qquad P\cdot\lensob{M}\coloneqq\binom{\inpt M}{P\times\outp M}.
+\]
+Applying the $\Para$ construction of \cref{sec:para-general} to the coKleisli category of the potential monad from \cref{sec:potential-monad}, we define the category of \emph{potentialized lenses}
+\[
+\potlens\coloneqq\para{\scan}{\lmfd^\rr}.
+\]
+Unfolding, a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ is a tuple $f=(P,\outp f,\inpt f,V)$ with $P$ a SCAN Lie group,
+\begin{equation}\label{eqn.map_paralens}
+\outp f\colon P\times\outp L\to\outp M
+\qqand
+\inpt f\colon P\times\outp L\times\inpt M\to\inpt L,
+\end{equation}
+and a smooth \emph{potential}
+\[
+V\colon P\times\outp L\times\inpt M\to\rr.
+\]
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={2}{1}] (fo) {$\outp f$};
-  \node[bb={2}{1}, right=6 of fo] (go) {$\outp g$};
-  \node[bb={1}{3}, below left=6 and 1.5 of fo] (fi) {$\inpt f$};
-  \node[bb={1}{3}, below left=6 and 1.5 of go] (gi) {$\inpt g$};
-  \node[bb={1}{3}, below right=6 and 0 of fi] (V) {$V$};
-  \node[bb={1}{3}, below right=6 and 0 of gi] (W) {$W$};
-  \node[bb={1}{2}, below left=0 and 2 of V] (plus) {$+$};
+  \node[bb={1}{3}, above left=4 and 4 of fo] (fi) {$\inpt f$};
+  \node[bb={1}{3}, above right=3 and 0 of fi] (V) {$V$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo_in2] (dotL) {};
+  \coordinate (Lo) at ($(dotL)+(-4.5,0)$);
+  \coordinate (Mo) at ($(fo.east)+(1,0)$);
+  \coordinate (Li) at (Lo |- fi_in1);
+  \coordinate (Mi) at (Mo |- fi_out3);
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fi_out3)+(2,0)$) (dotMI) {};
+  \node[left=0 of Lo] {$\outp L$};
+  \node[right=0 of Mo] {$\outp M$};
+  \node[left=0 of Li] {$\inpt L$};
+  \node[right=0 of Mi] {$\inpt M$};
+  \draw[ar] (Lo) to (dotL);
+  \draw[ar] (dotL) to (fo_in2);
+  \draw[ar] (fo_out1) to (Mo);
+  \draw[ar] (fi_in1) to (Li);
+  \draw[ar] (Mi) to (dotMI);
+  \draw[ar] (dotMI) to (fi_out3);
+  \draw[ar] (dotL) to[out=60, in=0] (fi_out2);
+  \draw[ar] (dotMI) to[out=60, in=0] (V_out3);
+  \draw[ar] (dotL) to[out=60, in=0] (V_out2);
+  %
+  \node [above left=1 and 0 of Lo] (P) {$P$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dotL|-P) (dotP) {};
+  \draw[ar] (P) to (dotP);
+  \draw[ar] (dotP) to (fo_in1);
+  \draw[ar] (dotP) to[out=60, in=0] (fi_out1);
+  \draw[ar] (dotP) to[out=60, in=0] (V_out1);
+  \coordinate (R) at ($(V.west)+(-2,0)$);
+  \node[left=0 of R] {$\rr$};
+  \draw[ar] (V_in1) to (R);
+\end{tikzpicture}
+\]
+The identity on $\lensob{L}$ has parameter $\rr^0\in\scan$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
+\begin{align*}
+V\bigl(p,\ell,\,\inpt g(q,\outp f(p,\ell),n')\bigr)+W\bigl(q,\outp f(p,\ell),n'\bigr).
+\end{align*}
+The monoidal product is inherited from $\lmfd$.
+\[
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
+  \node[bb={2}{1}] (fo) {$\outp f$};
+  \node[bb={2}{1}, right=10 of fo] (go) {$\outp g$};
+  \node[bb={1}{3}, above left=4 and 3 of fo] (fi) {$\inpt f$};
+  \node[bb={1}{3}, above left=4 and 3 of go] (gi) {$\inpt g$};
+  \node[bb={1}{3}, above right=3 and 0 of fi] (V) {$V$};
+  \node[bb={1}{3}, above right=3 and 0 of gi] (W) {$W$};
+  \node[bb={1}{2}, above left=0 and 2 of V] (plus) {$+$};
   %
   \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo_in2] (dotL) {};
   \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fo.east)!.5!(go.west)$) (dotM) {};
@@ -1244,8 +1356,8 @@ with parameter $Q\times P$.
   \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fi_out3)+(3,0)$) (dotMI) {};
   \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt M$} (dotMI);
   \draw[ar] (dotMI) to (fi_out3);
-  \draw[ar] (dotL) to[out=-30, in=0] (fi_out2);
-  \draw[ar] (dotM) to[out=-30, in=0] (gi_out2);
+  \draw[ar] (dotL) to[out=60, in=0] (fi_out2);
+  \draw[ar] (dotM) to[out=60, in=0] (gi_out2);
   %
   \node[above left=1 and 0 of Lo] (P) {$P$};
   \node[above left=4 and 0 of Lo] (Q) {$Q$};
@@ -1254,30 +1366,73 @@ with parameter $Q\times P$.
   \draw[ar] (P) to (dotP);
   \draw[ar] (Q) to (dotQ);
   \draw[ar] (dotP) to (fo_in1);
-  \draw[ar] (dotP) to[in=0] (fi_out1);
+  \draw[ar] (dotP) to[out=60, in=0] (fi_out1);
   \draw[ar] (dotQ) to (go_in1);
-  \draw[ar] (dotQ) to[in=0] (gi_out1);
+  \draw[ar] (dotQ) to[out=60, in=0] (gi_out1);
   %
-  \draw[ar] (dotP) to[out=-25, in=0] (V_out1);
-  \draw[ar] (dotL) to[out=-30, in=0] (V_out2);
-  \draw[ar] (dotMI) to[out=-90, in=0] (V_out3);
-  \draw[ar] (dotQ) to[out=-20, in=0] (W_out1);
-  \draw[ar] (dotM) to[out=-30, in=0] (W_out2);
-  \draw[ar] (dotNI) to[out=-90, in=0] (W_out3);
+  \draw[ar] (dotP) to[out=60, in=0] (V_out1);
+  \draw[ar] (dotL) to[out=60, in=0] (V_out2);
+  \draw[ar] (dotMI) to[out=120, in=0] (V_out3);
+  \draw[ar] (dotQ) to[out=60, in=0] (W_out1);
+  \draw[ar] (dotM) to[out=60, in=0] (W_out2);
+  \draw[ar] (dotNI) to[out=120, in=0] (W_out3);
   %
-  \draw[ar] (V_in1) to[out=-180, in=0] (plus_out1);
-  \draw[ar] (W_in1) to[out=180, in=0] (plus_out2);
-  \coordinate (R) at ($(plus.west)+(-1.5,0)$);
+  \draw[ar] (V_in1) to[out=180, in=0] (plus_out2);
+  \draw[ar] (W_in1) to[out=180, in=0] (plus_out1);
+  \coordinate (R) at ($(plus.west)+(-1,0)$);
   \node[left=0 of R] {$\rr$};
   \draw[ar] (plus_in1) to (R);
 \end{tikzpicture}
 \]
 
-\section{Serial, parallel, and trace compositions}\label{sec:plenspot-ops}
+
+\section{Lenses represent serial, parallel, feedback, and splitting}\label{sec:plenspot-ops}
+
+Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{M}}$ of lenses in a cartesian category $\cat{M}$ does just that for ``traced symmetric monoidal semi-categories equipped with a supply of comonoids'', as we now explain.
+
+By a \emph{semi-category} we mean almost a category, except no identities (like a semigroup is a group without identities). A \emph{supply of comonoids} \cite{fong2019supplying} means that each object $c$ is equipped with a comonoid structure $c\to I$ and $c\to c\otimes c$. So our goal is to show that $\Lens{C}$ interprets diagrams that look like this:
+\begin{equation}\label{eqn.arb_wd}
+\varphi\coloneqq
+\begin{tikzpicture}[oriented WD, bb min width=.6cm, bb port sep=1, bbx=.6cm, bby=1ex, bb port length=2.5pt, baseline=(X2)]
+  \node[bb port sep=2, bb={2}{2}] (X1) {};
+  \node[bb={1}{1}, right=.7 of X1_out1] (X2) {};
+  \node[bb={0}{0}, fit={(X1) (X2) ($(X1.north)+(0,2.5)$)}] (Y) {};
+  \node[coordinate] at (Y.west|-X1_in2) (Y_in1) {};
+  \node[coordinate] at (Y.east|-X2_out1) (Y_out1) {};
+  \node[coordinate] at (Y.east|-X1_out2) (Y_out2) {};
+  \draw[ar] (Y_in1) -- node[above, font=\scriptsize] {$A$} (X1_in2);
+  \draw[ar] (X1_out1) -- node[above, font=\scriptsize] {$B$} (X2_in1);
+  \draw[ar] (X2_out1) -- node[above, font=\scriptsize] {$C$} (Y_out1);
+  \draw[ar] (X1_out2) -- node[below, font=\scriptsize] {$D$} (Y_out2);
+  \draw[ar] let \p1=(X2.north east), \p2=(X1.north west), \n1={\y2+\bby}, \n2=\bbportlen in
+          (X2_out1) to[in=0,in looseness=.9] (\x1+.7*\n2,\n1) -- node[above, font=\scriptsize] {$C$} (\x2-.7*\n2,\n1) to[out=180] (X1_in1);
+  \end{tikzpicture}
+  \end{equation}
+
+Looking at the two inner boxes and the outer box, we see that this diagram should be represented in $\Lens{\cat{M}}$ by a map of the form
+\[
+\varphi\colon\binom{C\times A}{B\times D}\otimes\binom{B}{C}\to\binom{A}{C\times D}
+\]
+Unfolding, we need two maps in $\cat{M}$:
+\[
+B\times D\times C\to C\times D
+\qqand
+B\times D\times C\times A\to C\times A\times B
+\]
+But these maps are obvious: they are just projections.
+
+Lenses are much more general than wiring diagrams. Indeed, all of the maps required by wiring diagrams are projections and diagonals, whereas there are many more maps, e.g.\ of the form $B\times D\times C\to C\times D$, than the projection(s). Looking at \eqref{eqn.arb_wd}, one can imagine that the outputs of the boxes, $B,D,C$ can be combined in any way in order to get the output of the big box (similarly for the inputs of the little boxes), not just by the direct channel shown in the pictures.
+
+But adding parameterizations as in \cref{***} makes things even more general: the parameter can affect how information is sent around:
+\[
+P\times B\times D\times C\to C\times D
+\qqand
+P\times B\times D\times C\times A\to C\times A\times B.
+\]
+In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $V$ as in \cref{***}, we can grade the wirings.
 
 
-
-
+\chapter{Potentia}
 
 
 
