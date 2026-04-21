@@ -438,6 +438,16 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\ad}{\fun{ad}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
+\newcommand{\potlens}{\Cat{PotLens}}
+\newcommand{\Para}{\Cat{Para}}
+\newcommand{\para}[2]{\Para_{#1}(#2)}
+\newcommand{\scan}{\Cat{scanLgp}}
+\newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
+\newcommand{\lmfd}{\Lens{\mfd}}
+\newcommand{\plm}{\Cat{PLM}}
+\newcommand{\inpt}[1]{#1_{\tn{inpt}}}
+\newcommand{\outp}[1]{#1_{\tn{outp}}}
+
 
 % ---- Changeable document parameters ---- %
 
@@ -767,7 +777,15 @@ Corwin--Greenleaf~\cite[Theorem 1.2.1]{corwin1990representations}.
 \end{proof}
 
 \begin{definition}\label{def:scan}
-A \emph{simply connected anchored nilpotent} (SCAN) Lie group, or simply a \emph{SCAN}, is a pair $(G, \sharp_G)$ where $G$ is a SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{anchor}.
+A \emph{simply connected anchored nilpotent} (SCAN) Lie group, or simply a \emph{SCAN}, is a pair $(G, \sharp_G)$ where $G$ is a SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{anchor}. We write $\scan$ for the groupoid whose objects are SCANs and whose morphisms $(G,\sharp_G)\to(H,\sharp_H)$ are Lie-group isomorphisms $\phi\colon G\xrightarrow{\cong}H$,%
+\footnote{We use isomorphisms here for technical simplicity later; see \cref{some note on what would have happened if we'd used arb morphisms}.}
+whose pushforward $\phi_*\coloneqq d\phi|_e\colon\lie{g}\to\lie{h}$ and pullback $\phi^*\colon\lie{h}^*\to\lie{g}^*$ make the following square commute:
+\[
+\begin{tikzcd}
+\lie{h}^* \ar[r,"\sharp_H"] \ar[d,"\phi^*"'] & \lie{h} \\
+\lie{g}^* \ar[r,"\sharp_G"'] & \lie{g} \ar[u,"\phi_*"']
+\end{tikzcd}
+\qedhere\]
 \end{definition}
 
 \begin{remark}\label{rmk:anchor-chosen}
@@ -779,6 +797,18 @@ The additive group $(\mathbb{R}^n,+)$ is a SCN Lie group for any $n:\nn$: abelia
 
 Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as an anchor. Under the resulting SCAN structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:scan-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot(\mathbb{R}^n)\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
 \end{example}
+
+\begin{proposition}\label{prop:scan-smc-action}
+The groupoid $\scan$ inherits a symmetric monoidal structure $(\times,\rr^0)$, and the product functor
+\[
+(\cdot)\colon\scan\times\mfd\to\mfd,\qquad (G,M)\mapsto G\times M
+\]
+is a strong symmetric monoidal action of $\scan$ on $\mfd$.
+\end{proposition}
+
+\begin{proof}
+If $(G_1,\sharp_1)$ and $(G_2,\sharp_2)$ are SCAN, then $G_1\times G_2$ is connected and simply connected, and its Lie algebra $\lie{g}_1\oplus\lie{g}_2$ has nilpotency class $\max(c_1,c_2)$ where $c_i$ is the class of $\lie{g}_i$ [proof or reference?]; the direct sum $\sharp_1\oplus\sharp_2\colon(\lie{g}_1\oplus\lie{g}_2)^*\to\lie{g}_1\oplus\lie{g}_2$ is a linear isomorphism, hence a SCAN anchor. The zero-dimensional group $\rr^0$ is SCAN, serving as the monoidal unit. The cartesian product of Lie-group isomorphisms is a Lie-group isomorphism, and intertwining with anchors is preserved componentwise, so $\times$ restricts to a functor $\scan\times\scan\to\scan$; the associator, unitors, and braiding of $\mfd$ are Lie-group isomorphisms between SCANs compatible with the direct-sum anchors, giving $(\scan,\times,\rr^0)$ the structure of a symmetric monoidal groupoid. Note that $\times$ is \emph{not} a categorical product in $\scan$: the projections $G\times H\to G$ are not Lie-group isomorphisms in general. The action $(\cdot)$ extends $\times\colon\scan\times\scan\to\scan$ along the forgetful functor $\scan\to\mfd$ (on objects $G\mapsto G$, on morphisms treat each SCAN iso as a diffeomorphism), and since $\times\colon\mfd\times\mfd\to\mfd$ is strong symmetric monoidal, so is its restriction $(\cdot)$.
+\end{proof}
 
 \begin{proposition}\label{prop:scan-polynomial}
 For $(G, \sharp_G)$ SCAN, there is an isomorphism $\cot(G) \cong G \yon^G$ in $\poly$.
@@ -1044,7 +1074,214 @@ using \cref{ex:Rn-scan}'s codomain map on $\cot(P)\cong P\yon^P$. When $\nu$ is 
 Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop:cot-monoidal} to $\cot(\mathbb{R}^m)\otimes\cot(\mathbb{R}^{m'})\cong\cot(\mathbb{R}^{m+m'})$, and the whole assembles into an operad functor
 \[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
 
-\chapter{Potentials...?[rename later]}
+\chapter{Potentials...?[rename later]}\label{ch:potentials}
+
+\section{}
+
+\subsection{Manifold lenses}
+In this section, we define a symmetric monoidal category $\potlens$, of potentialized lenses. It begins with a standard construction of lenses, adds parameterization, and finally potentials.
+
+We first recall the category $\Lens{\cat{M}}$ of lenses in a cartesian monoidal category $(\cat{M},1,\times)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $(\inpt M,\outp M)$. A morphism $g\colon(\inpt M,\outp M)\to(\inpt N,\outp N)$ consists of a pair of maps $g=(\outp g,\inpt g)$ where
+\begin{equation}\label{eqn.lens_def}
+\outp g\colon \outp M\to\outp N
+\qqand
+\inpt g\colon \outp M\times\inpt N\to\inpt M.
+\end{equation}
+These can be depicted as follows
+\[
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(go)]
+  \node[bb={1}{1}] (go) {$\outp g$};
+  \node[bb={1}{2}, below left=6 and 1.5 of go] (gi) {$\inpt g$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of go] (dot) {};
+  \coordinate (Mo) at ($(dot)+(-3,0)$);
+  \coordinate (No) at ($(go.east)+(1,0)$);
+  \coordinate (Mi) at (Mo |- gi_in1);
+  \coordinate (Ni) at (No |- gi_out2);
+  \node[left=0 of Mo] {$\outp M$};
+  \node[right=0 of No] {$\outp N$};
+  \node[left=0 of Mi] {$\inpt M$};
+  \node[right=0 of Ni] {$\inpt N$};
+  \draw[ar] (Mo) to (dot);
+  \draw[ar] (dot) to (go_in1);
+  \draw[ar] (go_out1) to (No);
+  \draw[ar] (gi_in1) to (Mi);
+  \draw[ar] (Ni) to (gi_out2);
+  \draw[ar] (dot) to[out=-30, in=0] (gi_out1);
+\end{tikzpicture}
+\]
+Morphisms compose as follows: given also $f\colon (\inpt L,\outp L)\to(\inpt M,\outp M)$, the composite $f\then g$ is given by
+\[
+\outp{(f\then g)}=\outp f\then\outp g
+\qqand
+\inpt{(f\then g)}(\ell,n')=\inpt f\bigl(\ell,\,\inpt g(\outp f(\ell),n')\bigr).
+\]
+This dense notation can be depicted in a string-diagram as follows:
+\begin{equation}\label{eqn.lens_pic}
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
+  \node[bb={1}{1}] (fo) {$\outp f$};
+  \node[bb={1}{1}, right=5 of fo] (go) {$\outp g$\vphantom{$\inpt f$}};
+  \node[bb={1}{2}, below left=6 and 1.5 of fo] (fi) {$\inpt f$};
+  \node[bb={1}{2}, below left=6 and 1.5 of go] (gi) {$\inpt g$\vphantom{$\inpt f$}};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo] (dot1) {};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fo.east)!.75!(go.west)$) (dot2) {};
+  \coordinate (Lo) at ($(dot1)+(-3,0)$);
+  \coordinate (No) at ($(go.east)+(1,0)$);
+  \coordinate (Li) at (Lo |- fi_in1);
+  \coordinate (Ni) at (No |- gi_out2);
+  \node[left=0 of Lo] {$\outp L$};
+  \node[right=0 of No] {$\outp N$};
+  \node[left=0 of Li] {$\inpt L$};
+  \node[right=0 of Ni] {$\inpt N$};
+  \draw[ar] (Lo) to (dot1);
+  \draw[ar] (dot1) to (fo_in1);
+  \draw[ar] (fo_out1) to node[above, font=\scriptsize] {$\outp M$} (dot2);
+  \draw[ar] (dot2) to (go_in1);
+  \draw[ar] (go_out1) to (No);
+  \draw[ar] (fi_in1) to (Li);
+  \draw[ar] (Ni) to (gi_out2);
+  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt M$} (fi_out2);
+  \draw[ar] (dot1) to[out=-30, in=0] (fi_out1);
+  \draw[ar] (dot2) to[out=-30, in=0] (gi_out1);
+\end{tikzpicture}
+\end{equation}
+The identity on $(\outp M,\inpt M)$ is $(\id_{\outp M},\pi_{\inpt M})$, i.e.\ projection in the second argument. The category $\lmfd$ inherits a monoidal structure with unit $(1,1)$ and
+\[
+(\inpt M,\outp M)\otimes(\inpt N,\outp N)\coloneqq(\inpt M\times\inpt N,\outp M\times\outp N).
+\]
+
+\subsection{Scan-parameterized manifold lenses}
+
+We next add the parameterization using the $\Para$ construction, introduced in~\cite[Section 2]{hermida2012monoidal} and further developed in~\cite{fong2019backprop,capucci2024actegories}. Given a symmetric monoidal category $(\cat{A},I,\otimes)$ and a monoidal action
+\[
+(\cdot)\colon\cat{A}\times\cat{M}\to\cat{M}
+\]
+the category $\para{\cat{A}}{\cat{M}}$ is defined to have the same objects as $\cat{M}$, and a morphism $M_1\to M_2$ is a pair $(P,\ell)$ where $P\in\cat{A}$ and $\ell\colon P\cdot M_1\to M_2$ in $\cat{M}$. Identity uses the unit $I$ as parameter in the evident way, and composition is given by
+\[
+(P_2,\ell_2)\circ (P_1,\ell_1)\coloneqq\bigl(P_1\otimes P_2,\;\ell_2\circ(\id_{P_2}\cdot\ell_1)\bigr).
+\]
+When $\cat{M}$ is itself symmetric monoidal and the action $(\cdot)$ is strong symmetric monoidal, $\para{\cat{A}}{\cat{M}}$ inherits a symmetric monoidal structure in an obvious way.
+
+In our setting, $\cat{A}\coloneqq\scan$ acts on $\cat{M}\coloneqq\lmfd$ by the lift of \cref{prop:scan-smc-action}'s product action to the $\outp M$-slot:
+\[
+(\cdot)\colon\scan\times\lmfd\to\lmfd,\qquad Q\cdot(\inpt M,\outp M)\coloneqq(\inpt M,Q\times\outp M).
+\]
+We abbreviate $\plm\coloneqq\para{\scan}{\lmfd}$ (parameterized lens of manifolds). A morphism $g\colon(\inpt M,\outp M)\to(\inpt N,\outp N)$ in $\plm$ is a tuple $g=(Q,\outp g,\inpt g)$ with $Q$ a SCAN Lie group and
+\begin{equation}\label{eqn.map_paralens}
+\outp g\colon Q\times\outp M\to\outp N
+\qqand
+\inpt g\colon Q\times\outp M\times\inpt N\to\inpt M.
+\end{equation}
+\[
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(go)]
+  \node[bb={2}{1}] (go) {$\outp g$};
+  \node[bb={1}{3}, below left=6 and 1.5 of go] (gi) {$\inpt g$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of go_in2] (dot) {};
+  \coordinate (Mo) at ($(dot)+(-3,0)$);
+  \coordinate (No) at ($(go.east)+(1,0)$);
+  \coordinate (Mi) at (Mo |- gi_in1);
+  \coordinate (Ni) at (No |- gi_out3);
+  \node[left=0 of Mo] {$\outp M$};
+  \node[right=0 of No] {$\outp N$};
+  \node[left=0 of Mi] {$\inpt M$};
+  \node[right=0 of Ni] {$\inpt N$};
+  \draw[ar] (Mo) to (dot);
+  \draw[ar] (dot) to (go_in2);
+  \draw[ar] (go_out1) to (No);
+  \draw[ar] (gi_in1) to (Mi);
+  \draw[ar] (Ni) to (gi_out3);
+  \draw[ar] (dot) to[out=-30, in=0] (gi_out2);
+  %
+  \node [above left=1 and 0 of Mo] (Q) {Q};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dot|-Q) (dot') {};
+  \draw (Q) to (dot');
+  \draw (dot') to (go_in1);
+  \draw (dot') to[in=0] (gi_out1);
+\end{tikzpicture}
+\]
+Given also $f=(P,\outp f,\inpt f)\colon(\inpt L,\outp L)\to(\inpt M,\outp M)$, the composite $f\then g$ has parameter $Q\times P$, with forward and backward parts inherited from $\lmfd$. The identity on $(\inpt M,\outp M)$ has parameter $\rr^0\in\scan$. The monoidal product is inherited from $\lmfd$.
+
+\subsection{Potentialized lenses}
+Finally we add potentials to $\lmfd$, defining a category $\potlens$ as follows. Its objects are the same, $\ob\potlens\coloneqq\ob\lmfd$. A morphism $g\colon(\inpt M,\outp M)\to(\inpt N,\outp N)$ is a tuple $g=(Q,\outp g,\inpt g,W)$ where $(Q,\outp g,\inpt g)$ is a map in $\plm$ (see \eqref{eqn.map_paralens}) and
+\[
+W\colon Q\times\outp M\times\inpt N\to\rr
+\]
+is a smooth map called the \emph{potential}. The identity on $(\inpt M,\outp M)$ is that on $\plm$ with $V=0$. Given also $f=(P,\outp f,\inpt f,V)\colon(\inpt L,\outp L)\to(\inpt M,\outp M)$, the composite $f\then g$ extends the $\plm$ composite by summing potentials along the backward pass:
+\begin{align*}
+V\bigl(p,\ell,\,\inpt g(q,\outp f(p,\ell),n')\bigr)+W\bigl(q,\outp f(p,\ell),n'\bigr),
+\end{align*}
+with parameter $Q\times P$.
+\[
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
+  \node[bb={2}{1}] (fo) {$\outp f$};
+  \node[bb={2}{1}, right=6 of fo] (go) {$\outp g$};
+  \node[bb={1}{3}, below left=6 and 1.5 of fo] (fi) {$\inpt f$};
+  \node[bb={1}{3}, below left=6 and 1.5 of go] (gi) {$\inpt g$};
+  \node[bb={1}{3}, below right=6 and 0 of fi] (V) {$V$};
+  \node[bb={1}{3}, below right=6 and 0 of gi] (W) {$W$};
+  \node[bb={1}{2}, below left=0 and 2 of V] (plus) {$+$};
+  %
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo_in2] (dotL) {};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fo.east)!.5!(go.west)$) (dotM) {};
+  %
+  \coordinate (Lo) at ($(dotL)+(-5,0)$);
+  \coordinate (No) at ($(go.east)+(1,0)$);
+  \coordinate (Li) at (Lo |- fi_in1);
+  \coordinate (Ni) at (No |- gi_out3);
+  \node[left=0 of Lo] {$\outp L$};
+  \node[right=0 of No] {$\outp N$};
+  \node[left=0 of Li] {$\inpt L$};
+  \node[right=0 of Ni] {$\inpt N$};
+  %
+  \draw[ar] (Lo) to (dotL);
+  \draw[ar] (dotL) to (fo_in2);
+  \draw[ar] (fo_out1) to node[above, font=\scriptsize] {$\outp M$} (dotM);
+  \draw[ar] (dotM) to (go_in2);
+  \draw[ar] (go_out1) to (No);
+  \draw[ar] (fi_in1) to (Li);
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(gi_out3)+(3,0)$) (dotNI) {};
+  \draw[ar] (Ni) to (dotNI);
+  \draw[ar] (dotNI) to (gi_out3);
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fi_out3)+(3,0)$) (dotMI) {};
+  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt M$} (dotMI);
+  \draw[ar] (dotMI) to (fi_out3);
+  \draw[ar] (dotL) to[out=-30, in=0] (fi_out2);
+  \draw[ar] (dotM) to[out=-30, in=0] (gi_out2);
+  %
+  \node[above left=1 and 0 of Lo] (P) {$P$};
+  \node[above left=4 and 0 of Lo] (Q) {$Q$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dotL|-P) (dotP) {};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dotM|-Q) (dotQ) {};
+  \draw[ar] (P) to (dotP);
+  \draw[ar] (Q) to (dotQ);
+  \draw[ar] (dotP) to (fo_in1);
+  \draw[ar] (dotP) to[in=0] (fi_out1);
+  \draw[ar] (dotQ) to (go_in1);
+  \draw[ar] (dotQ) to[in=0] (gi_out1);
+  %
+  \draw[ar] (dotP) to[out=-25, in=0] (V_out1);
+  \draw[ar] (dotL) to[out=-30, in=0] (V_out2);
+  \draw[ar] (dotMI) to[out=-90, in=0] (V_out3);
+  \draw[ar] (dotQ) to[out=-20, in=0] (W_out1);
+  \draw[ar] (dotM) to[out=-30, in=0] (W_out2);
+  \draw[ar] (dotNI) to[out=-90, in=0] (W_out3);
+  %
+  \draw[ar] (V_in1) to[out=-180, in=0] (plus_out1);
+  \draw[ar] (W_in1) to[out=180, in=0] (plus_out2);
+  \coordinate (R) at ($(plus.west)+(-1.5,0)$);
+  \node[left=0 of R] {$\rr$};
+  \draw[ar] (plus_in1) to (R);
+\end{tikzpicture}
+\]
+
+\section{Serial, parallel, and trace compositions}\label{sec:plenspot-ops}
+
+
+
+
+
+
+
+
 
 \printbibliography
 
