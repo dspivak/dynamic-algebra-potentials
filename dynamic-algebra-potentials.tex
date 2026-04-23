@@ -2,7 +2,7 @@
 
 
 \settrims{0pt}{0pt} % page and stock same size
-\settypeblocksize{*}{36.1pc}{*} % {height}{width}{ratio}
+\settypeblocksize{*}{35.9pc}{*} % {height}{width}{ratio}
 \setlrmargins{*}{*}{1} % {spine}{edge}{ratio}
 \setulmarginsandblock{.98in}{.98in}{*} % height of typeblock computed
 \setheadfoot{\onelineskip}{2\onelineskip} % {headheight}{footskip}
@@ -431,7 +431,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\mfd}{\Cat{Mfd}}
 \newcommand{\plenspot}{\Cat{PLensPot}}
 \newcommand{\boxx}{\Fun{Box}}
-\renewcommand{\cot}{\fun{cot}}
+\RenewDocumentCommand{\cot}{g}{\IfValueTF{#1}{t^*_{#1}}{\fun{ct}}}
 \newcommand{\ev}{\fun{ev}}
 \newcommand{\pr}{\fun{pr}}
 \newcommand{\Ad}{\fun{Ad}}
@@ -441,20 +441,21 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\potlens}{\Cat{PotLens}}
 \newcommand{\Para}{\Cat{Para}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
-\newcommand{\scan}{\Cat{scanLgp}}
+\newcommand{\snl}{\Cat{SNL}}
 \newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
 \newcommand{\plm}{\Cat{PLM}}
-\newcommand{\inpt}[1]{#1_{\tn{i}}}
-\newcommand{\outp}[1]{#1_{\tn{o}}}
+\newcommand{\inpt}[1]{#1^{-}}
+\newcommand{\outp}[1]{#1^{+}}
 \newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}% vertical lens-object notation; to revert, change to (\inpt{#1},\outp{#1})
 \newcommand{\lensobs}[2]{\binom{\inpt{#1}\times\inpt{#2}}{\outp{#1}\times\outp{#2}}}% monoidal product of two lens objects
 
+\newcommand{\dec}{\fun{dec}}
 
 % ---- Changeable document parameters ---- %
 
 \linespread{1.1}
-\allowdisplaybreaks
+%\allowdisplaybreaks
 \setsecnumdepth{section}
 \settocdepth{section}
 \setlength{\parindent}{15pt}
@@ -474,7 +475,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \maketitle
 
 \begin{abstract}
-We construct a symmetric monoidal functor $F\colon\plenspot\to\org$ from a category of potential lenses between smooth manifolds into the Shapiro--Spivak monoidal bicategory of polynomial coalgebras. The state of each $F(\ell)$ is the cotangent bundle of a SCAN parameter group, and the state-update is Hamilton's equations on that bundle, decomposed into force-like contributions from the lens's data. The construction and its functoriality are structural consequences of three general facts about strong symmetric monoidal functors from a cartesian category into a symmetric monoidal closed category, specialized to the cotangent functor $\cot\colon\mfd\to\poly$.
+
 \end{abstract}
 
 \tableofcontents
@@ -490,6 +491,14 @@ We construct a symmetric monoidal functor $F\colon\plenspot\to\org$ from a categ
 %--------------------------------------------------------------------
 \chapter{Background}\label{ch:background}
 %--------------------------------------------------------------------
+
+\section{Notation and preliminaries}\label{sec:prelim}
+
+We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor in sans-serif, $\Fun{T},\Fun{Box}$. Lie algebras use fraktur, $\lie{g},\lie{p}$; number systems use blackboard bold, $\nn,\rr$, as does the only bicategory we work with, $\org$. 
+
+In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$. 
+
+A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice, compatible with $\otimes$, of a cocommutative such structure on every object of $\cat{C}$. Any cartesian monoidal category canonically supplies its diagonals and terminal maps, and every morphism is then automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
 
 \section{Polynomial functors, comonads, and coalgebras}\label{sec:poly-dynamic-bg}
 
@@ -552,20 +561,9 @@ S\yon^S\;\cong\;\ihom{S\yon,\yon}\otimes S\yon
 \end{equation}
 since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1}\cong S\yon^S$. The counit $\epsilon\colon S\yon^S\to\yon$ sends each position $s:S$ to the identity $\id_s\coloneqq s:S=c[s]$. The comultiplication $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$ acts as follows: on positions, $\delta$ sends $s:S$ to the pair $(s,\cod)$ where $\cod\colon S\to S$ is the identity---so $\cod(t)=t$ for all $t:S$. On directions, given $s:S$ and $t:c[s]=S$, the codomain is $\cod(t)=t$, and given a further $u:c[t]=S$, the composite is $t\then u\coloneqq u$.
 
-By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete groupoid}) on $S$.
+By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete category}) on $S$.
 \end{example}
 
-
-\begin{proposition}[{\cite{niu2025polynomial}}]\label{prop:lens}
-$\poly$ has a left Kan operation $\lens{p}{q}$ with
-\[
-\poly(p,q'\tri q)\cong\poly\left(\lens{p}{q},q'\right)
-\]
-given by the formula
-\begin{equation}\label{eqn.lens}
-\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}.
-\end{equation}
-\end{proposition}
 
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec:coalgebras}
@@ -575,15 +573,16 @@ For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\sms
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
 \begin{example}[Coalgebras as polynomial maps]\label{ex:coalg-as-poly-map}
-A $p$-coalgebra $\beta\colon S\to p\tri S$ can be identified via \cref{prop:lens} as a map $\lens{S}{S}\to p$. By the formula \eqref{eqn.lens}, $\lens{S}{S}=S\yon^S$, so $\beta$ can be rewritten as a map
-\[
-\beta'\colon S\yon^S\to p.
-\qedhere\]
+A $p$-coalgebra $\beta\colon S\to p\tri S$ can be identified as a map $S\yon^S\to p$.%
+\footnote{
+Indeed, $\poly$ has a left Kan operation $\lens{p}{q}$ with $\poly(p,q'\tri q)\cong\poly\left(\lens{p}{q},q'\right)$
+given by the formula $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{S}=S\yon^S$.
+}
 \end{example}
 
 
 
-\section{Manifolds, Lie groups, and SCANs}\label{sec:lie-scan-bg}
+\section{Manifolds, Lie groups, and SNLs}\label{sec:lie-scan-bg}
 
 \subsection{The cotangent functor}\label{sec:cot}
 
@@ -592,63 +591,63 @@ The category of smooth manifolds provides the source of polynomials relevant to 
 \begin{definition}[Cotangent functor]\label{def:cot}
 The \emph{cotangent functor} $\cot\colon\mfd\to\poly$ sends a smooth manifold $M$ to
 \begin{equation}\label{eqn:cot_def}
-\cot(M)\coloneqq\sum_{m:M}\yon^{T^*_mM}
+\cot{M}\coloneqq\sum_{m:M}\yon^{T^*_mM}
 \end{equation}
-where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cot(f)\colon\cot(M)\to\cot(N)$ with forward part $f$ and backward part $(Df_m)^\top\colon T^*_{f(m)}N\to T^*_mM$ (the Jacobian transpose at $m$).
+where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cot{f}\colon\cot{M}\to\cot{N}$ with forward part $f$ and backward part $(Df_m)^\top\colon T^*_{f(m)}N\to T^*_mM$ (the Jacobian transpose at $m$).
 \end{definition}
 
 \begin{proposition}\label{prop:cot-monoidal}
 The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
 \[
-\cot(\mathbb{R}^0)\cong\yon
+\cot{\mathbb{R}^0}\cong\yon
 \qqand
-\cot(M\times N)\cong\cot(M)\otimes\cot(N).
+\cot{M\times N}\cong\cot{M}\otimes\cot{N}.
 \]
 \end{proposition}
 
 \begin{proof}
-\textit{Functoriality.} The identity map $\id_M\colon M\to M$ has Jacobian $D(\id_M)_m=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cot(\id_M)=\id_{\cot(M)}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $D(g\circ f)_m=Dg_{f(m)}\circ Df_m$, so
+\textit{Functoriality.} The identity map $\id_M\colon M\to M$ has Jacobian $D(\id_M)_m=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cot{\id_M}=\id_{\cot{M}}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $D(g\circ f)_m=Dg_{f(m)}\circ Df_m$, so
 \[
-(D(g\circ f)_m)^\top=(Df_m)^\top\circ(Dg_{f(m)})^\top=\bk{\cot(f)}_m\circ\bk{\cot(g)}_{f(m)},
+(D(g\circ f)_m)^\top=(Df_m)^\top\circ(Dg_{f(m)})^\top=\bk{\cot{f}}_m\circ\bk{\cot{g}}_{f(m)},
 \]
-which is the backward part of $\cot(f)\then\cot(g)$. (Note: $\cot$ is covariant precisely because it takes Jacobian \emph{transposes}, which reverses the backward direction.)
+which is the backward part of $\cot{f}\then\cot{g}$. (Note: $\cot$ is covariant precisely because it takes Jacobian \emph{transposes}, which reverses the backward direction.)
 
-\textit{Unit.} The one-point manifold $\mathbb{R}^0=\{*\}$ has $T^*_*\mathbb{R}^0=0$, so $\cot(\mathbb{R}^0)=\sum_{*:1}\yon^0=\yon$.
+\textit{Unit.} The one-point manifold $\mathbb{R}^0=\{*\}$ has $T^*_*\mathbb{R}^0=0$, so $\cot{\mathbb{R}^0}=\sum_{*:1}\yon^0=\yon$.
 
 \textit{Products.} The cotangent space of a product splits: $T^*_{(m,n)}(M\times N)\cong T^*_mM\times T^*_nN$. Thus
 \begin{equation}\label{eqn.cot_times}
-\cot(M\times N)=\sum_{(m,n):M\times N}\yon^{T^*_mM\times T^*_nN}=\cot(M)\otimes\cot(N)
+\cot{M\times N}=\sum_{(m,n):M\times N}\yon^{T^*_mM\times T^*_nN}=\cot{M}\otimes\cot{N}
 \end{equation}
 using the definition of the Dirichlet product \eqref{eqn:dirichlet}.
 
-\textit{Naturality.} For a product map $(f,g)\colon M\times N\to M'\times N'$, the Jacobian is block-diagonal: $D(f,g)_{(m,n)}=Df_m\oplus Dg_n$. Hence $(D(f,g)_{(m,n)})^\top=(Df_m)^\top\times(Dg_n)^\top$, so the isomorphism $\cot(M\times N)\cong\cot(M)\otimes\cot(N)$ is natural in $M$ and~$N$.
+\textit{Naturality.} For a product map $(f,g)\colon M\times N\to M'\times N'$, the Jacobian is block-diagonal: $D(f,g)_{(m,n)}=Df_m\oplus Dg_n$. Hence $(D(f,g)_{(m,n)})^\top=(Df_m)^\top\times(Dg_n)^\top$, so the isomorphism $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$ is natural in $M$ and~$N$.
 
 \textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
 \end{proof}
 
-\Cref{prop:cot-monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem:cot-comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot(M)$.
+\Cref{prop:cot-monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem:cot-comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot{M}$.
 
 \begin{remark}
 In fact, $\cot$ also preserves coproducts,
 \[
-\cot(M)+\cot(N)\cong\cot(M+N).
+\cot{M}+\cot{N}\cong\cot{M+N}.
 \]
 Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributive monoidal functor.
 \end{remark}
 
 \begin{lemma}\label{lem:cot-comonoid}
-For any smooth manifold $M$, the polynomial $\cot(M)$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
+For any smooth manifold $M$, the polynomial $\cot{M}$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
 \[
-\cot(\Delta_M)\colon\cot(M)\to\cot(M)\otimes\cot(M)
+\cot{\Delta_M}\colon\cot{M}\to\cot{M}\otimes\cot{M}
 \qqand
- \cot(!_M)\colon\cot(M)\to\yon
+ \cot{!_M}\colon\cot{M}\to\yon
 \]
 sends each position $m:M$ to $(m,m)$. On directions, each cotangent fibre $T^*_mM$ carries the induced cocommutative comonoid structure
 \[
 T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\eta)\mapsto\xi+\eta
 \qqand 1\to T^*_mM,\quad *\mapsto 0,
 \]
-i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cot(M)$ recovers the additive structure of each cotangent space.
+i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cot{M}$ recovers the additive structure of each cotangent space.
 \end{lemma}
 
 \begin{proof}
@@ -656,15 +655,15 @@ Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommu
 \end{proof}
 
 \begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop:cot-hopf}
-Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cot(G)$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
+Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cot{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
 \[
-\cot(\eta)\colon\yon\to\cot(G),\qquad \cot(\mu)\colon\cot(G)\otimes\cot(G)\to\cot(G),
+\cot{\eta}\colon\yon\to\cot{G},\qquad \cot{\mu}\colon\cot{G}\otimes\cot{G}\to\cot{G},
 \]
-the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\cot(\iota)\colon\cot(G)\to\cot(G)$.
+the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\cot{\iota}\colon\cot{G}\to\cot{G}$.
 \end{proposition}
 
 \begin{proof}
-The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot(\eta),\cot(\mu))$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
+The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot{\eta},\cot{\mu})$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
 \subsection{Lie groups and notation}\label{sec:lie-groups}
@@ -764,9 +763,9 @@ Define a map
 \]
 by setting $\exp_G(X)\coloneqq \gamma_X(1)$, where $\gamma_X\colon \rr\to G$ is the unique integral curve through $e$ of the left-invariant vector field on $G$ determined by $X$; this is called the \emph{exponential map}.
 
-\subsection{SCAN Lie groups}\label{sec:scan}
+\subsection{SNL Lie groups}\label{sec:scan}
 
-For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot(G)$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category; \cref{rmk:scan-fiberwise-addition} explains where this category structure on $\cot(G)$ comes from in the SCAN case.
+For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot{G}$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category; \cref{rmk:scan-fiberwise-addition} explains where this category structure on $\cot{G}$ comes from in the SNL case.
 
 \begin{definition}\label{def:scn}
 A \emph{simply connected nilpotent} (SCN) Lie group, or simply a \emph{SCN}, is a connected, simply connected, finite-dimensional real Lie group for which there exists $n:\nn$ such that, for all $X_1,\ldots,X_n:\lie{g}$, the iterated composite of adjoint operators is zero:
@@ -787,9 +786,7 @@ Corwin--Greenleaf~\cite[Theorem 1.2.1]{corwin1990representations}.
 \end{proof}
 
 \begin{definition}\label{def:scan}
-A \emph{simply connected anchored nilpotent} (SCAN) Lie group, or simply a \emph{SCAN}, is a pair $(G, \sharp_G)$ where $G$ is a SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{anchor}. We write $\scan$ for the groupoid whose objects are SCANs and whose morphisms $(G,\sharp_G)\to(H,\sharp_H)$ are Lie-group isomorphisms $\phi\colon G\xrightarrow{\cong}H$,%
-\footnote{We use isomorphisms here for technical simplicity later; see \cref{some note on what would have happened if we'd used arb morphisms}.}
-whose pushforward $\phi_*\coloneqq d\phi|_e\colon\lie{g}\to\lie{h}$ and pullback $\phi^*\colon\lie{h}^*\to\lie{g}^*$ make the following square commute:
+A \emph{simply connected nilpotent Legendre} (SNL) Lie group is a pair $(G, \sharp_G)$ where $G$ is a SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{Legendre isomorphism} (or simply the \emph{Legendre}). We write $\snl$ for the groupoid whose objects are SNL Lie groups and whose morphisms $(G,\sharp_G)\to(H,\sharp_H)$ are Lie-group isomorphisms $\phi\colon G\xrightarrow{\cong}H$ (see \cref{rmk:scan-groupoid} for why only isomorphisms), whose pushforward $\phi_*\coloneqq d\phi|_e\colon\lie{g}\to\lie{h}$ and pullback $\phi^*\colon\lie{h}^*\to\lie{g}^*$ make the following square commute:
 \[
 \begin{tikzcd}
 \lie{h}^* \ar[r,"\sharp_H"] \ar[d,"\phi^*"'] & \lie{h} \\
@@ -799,29 +796,46 @@ whose pushforward $\phi_*\coloneqq d\phi|_e\colon\lie{g}\to\lie{h}$ and pullback
 \end{definition}
 
 \begin{remark}\label{rmk:anchor-chosen}
-In Lie theory, a map $\lie{g}^*\to\lie{g}$ of the above sort is usually just regarded as a chosen identification of $\lie{g}^*$ with $\lie{g}$, often arising from a nondegenerate bilinear form $\lie{g}\times\lie{g}\to\rr$. We call $\sharp_G$ an \emph{anchor} by analogy with the anchor maps of Poisson geometry and Lie algebroid theory, where an anchor is a bundle map to $TG$; the usual Poisson anchor need not be an isomorphism, but the present setting forces it: $\sharp_G$ is required to be a linear isomorphism, providing an identification of $\lie{g}^*$ with $\lie{g}$. The anchor is part of the data of a SCAN; distinct choices of $\sharp_G$ give distinct SCAN structures on the same underlying SCN. \Cref{prop:canonical-anchor} below produces a canonical anchor for cotangent bundles of SCNs, but this is one valid choice among many.
+The Legendre iso $\sharp_G$ is part of the data of an SNL Lie group; distinct choices of $\sharp_G$ give distinct SNL structures on the same underlying SCN. The name reflects \cref{prop:legendre}: the family $(\sharp_P)_P$ assembles into a monoidal natural isomorphism $T^*\Rightarrow T$, the infinitesimal Legendre transform exchanging momenta and velocities. \Cref{prop:canonical-anchor} below produces a canonical Legendre iso on the cotangent bundle of any SCN from its canonical symplectic form, but this is one valid choice among many.
+\end{remark}
+
+\begin{remark}[Why $\snl$ is a groupoid]\label{rmk:scan-groupoid}
+Three downstream results depend on every $\snl$-morphism being an isomorphism:
+\begin{itemize}
+\item \emph{\Cref{prop:scan-polynomial}} ($\cot P\cong P\yon^P$) requires $\sharp_P$ to be a linear isomorphism so that the composite bijection $T^*_pP\xrightarrow{(dL_p|_e)^*}\lie p^*\xrightarrow{\sharp_P}\lie p\xrightarrow{\exp_P}P$ is well-defined; this in turn lets \cref{ex:coalg-as-poly-map} present polynomial maps out of $\cot P$ as $\org$-coalgebras with state set $P$.
+\item \emph{\Cref{prop:param-refinement}} (naturality of the Legendre projection $\rho\colon\cot\circ T^*\Rightarrow\cot$) holds with respect to $\snl$-\emph{isomorphisms} precisely because the Legendre-intertwining square above inverts cleanly; for a non-iso morphism such as a product projection $\pi_1\colon P\times Q\to P$, the Legendre-intertwining square still commutes, but $\rho$'s naturality square then fails in the $\lie q$-slot, where $\sharp_Q\pi_Q$ has nowhere to land. Physically: projecting out a subsystem doesn't commute with the composite dynamics, because the subsystem's states keep evolving.
+\item \emph{\Cref{prop:legendre}} ($\sharp\colon T^*\Rightarrow T$ a monoidal natural \emph{isomorphism}) needs each $\sharp_P$ to be an iso; without that, Hamiltonian and Lagrangian formulations cease to be equivalent.
+\end{itemize}
+Under the axioms of \cref{def:scan}, strict inclusions $H\hookrightarrow G$ fail the Legendre-intertwining square entirely (the iso $\sharp_G$ cannot kill the extra $\lie g\setminus\lie h$ directions), so inclusions are ruled out a fortiori. The groupoid structure on $\snl$ is therefore not a matter of convenience; it is enforced by the combination of (i) invertible Legendre isos and (ii) the downstream constructions this paper uses.
 \end{remark}
 
 \begin{example}\label{ex:Rn-scan}
 The additive group $(\mathbb{R}^n,+)$ is a SCN Lie group for any $n:\nn$: abelian, hence nilpotent of class~$1$; simply connected and contractible. Its Lie algebra is $\lie{g}=T_0\mathbb{R}^n=\mathbb{R}^n$, the exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ is the identity, and left translation $L_p\colon q\mapsto p+q$ has differential the identity, so $(dL_p|_e)^*=\id$ at every $p$. 
 
-Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as an anchor. Under the resulting SCAN structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:scan-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot(\mathbb{R}^n)\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
+Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as a Legendre iso. Under the resulting SNL structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:scan-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot{\mathbb{R}^n}\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
 \end{example}
 
 \begin{proposition}\label{prop:scan-smc-action}
-The groupoid $\scan$ inherits a symmetric monoidal structure $(\times,\rr^0)$, and the product functor
+The groupoid $\snl$ inherits a symmetric monoidal structure $(\times,\rr^0)$, and the product functor
 \[
-(\cdot)\colon\scan\times\mfd\to\mfd,\qquad (G,M)\mapsto G\times M
+(\cdot)\colon\snl\times\mfd\to\mfd,\qquad (G,M)\mapsto G\times M
 \]
-is a strong symmetric monoidal action of $\scan$ on $\mfd$.
+is a strong symmetric monoidal action of $\snl$ on $\mfd$.
 \end{proposition}
 
 \begin{proof}
-If $(G_1,\sharp_1)$ and $(G_2,\sharp_2)$ are SCAN, then $G_1\times G_2$ is connected and simply connected, and its Lie algebra $\lie{g}_1\oplus\lie{g}_2$ has nilpotency class $\max(c_1,c_2)$ where $c_i$ is the class of $\lie{g}_i$ [proof or reference?]; the direct sum $\sharp_1\oplus\sharp_2\colon(\lie{g}_1\oplus\lie{g}_2)^*\to\lie{g}_1\oplus\lie{g}_2$ is a linear isomorphism, hence a SCAN anchor. The zero-dimensional group $\rr^0$ is SCAN, serving as the monoidal unit. The cartesian product of Lie-group isomorphisms is a Lie-group isomorphism, and intertwining with anchors is preserved componentwise, so $\times$ restricts to a functor $\scan\times\scan\to\scan$; the associator, unitors, and braiding of $\mfd$ are Lie-group isomorphisms between SCANs compatible with the direct-sum anchors, giving $(\scan,\times,\rr^0)$ the structure of a symmetric monoidal groupoid. Note that $\times$ is \emph{not} a categorical product in $\scan$: the projections $G\times H\to G$ are not Lie-group isomorphisms in general. The action $(\cdot)$ extends $\times\colon\scan\times\scan\to\scan$ along the forgetful functor $\scan\to\mfd$ (on objects $G\mapsto G$, on morphisms treat each SCAN iso as a diffeomorphism), and since $\times\colon\mfd\times\mfd\to\mfd$ is strong symmetric monoidal, so is its restriction $(\cdot)$.
+If $(G_1,\sharp_1)$ and $(G_2,\sharp_2)$ are SNL, then $G_1\times G_2$ is connected and simply connected. Its Lie algebra is $\lie{g}_1\oplus\lie{g}_2$, with bracket and adjoint action computed componentwise. If every $c_i$-fold composite of adjoint operators on $\lie{g}_i$ is zero and $c=\max(c_1,c_2)$, then for $X_j=(X_j^1,X_j^2)$ we have
+\[
+\ad_{X_c}\cdots\ad_{X_1}
+=
+\bigl(\ad_{X_c^1}\cdots\ad_{X_1^1},\,
+\ad_{X_c^2}\cdots\ad_{X_1^2}\bigr)=0.
+\]
+Thus $G_1\times G_2$ is again SCN. The direct sum $\sharp_1\oplus\sharp_2\colon(\lie{g}_1\oplus\lie{g}_2)^*\to\lie{g}_1\oplus\lie{g}_2$ is a linear isomorphism, hence a Legendre iso on the product. The zero-dimensional group $\rr^0$ is SNL, serving as the monoidal unit. The cartesian product of Lie-group isomorphisms is a Lie-group isomorphism, and intertwining with Legendre isos is preserved componentwise, so $\times$ restricts to a functor $\snl\times\snl\to\snl$; the associator, unitors, and braiding of $\mfd$ are Lie-group isomorphisms between SNLs compatible with the direct-sum Legendre isos, giving $(\snl,\times,\rr^0)$ the structure of a symmetric monoidal groupoid. Note that $\times$ is \emph{not} a categorical product in $\snl$: the projections $G\times H\to G$ are not Lie-group isomorphisms in general. The action $(\cdot)$ extends $\times\colon\snl\times\snl\to\snl$ along the forgetful functor $\snl\to\mfd$ (on objects $G\mapsto G$, on morphisms treat each SNL iso as a diffeomorphism), and since $\times\colon\mfd\times\mfd\to\mfd$ is strong symmetric monoidal, so is its restriction $(\cdot)$.
 \end{proof}
 
 \begin{proposition}\label{prop:scan-polynomial}
-For $(G, \sharp_G)$ SCAN, there is an isomorphism $\cot(G) \cong G \yon^G$ in $\poly$.
+For $(G, \sharp_G)$ SNL, there is an isomorphism $\cot{G} \cong G \yon^G$ in $\poly$.
 \end{proposition}
 
 \begin{proof}
@@ -833,13 +847,13 @@ using that $(dL_g|_e)^*\colon T^*_g G \to \lie{g}^*$ is a linear iso (inverse of
 \end{proof}
 
 \begin{remark}\label{rmk:scan-fiberwise-addition}
-For a SCAN $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot(G)\cong G\yon^G$ from \cref{prop:scan-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
+For a SNL $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot{G}\cong G\yon^G$ from \cref{prop:scan-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
 
 By \cref{prop:comonads-cats}, a $\tri$-comonoid structure on $G\yon^G$ is a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. We describe such a category, the \emph{translation category} of $G$ acting on itself by left multiplication: objects are elements of $G$, a morphism $g\to h$ is an element $x:G$ satisfying $h=gx$ (there is exactly one such $x$, namely $g\inv h$), identities are $e:G$, and composition is group multiplication. This category is isomorphic to the pair groupoid on $G$, but the translation-category presentation is the one that matches \eqref{eqn.directions_malcev}: the bijection $F_g\colon T^*_gG\to G$ identifies a cotangent vector at $g$ with a morphism $g\to gF_g(\xi)$ in the translation category. Thus we have maps
 \[
-\epsilon\colon\cot(G)\to\yon
+\epsilon\colon\cot{G}\to\yon
 \qqand
-\delta\colon\cot(G)\to\cot(G)\tri\cot(G).
+\delta\colon\cot{G}\to\cot{G}\tri\cot{G}.
 \]
 The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi:T^*_gG$ is sent to the point
 \[
@@ -849,7 +863,7 @@ and for $\xi':T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determi
 \[
 F_g(\xi\then\xi') =F_g(\xi)\,F_{\cod_g(\xi)}(\xi').
 \]
-Thus the chosen anchor $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot(G)$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those who know the Baker--Campbell--Hausdorff formula on SCNs, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot(G)$ is given by the BCH product.
+Thus the chosen Legendre iso $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot{G}$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those who know the Baker--Campbell--Hausdorff formula on SCNs, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot{G}$ is given by the BCH product.
 \end{remark}
 
 \begin{proposition}\label{prop:TstarG-scn}
@@ -897,16 +911,51 @@ for some choice of $j:\{1,\ldots,k\}$, where $D_i^{(1,1)}=\ad_{X_i}$ and $D_i^{(
 \end{proof}
 
 \begin{proposition}\label{prop:canonical-anchor}
-The canonical symplectic form $\omega$ on $T^*G$ induces a canonical anchor $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical SCAN structure.
+The canonical symplectic form $\omega$ on $T^*G$ induces a canonical Legendre iso $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical SNL structure.
 \end{proposition}
 
 \begin{proof}
-This is standard; see Abraham--Marsden~\cite[\S3.2]{abraham1978foundations} or Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}. The canonical symplectic form on $T^*G$ is nondegenerate, so at $(e,0)$ it induces an isomorphism
+This is standard; see Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}. The canonical symplectic form on $T^*G$ is nondegenerate, so at $(e,0)$ it induces an isomorphism
 \[
 \flat_\omega\colon \lie{g}\oplus\lie{g}^* \to (\lie{g}\oplus\lie{g}^*)^*,
 \]
-whose inverse is the required anchor $\sharp_{T^*G}$.
+whose inverse is the required Legendre iso $\sharp_{T^*G}$.
 \end{proof}
+
+\begin{proposition}\label{prop:TG-scn}
+For any SNL $(G,\sharp_G)$, the tangent bundle manifold $TG$ is a SNL under left-trivialization $TG\cong G\times\lie{g}$ with group law
+\[
+(g_1,X_1)\cdot(g_2,X_2)\coloneqq (g_1 g_2,\; \Ad_{g_2\inv}X_1 + X_2),
+\]
+unit $(e,0)$, and Legendre iso $\sharp_{TG}\colon(\lie{g}\oplus\lie{g})^*\cong\lie{g}^*\oplus\lie{g}^*\To{\sharp_G\oplus\sharp_G}\lie{g}\oplus\lie{g}$.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} Simply connected: product of simply-connected factors. Nilpotent: analogous to the block-triangular argument in \cref{prop:TstarG-scn}, with $\ad$ in both diagonal blocks in place of $(\ad,-\ad^*)$. The Legendre iso is a linear isomorphism by construction.
+\end{proof}
+
+\begin{proposition}[$T^*$ and $T$ as strong monoidal endofunctors of $\snl$]\label{prop:TT-endofunctors}
+The assignments $G\mapsto T^*G$ (\cref{prop:TstarG-scn,prop:canonical-anchor}) and $G\mapsto TG$ (\cref{prop:TG-scn}) extend to strong symmetric monoidal endofunctors
+\[
+T^*,\, T\colon\snl\to\snl.
+\]
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} Functoriality is the chain rule; preservation of SNL morphism structure uses that the Legendre-intertwining square (\cref{def:scan}) is preserved by $T^*$ and $T$ on differentials. Strong monoidality is the canonical isomorphism $T^*(G\times H)\cong T^*G\times T^*H$ (resp.\ $T(G\times H)\cong TG\times TH$) combined with the direct-sum Legendre iso.
+\end{proof}
+
+\begin{proposition}[{Legendre as monoidal natural isomorphism $T^*\cong T$}]\label{prop:legendre}
+The Legendre isos $\sharp_P\colon\lie p^*\to\lie p$ of SNL groups assemble, in left-trivialization, into a family
+\[
+\sharp_P\colon T^*P\to TP,\qquad (u,\pi)\mapsto(u,\sharp_P(\pi)),
+\]
+which is a monoidal natural isomorphism of strong monoidal endofunctors of $\snl$:
+\[
+\sharp\colon T^*\;\xRightarrow{\;\sim\;}\;T.
+\]
+Naturality with respect to $\snl$-isomorphisms is the Legendre-intertwining axiom of \cref{def:scan}; monoidality $\sharp_{P\times Q}=\sharp_P\oplus\sharp_Q$ is the direct-sum Legendre iso convention on products (\cref{prop:TT-endofunctors}); each component $\sharp_P$ is an isomorphism by the definition of SNL. This is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\sharp_P\inv\colon\lie p\to\lie p^*$ sends velocity to conjugate momentum, $\sharp_P$ sends momentum to velocity.
+\end{proposition}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
 
@@ -1069,35 +1118,36 @@ Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce th
 
 \subsection{Example: deep learning as a dynamic monoidal category}\label{sec:deep-learning}
 
-We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and SCAN Lie groups. Take the object set $O\coloneqq\nn$ and assign to each $n:\nn$ the polynomial $\cot(\mathbb{R}^n)\cong\cot(\mathbb{R})\tpow n$; a layer $m\to n$ will be an $\ihom{\cot(\mathbb{R}^m),\cot(\mathbb{R}^n)}$-coalgebra.
+We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and SNL Lie groups. Take the object set $O\coloneqq\nn$ and assign to each $n:\nn$ the polynomial $\cot{\mathbb{R}^n}\cong{\cot{\mathbb{R}}}\tpow n$; a layer $m\to n$ will be an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra.
 
-The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a SCAN Lie group with anchor $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex:Rn-scan}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop:cot-monoidal}) gives a polynomial map
-\[\cot(P)\otimes\cot(\mathbb{R}^m)\to\cot(\mathbb{R}^n),\]
-which by closedness of $\poly$ is equivalently a map $\cot(P)\to\ihom{\cot(\mathbb{R}^m),\cot(\mathbb{R}^n)}$. By \cref{ex:Rn-scan}, $\cot(P)\cong P\yon^P$, so \cref{ex:coalg-as-poly-map} presents it as an $\ihom{\cot(\mathbb{R}^m),\cot(\mathbb{R}^n)}$-coalgebra with state set $P$.
+The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a SNL Lie group with Legendre iso $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex:Rn-scan}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop:cot-monoidal}) gives a polynomial map
+\[\cot{P}\otimes\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n},\]
+which by closedness of $\poly$ is equivalently a map $\cot{P}\to\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$. By \cref{ex:Rn-scan}, $\cot{P}\cong P\yon^P$, so \cref{ex:coalg-as-poly-map} presents it as an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra with state set $P$.
 
-Unwinding: the action at $p:P$ is $\cot(f_p)\colon\cot(\mathbb{R}^m)\to\cot(\mathbb{R}^n)$ (forward part $x\mapsto f_p(x)$, backward part $(Df_p)_x^\top$), and the update at $p$ on direction $(x,\nu):\mathbb{R}^m\times T^*_{f_p(x)}\mathbb{R}^n$ is
+Unwinding: the action at $p:P$ is $\cot{f_p}\colon\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n}$ (forward part $x\mapsto f_p(x)$, backward part $(Df_p)_x^\top$), and the update at $p$ on direction $(x,\nu):\mathbb{R}^m\times T^*_{f_p(x)}\mathbb{R}^n$ is
 \[
 \upd_p(x,\nu)=p+\sharp_P\bigl((\partial_Pf)_{(p,x)}^\top\nu\bigr)=p-\eta\cdot(\partial_Pf)_{(p,x)}^\top\nu,
 \]
-using \cref{ex:Rn-scan}'s codomain map on $\cot(P)\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
+using \cref{ex:Rn-scan}'s codomain map on $\cot{P}\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
 
-Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop:cot-monoidal} to $\cot(\mathbb{R}^m)\otimes\cot(\mathbb{R}^{m'})\cong\cot(\mathbb{R}^{m+m'})$, and the whole assembles into an operad functor
+Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop:cot-monoidal} to $\cot{\mathbb{R}^m}\otimes\cot{\mathbb{R}^{m'}}\cong\cot{\mathbb{R}^{m+m'}}$, and the whole assembles into an operad functor
 \[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
 
-\chapter{Potentials...?[rename later]}\label{ch:potentials}
+\chapter{Potentialized lenses}\label{ch:potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \cref{sec:lenses-general} develops three constructions in general: lenses in a cartesian monoidal category, the backward-monad construction that turns a strong monad on the base into a comonad on its lenses, and the $\Para$ construction that parameterizes a category by a monoidal-acting category. \cref{sec:potlens-manifolds} specializes these to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the SCAN parameterization, synthesizing them as $\potlens$.
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec:lenses-general} develops the abstract construction in one pass: lenses, the backward-monad construction, the represented functor, evaluation at a $\Fun{T}$-algebra, and parameterization. \Cref{sec:potlens-manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the SNL parameterization, synthesizing them as $\potlens$.
 
-\section{Lenses, backward monads, and parameterization}\label{sec:lenses-general}
+\section{The abstract construction}\label{sec:lenses-general}\label{sec:abstract-representation}
 
 \subsection{Lenses}
-We first recall the category $\Lens{\cat{M}}$ of lenses in a cartesian monoidal category $(\cat{M},1,\times)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{A}$. A morphism $f\colon\lensob{A}\to\lensob{B}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
+We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{A}$ in which $\outp A$ carries a commutative comonoid structure $(\delta_{\outp A},\varepsilon_{\outp A})$. A morphism $f\colon\lensob{A}\to\lensob{B}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
 \begin{equation}\label{eqn.lens_def}
 \outp f\colon \outp A\to\outp B
 \qqand
-\inpt f\colon \outp A\times\inpt B\to\inpt A.
+\inpt f\colon \outp A\otimes\inpt B\to\inpt A,
 \end{equation}
-These can be depicted as follows
+and $\outp f$ is a comonoid homomorphism.%
+\footnote{When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.} These can be depicted as follows:
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={1}{1}] (fo) {$\outp f$};
@@ -1123,8 +1173,9 @@ Morphisms compose as follows: given also $g\colon \lensob{B}\to\lensob{C}$, the 
 \[
 \outp{(f\then g)}=\outp f\then\outp g
 \qqand
-\inpt{(f\then g)}(a,c')=\inpt f\bigl(a,\,\inpt g(\outp f(a),c')\bigr).
+\inpt{(f\then g)}(a,c')=\inpt f\bigl(a,\,\inpt g(\outp f(a),c')\bigr),
 \]
+where $a$ is duplicated via $\delta_{\outp A}$.
 This dense notation can be depicted in a string-diagram as follows:
 \begin{equation}\label{eqn.lens_pic}
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
@@ -1154,86 +1205,248 @@ This dense notation can be depicted in a string-diagram as follows:
   \draw[ar] (dot2) to[out=30, in=0] (gi_out2);
 \end{tikzpicture}
 \end{equation}
-The identity on $\lensob{A}$ is $(\id_{\outp A},\pi_{\inpt A})$, i.e.\ projection in the second argument. The category $\Lens{\cat{M}}$ inherits a monoidal structure with unit $\binom{1}{1}$ and
+The identity on $\lensob{A}$ is $(\id_{\outp A},\varepsilon_{\outp A}\otimes\id_{\inpt A})$, i.e.\ counit in the first argument. The category $\Lens{\cat{C}}$ inherits a monoidal structure with unit $\binom{I}{I}$ and
 \[
 \lensob{A}\otimes\lensob{B}\coloneqq\lensobs{A}{B}.
 \]
 
 \subsection{Backward monads on lenses}
 
-We will add a notion of potentials to our lenses by proving a more general result: any monad on $\cat{M}$ induces a comonad on $\Lens{\cat{M}}$ by applying it to the input / backward-pass part. We use the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
+We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We use the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
 
-Recall that a monad $\Fun{T}$ on a monoidal category is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. When the monoidal structure is cartesian, the naturality gives rise to an additional a projection formula $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$:
+Recall that a monad $\Fun{T}$ on a monoidal category is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. If moreover $X$ carries a counit $\varepsilon_X\colon X\to I$, then naturality of $\sigma$ in its first argument together with the unit-coherence axiom of strength gives a \emph{counital projection} $\sigma_{X,Y}\then\Fun{T}(\varepsilon_X\otimes\id_Y)=\varepsilon_X\otimes\id_{\Fun{T}Y}$:
 \[
 \begin{tikzcd}
-X\times\Fun{T}Y\ar[r, "\sigma"]\ar[d, "\pi_{\Fun{T}Y}"']&
-\Fun{T}(X\times Y)\ar[d, "\Fun{T}\pi_Y"]\\
+X\otimes\Fun{T}Y\ar[r, "\sigma"]\ar[d, "\varepsilon_X\otimes\id"']&
+\Fun{T}(X\otimes Y)\ar[d, "\Fun{T}(\varepsilon_X\otimes\id)"]\\
 \Fun{T}Y\ar[r, equal]&
 \Fun{T}Y
 \end{tikzcd}
 \]
+When $\cat{C}$ is cartesian, this specializes to the familiar projection formula $\sigma\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$.
 
 
 \begin{proposition}
-Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a cartesian category $(\cat{M},1,\times)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{M}}$ sending $\lensob{A}\mapsto \binom{\Fun{T}\inpt A}{\outp A}$ and sending a map $(\outp f,\inpt f)$ to $(\outp f, \sigma\then\Fun{T}\inpt f)$
+Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{A}\mapsto \binom{\Fun{T}\inpt A}{\outp A}$ and sending a map $(\outp f,\inpt f)$ to $(\outp f, \sigma\then\Fun{T}\inpt f)$
 \[
-\outp A\times\Fun{T}\inpt B\To{\sigma}\Fun{T}(\outp A\times\inpt B)\To{\Fun{T}\inpt f}\Fun{T}\inpt A
+\outp A\otimes\Fun{T}\inpt B\To{\sigma}\Fun{T}(\outp A\otimes\inpt B)\To{\Fun{T}\inpt f}\Fun{T}\inpt A
 \]
 \end{proposition}
 \begin{proof}
-The counit and comultiplication of $\Lens{\Fun{T}}$ are given by the unit and multiplication of the monad, together with projection:
+The counit and comultiplication of $\Lens{\Fun{T}}$ are given by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp A}$:
 \[
-\outp A\times\inpt A\to\inpt A\To{\eta}\Fun{T}\inpt A
+\outp A\otimes\inpt A\To{\varepsilon_{\outp A}\otimes\id}\inpt A\To{\eta}\Fun{T}\inpt A
 \qqand
-\outp A\times\Fun{T}\Fun{T}\inpt A\to\Fun{T}\Fun{T}\inpt A\To{\mu}\Fun{T}\inpt A
+\outp A\otimes\Fun{T}\Fun{T}\inpt A\To{\varepsilon_{\outp A}\otimes\id}\Fun{T}\Fun{T}\inpt A\To{\mu}\Fun{T}\inpt A
 \]
 We need to prove that $\Lens{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond precisely to the four axioms of a monad strength.
 %The unit axiom~\cite[(1.5)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
 
-We include only the least trivial here: preservation of composition. Writing $f_o,g_o$ for forward components and $f_i\colon\outp A\times\inpt B\to\inpt A$, $g_i\colon\outp B\times\inpt C\to\inpt B$ for backward components, we must show that the following commutes (after appending $\Fun{T}f_i\colon\Fun{T}(\outp A\times\inpt B)\to\Fun{T}\inpt A$ on the right):
+We include only the least trivial here: preservation of composition. Writing $f_o,g_o$ for forward components and $f_i\colon\outp A\otimes\inpt B\to\inpt A$, $g_i\colon\outp B\otimes\inpt C\to\inpt B$ for backward components, we must show that the following commutes (after appending $\Fun{T}f_i\colon\Fun{T}(\outp A\otimes\inpt B)\to\Fun{T}\inpt A$ on the right):
 \[
-\begin{tikzcd}[column sep=1.6em, row sep=3em, every label/.append style={font=\scriptsize}, ampersand replacement=\&]
-\outp A\times\Fun{T}\inpt C
-  \ar[r, "\Delta\times\id"]
+\begin{tikzcd}[column sep=1.6em, row sep=3em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
+\outp A\otimes\Fun{T}\inpt C
+  \ar[r, "\delta\otimes\id"]
   \ar[d, "\sigma"']
-\& (\outp A)^2\times\Fun{T}\inpt C
-  \ar[r, "\id\times f_o\times\id"]
+\& (\outp A)^{\otimes 2}\otimes\Fun{T}\inpt C
+  \ar[r, "\id\otimes f_o\otimes\id"]
   \ar[d, "\sigma"]
-\&[5pt] \outp A\times\outp B\times\Fun{T}\inpt C
-  \ar[r, "\id\times\sigma"]
+\&[5pt] \outp A\otimes\outp B\otimes\Fun{T}\inpt C
+  \ar[r, "\id\otimes\sigma"]
   \ar[dr, "\sigma" description]
-\& \outp A\times\Fun{T}(\outp B\times\inpt C)
-  \ar[r, "\id\times\Fun{T}g_i"]
+\& \outp A\otimes\Fun{T}(\outp B\otimes\inpt C)
+  \ar[r, "\id\otimes\Fun{T}g_i"]
   \ar[d, "\sigma"]
-\& \outp A\times\Fun{T}\inpt B
+\& \outp A\otimes\Fun{T}\inpt B
   \ar[d, "\sigma"]
 \\
-\Fun{T}(\outp A\times\inpt C)
-  \ar[r, "\Fun{T}(\Delta\times\id)"']
-\& \Fun{T}((\outp A)^2\times\inpt C)
-  \ar[rr, "\Fun{T}(\id\times f_o\times\id)"']
+\Fun{T}(\outp A\otimes\inpt C)
+  \ar[r, "\Fun{T}(\delta\otimes\id)"']
+\& \Fun{T}((\outp A)^{\otimes 2}\otimes\inpt C)
+  \ar[rr, "\Fun{T}(\id\otimes f_o\otimes\id)"']
 \&
-\& \Fun{T}(\outp A\times\outp B\times\inpt C)
-  \ar[r, "\Fun{T}(\id\times g_i)"']
-\& \Fun{T}(\outp A\times\inpt B)
+\& \Fun{T}(\outp A\otimes\outp B\otimes\inpt C)
+  \ar[r, "\Fun{T}(\id\otimes g_i)"']
+\& \Fun{T}(\outp A\otimes\inpt B)
 \end{tikzcd}
 \]
 The first two squares are naturality of $\sigma$ in its first argument; the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, which merges the nested $\sigma$'s; the last square is naturality of $\sigma$ in its second argument.
 \end{proof}
 
-We will be interested in the coKleisli category of $\Lens{\Fun{T}}$, which we denote $\Lens{\cat{M}}^{\Fun{T}}$. A map in $\Lens{\cat{M}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt A}{\outp A}\to\lensob{B}$ in $\Lens{\cat{M}}$.
+We will be interested in the coKleisli category of $\Lens{\Fun{T}}$, which we denote $\Lens{\cat{C}}^{\Fun{T}}$. A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt A}{\outp A}\to\lensob{B}$ in $\Lens{\cat{C}}$. This is the effectful lens category used below.
 
-\subsection{The Para construction}\label{sec:para-general}
+We next record the closed-monoidal part of the construction, which will later be applied to $\poly$. For the rest of the abstract construction, assume that $(\cat{C},I,\otimes,\ihom{-,-})$ is symmetric monoidal closed, and let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on $\cat{C}$. For the monoidal statements involving $\Fun{T}$, assume moreover that $\Fun{T}$ is a monoidal strong monad, with structure maps
+\[
+\tau_{x,y}\colon\Fun{T}x\otimes\Fun{T}y\to\Fun{T}(x\otimes y)
+\qqand
+\tau_0\colon I\to\Fun{T}I
+\]
+compatible with $\eta$, $\mu$, and the strength.
 
-We next add parameterization using the $\Para$ construction, introduced in~\cite[Section 2]{hermida2012monoidal} and further developed in~\cite{fong2019backprop,capucci2024actegories}. Given a symmetric monoidal category $(\cat{A},I,\otimes)$ and a monoidal action
+\subsection{The represented functor}\label{sec:represented-functor}
+
+\begin{definition}\label{def:Theta}
+Define
 \[
-(\cdot)\colon\cat{A}\times\cat{M}\to\cat{M}
+\Theta\colon\Lens{\cat{C}}\to\cat{C}
 \]
-the category $\para{\cat{A}}{\cat{M}}$ is defined to have the same objects as $\cat{M}$, and a morphism $M_1\to M_2$ is a pair $(P,\ell)$ where $P\in\cat{A}$ and $\ell\colon P\cdot M_1\to M_2$ in $\cat{M}$. Identity uses the unit $I$ as parameter in the evident way, and composition is given by
+on objects by
 \[
-(P_2,\ell_2)\circ (P_1,\ell_1)\coloneqq\bigl(P_1\otimes P_2,\;\ell_2\circ(\id_{P_2}\cdot\ell_1)\bigr).
+\Theta\binom{m}{c}\coloneqq c\otimes\ihom{m,I}.
 \]
-When $\cat{M}$ is itself symmetric monoidal and the action $(\cdot)$ is strong symmetric monoidal, $\para{\cat{A}}{\cat{M}}$ inherits a symmetric monoidal structure in an obvious way.
+For a lens $f\colon\binom{m}{c}\to\binom{n}{d}$, let
+\[
+\chi_{f}\colon c\otimes\ihom{m,I}\to\ihom{n,I}
+\]
+be the transpose of
+\[
+c\otimes\ihom{m,I}\otimes n
+\To{\cong}
+c\otimes n\otimes\ihom{m,I}
+\To{\inpt f\otimes\id}
+m\otimes\ihom{m,I}
+\To{\ev}
+I,
+\]
+and define
+\[
+\Theta(f)\coloneqq
+c\otimes\ihom{m,I}
+\To{\delta_c\otimes\id}
+c\otimes c\otimes\ihom{m,I}
+\To{\outp f\otimes\chi_{f}}
+d\otimes\ihom{n,I}.
+\]
+\end{definition}
+
+\begin{proposition}\label{prop:Theta}
+\Cref{def:Theta} defines a lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$. The lax product comparison
+\[
+\bigl(c\otimes\ihom{m,I}\bigr)\otimes\bigl(d\otimes\ihom{n,I}\bigr)
+\To{}
+(c\otimes d)\otimes\ihom{m\otimes n,I}
+\]
+is induced by the pairing $\ihom{m,I}\otimes\ihom{n,I}\to\ihom{m\otimes n,I}$ — the transpose of $\ihom{m,I}\otimes\ihom{n,I}\otimes m\otimes n\To{\ev\otimes\ev}I\otimes I\cong I$ — and the unit comparison $I\to I\otimes\ihom{I,I}$ picks out $\id_I:\ihom{I,I}$.
+\end{proposition}
+
+\begin{proof}
+For identities, $\inpt{\id}$ is obtained from the counit of $c$, and the transpose $\chi_{\id}$ is $\varepsilon_c\otimes\id\colon c\otimes\ihom{m,I}\to\ihom{m,I}$ under the counit law. For composition, the two copies of the initial output object used by the two lenses are exactly the two copies supplied by coassociativity of $\delta_c$, and the two evaluations combine by associativity of internal composition. The hypothesis that $\outp f$ is a comonoid homomorphism is the compatibility needed to identify the copied $d$-component in the composite lens with the copy produced after applying $\outp f$.
+
+Laxness reduces to closedness: the unit and associativity coherences follow from $I\otimes I\cong I$ and the evaluation--coevaluation triangle, and naturality of the product comparison with respect to lens morphisms is the pairing analog of the composition argument above.
+\end{proof}
+
+\subsection{The represented functor with effect}\label{sec:strong-monad-backward}
+
+Using the coKleisli category defined above, a morphism
+\[
+f\colon\binom{m}{c}\to\binom{n}{d}
+\]
+in $\Lens{\cat{C}}^\Fun{T}$ has the form
+\[
+\outp f\colon c\to d
+\qqand
+\inpt f\colon c\otimes n\to\Fun{T}m.
+\]
+
+Assume in addition a $\Fun{T}$-algebra structure on the monoidal unit $I$:
+\[
+\alpha\colon\Fun{T}I\to I,
+\qquad
+\eta_I\then\alpha=\id_I,
+\qquad
+\mu_I\then\alpha=\Fun{T}\alpha\then\alpha.
+\]
+For the monoidal statements, assume moreover that $\Fun{T}$ is a monoidal strong monad and that $\alpha$ is a monoid homomorphism from the monoid structure induced on $\Fun{T}I$ to the trivial monoid on $I$:
+\[
+\tau_0\then\alpha=\id_I
+\qqand
+\tau_{I,I}\then\Fun{T}\lambda_I\then\alpha
+=
+(\alpha\otimes\alpha)\then\lambda_I,
+\]
+where $\lambda_I\colon I\otimes I\cong I$ is the unitor.
+
+\begin{definition}\label{def:Theta-T-alpha}
+Define
+\[
+\Theta^{\Fun{T},\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}
+\]
+on objects by $\Theta^{\Fun{T},\alpha}\binom{m}{c}\coloneqq c\otimes\ihom{m,I}$, the same as $\Theta$. For a coKleisli morphism $f\colon\binom{m}{c}\to\binom{n}{d}$, let
+\[
+\chi_{f}^{\Fun{T},\alpha}\colon c\otimes\ihom{m,I}\to\ihom{n,I}
+\]
+be the transpose of
+\[
+c\otimes\ihom{m,I}\otimes n
+\To{\cong}
+\ihom{m,I}\otimes c\otimes n
+\To{\id\otimes\inpt f}
+\ihom{m,I}\otimes\Fun{T}m
+\To{\sigma}
+\Fun{T}(\ihom{m,I}\otimes m)
+\To{\Fun{T}\ev}
+\Fun{T}I
+\To{\alpha}
+I,
+\]
+and set
+\[
+\Theta^{\Fun{T},\alpha}(f)\coloneqq
+c\otimes\ihom{m,I}
+\To{\delta_c\otimes\id}
+c\otimes c\otimes\ihom{m,I}
+\To{\outp f\otimes\chi_{f}^{\Fun{T},\alpha}}
+d\otimes\ihom{n,I}.
+\]
+\end{definition}
+
+\begin{proposition}\label{prop:Theta-T-alpha}
+\Cref{def:Theta-T-alpha} defines a functor
+\[
+\Theta^{\Fun{T},\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}.
+\]
+Under the monoidal hypotheses above, $\Theta^{\Fun{T},\alpha}$ is lax monoidal.
+\end{proposition}
+
+\begin{proof}
+Functoriality: the coKleisli identity on $\binom{m}{c}$ has backward part $\eta_m\circ(\varepsilon_c\otimes\id_m)$; inserting this into the definition of $\chi^{\Fun{T},\alpha}_{\id}$ and using the unit-coherence axiom of strength together with the algebra unit $\eta_I\then\alpha=\id_I$ reduces it to $\varepsilon_c\otimes\id\colon c\otimes\ihom{m,I}\to\ihom{m,I}$, as in \cref{prop:Theta}. CoKleisli composition uses $\mu$ in the backward leg; preservation of composition follows from naturality of $\sigma$ in both arguments, the associator axiom of strength (which merges the nested $\sigma$'s), and the algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$.
+
+Lax monoidality: the unit comparison picks out $\id_I\in\ihom{I,I}$ using $\tau_0\then\alpha=\id_I$. The product comparison combines the pairing $\ihom{m,I}\otimes\ihom{n,I}\to\ihom{m\otimes n,I}$ from \cref{prop:Theta} with the monoidal-monad structure map $\tau_{I,I}$; the monoid-hom hypothesis $\tau_{I,I}\then\Fun{T}\lambda_I\then\alpha=(\alpha\otimes\alpha)\then\lambda_I$ is exactly what makes this comparison natural under coKleisli composition. Coherence reduces to the axioms of the monoidal monad and the unitors on $I$.
+\end{proof}
+
+\begin{remark}\label{rmk:general-z}
+The construction above uses the monoidal unit $z\coloneqq I$ as the target of evaluation. More generally, for any $\otimes$-monoid $(z,e_z,m_z)$ equipped with a $\Fun{T}$-algebra $\alpha\colon\Fun{T}z\to z$ satisfying monoid-preservation ($\tau_0\then\Fun{T}e_z\then\alpha=e_z$ and $\tau_{z,z}\then\Fun{T}m_z\then\alpha=(\alpha\otimes\alpha)\then m_z$), the same construction with $\ihom{m,I}$ replaced throughout by $\ihom{m,z}$ yields a lax monoidal functor $\Theta^{\Fun{T},\alpha}_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$ with $\binom{m}{c}\mapsto c\otimes\ihom{m,z}$; the underlying abstract framework --- a strong monoidal lift to $[\cat{C},\cat{C}]$ via Day convolution followed by evaluation at $(z,\alpha)$ --- is developed in \cref{ch:CC-framework}. For a writer monad $\Fun{T}(x)=x\otimes g$, such an algebra is equivalently a monoid homomorphism $\beta\colon g\to z$ with central image in $z$, via $\alpha(r',g')\coloneqq r'\cdot\beta(g')$; the case $z=I$ used in the main text corresponds to a monoid homomorphism $g\to I$. We use only $z=I$ in what follows.
+\end{remark}
+
+\subsection{Parameterization}\label{sec:para-general}\label{sec:abstract-parameters}
+
+We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\para{\cat{A}}{\cat{D}}$ has the same objects as $\cat{D}$, and a morphism $x\to y$ is a pair $(a,f)$ with $a\in\cat{A}$ and
+\[
+f\colon a\cdot x\to y
+\]
+in $\cat{D}$. The identity on $x$ has parameter $I$ and the action unitor $I\cdot x\cong x$. The composite of $(a,f)\colon x\to y$ and $(b,g)\colon y\to z$ has parameter $b\otimes a$, or $a\otimes b$ after the symmetry, and uses
+\[
+(b\otimes a)\cdot x\cong b\cdot(a\cdot x)\To{b\cdot f}b\cdot y\To{g}z.
+\]
+
+Now let $J\colon\cat{A}\to\cat{C}$ be a strong monoidal functor whose values are commutative comonoids and whose maps and monoidal structure maps preserve those comonoids. It gives an action of $\cat{A}$ on $\Lens{\cat{C}}^\Fun{T}$ by
+\[
+a\cdot\binom{m}{c}\coloneqq\binom{m}{J(a)\otimes c}.
+\]
+The extra $J(a)$ in the output slot is discarded in the backward leg using its counit, while the coKleisli comonad still only changes the input slot. The same $J$ acts on $\cat{C}$ by $a\cdot x\coloneqq J(a)\otimes x$.
+
+With these actions, $\Theta^{\Fun{T},\alpha}$ is action-preserving up to the canonical associativity isomorphisms, giving a functor
+\[
+\para{\cat{A}}{\Lens{\cat{C}}^\Fun{T}}\To{\Theta^{\Fun{T},\alpha}}\para{\cat{A}}{\cat{C}}.
+\]
+Thus a parameterized lens with parameter $a$ gives a map
+\[
+J(a)\otimes\Theta^{\Fun{T},\alpha}(L)\to\Theta^{\Fun{T},\alpha}(M),
+\]
+or, by closedness of $\cat{C}$, a map
+\[
+J(a)\to\ihom{\Theta^{\Fun{T},\alpha}(L),\Theta^{\Fun{T},\alpha}(M)}.
+\]
 
 \section{Specialization to manifolds}\label{sec:potlens-manifolds}
 
@@ -1261,17 +1474,18 @@ V\colon\outp L\times\inpt M\to\rr
 \]
 called the \emph{potential}, and coKleisli composition adds potentials along the backward pass.
 
-\subsection{SCAN-parameterized potentialized lenses}\label{sec:potlens}
+\subsection{SNL-parameterized potentialized lenses}\label{sec:potlens}
 
-The $\scan$-action on $\mfd$ from \cref{prop:scan-smc-action} lifts to the $\outp M$-slot of $\lmfd$:
+We lift the $\snl$-action on $\mfd$ from \cref{prop:scan-smc-action} to $\lmfd$ by acting on the $\outp M$-slot:
 \[
-(\cdot)\colon\scan\times\lmfd\to\lmfd,\qquad P\cdot\lensob{M}\coloneqq\binom{\inpt M}{P\times\outp M}.
+(\cdot)\colon\snl\times\lmfd\to\lmfd,\qquad P\cdot\lensob{M}\coloneqq\binom{\inpt M}{P\times\outp M}.
 \]
+(One could equally well act on the $\inpt M$-slot; we choose the $\outp M$-slot because its product with $P$ automatically inherits a comonoid structure, as required by the definition of a lens.)
 Applying the $\Para$ construction of \cref{sec:para-general} to the coKleisli category of the potential monad from \cref{sec:potential-monad}, we define the category of \emph{potentialized lenses}
 \[
-\potlens\coloneqq\para{\scan}{\lmfd^\rr}.
+\potlens\coloneqq\para{\snl}{\lmfd^\rr}.
 \]
-Unfolding, a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ is a tuple $f=(P,\outp f,\inpt f,V)$ with $P$ a SCAN Lie group,
+Unfolding, a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ is a tuple $f=(P,\outp f,\inpt f,V)$ with $P$ a SNL Lie group,
 \begin{equation}\label{eqn.map_paralens}
 \outp f\colon P\times\outp L\to\outp M
 \qqand
@@ -1317,23 +1531,23 @@ V\colon P\times\outp L\times\inpt M\to\rr.
   \draw[ar] (V_in1) to (R);
 \end{tikzpicture}
 \]
-The identity on $\lensob{L}$ has parameter $\rr^0\in\scan$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
+The identity on $\lensob{L}$ has parameter $\rr^0\in\snl$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
 \begin{align*}
 V\bigl(p,\ell,\,\inpt g(q,\outp f(p,\ell),n')\bigr)+W\bigl(q,\outp f(p,\ell),n'\bigr).
 \end{align*}
-The monoidal product is inherited from $\lmfd$.
+The monoidal product is inherited from $\lmfd$. The following depicts composition, though note that it follows from the abstract framework we already have developed:
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={2}{1}] (fo) {$\outp f$};
-  \node[bb={2}{1}, right=10 of fo] (go) {$\outp g$};
+  \node[bb={2}{1}, right=7 of fo] (go) {$\outp g$};
   \node[bb={1}{3}, above left=4 and 3 of fo] (fi) {$\inpt f$};
   \node[bb={1}{3}, above left=4 and 3 of go] (gi) {$\inpt g$};
-  \node[bb={1}{3}, above right=3 and 0 of fi] (V) {$V$};
-  \node[bb={1}{3}, above right=3 and 0 of gi] (W) {$W$};
-  \node[bb={1}{2}, above left=0 and 2 of V] (plus) {$+$};
+  \node[bb={1}{3}, above right=1 and 0 of fi] (V) {$V$};
+  \node[bb={1}{3}, above right=1 and 0 of gi] (W) {$W$};
+  \node[bb={1}{2}, above left=-1 and 2 of V] (plus) {$+$};
   %
   \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo_in2] (dotL) {};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fo.east)!.5!(go.west)$) (dotM) {};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(gi.east|-fo.east)+(1,0)$) (dotM) {};
   %
   \coordinate (Lo) at ($(dotL)+(-5,0)$);
   \coordinate (No) at ($(go.east)+(1,0)$);
@@ -1388,9 +1602,9 @@ The monoidal product is inherited from $\lmfd$.
 
 \section{Lenses represent serial, parallel, feedback, and splitting}\label{sec:plenspot-ops}
 
-Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{M}}$ of lenses in a cartesian category $\cat{M}$ does just that for ``traced symmetric monoidal semi-categories equipped with a supply of comonoids'', as we now explain.
+Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{M}}$ of lenses in a symmetric monoidal category $\cat{M}$ with a supply of commutative comonoids does just that for ``traced symmetric monoidal semi-categories equipped with a supply of comonoids'', as we now explain.
 
-By a \emph{semi-category} we mean almost a category, except no identities (like a semigroup is a group without identities). A \emph{supply of comonoids} \cite{fong2019supplying} means that each object $c$ is equipped with a comonoid structure $c\to I$ and $c\to c\otimes c$. So our goal is to show that $\Lens{C}$ interprets diagrams that look like this:
+By a \emph{semi-category} we mean almost a category, except no identities (like a semigroup is a group without identities). So our goal is to show that $\Lens{C}$ interprets diagrams that look like this:
 \begin{equation}\label{eqn.arb_wd}
 \varphi\coloneqq
 \begin{tikzpicture}[oriented WD, bb min width=.6cm, bb port sep=1, bbx=.6cm, bby=1ex, bb port length=2.5pt, baseline=(X2)]
@@ -1423,20 +1637,435 @@ But these maps are obvious: they are just projections.
 
 Lenses are much more general than wiring diagrams. Indeed, all of the maps required by wiring diagrams are projections and diagonals, whereas there are many more maps, e.g.\ of the form $B\times D\times C\to C\times D$, than the projection(s). Looking at \eqref{eqn.arb_wd}, one can imagine that the outputs of the boxes, $B,D,C$ can be combined in any way in order to get the output of the big box (similarly for the inputs of the little boxes), not just by the direct channel shown in the pictures.
 
-But adding parameterizations as in \cref{***} makes things even more general: the parameter can affect how information is sent around:
+But adding parameterizations as in \cref{sec:para-general} makes things even more general: the parameter can affect how information is sent around:
 \[
 P\times B\times D\times C\to C\times D
 \qqand
 P\times B\times D\times C\times A\to C\times A\times B.
 \]
-In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $V$ as in \cref{***}, we can grade the wirings.
+In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $V$ as in \cref{sec:potlens}, we can grade the information flow.
 
 
-\chapter{Potentia}
+\chapter{From lenses to dynamics}\label{ch:potlens-to-org}
 
+This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec:abstract-representation} to polynomial functors. The specific inputs are the cotangent functor, the potential monad, the SNL parameterization, and finally the passage from polynomial maps out of $\cot{P}$ to coalgebras in $\org$.
 
+\section{Specialization to polynomial functors}\label{sec:specialize-source}
 
+We now take $\cat{C}=\poly$. The monoidal structure is the Dirichlet product and the closed structure is the internal hom recalled in \cref{sec:poly}. By \cref{prop:cot-monoidal,lem:cot-comonoid}, the cotangent functor induces a functor
+\[
+\Fun{Lens}(\cot)\colon\lmfd\to\Lens{\poly}.
+\]
 
+For potentials, take the strong monad
+\[
+\Fun{T}(p)\coloneqq p\otimes\cot{\rr}
+\]
+on $\poly$. Under the identifications $\yon\otimes\cot{\rr}\cong\cot{\rr}$ and $\cot{\rr}\otimes\cot{\rr}\cong\cot{\rr\times\rr}$, the monad unit and multiplication are $\cot{0}\colon\yon\to\cot{\rr}$ and $\cot{+}\colon\cot{\rr}\otimes\cot{\rr}\to\cot{\rr}$, where $0\colon\rr^0\to\rr$ and $+\colon\rr\times\rr\to\rr$ are the unit and product of the additive group.
+
+The algebra $\alpha\colon\cot{\rr}\to\yon$ required by \cref{sec:strong-monad-backward} is a monoid homomorphism from $\cot{\rr}$ (a Hopf monoid by \cref{prop:cot-hopf}) to the trivial monoid on $\yon$. The next lemma shows that such $\alpha$ form a one-parameter family.
+
+\begin{lemma}\label{lem:alpha-constant}
+The $\Fun{T}$-algebra structures on $\yon$ that preserve the trivial monoid are in bijection with $\rr$: each such $\alpha\colon\cot{\rr}\to\yon$ has direction-action at each $x:\rr$ given by a constant $c\in\rr$ independent of $x$, and every constant $c$ arises this way.
+\end{lemma}
+
+\begin{proof}
+The position-action of $\alpha$ is the unique map $\rr\to 1$, so $\alpha$ is determined by its direction-action, a family $c_x\coloneqq\bk{\alpha}_x(*)\in T_x^*\rr\cong\rr$ indexed by $x:\rr$. Evaluating the monoid-preservation law $\cot{+}\then\alpha=(\alpha\otimes\alpha)\then\lambda_\yon$ on the unique direction of $\yon$ at position $(x,y):\rr\times\rr$ gives
+\[
+(c_{x+y},\,c_{x+y}) = (c_x,\,c_y)\in T_x^*\rr\oplus T_y^*\rr,
+\]
+using that $D(+)=(1,1)$ transposes to the diagonal. Setting $x=0$ yields $c_y=c_0$ for all $y$, so $c_y$ is a constant $c\coloneqq c_0\in\rr$.
+
+Conversely, for any constant $c\in\rr$, setting $\bk{\alpha}_x(*)\coloneqq c$ defines $\alpha\colon\cot{\rr}\to\yon$. Both sides of the monoid-preservation law send the unique direction at $(x,y)$ to $(c,c)$, and the same $(c,c)$-computation verifies the $\Fun{T}$-algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$. The unit laws $\eta_I\then\alpha=\id_\yon$ and $\tau_0\then\alpha=\id_\yon$ coincide (both reduce to $\cot{0}\then\alpha$) and hold because $T^*_*\rr^0$ is a one-element set, forcing the backward leg to be the identity on $1$.
+\end{proof}
+
+We choose
+\[
+\dec\colon\cot{\rr}\to\yon,
+\qquad
+\bk{\dec}_x(*)\coloneqq -1\in T_x^*\rr\cong\rr.
+\]
+The sign fixes the sign of the Hamilton-like equations below; $c=0$ would give the trivial algebra (no potential contribution), and $c=+1$ would give the opposite-sign physics. \Cref{rmk:general-z} allows also more exotic algebras valued in monoids $z\neq\yon$; we do not pursue them.
+
+Hence
+\[
+\Phi_1\colon\lmfd^\rr\to\poly
+\]
+is obtained by composing the cotangent lift $\lmfd^\rr\to\Lens{\poly}^\Fun{T}$ with $\Theta^{\Fun{T},\dec}$. On objects,
+\[
+\Phi_1\lensob{M}
+=
+\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
+\]
+
+Now take $\cat{A}=\snl$ and
+\[
+J(P)\coloneqq\cot{P}.
+\]
+This is strong monoidal by \cref{prop:cot-monoidal,prop:scan-smc-action}, and \cref{lem:cot-comonoid} supplies compatible comonoid structures on its values; the functorial and monoidal structure maps preserve them because they are obtained from the strong monoidal functor $\cot$.
+The abstract parameter construction gives an intermediate functor
+\[
+\potlens=\para{\snl}{\lmfd^\rr}\to\para{\snl}{\poly},
+\]
+where $\snl$ acts on $\poly$ by
+\[
+P\cdot p\coloneqq\cot{P}\otimes p.
+\]
+Thus a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ with parameter $P$ gives a polynomial map
+\[
+\cot{P}\otimes\Phi_1\lensob{L}\to\Phi_1\lensob{M},
+\]
+or equivalently
+\begin{equation}\label{eqn:parameter-to-action}
+\cot{P}\to
+\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
+\end{equation}
+
+This is the point at which we use a property specific to polynomial functors. Since $P$ is a SNL, \cref{prop:scan-polynomial} gives
+\[
+\cot{P}\cong P\yon^P.
+\]
+By \cref{ex:coalg-as-poly-map}, the map \eqref{eqn:parameter-to-action} is equivalently an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $P$. This is the $\org$-morphism obtained from the parameterized lens before adding the phase-space refinement.
+
+\section{The cotangent-state refinement}\label{sec:cotangent-state-refinement}
+
+For the dynamics considered in this paper, we use $T^*P$ rather than $P$ as the state space. This is an additional step, not part of the abstract construction above. It fits a general framework: choose a strong monoidal endofunctor $F\colon\snl\to\snl$ and a monoidal natural transformation $\rho\colon\cot\circ F\Rightarrow\cot$, and precompose.
+
+\begin{proposition}[Parameter-refinement by a monoidal natural transformation]\label{prop:param-refinement}
+Let $F\colon\snl\to\snl$ be a strong monoidal endofunctor and let $\rho\colon\cot\circ F\Rightarrow\cot$ be a monoidal natural transformation (naturality required only for $\snl$-isomorphisms, since $\snl$ is a groupoid). Precomposition with $\rho$ defines an identity-on-objects functor
+\[
+\rho^*\colon\Para_{\snl,\,\cot}(\poly)\;\longrightarrow\;\Para_{\snl,\,\cot\circ F}(\poly),
+\qquad
+(P,\,f\colon\cot P\otimes x\to y)\;\mapsto\;\bigl(P,\,f\circ(\rho_P\otimes\id)\bigr).
+\]
+Composing with the coalgebra interpretation $\cot F(P)\cong F(P)\yon^{F(P)}$ (\cref{prop:scan-polynomial}, \cref{ex:coalg-as-poly-map}) yields a functor $\Para_{\snl,\,\cot}(\poly)\to\org$ with state set $F(P)$.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} Functoriality of $\rho^*$ on composition uses monoidality of $\rho$ (the comparison $\rho_{P\otimes Q}$ factors as $\rho_P\otimes\rho_Q$ under the strong monoidal structures of $\cot$ and $\cot\circ F$); well-definedness on 2-cells uses naturality of $\rho$ with respect to $\snl$-isomorphisms.
+\end{proof}
+
+The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{Legendre projection} below; \cref{rmk:tangent-state} records the analogous tangent-state alternative.
+
+For any SNL $(P,\sharp_P)$, \cref{prop:TstarG-scn} left-trivializes
+\[
+T^*P\cong P\times\lie{p}^*.
+\]
+We call a point $(u,\pi)$ a pair consisting of a \emph{position} $u:P$ and a \emph{momentum} $\pi:\lie{p}^*$. The cotangent space there decomposes as
+\[
+T^*_{(u,\pi)}(T^*P)\cong\lie{p}^*\oplus\lie{p}.
+\]
+
+\begin{definition}[Legendre projection]\label{def:anchored-proj}
+The \emph{Legendre projection} $\rho_P\colon\cot{T^*P}\to\cot{P}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
+\[
+T^*_uP\cong\lie{p}^*\To{\sigma\mapsto(\sigma,\,\sharp_P(\pi))}\lie{p}^*\oplus\lie{p}\cong T^*_{(u,\pi)}(T^*P).
+\]
+\end{definition}
+
+On positions, $\rho_P$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $\lie{p}^*$-slot and injects the Legendre-lifted momentum $\sharp_P(\pi)\in\lie{p}$ into the $\lie{p}$-slot, independently of $\sigma$. Thus $\rho_P$ is not of the form $\cot{h}$ for any smooth $h\colon T^*P\to P$: the $\lie{p}$-component of its direction-action is constant in $\sigma$, whereas $\cot$ always produces a linear direction-action.
+
+Precomposing \eqref{eqn:parameter-to-action} with $\rho_P$ gives
+\[
+\cot{T^*P}
+\To{\rho_P}
+\cot{P}
+\to
+\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
+\]
+Since $T^*P$ is a SNL by \cref{prop:TstarG-scn,prop:canonical-anchor}, \cref{prop:scan-polynomial} gives
+\[
+\cot{T^*P}\cong (T^*P)\yon^{T^*P}.
+\]
+Thus \cref{ex:coalg-as-poly-map} presents the above map as an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $T^*P$. This is the 1-cell $\Phi(f)$ in $\org$.
+
+\begin{remark}[Tangent-state alternative]\label{rmk:tangent-state}
+Taking $F\coloneqq T$ (\cref{prop:TT-endofunctors}) instead of $T^*$ fits \cref{prop:param-refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\sharp_P\inv(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$, using the inverse Legendre iso $\sharp_P\inv\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop:param-refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry canonical symplectic forms, giving canonical SNL structures by \cref{prop:canonical-anchor}, and the dynamics coincide with textbook Hamilton's equations).
+\end{remark}
+
+\begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk:legendre-equivalence}
+By \cref{prop:legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so the parameter-refinements $\rho$ and $\tilde\rho$ correspond via $\cot\sharp$. Consequently, the two functors produced by \cref{prop:param-refinement},
+\[
+\Phi^{T^*},\;\Phi^{T}\colon\potlens\to\org,
+\]
+are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org$ induced by $\sharp_P\colon T^*P\to TP$ identifies $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$ as 1-cells. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting: the two formulations disagree on literal state spaces ($T^*P$ vs $TP$), but the Legendre iso mediates a canonical isomorphism between them. The paper works with $\Phi^{T^*}$ for the reasons given in \cref{rmk:tangent-state}.
+\end{remark}
+
+\section{Supporting corollaries}\label{sec:corollaries}
+
+The following two corollaries of the abstract machinery specialized to $\cot\colon\mfd\to\poly$ are used in the proofs below. Both are direct consequences of \cref{prop:cot-monoidal,lem:cot-comonoid,prop:Theta}.
+
+\begin{corollary}[Cotangent chain rule]\label{cor:chain-rule}
+For smooth maps $u_i\colon M\to A_i$ ($i=1,\ldots,k$) and $\psi\colon A_1\times\cdots\times A_k\to N$, setting $h\coloneqq\psi\circ\langle u_1,\ldots,u_k\rangle$, we have $\cot h = \cot\psi\circ(\cot u_1\otimes\cdots\otimes\cot u_k)\circ\cot\Delta_M^{(k)}$ in $\poly$. At position $m:M$ and direction $\sigma:T^*_{h(m)}N$,
+\[
+(dh_m)^*\sigma = \sum_{i=1}^k (du_{i,m})^*(\partial_i\psi)^*\sigma\in T^*_m M,
+\]
+where partial derivatives of $\psi$ are evaluated at $(u_1(m),\ldots,u_k(m))$.
+\end{corollary}
+
+\begin{proof}
+\emph{[Proof deferred.]} Apply \cref{prop:cot-monoidal} and \cref{lem:cot-comonoid} to factor $\cot h$ through the iterated diagonal, then read the direction-action component-by-component.
+\end{proof}
+
+\begin{corollary}[Monoid of covector fields]\label{cor:covector-monoid}
+For every manifold $N$, $\ihom{\cot N,\yon}$ is a commutative monoid in $(\poly,\yon,\otimes)$. Its positions correspond to smooth covector fields on $N$ via $\varphi\mapsto\bigl(n\mapsto\bk{\varphi}_n(*)\bigr)$. The $k$-fold multiplication $\mu_N^{(k)}\colon\ihom{\cot N,\yon}^{\otimes k}\to\ihom{\cot N,\yon}$ is pointwise addition:
+\[
+\mu_N^{(k)}(\alpha_1,\ldots,\alpha_k)(n) = \alpha_1(n)+\cdots+\alpha_k(n).
+\]
+\end{corollary}
+
+\begin{proof}
+\emph{[Proof deferred.]} The comonoid structure on $\cot N$ from \cref{lem:cot-comonoid} dualizes via closedness to a commutative monoid structure on $\ihom{\cot N,\yon}$. At each position $n:N$, the comultiplication $\cot\Delta_N^{(k)}$ is the $k$-fold fiberwise addition on $T^*_n N$, and its adjoint yields pointwise addition of covector fields.
+\end{proof}
+
+\section{Hamilton-like equations}\label{sec:hamilton}
+
+\subsection{Textbook Hamilton's equations}\label{sec:textbook-hamilton}
+
+We recall Hamilton's equations in the three forms used below; see Marsden--Ratiu~\cite[\S2.4 (canonical form, Prop.~2.4.4), \S7.7 eq.~(7.7.7) (simple mechanical), \S7.8 eq.~(7.8.14) and Thm.~7.8.6 (Lagrange--d'Alembert with external forces)]{marsden1999introduction} for a systematic treatment.
+
+Let $Q$ be a smooth manifold (the \emph{configuration space}) and $H\colon T^*Q\to\rr$ a smooth function (the \emph{Hamiltonian}). In canonical coordinates $(q^i, p_i)$ on $T^*Q$, Hamilton's equations govern the time evolution of a state $(q(t), p(t))\in T^*Q$:
+\begin{equation}\label{eqn:hamilton-general}
+\dot q^i \;=\; \frac{\partial H}{\partial p_i},
+\qquad
+\dot p_i \;=\; -\frac{\partial H}{\partial q^i}.
+\end{equation}
+For a \emph{simple mechanical system} with kinetic term $\tfrac{1}{2}p^\top M^{-1}p$ (where $M$ is the inertia tensor, a positive-definite symmetric matrix) and potential $V\colon Q\to\rr$, the Hamiltonian is $H(q,p)=\tfrac{1}{2}p^\top M^{-1}p+V(q)$ and \eqref{eqn:hamilton-general} reduces to
+\begin{equation}\label{eqn:hamilton-mechanical}
+\dot q \;=\; M^{-1}p,
+\qquad
+\dot p \;=\; -\nabla V(q).
+\end{equation}
+When the system is coupled to an environment that can exchange momentum with it, the momentum equation acquires an \emph{external generalized force} $F_\mathrm{ext}(q,p,t)$:
+\begin{equation}\label{eqn:hamilton-forced}
+\dot q \;=\; M^{-1}p,
+\qquad
+\dot p \;=\; -\nabla V(q) + F_\mathrm{ext}.
+\end{equation}
+
+\subsection{The reduction theorem}\label{sec:reduction}
+
+\begin{theorem}[Reduction]\label{thm:reduction}
+Let $f=(P,\outp f,\inpt f,V)\colon\lensob L\to\lensob M$ be a morphism in $\potlens$. By \cref{cor:covector-monoid}, a position of $\Phi_1\lensob M=\cot\outp M\otimes\ihom{\cot\inpt M,\yon}$ is a pair $(m,\beta)$ with $m:\outp M$ and $\beta\in\Omega^1(\inpt M)$, and a direction there is a pair $(\nu,m')\in T^*_m\outp M\times\inpt M$. At state $(u,\pi)\in T^*P$ on input $(\ell,\alpha)\in\Phi_1\lensob L(1)$:
+\begin{enumerate}
+\item The action of $\Phi(f)$ produces output $(m,\beta)\in\Phi_1\lensob M(1)$ with
+\[
+m = \outp f(u,\ell),
+\qquad
+\beta(m') = (\partial_{\inpt M}\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr) - d_{\inpt M}V(u,\ell,m').
+\]
+\item On received direction $(\nu,m')$, the direction-action on the state slot $T^*_{(u,\pi)}(T^*P)\cong\lie{p}^*\oplus\lie{p}$ gives
+\[
+\dot u = \sharp_P(\pi),
+\qquad
+\dot\pi = -d_PV + (\partial_P\outp f)^*\nu + (\partial_P\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr).
+\]
+\item The feedback on the input slot is $(l^\mathrm{fb},\mu^\mathrm{fb})\in\inpt L\times T^*_\ell\outp L$ with
+\[
+l^\mathrm{fb} = \inpt f(u,\ell,m'),
+\qquad
+\mu^\mathrm{fb} = -d_{\outp L}V + (\partial_{\outp L}\outp f)^*\nu + (\partial_{\outp L}\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr).
+\]
+\end{enumerate}
+All partials are evaluated at $(u,\ell,m')$.
+\end{theorem}
+
+\begin{proof}
+\emph{[Proof deferred.]} The $\sharp_P(\pi)$ contribution to $\dot u$ comes from the Legendre projection $\rho_P$ (\cref{def:anchored-proj}), whose $\lie{p}$-component is constant in the input direction. The three force-like terms in $\dot\pi$, $\mu^\mathrm{fb}$, and $\beta$ arise from tracing directions through the three-fold codiagonal on $P\times\outp L\times\inpt M$ and the three branches corresponding to $V$, $\outp f$, $\inpt f$; their sum is the pointwise addition of \cref{cor:covector-monoid}. A full proof uses \cref{cor:chain-rule} applied in each slot.
+\end{proof}
+
+\begin{remark}[Correspondence with textbook Hamilton's equations]\label{rmk:hamilton-correspondence}
+Taking $Q\coloneqq P$ as the configuration manifold and setting
+\[
+H(u,\pi) \;\coloneqq\; \tfrac{1}{2}\,\langle\pi,\sharp_P(\pi)\rangle \;+\; V(u,\ell,m')
+\]
+as a state-dependent Hamiltonian on $T^*P$ (parameterized by the current input $(\ell,\alpha)$ and received direction $(\nu,m')$, which are held fixed for the purposes of the flow), \cref{thm:reduction}'s state update matches the forced Hamilton's equations \eqref{eqn:hamilton-forced}:
+\[
+\dot u \;=\; \sharp_P(\pi) \;=\; \partial_\pi H,
+\qquad
+\dot\pi \;=\; \underbrace{-d_P V}_{-\partial_u H} \;+\; \underbrace{(\partial_P\outp f)^*\nu \;+\; (\partial_P\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr)}_{F_\mathrm{ext}}.
+\]
+The Legendre iso $\sharp_P$ plays the role of the inverse inertia $M^{-1}$. The two pullback terms in $F_\mathrm{ext}$ are the non-conservative generalized forces transmitted through the lens's forward map $\outp f$ (carrying the back-force $\nu$ from the target interface) and its backward map $\inpt f$ (carrying the covector field $\alpha$ from the source interface). When both are zero --- a closed system --- the equations collapse to the standard closed-form \eqref{eqn:hamilton-mechanical}.
+\end{remark}
+
+\section{Functoriality}\label{sec:functoriality}
+
+\begin{theorem}\label{thm:functor}
+The assignment $f\mapsto\Phi(f)$ extends to a functor $\Phi\colon\potlens\to\org$.
+\end{theorem}
+
+\begin{proof}
+\emph{[Proof deferred.]} The identity on $\lensob L$ has $P=\rr^0$, $V=0$, and $\outp f,\inpt f$ the projections; \cref{thm:reduction} then produces the terminal coalgebra on $\Phi_1\lensob L$. For composition, $\Phi$ factors as the abstract construction of \cref{ch:potentials} (functorial by the $\Para$-machinery), followed by parameter-refinement through the monoidal natural transformation $\rho$ (functorial by \cref{prop:param-refinement}), followed by coalgebra interpretation (functorial by \cref{ex:coalg-as-poly-map}). The chain-rule content (\cref{cor:chain-rule}) feeds the first step; monoidality of $\rho$ ($\rho_{P_1\times P_2}=\rho_{P_1}\otimes\rho_{P_2}$, via $\sharp_{P_1\times P_2}=\sharp_{P_1}\oplus\sharp_{P_2}$ from \cref{prop:TT-endofunctors}) feeds the second.
+\end{proof}
+
+\section{Lax symmetric monoidality}\label{sec:lax-monoidal}
+
+\begin{proposition}\label{prop:potlens-monoidal}
+$\potlens$ inherits from $\lmfd$ and $\snl$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor product
+\[
+\lensob L\otimes\lensob{L'}\coloneqq\lensobs{L}{L'}.
+\]
+On morphisms, $f\otimes f'$ has parameter $P\times P'$ (with Legendre iso $\sharp_P\oplus\sharp_{P'}$), independent forward and backward components, and potential $V^\otimes=V\circ\pr+V'\circ\pr'$.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} Inherited from the symmetric monoidal structures on $\lmfd=\Lens{\mfd}$ (\cref{sec:lenses-general}) and on $\snl$ (\cref{prop:scan-smc-action}), via the $\Para$ construction (\cref{sec:para-general}).
+\end{proof}
+
+\begin{theorem}\label{thm:lax-monoidal}
+$\Phi\colon\potlens\to\org$ is lax symmetric monoidal. The morphism laxator $\Phi(f)\otimes\Phi(f')\to\Phi(f\otimes f')$ has state component the canonical $T^*P\times T^*P'\cong T^*(P\times P')$, and its interface component is the tensor of \cref{prop:cot-monoidal}'s strong comparison on the $\cot\outp{(-)}$ factor with the pairing
+\[
+\ihom{\cot\inpt L,\yon}\otimes\ihom{\cot\inpt{L'},\yon}\to\ihom{\cot(\inpt L\times\inpt{L'}),\yon}
+\]
+from \cref{prop:Theta} on the hom factor. The pairing is not invertible: it classifies external-sum covector fields on $\inpt L\times\inpt{L'}$, missing those with genuine $\inpt L$-$\inpt{L'}$ mixed dependence. Hence $\Phi$ is lax, not strong.
+\end{theorem}
+
+\begin{proof}
+\emph{[Proof deferred.]} Action and update compatibility of the morphism laxator reduce, via \cref{thm:reduction}, to block-diagonality of the slot-partials of the tensor-product data $V^\otimes$, $\outp{(f\otimes f')}$, $\inpt{(f\otimes f')}$, which follows from \cref{cor:chain-rule} applied to the componentwise-independent definition in \cref{prop:potlens-monoidal}. Coherence (associator, unitor, symmetry) is inherited from $(\mfd,\times)$ and $(\poly,\otimes)$.
+\end{proof}
+
+%--------------------------------------------------------------------
+\chapter{Example: the spring cell}\label{ch:spring}
+%--------------------------------------------------------------------
+
+We illustrate $\Phi$ with a one-dimensional spring cell and recover the discrete and continuum wave equations by wiring copies of it.
+
+\begin{definition}\label{def:spring-cell}
+Fix $\kappa,\mu>0$. The \emph{spring cell} is the $\potlens$-morphism
+\[
+f_\mathrm{spring}\colon\binom{\rr^2}{\rr}\to\binom{\rr^2}{\rr}
+\]
+with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), SNL parameter $P\coloneqq(\rr,+,0)$ with Legendre iso $\sharp_P(p)\coloneqq p/\mu$, and data
+\[
+\outp f(x,y)\coloneqq x,
+\quad
+\inpt f(x,y,(\ell,r))\coloneqq(\ell,r),
+\quad
+V(x,y,(\ell,r))\coloneqq\tfrac{\kappa}{2}(x-\ell)^2+\tfrac{\kappa}{2}(r-x)^2.
+\]
+\end{definition}
+
+\begin{remark}\label{rmk:spring-anchor}
+The Legendre iso $\sharp_P(p)=p/\mu$ is chosen (\cref{rmk:anchor-chosen}), not the canonical Legendre iso of \cref{prop:canonical-anchor}. The free parameter $\mu$ encodes inverse mass; the canonical Legendre iso corresponds to $\mu=1$.
+\end{remark}
+
+\begin{proposition}\label{prop:spring-dynamics}
+At state $(x,p)\in T^*P$ on input $(y,\alpha)$ with vanishing received covector $\nu=0$ and input direction $(\ell,r)\in\rr^2$, the update of $\Phi(f_\mathrm{spring})$ is
+\[
+\dot x = p/\mu,
+\qquad
+\dot p = \kappa(\ell+r-2x).
+\]
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} Apply \cref{thm:reduction}. The $\inpt f$-contribution to $\dot p$ vanishes because $\partial_P\inpt f=0$; the $\outp f$-contribution vanishes because $\nu=0$; the $V$-contribution is $-\partial_xV=\kappa(\ell+r-2x)$. The $\sharp_P(p)=p/\mu$ term comes from the Legendre projection (\cref{def:anchored-proj}).
+\end{proof}
+
+\begin{remark}[Harmonic oscillator Hamiltonian]\label{rmk:spring-hamiltonian}
+Under the correspondence of \cref{rmk:hamilton-correspondence}, the spring cell's state-update is textbook Hamilton's equations for the harmonic-oscillator Hamiltonian
+\[
+H(x,p) \;=\; \frac{p^2}{2\mu} \;+\; \tfrac{\kappa}{2}(x-\ell)^2 \;+\; \tfrac{\kappa}{2}(r-x)^2
+\]
+on $T^*\rr\cong\rr^2$: kinetic energy $p^2/(2\mu)$ (mass $\mu$) plus two Hooke potentials (one spring to the left neighbor at $\ell$, one to the right neighbor at $r$, both with spring constant $\kappa$). \Cref{prop:spring-dynamics}'s equations $\dot x=p/\mu$, $\dot p=\kappa(\ell+r-2x)$ are precisely $\dot x=\partial_p H$, $\dot p=-\partial_x H$. Differentiating once more recovers Newton's second law $\mu\ddot x=\kappa(\ell+r-2x)$.
+\end{remark}
+
+\begin{proposition}\label{prop:spring-wave}
+Wiring a $\zz$-indexed chain of spring cells with each cell's input $(\ell,r)$ identified with the outputs of its left and right neighbors yields joint dynamics
+\[
+\mu\ddot x_i = \kappa(x_{i-1}-2x_i+x_{i+1}).
+\]
+In the continuum limit $x_i\to u(i\Delta x,t)$ with density $\rho\coloneqq\mu/\Delta x$ and tension $T\coloneqq\kappa\Delta x$, the chain approaches the wave equation $\rho\, u_{tt}=T\,u_{xx}$.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} The wiring is a closed-system 1-cell in $\org$ obtained by $\otimes$-product and feedback identifying each cell's input slot with neighbors' output slots (cf.\ \cref{sec:plenspot-ops}). Apply \cref{prop:spring-dynamics} cell-wise and time-differentiate $\dot x_i=p_i/\mu$; substitute $\dot p_i=\kappa(x_{i-1}+x_{i+1}-2x_i)$ to obtain the discrete equation, and pass to the continuum limit.
+\end{proof}
+
+%--------------------------------------------------------------------
+\chapter{The abstract $[\cat{C},\cat{C}]$ framework}\label{ch:CC-framework}
+%--------------------------------------------------------------------
+
+The main text works with $\Theta$ and $\Theta^{\Fun{T},\alpha}$ as functors valued directly in $\cat{C}$, with $z=I$. This chapter collects the abstract statements from which those functors arise: a strong monoidal lift into the Day-convolution monoidal category $[\cat{C},\cat{C}]$, a Kleisli version for an effect, and a lax monoidal evaluation at an arbitrary $\otimes$-monoid algebra. Assume throughout that $\cat{C}$ is cocomplete symmetric monoidal closed with unit $I$, internal hom $\ihom{-,-}$, and Day-convolution monoidal structure on $[\cat{C},\cat{C}]$ given by
+\[
+(H\star K)(x)\coloneqq\int^{u,v}\ihom{u\otimes v,x}\otimes H(u)\otimes K(v),
+\qquad\text{unit}\;\ihom{I,-}\cong\id_{\cat{C}}.
+\]
+
+\section{The $\Fun{B}$-functor}\label{sec:B-functor}
+
+\begin{proposition}[{Strong monoidal lift to $[\cat{C},\cat{C}]$}]\label{prop:B-functor}
+The assignment
+\[
+\Fun{B}\colon\Lens{\cat{C}}\to[\cat{C},\cat{C}],
+\qquad
+\binom{m}{c}\mapsto\bigl(x\mapsto c\otimes\ihom{m,x}\bigr),
+\]
+with morphism action defined exactly as in \cref{def:Theta} but at variable $x$ in place of $I$, is a strong monoidal functor. The comparison
+\[
+(c\otimes\ihom{m,-})\star(d\otimes\ihom{n,-})\;\cong\;c\otimes d\otimes\ihom{m\otimes n,-}
+\]
+is a natural isomorphism, obtained by the iterated co-Yoneda reduction
+\[
+\int^{u,v}\ihom{u\otimes v,x}\otimes\ihom{m,u}\otimes\ihom{n,v}\;\cong\;\int^v\ihom{m\otimes v,x}\otimes\ihom{n,v}\;\cong\;\ihom{m\otimes n,x},
+\]
+using tensor--hom adjunction $\ihom{u\otimes v,x}\cong\ihom{u,\ihom{v,x}}$ and density $\int^v\ihom{v,w}\otimes v\cong w$.
+The functor $\Theta$ of \cref{def:Theta} is the composite $\Lens{\cat{C}}\To{\Fun{B}}[\cat{C},\cat{C}]\To{\ev_I}\cat{C}$; evaluation $\ev_I$ at the unit is lax monoidal (unit comparison $\lambda_I\colon I\otimes I\cong I$), recovering the lax structure of \cref{prop:Theta}.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} Functoriality is the argument of \cref{prop:Theta} carried at variable $x$. The co-Yoneda identity is standard for SMCCs with coends.
+\end{proof}
+
+\section{The $\Fun{B}^{\Fun{T}}$-functor}\label{sec:B-T-functor}
+
+Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on $\cat{C}$. Let $\mathbb{T}$ be the monad on $[\cat{C},\cat{C}]$ given by precomposition, $\mathbb{T}(H)\coloneqq H\circ\Fun{T}$. A morphism in the Kleisli category $[\cat{C},\cat{C}]^{\mathbb{T}}$ from $H$ to $K$ is a natural transformation $H\to K\circ\Fun{T}$.
+
+\begin{proposition}[{Strong monoidal lift to $[\cat{C},\cat{C}]^{\mathbb{T}}$}]\label{prop:B-T-functor}
+The functor $\Fun{B}$ of \cref{prop:B-functor} lifts to a functor
+\[
+\Fun{B}^{\Fun{T}}\colon\Lens{\cat{C}}^{\Fun{T}}\to[\cat{C},\cat{C}]^{\mathbb{T}}
+\]
+agreeing with $\Fun{B}$ on objects and sending a coKleisli morphism $f\colon\binom{m}{c}\to\binom{n}{d}$ to the natural transformation with component
+\[
+c\otimes\ihom{m,x}\to d\otimes\ihom{n,\Fun{T}x}
+\]
+obtained by inserting the strength $\sigma$ into the $\chi_f^{\Fun{T},\alpha}$ construction of \cref{def:Theta-T-alpha} at variable $x$ in place of $I$. Under the monoidal hypotheses on $\Fun{T}$, $\Fun{B}^{\Fun{T}}$ is strong monoidal, with Day-convolution comparison induced by $\tau_{x,y}\colon\Fun{T}x\otimes\Fun{T}y\to\Fun{T}(x\otimes y)$.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} The identity coKleisli morphism uses $\eta$; the Kleisli identity in $[\cat{C},\cat{C}]^{\mathbb{T}}$ is also induced by $\eta$. CoKleisli composition uses $\mu$; Kleisli composition in $[\cat{C},\cat{C}]^{\mathbb{T}}$ is precomposition with $\mu$. The monoidal comparison is the Day-convolution identity of \cref{prop:B-functor}; naturality for coKleisli morphisms uses $\tau_{x,y}$, and the monoidal-monad axioms for $\eta$ and $\mu$ give Kleisli unit and composition.
+\end{proof}
+
+\section{Evaluation at a $\otimes$-monoid algebra}\label{sec:ev-T-alpha}
+
+\begin{proposition}[Evaluation at a $\otimes$-monoid algebra]\label{prop:ev-T-alpha}
+Let $(z,\alpha)$ be a $\Fun{T}$-algebra with $z$ a $\otimes$-monoid $(z,e_z,m_z)$, and suppose $\alpha$ preserves the induced unit and product:
+\[
+\tau_0\then\Fun{T}e_z\then\alpha = e_z
+\qquad\text{and}\qquad
+\tau_{z,z}\then\Fun{T}m_z\then\alpha = (\alpha\otimes\alpha)\then m_z.
+\]
+Evaluation at $(z,\alpha)$ defines a lax monoidal functor
+\[
+\ev_{(z,\alpha)}\colon[\cat{C},\cat{C}]^{\mathbb{T}}\to\cat{C},
+\qquad
+(\tau\colon H\to K\circ\Fun{T})\mapsto\bigl(H(z)\To{\tau_z}K(\Fun{T}z)\To{K(\alpha)}K(z)\bigr).
+\]
+Composing with \cref{prop:B-T-functor} yields a lax monoidal functor
+\[
+\Theta^{\Fun{T},\alpha}_z\coloneqq\Fun{B}^{\Fun{T}}\then\ev_{(z,\alpha)}\colon\Lens{\cat{C}}^{\Fun{T}}\to\cat{C}
+\]
+with object assignment $\binom{m}{c}\mapsto c\otimes\ihom{m,z}$. This generalizes \cref{prop:Theta-T-alpha} of the main text, which is the special case $z=I$.
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof deferred.]} The algebra law $\alpha\circ\Fun{T}\alpha=\alpha\circ\mu_z$ makes $\ev_{(z,\alpha)}$ a functor. The monoid-preservation hypotheses give laxness: the product comparison $H(z)\otimes K(z)\to(H\star K)(z)$ is the Day-convolution coend map selected by $m_z$; the unit comparison is selected by $e_z$. Strong monoidality of $\Fun{B}^{\Fun{T}}$ (\cref{prop:B-T-functor}) composed with laxness of $\ev_{(z,\alpha)}$ gives the stated laxness of $\Theta^{\Fun{T},\alpha}_z$.
+\end{proof}
+
+\begin{remark}\label{rmk:strong-vs-set-level}
+The strong monoidality in \cref{prop:B-functor,prop:B-T-functor} is a statement about a \emph{natural isomorphism of functors} $\cat{C}\to\cat{C}$ — an iso in the 1-category $[\cat{C},\cat{C}]$. It is not a statement about hom-sets of natural transformations being in bijection with hom-sets of the form $\cat{C}(A,B\otimes\ihom{B',A'})$; the latter is a set-level claim that can fail when $I$ is not a generator (for instance, in the category of sup-lattices, where $I$ is a zero object). The natural iso of functors is provided directly by the co-Yoneda reduction and holds in any cocomplete SMCC.
+\end{remark}
 
 \printbibliography
 
