@@ -288,6 +288,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 
 
 \DeclarePairedDelimiter{\present}{\langle}{\rangle}
+\DeclarePairedDelimiter{\pairing}{\langle}{\rangle}
 \DeclarePairedDelimiter{\copair}{[}{]}
 \DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
@@ -431,7 +432,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\mfd}{\Cat{Mfd}}
 \newcommand{\plenspot}{\Cat{PLensPot}}
 \newcommand{\boxx}{\Fun{Box}}
-\RenewDocumentCommand{\cot}{g}{\IfValueTF{#1}{t^*_{#1}}{\fun{ct}}}
+\RenewDocumentCommand{\cot}{g}{\IfValueTF{#1}{t^*_{#1}}{t^*_-}}
 \newcommand{\ev}{\fun{ev}}
 \newcommand{\pr}{\fun{pr}}
 \newcommand{\Ad}{\fun{Ad}}
@@ -441,7 +442,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\potlens}{\Cat{PotLens}}
 \newcommand{\Para}{\Cat{Para}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
-\newcommand{\snl}{\Cat{SNL}}
+\newcommand{\pnla}{\Cat{PNLA}}
 \newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
 \newcommand{\plm}{\Cat{PLM}}
@@ -582,7 +583,7 @@ given by the formula $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{
 
 
 
-\section{Manifolds, Lie groups, and SNLs}\label{sec:lie-scan-bg}
+\section{Manifolds, Lie groups, and PN Lie Algebras}\label{sec:lie-pnla-bg}
 
 \subsection{The cotangent functor}\label{sec:cot}
 
@@ -654,6 +655,13 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop:cot-monoidal}), it preserves comonoid structures. On positions this gives $m\mapsto(m,m)$ and $m\mapsto *$. For the backward maps: the Jacobian of $\Delta_M$ at $m$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The Jacobian of $!_M$ at $m$ is $T_mM\to 0$, whose transpose is the map $1\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
+\subsection{Brief review of basic Lie theory}\label{sec:lie-groups}
+
+Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We sometimes write
+\[
+e\coloneqq \eta(*):G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
+\]
+
 \begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop:cot-hopf}
 Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cot{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
 \[
@@ -666,27 +674,22 @@ the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\c
 The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot{\eta},\cot{\mu})$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
-\subsection{Lie groups and notation}\label{sec:lie-groups}
-
-Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We write
-\[
-e\coloneqq \eta(*):G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
-\]
 The \emph{Lie algebra of $G$} is the tangent space at the identity:
 \[
 \lie{g}\coloneqq T_eG.
 \]
-For each $g:G$, left translation is the diffeomorphism
+Currying $\mu$ we obtain for each $g:G$ the \emph{left translation by $g$}, which is a diffeomorphism
 \[
 L_g\colon G\to G,\qquad h\mapsto gh.
 \]
-Its differential at the identity is a linear isomorphism and we denote it and its transpose by
+Its differential at the identity is a linear isomorphism, and we denote it and its transpose by
 \[
 dL_g|_e\colon \lie{g}\to T_gG
 \qqand
 (dL_g|_e)^*\colon T^*_gG\to \lie{g}^*.
 \]
-Thus every cotangent fiber $T^*_gG$ is canonically identified with the single vector space $\lie{g}^*$ by pulling covectors back along left translation. Collecting these fiberwise identifications gives a vector-bundle isomorphism over $G$:
+Thus every cotangent fiber $T^*_gG$ is canonically identified with the single vector space $\lie{g}^*$ by pulling covectors back along left translation.%
+\footnote{Note that $\lie{g}^*$ is a Lie coalgebra, not a Lie algebra in general.} Collecting these fiberwise identifications gives a vector-bundle isomorphism over $G$:
 \begin{equation}\label{eqn.left_triv}
 T^*G \cong G\times\lie{g}^*,\qquad \xi\mapsto (g,(dL_g|_e)^*\xi)\quad\text{for }\xi:T^*_gG.
 \end{equation}
@@ -696,15 +699,20 @@ Conjugation by $g$ is the Lie group automorphism
 \[
 c_g\colon G\to G,\qquad h\mapsto ghg\inv.
 \]
-Its differential at the identity is the adjoint action, and the transpose of the adjoint action is the coadjoint action:
+Its differential at the identity is called the \emph{adjoint action}, and the transpose of the adjoint action is the \emph{coadjoint action}:
 \[
 \Ad_g\coloneqq dc_g|_e\colon \lie{g}\to \lie{g}
 \qqand
 \Ad_g^*\coloneqq (dc_g|_e)^*\colon \lie{g}^*\to \lie{g}^*.
 \]
 
+For a finite-dimensional vector space $V$, we write $\End(V)$ for the vector space of linear maps $V\to V$ and $\Aut(V)$ for the group, under composition, of linear isomorphisms $V\to V$. Both are smooth manifolds: $\End(V)$ is a finite-dimensional vector space, and $\Aut(V)\subset\End(V)$ is open (the complement of the vanishing locus of $\det$).
+
 \begin{lemma}\label{lem:Ad-facts}
-The adjoint and coadjoint actions define group homomorphisms
+The adjoint and coadjoint actions define group homomorphisms%
+\footnote{
+Each $\Ad_g$ in fact preserves the Lie bracket, so the lemma strengthens to $\Ad\colon G\to \Aut_\Cat{LieAlg}(\lie{g})$ and $\Ad^*\colon G\op\to \Aut_\Cat{LieAlg}(\lie{g}^*)$, but we don't need preservation of the Lie bracket in this paper.
+}
 \[
 \Ad\colon G\to \Aut(\lie{g})
 \qqand
@@ -713,141 +721,118 @@ The adjoint and coadjoint actions define group homomorphisms
 \end{lemma}
 
 \begin{proof}
-To say that $\Ad$ is a group homomorphism is exactly to say that it preserves the unit and multiplication. Unwinding this gives:
+We need to show
 \[
-\Ad_e=\id_{\lie{g}}
+\Ad_e=^?\id_{\lie{g}}
 \qqand
-\Ad_{gh}=\Ad_g\circ \Ad_h.
+\Ad_{gh}=^?\Ad_g\circ \Ad_h.
 \]
-Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h:G$, so differentiating at $e$ gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes gives
-\[
-\Ad_e^*=\id_{\lie{g}^*}
-\qqand
-\Ad_{gh}^*=\Ad_h^*\circ \Ad_g^*.
-\]
-This yields the required group homomorphism.
+Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h:G$, so differentiating at $e$ (using the chain rule and $c_h(e)=e$) gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes shows that $\Ad^*$ is also a group homomorphism.
 \end{proof}
 
-Note that if $V$ is a finite-dimensional vector space, so is the space $\End(V)$ of linear maps $V\to V$, so we may regard $\End(V)$ as a manifold. Moreover, for any finite-dimensional vector space $W$, the tangent space $T_wW$ at any point $w:W$ is canonically identified with $W$ itself. In particular, $\End(\lie{g})$ and $\End(\lie{g}^*)$ are smooth manifolds, and a tangent vector to either one is canonically an element of the same vector space. 
-
-Hence the assignments
-\[
-\Ad\colon G\to\End(\lie{g})
-\qqand
-\Ad^*\colon G\to\End(\lie{g}^*)
-\]
-given by $g\mapsto \Ad_g$ and $g\mapsto \Ad_g^*$ are smooth maps.
-Differentiating $\Ad$ and $\Ad^*$ at the identity gives
+Conjugation $c\colon G\times G\to G$ in a Lie group uses multiplication and inversion $c(g,h)\coloneqq ghg\inv$ and is hence smooth. Differentiating at the identity in the second variable depends smoothly on the first, so $\Ad$ is smooth. Since $\Ad^*$ factors as $\Ad$ followed by the transpose operation $\End(\lie{g})\to\End(\lie{g}^*)$, which is linear and hence smooth, $\Ad^*$ is also smooth. Under the canonical identification of the tangent space of a vector space at any point with the vector space itself, differentiating $\Ad$ and $\Ad^*$ at the identity gives
 \[
 \ad\colon \lie{g}\to \End(\lie{g}),
 \qqand
 \ad^*\colon \lie{g}\to \End(\lie{g}^*).
 \]
-For each $X:\lie{g}$ we write
+To denote the applyication at any $X:\lie{g}$ we write
 \[
-\ad_X\colon \lie{g}\to \lie{g}
+\ad_X\coloneqq\ad(X)\colon \lie{g}\to \lie{g}
 \qqand
-\ad_X^*\colon \lie{g}^*\to \lie{g}^*
+\ad_X^*\coloneqq\ad^*(X)\colon \lie{g}^*\to \lie{g}^*
 \]
-for what are called the \emph{adjoint operator} and \emph{coadjoint operator} associated to $X$. Note that the transpose operation $(-)^*\colon \End(\lie{g})\to \End(\lie{g}^*)$ is linear, so differentiating $\Ad_g^*=(\Ad_g)^*$ at the identity gives $\ad_X^*=(\ad_X)^*$.
+for what are called the \emph{adjoint operator} and \emph{coadjoint operator} associated to $X$. Since the transpose operation is linear, differentiating $\Ad_g^*=(\Ad_g)^*$ at the identity gives $\ad_X^*=(\ad_X)^*$.
 
 The Lie bracket on $\lie{g}$ is defined by
 \[
 [X,Y]\coloneqq \ad_X(Y),
 \]
-which makes $\lie{g}$ into a Lie algebra. However, because we use brackets $[p,q]$ for internal hom of polynomials and have little use for Lie brackets in the paper, we will never again use the bracket notation for Lie algebras, using $\ad$ instead. 
+which makes $\lie{g}$ into a Lie algebra. However, because we use brackets $[p,q]$ for internal hom of polynomials and have little use for Lie brackets in the paper, we will never again use the bracket notation for Lie algebras, using $\ad$ instead.
 
-Define a map
+The Lie algebra $\lie{g}$ is \emph{nilpotent} if there exists $n\in\nn$ such that the iterated composite $\ad_{X_1}\circ\ad_{X_2}\circ\cdots\circ\ad_{X_n}=0\colon\lie{g}\to\lie{g}$ for all $X_1,\ldots,X_n\in\lie{g}$; the least such $n$ is called the \emph{nilpotency class} of $\lie{g}$. A Lie group is \emph{abelian} if $[-,-]=0$, i.e.\ has nilpotency class 1.
+
+For each $X\in\lie{g}$, there is a unique smooth group homomorphism $\rho_X\colon(\rr,+,0)\to G$ with $\rho_X'(0)=X$; such a $\rho_X$ is called a \emph{one-parameter subgroup} of $G$. The \emph{exponential map}
 \[
 \exp_G\colon \lie{g}\to G
 \]
-by setting $\exp_G(X)\coloneqq \gamma_X(1)$, where $\gamma_X\colon \rr\to G$ is the unique integral curve through $e$ of the left-invariant vector field on $G$ determined by $X$; this is called the \emph{exponential map}.
+is defined by $\exp_G(X)\coloneqq\rho_X(1)$; equivalently, $\rho_X(t)=\exp_G(tX)$.
 
-\subsection{SNL Lie groups}\label{sec:scan}
+By Lie's third theorem~\cite[Appendix B]{knapp2002lie}, every finite-dimensional real Lie algebra $\lie{g}$ is the Lie algebra of a (unique up to iso) simply connected Lie group $G$; when $\lie{g}$ is nilpotent, Malcev's theorem further guarantees that $\exp_G\colon\lie{g}\to G$ is a diffeomorphism~\cite[Thm 1.127]{knapp2002lie}. We use $\exp_G$ to freely identify a nilpotent $\lie{g}$ with its associated simply connected Lie group $G$ as smooth manifolds, writing $G$ when the group structure is primary (multiplication, translation, cotangent bundle as a Lie group) and $\lie{g}$ when the algebraic structure is primary (pairing, morphisms, direct sums).
 
-For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot{G}$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category; \cref{rmk:scan-fiberwise-addition} explains where this category structure on $\cot{G}$ comes from in the SNL case.
+\subsection{Paired nilpotent Lie algebras}\label{sec:pnla}
 
-\begin{definition}\label{def:scn}
-A \emph{simply connected nilpotent} (SCN) Lie group, or simply a \emph{SCN}, is a connected, simply connected, finite-dimensional real Lie group for which there exists $n:\nn$ such that, for all $X_1,\ldots,X_n:\lie{g}$, the iterated composite of adjoint operators is zero:
+For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot{G}$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category, as we now explain.
+
+\begin{definition}\label{def:pnla}
+We define a \emph{pairing} on a Lie algebra $\lie{g}$ to be a linear map
 \[
-\ad_{X_1}\circ\ad_{X_2}\circ\cdots\circ\ad_{X_n}=0\colon \lie{g}\to\lie{g}.
+\pairing{-,-}\colon\lie{g}\otimes\lie{g}\to\rr,
 \]
-The least such $n$ is called the \emph{nilpotency class} of $\lie{g}$.
-\end{definition}
+such that the induced \emph{flat} map $\flat_{\lie{g}}\colon\lie{g}\to\lie{g}^*$, $X\mapsto\pairing{X,-}_{\lie{g}}$, is a linear isomorphism;%
+\footnote{In other words $\pairing{-,-}$ is a \emph{nondegenerate bilinear form}.}
+its inverse is the \emph{sharp} map $\sharp_{\lie{g}}\colon\lie{g}^*\To{\cong}\lie{g}$.
 
-Note that $\lie{g}$ has nilpotency class $n$ iff $\lie{g}^*$ does.
-
-\begin{lemma}[Malcev]\label{lem:malcev}
-For any SCN $G$, the exponential map $\exp_G\colon\lie{g} \to G$ is a diffeomorphism.
-\end{lemma}
-
-\begin{proof}
-Corwin--Greenleaf~\cite[Theorem 1.2.1]{corwin1990representations}.
-\end{proof}
-
-\begin{definition}\label{def:scan}
-A \emph{simply connected nilpotent Legendre} (SNL) Lie group is a pair $(G, \sharp_G)$ where $G$ is a SCN and $\sharp_G\colon\lie{g}^* \to \lie{g}$ is a chosen linear isomorphism, called the \emph{Legendre isomorphism} (or simply the \emph{Legendre}). We write $\snl$ for the groupoid whose objects are SNL Lie groups and whose morphisms $(G,\sharp_G)\to(H,\sharp_H)$ are Lie-group isomorphisms $\phi\colon G\xrightarrow{\cong}H$ (see \cref{rmk:scan-groupoid} for why only isomorphisms), whose pushforward $\phi_*\coloneqq d\phi|_e\colon\lie{g}\to\lie{h}$ and pullback $\phi^*\colon\lie{h}^*\to\lie{g}^*$ make the following square commute:
+A \emph{paired nilpotent Lie algebra} (PN Lie Algebra) is a pair $(\lie{g}, \sharp_{\lie{g}})$ consisting of a finite-dimensional nilpotent real Lie algebra $\lie{g}$ and a pairing on $\lie{g}$. We write $\pnla$ for the groupoid whose objects are PN Lie Algebras and whose morphisms $(\lie{g},\sharp_{\lie{g}})\to(\lie{h},\sharp_{\lie{h}})$ are Lie-algebra isomorphisms $\phi\colon\lie{g}\xrightarrow{\cong}\lie{h}$ preserving the pairing:
 \[
 \begin{tikzcd}
-\lie{h}^* \ar[r,"\sharp_H"] \ar[d,"\phi^*"'] & \lie{h} \\
-\lie{g}^* \ar[r,"\sharp_G"'] & \lie{g} \ar[u,"\phi_*"']
+\lie{g}\otimes\lie{g} \ar[rr,"\phi\otimes\phi"] \ar[dr,"{\pairing{-,-}_{\lie{g}}}"'] & & \lie{h}\otimes\lie{h} \ar[dl,"{\pairing{-,-}_{\lie{h}}}"] \\
+& \rr &
 \end{tikzcd}
 \qedhere\]
 \end{definition}
 
-\begin{remark}\label{rmk:anchor-chosen}
-The Legendre iso $\sharp_G$ is part of the data of an SNL Lie group; distinct choices of $\sharp_G$ give distinct SNL structures on the same underlying SCN. The name reflects \cref{prop:legendre}: the family $(\sharp_P)_P$ assembles into a monoidal natural isomorphism $T^*\Rightarrow T$, the infinitesimal Legendre transform exchanging momenta and velocities. \Cref{prop:canonical-anchor} below produces a canonical Legendre iso on the cotangent bundle of any SCN from its canonical symplectic form, but this is one valid choice among many.
-\end{remark}
+\begin{example}\label{ex:Rn-pnla}
+The simply connected Lie group associated to the abelian Lie algebra $\mathbb{R}^n$ is $(\mathbb{R}^n,+)$, with exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ the identity, and left translation $L_p\colon q\mapsto p+q$ has differential the identity, so $(dL_p|_e)^*=\id$ at every $p$. 
 
-\begin{remark}[Why $\snl$ is a groupoid]\label{rmk:scan-groupoid}
-Three downstream results depend on every $\snl$-morphism being an isomorphism:
-\begin{itemize}
-\item \emph{\Cref{prop:scan-polynomial}} ($\cot P\cong P\yon^P$) requires $\sharp_P$ to be a linear isomorphism so that the composite bijection $T^*_pP\xrightarrow{(dL_p|_e)^*}\lie p^*\xrightarrow{\sharp_P}\lie p\xrightarrow{\exp_P}P$ is well-defined; this in turn lets \cref{ex:coalg-as-poly-map} present polynomial maps out of $\cot P$ as $\org$-coalgebras with state set $P$.
-\item \emph{\Cref{prop:param-refinement}} (naturality of the Legendre projection $\rho\colon\cot\circ T^*\Rightarrow\cot$) holds with respect to $\snl$-\emph{isomorphisms} precisely because the Legendre-intertwining square above inverts cleanly; for a non-iso morphism such as a product projection $\pi_1\colon P\times Q\to P$, the Legendre-intertwining square still commutes, but $\rho$'s naturality square then fails in the $\lie q$-slot, where $\sharp_Q\pi_Q$ has nowhere to land. Physically: projecting out a subsystem doesn't commute with the composite dynamics, because the subsystem's states keep evolving.
-\item \emph{\Cref{prop:legendre}} ($\sharp\colon T^*\Rightarrow T$ a monoidal natural \emph{isomorphism}) needs each $\sharp_P$ to be an iso; without that, Hamiltonian and Lagrangian formulations cease to be equivalent.
-\end{itemize}
-Under the axioms of \cref{def:scan}, strict inclusions $H\hookrightarrow G$ fail the Legendre-intertwining square entirely (the iso $\sharp_G$ cannot kill the extra $\lie g\setminus\lie h$ directions), so inclusions are ruled out a fortiori. The groupoid structure on $\snl$ is therefore not a matter of convenience; it is enforced by the combination of (i) invertible Legendre isos and (ii) the downstream constructions this paper uses.
-\end{remark}
-
-\begin{example}\label{ex:Rn-scan}
-The additive group $(\mathbb{R}^n,+)$ is a SCN Lie group for any $n:\nn$: abelian, hence nilpotent of class~$1$; simply connected and contractible. Its Lie algebra is $\lie{g}=T_0\mathbb{R}^n=\mathbb{R}^n$, the exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ is the identity, and left translation $L_p\colon q\mapsto p+q$ has differential the identity, so $(dL_p|_e)^*=\id$ at every $p$. 
-
-Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as a Legendre iso. Under the resulting SNL structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:scan-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot{\mathbb{R}^n}\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
+Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as a pairing. Under the resulting PN Lie Algebra structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:pnla-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot{\mathbb{R}^n}\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
 \end{example}
 
-\begin{proposition}\label{prop:scan-smc-action}
-The groupoid $\snl$ inherits a symmetric monoidal structure $(\times,\rr^0)$, and the product functor
+\begin{proposition}\label{prop:pnla-smc-action}
+The groupoid $\pnla$ has a symmetric monoidal structure $(\oplus,0)$, and the composite
 \[
-(\cdot)\colon\snl\times\mfd\to\mfd,\qquad (G,M)\mapsto G\times M
+(\cdot)\colon\pnla\times\mfd\to\mfd,\qquad ((\lie{g},\sharp_{\lie{g}}),M)\mapsto \lie{g}\times M
 \]
-is a strong symmetric monoidal action of $\snl$ on $\mfd$.
+is a strong symmetric monoidal action of $\pnla$ on $\mfd$.
 \end{proposition}
 
 \begin{proof}
-If $(G_1,\sharp_1)$ and $(G_2,\sharp_2)$ are SNL, then $G_1\times G_2$ is connected and simply connected. Its Lie algebra is $\lie{g}_1\oplus\lie{g}_2$, with bracket and adjoint action computed componentwise. If every $c_i$-fold composite of adjoint operators on $\lie{g}_i$ is zero and $c=\max(c_1,c_2)$, then for $X_j=(X_j^1,X_j^2)$ we have
+Let $(\lie{g}_1,\sharp_1)$ and $(\lie{g}_2,\sharp_2)$ be PN Lie Algebras. The direct sum $\lie{g}_1\oplus\lie{g}_2$ is a Lie algebra under componentwise bracket, so for $X_j=(X_j^1,X_j^2)$,
 \[
-\ad_{X_c}\cdots\ad_{X_1}
-=
-\bigl(\ad_{X_c^1}\cdots\ad_{X_1^1},\,
-\ad_{X_c^2}\cdots\ad_{X_1^2}\bigr)=0.
+\ad_{X_c}\cdots\ad_{X_1}=\bigl(\ad_{X_c^1}\cdots\ad_{X_1^1},\;\ad_{X_c^2}\cdots\ad_{X_1^2}\bigr).
 \]
-Thus $G_1\times G_2$ is again SCN. The direct sum $\sharp_1\oplus\sharp_2\colon(\lie{g}_1\oplus\lie{g}_2)^*\to\lie{g}_1\oplus\lie{g}_2$ is a linear isomorphism, hence a Legendre iso on the product. The zero-dimensional group $\rr^0$ is SNL, serving as the monoidal unit. The cartesian product of Lie-group isomorphisms is a Lie-group isomorphism, and intertwining with Legendre isos is preserved componentwise, so $\times$ restricts to a functor $\snl\times\snl\to\snl$; the associator, unitors, and braiding of $\mfd$ are Lie-group isomorphisms between SNLs compatible with the direct-sum Legendre isos, giving $(\snl,\times,\rr^0)$ the structure of a symmetric monoidal groupoid. Note that $\times$ is \emph{not} a categorical product in $\snl$: the projections $G\times H\to G$ are not Lie-group isomorphisms in general. The action $(\cdot)$ extends $\times\colon\snl\times\snl\to\snl$ along the forgetful functor $\snl\to\mfd$ (on objects $G\mapsto G$, on morphisms treat each SNL iso as a diffeomorphism), and since $\times\colon\mfd\times\mfd\to\mfd$ is strong symmetric monoidal, so is its restriction $(\cdot)$.
+Taking $c=\max(c_1,c_2)$ where $c_i$ is the nilpotency class of $\lie{g}_i$, both components vanish, so $\lie{g}_1\oplus\lie{g}_2$ is nilpotent. The direct-sum pairing
+\[
+\pairing{(X_1,X_2),(Y_1,Y_2)}_{\lie{g}_1\oplus\lie{g}_2}\coloneqq \pairing{X_1,Y_1}_{\lie{g}_1}+\pairing{X_2,Y_2}_{\lie{g}_2}
+\]
+is nondegenerate because each summand is. The zero Lie algebra with its (vacuous) pairing is the monoidal unit. For PN-Lie-Algebra isos $\phi_i\colon(\lie{g}_i,\sharp_i)\to(\lie{h}_i,\sharp'_i)$, the direct sum $\phi_1\oplus\phi_2$ is a Lie-algebra iso whose pairing-preservation triangle is the direct sum of the two component triangles. The associator, unitors, and braiding from $(\Cat{Vect},\oplus,0)$ are PN-Lie-Algebra isos, giving $(\pnla,\oplus,0)$ the structure of a symmetric monoidal groupoid. Note $\oplus$ is not a categorical product in $\pnla$: the projections $\lie{g}\oplus\lie{h}\to\lie{g}$ are not Lie-algebra isomorphisms in general.
+
+The underlying-manifold functor $U\colon\pnla\to\mfd$ sends $(\lie{g},\sharp_{\lie{g}})$ to $\lie{g}$ as a finite-dimensional real vector space (hence a smooth manifold) and each PN-Lie-Algebra iso to its underlying linear diffeomorphism; it is strong symmetric monoidal because $\lie{g}_1\oplus\lie{g}_2$ and $\lie{g}_1\times\lie{g}_2$ coincide as manifolds. The action factors as
+\[
+\pnla\times\mfd\xrightarrow{U\times\id}\mfd\times\mfd\xrightarrow{\times}\mfd,
+\]
+strong symmetric monoidal as a composite of two such.
 \end{proof}
 
-\begin{proposition}\label{prop:scan-polynomial}
-For $(G, \sharp_G)$ SNL, there is an isomorphism $\cot{G} \cong G \yon^G$ in $\poly$.
-\end{proposition}
-
-\begin{proof}
-Positions on both sides are $G$. For each $g:G$, compose bijections
+\begin{proposition}[{$\cot\cong(-)\yon^{(-)}$ as functors $\pnla\to\poly$}]\label{prop:pnla-polynomial}
+The assignment $G\mapsto G\yon^G$ extends to a functor $\pnla\to\poly$ sending each $\pnla$-morphism $\phi\colon G\to H$ to the lens with position-action $\Phi\colon G\to H$ and backward-direction $\Phi\inv\colon H\to G$. There is a natural isomorphism $\cot\cong(-)\yon^{(-)}$, whose component at $G$ is given on directions at each $g\in G$ by
 \begin{equation}\label{eqn.directions_malcev}
-T^*_g G \xrightarrow{(dL_g|_e)^*} \lie{g}^* \xrightarrow{\sharp_G} \lie{g} \xrightarrow{\exp_G} G,
+F_g\colon T^*_g G \xrightarrow{(dL_g|_e)^*} \lie{g}^* \xrightarrow{\sharp_G} \lie{g} \xrightarrow{\exp_G} G.
 \end{equation}
-using that $(dL_g|_e)^*\colon T^*_g G \to \lie{g}^*$ is a linear iso (inverse of the transpose of left translation), $\sharp_G$ is a linear iso by \cref{def:scan}, and $\exp_G$ is a bijection by \cref{lem:malcev}.
+\end{proposition}
+
+\begin{proof}
+Each $F_g$ is a bijection: $(dL_g|_e)^*$ is a linear iso, $\sharp_G$ is a linear iso by \cref{def:pnla}, and $\exp_G$ is a diffeomorphism by Malcev's theorem (\cref{sec:lie-groups}). Positions agree on the nose, so $F_G\colon\cot G\cong G\yon^G$ in $\poly$ for each $G$.
+
+For naturality, let $\phi\colon(\lie g,\sharp_G)\to(\lie h,\sharp_H)$ be a $\pnla$-iso with Lie-group lift $\Phi\colon G\to H$. The position-part of the naturality square is trivial; the back-direction part at $g$ reduces to
+\[
+\Phi\circ F_g \;=\; F_{\Phi(g)}\circ(d\Phi|_g)^{-*},
+\]
+which unpacks using (a) $\Phi\circ\exp_G=\exp_H\circ\phi$ (Lie-group iso commutes with exp), (b) $\phi\circ\sharp_G\circ\phi^* = \sharp_H$ (pairing-preservation triangle of \cref{def:pnla}), and (c) $\Phi\circ L_g = L_{\Phi(g)}\circ\Phi$ (group iso commutes with left-translation), so $d\Phi|_{\Phi(g)}\circ dL_g|_e = dL_{\Phi(g)}|_e\circ\phi$.
 \end{proof}
 
-\begin{remark}\label{rmk:scan-fiberwise-addition}
-For a SNL $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot{G}\cong G\yon^G$ from \cref{prop:scan-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
+\begin{remark}\label{rmk:pnla-fiberwise-addition}
+For a PN Lie Algebra $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot{G}\cong G\yon^G$ from \cref{prop:pnla-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
 
 By \cref{prop:comonads-cats}, a $\tri$-comonoid structure on $G\yon^G$ is a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. We describe such a category, the \emph{translation category} of $G$ acting on itself by left multiplication: objects are elements of $G$, a morphism $g\to h$ is an element $x:G$ satisfying $h=gx$ (there is exactly one such $x$, namely $g\inv h$), identities are $e:G$, and composition is group multiplication. This category is isomorphic to the pair groupoid on $G$, but the translation-category presentation is the one that matches \eqref{eqn.directions_malcev}: the bijection $F_g\colon T^*_gG\to G$ identifies a cotangent vector at $g$ with a morphism $g\to gF_g(\xi)$ in the translation category. Thus we have maps
 \[
@@ -863,11 +848,11 @@ and for $\xi':T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determi
 \[
 F_g(\xi\then\xi') =F_g(\xi)\,F_{\cod_g(\xi)}(\xi').
 \]
-Thus the chosen Legendre iso $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot{G}$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those who know the Baker--Campbell--Hausdorff formula on SCNs, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot{G}$ is given by the BCH product.
+Thus the chosen pairing $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot{G}$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those familiar with the Baker--Campbell--Hausdorff formula on nilpotent Lie algebras, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot{G}$ is given by the BCH product.
 \end{remark}
 
-\begin{proposition}\label{prop:TstarG-scn}
-For any SCN $G$, the cotangent bundle manifold $T^*G$ is a SCN under left-trivialization.
+\begin{proposition}\label{prop:TstarG-pnla}
+For any PN Lie Algebra $\lie{g}$, the Lie algebra $\lie{g}\oplus\lie{g}^*$ --- the Lie algebra of the cotangent bundle $T^*G$ under left-trivialization --- is nilpotent, with nilpotency class at most $2n-1$ if $\lie{g}$ has class $n$.
 \end{proposition}
 
 \begin{proof}
@@ -910,8 +895,8 @@ D_k^{(2,2)}\cdots D_{j+1}^{(2,2)}\cdot *_j\cdot D_{j-1}^{(1,1)}\cdots D_1^{(1,1)
 for some choice of $j:\{1,\ldots,k\}$, where $D_i^{(1,1)}=\ad_{X_i}$ and $D_i^{(2,2)}=-\ad^*_{X_i}$. When $k=2n-1$, either $j-1\geq n$ (the right factor contains an $n$-fold $\ad$-composite and vanishes) or $k-j\geq n$ (the left factor contains an $n$-fold $\ad^*$-composite and vanishes). So every term is zero, and $\lie{g}\oplus\lie{g}^*$ has nilpotency class at most $2n-1$.
 \end{proof}
 
-\begin{proposition}\label{prop:canonical-anchor}
-The canonical symplectic form $\omega$ on $T^*G$ induces a canonical Legendre iso $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical SNL structure.
+\begin{proposition}\label{prop:canonical-pairing}
+The canonical symplectic form $\omega$ on $T^*G$ induces a canonical pairing $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical PN Lie Algebra structure.
 \end{proposition}
 
 \begin{proof}
@@ -919,43 +904,51 @@ This is standard; see Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}.
 \[
 \flat_\omega\colon \lie{g}\oplus\lie{g}^* \to (\lie{g}\oplus\lie{g}^*)^*,
 \]
-whose inverse is the required Legendre iso $\sharp_{T^*G}$.
+whose inverse is the required pairing $\sharp_{T^*G}$.
 \end{proof}
 
-\begin{proposition}\label{prop:TG-scn}
-For any SNL $(G,\sharp_G)$, the tangent bundle manifold $TG$ is a SNL under left-trivialization $TG\cong G\times\lie{g}$ with group law
+\begin{proposition}\label{prop:TG-pnla}
+For any PN Lie Algebra $(G,\sharp_G)$, the tangent bundle manifold $TG$ is a PN Lie Algebra under left-trivialization $TG\cong G\times\lie{g}$ with group law
 \[
 (g_1,X_1)\cdot(g_2,X_2)\coloneqq (g_1 g_2,\; \Ad_{g_2\inv}X_1 + X_2),
 \]
-unit $(e,0)$, and Legendre iso $\sharp_{TG}\colon(\lie{g}\oplus\lie{g})^*\cong\lie{g}^*\oplus\lie{g}^*\To{\sharp_G\oplus\sharp_G}\lie{g}\oplus\lie{g}$.
+unit $(e,0)$, and pairing $\sharp_{TG}\colon(\lie{g}\oplus\lie{g})^*\cong\lie{g}^*\oplus\lie{g}^*\To{\sharp_G\oplus\sharp_G}\lie{g}\oplus\lie{g}$.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Simply connected: product of simply-connected factors. Nilpotent: analogous to the block-triangular argument in \cref{prop:TstarG-scn}, with $\ad$ in both diagonal blocks in place of $(\ad,-\ad^*)$. The Legendre iso is a linear isomorphism by construction.
+\emph{[Proof deferred.]} Simply connected: product of simply-connected factors. Nilpotent: analogous to the block-triangular argument in \cref{prop:TstarG-pnla}, with $\ad$ in both diagonal blocks in place of $(\ad,-\ad^*)$. The pairing is a linear isomorphism by construction.
 \end{proof}
 
-\begin{proposition}[$T^*$ and $T$ as strong monoidal endofunctors of $\snl$]\label{prop:TT-endofunctors}
-The assignments $G\mapsto T^*G$ (\cref{prop:TstarG-scn,prop:canonical-anchor}) and $G\mapsto TG$ (\cref{prop:TG-scn}) extend to strong symmetric monoidal endofunctors
+\begin{proposition}[$T^*$ and $T$ as strong monoidal endofunctors of $\pnla$]\label{prop:TT-endofunctors}
+The assignments $G\mapsto T^*G$ (\cref{prop:TstarG-pnla,prop:canonical-pairing}) and $G\mapsto TG$ (\cref{prop:TG-pnla}) extend to strong symmetric monoidal endofunctors
 \[
-T^*,\, T\colon\snl\to\snl.
+T^*,\, T\colon\pnla\to\pnla.
 \]
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Functoriality is the chain rule; preservation of SNL morphism structure uses that the Legendre-intertwining square (\cref{def:scan}) is preserved by $T^*$ and $T$ on differentials. Strong monoidality is the canonical isomorphism $T^*(G\times H)\cong T^*G\times T^*H$ (resp.\ $T(G\times H)\cong TG\times TH$) combined with the direct-sum Legendre iso.
+\emph{[Proof deferred.]} Functoriality is the chain rule; preservation of PN Lie Algebra morphism structure uses that the pairing-intertwining square (\cref{def:pnla}) is preserved by $T^*$ and $T$ on differentials. Strong monoidality is the canonical isomorphism $T^*(G\times H)\cong T^*G\times T^*H$ (resp.\ $T(G\times H)\cong TG\times TH$) combined with the direct-sum pairing.
 \end{proof}
 
-\begin{proposition}[{Legendre as monoidal natural isomorphism $T^*\cong T$}]\label{prop:legendre}
-The Legendre isos $\sharp_P\colon\lie p^*\to\lie p$ of SNL groups assemble, in left-trivialization, into a family
+\begin{proposition}[{Pairing as monoidal natural isomorphism $T^*\cong T$}]\label{prop:legendre}
+The pairings $\sharp_P\colon\lie p^*\to\lie p$ of PN Lie Algebra groups assemble, in left-trivialization, into a family
 \[
 \sharp_P\colon T^*P\to TP,\qquad (u,\pi)\mapsto(u,\sharp_P(\pi)),
 \]
-which is a monoidal natural isomorphism of strong monoidal endofunctors of $\snl$:
+which is a monoidal natural isomorphism of strong monoidal endofunctors of $\pnla$:
 \[
 \sharp\colon T^*\;\xRightarrow{\;\sim\;}\;T.
 \]
-Naturality with respect to $\snl$-isomorphisms is the Legendre-intertwining axiom of \cref{def:scan}; monoidality $\sharp_{P\times Q}=\sharp_P\oplus\sharp_Q$ is the direct-sum Legendre iso convention on products (\cref{prop:TT-endofunctors}); each component $\sharp_P$ is an isomorphism by the definition of SNL. This is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\sharp_P\inv\colon\lie p\to\lie p^*$ sends velocity to conjugate momentum, $\sharp_P$ sends momentum to velocity.
+Naturality with respect to $\pnla$-isomorphisms is the pairing-intertwining axiom of \cref{def:pnla}; monoidality $\sharp_{P\times Q}=\sharp_P\oplus\sharp_Q$ is the direct-sum pairing convention on products (\cref{prop:TT-endofunctors}); each component $\sharp_P$ is an isomorphism by the definition of PN Lie Algebra. This is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\sharp_P\inv\colon\lie p\to\lie p^*$ sends velocity to conjugate momentum, $\sharp_P$ sends momentum to velocity.
 \end{proposition}
+
+\begin{remark}[Why $\pnla$ is a groupoid]\label{rmk:pnla-groupoid}
+Restricting $\pnla$-morphisms to Lie-algebra \emph{isomorphisms} is forced in two independent ways:
+\begin{itemize}
+\item \emph{Covariantizing $T^*$.} The cotangent functor is classically contravariant on $\mfd$; for $T^*$ to define a \emph{covariant} endofunctor on $\pnla$ (\cref{prop:TT-endofunctors}), the morphism $T^*\phi$ must act on the $\lie{g}^*$-summand by $(\phi^*)\inv\colon\lie{g}^*\to\lie{h}^*$, which requires $\phi$ invertible. Naturality of the Legendre transform $\sharp\colon T^*\Rightarrow T$ (\cref{prop:legendre}) is then a consequence.
+\item \emph{Translation-category functoriality.} For $G\mapsto G\yon^G$ to extend to a functor $\pnla\to\poly$, a morphism $\phi\colon G\to H$ is sent to the $\poly$-morphism with position-action $\Phi$ and backward-direction $\Phi\inv$ (see \cref{rmk:pnla-fiberwise-addition}); the backward-direction again requires invertibility. This is what upgrades \cref{prop:pnla-polynomial} from a pointwise iso to a natural one, and so makes the functor construction in \cref{prop:param-refinement} well-defined on morphisms.
+\end{itemize}
+\end{remark}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
 
@@ -1118,24 +1111,24 @@ Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce th
 
 \subsection{Example: deep learning as a dynamic monoidal category}\label{sec:deep-learning}
 
-We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and SNL Lie groups. Take the object set $O\coloneqq\nn$ and assign to each $n:\nn$ the polynomial $\cot{\mathbb{R}^n}\cong{\cot{\mathbb{R}}}\tpow n$; a layer $m\to n$ will be an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra.
+We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and PN Lie Algebras. Take the object set $O\coloneqq\nn$ and assign to each $n:\nn$ the polynomial $\cot{\mathbb{R}^n}\cong{\cot{\mathbb{R}}}\tpow n$; a layer $m\to n$ will be an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra.
 
-The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a SNL Lie group with Legendre iso $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex:Rn-scan}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop:cot-monoidal}) gives a polynomial map
+The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a PN Lie Algebra with pairing $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex:Rn-pnla}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop:cot-monoidal}) gives a polynomial map
 \[\cot{P}\otimes\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n},\]
-which by closedness of $\poly$ is equivalently a map $\cot{P}\to\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$. By \cref{ex:Rn-scan}, $\cot{P}\cong P\yon^P$, so \cref{ex:coalg-as-poly-map} presents it as an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra with state set $P$.
+which by closedness of $\poly$ is equivalently a map $\cot{P}\to\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$. By \cref{ex:Rn-pnla}, $\cot{P}\cong P\yon^P$, so \cref{ex:coalg-as-poly-map} presents it as an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra with state set $P$.
 
 Unwinding: the action at $p:P$ is $\cot{f_p}\colon\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n}$ (forward part $x\mapsto f_p(x)$, backward part $(Df_p)_x^\top$), and the update at $p$ on direction $(x,\nu):\mathbb{R}^m\times T^*_{f_p(x)}\mathbb{R}^n$ is
 \[
 \upd_p(x,\nu)=p+\sharp_P\bigl((\partial_Pf)_{(p,x)}^\top\nu\bigr)=p-\eta\cdot(\partial_Pf)_{(p,x)}^\top\nu,
 \]
-using \cref{ex:Rn-scan}'s codomain map on $\cot{P}\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
+using \cref{ex:Rn-pnla}'s codomain map on $\cot{P}\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
 
 Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop:cot-monoidal} to $\cot{\mathbb{R}^m}\otimes\cot{\mathbb{R}^{m'}}\cong\cot{\mathbb{R}^{m+m'}}$, and the whole assembles into an operad functor
 \[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
 
 \chapter{Potentialized lenses}\label{ch:potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec:lenses-general} develops the abstract construction in one pass: lenses, the backward-monad construction, the represented functor, evaluation at a $\Fun{T}$-algebra, and parameterization. \Cref{sec:potlens-manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the SNL parameterization, synthesizing them as $\potlens$.
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec:lenses-general} develops the abstract construction in one pass: lenses, the backward-monad construction, the represented functor, evaluation at a $\Fun{T}$-algebra, and parameterization. \Cref{sec:potlens-manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
 
 \section{The abstract construction}\label{sec:lenses-general}\label{sec:abstract-representation}
 
@@ -1474,18 +1467,18 @@ V\colon\outp L\times\inpt M\to\rr
 \]
 called the \emph{potential}, and coKleisli composition adds potentials along the backward pass.
 
-\subsection{SNL-parameterized potentialized lenses}\label{sec:potlens}
+\subsection{PN Lie Algebra-parameterized potentialized lenses}\label{sec:potlens}
 
-We lift the $\snl$-action on $\mfd$ from \cref{prop:scan-smc-action} to $\lmfd$ by acting on the $\outp M$-slot:
+We lift the $\pnla$-action on $\mfd$ from \cref{prop:pnla-smc-action} to $\lmfd$ by acting on the $\outp M$-slot:
 \[
-(\cdot)\colon\snl\times\lmfd\to\lmfd,\qquad P\cdot\lensob{M}\coloneqq\binom{\inpt M}{P\times\outp M}.
+(\cdot)\colon\pnla\times\lmfd\to\lmfd,\qquad P\cdot\lensob{M}\coloneqq\binom{\inpt M}{P\times\outp M}.
 \]
 (One could equally well act on the $\inpt M$-slot; we choose the $\outp M$-slot because its product with $P$ automatically inherits a comonoid structure, as required by the definition of a lens.)
 Applying the $\Para$ construction of \cref{sec:para-general} to the coKleisli category of the potential monad from \cref{sec:potential-monad}, we define the category of \emph{potentialized lenses}
 \[
-\potlens\coloneqq\para{\snl}{\lmfd^\rr}.
+\potlens\coloneqq\para{\pnla}{\lmfd^\rr}.
 \]
-Unfolding, a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ is a tuple $f=(P,\outp f,\inpt f,V)$ with $P$ a SNL Lie group,
+Unfolding, a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ is a tuple $f=(P,\outp f,\inpt f,V)$ with $P$ a PN Lie Algebra,
 \begin{equation}\label{eqn.map_paralens}
 \outp f\colon P\times\outp L\to\outp M
 \qqand
@@ -1531,7 +1524,7 @@ V\colon P\times\outp L\times\inpt M\to\rr.
   \draw[ar] (V_in1) to (R);
 \end{tikzpicture}
 \]
-The identity on $\lensob{L}$ has parameter $\rr^0\in\snl$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
+The identity on $\lensob{L}$ has parameter $\rr^0\in\pnla$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
 \begin{align*}
 V\bigl(p,\ell,\,\inpt g(q,\outp f(p,\ell),n')\bigr)+W\bigl(q,\outp f(p,\ell),n'\bigr).
 \end{align*}
@@ -1648,7 +1641,7 @@ In other words, the wiring itself can be smoothly varied. And finally by adding 
 
 \chapter{From lenses to dynamics}\label{ch:potlens-to-org}
 
-This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec:abstract-representation} to polynomial functors. The specific inputs are the cotangent functor, the potential monad, the SNL parameterization, and finally the passage from polynomial maps out of $\cot{P}$ to coalgebras in $\org$.
+This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec:abstract-representation} to polynomial functors. The specific inputs are the cotangent functor, the potential monad, the PN Lie Algebra parameterization, and finally the passage from polynomial maps out of $\cot{P}$ to coalgebras in $\org$.
 
 \section{Specialization to polynomial functors}\label{sec:specialize-source}
 
@@ -1698,16 +1691,16 @@ is obtained by composing the cotangent lift $\lmfd^\rr\to\Lens{\poly}^\Fun{T}$ w
 \cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
 \]
 
-Now take $\cat{A}=\snl$ and
+Now take $\cat{A}=\pnla$ and
 \[
 J(P)\coloneqq\cot{P}.
 \]
-This is strong monoidal by \cref{prop:cot-monoidal,prop:scan-smc-action}, and \cref{lem:cot-comonoid} supplies compatible comonoid structures on its values; the functorial and monoidal structure maps preserve them because they are obtained from the strong monoidal functor $\cot$.
+This is strong monoidal by \cref{prop:cot-monoidal,prop:pnla-smc-action}, and \cref{lem:cot-comonoid} supplies compatible comonoid structures on its values; the functorial and monoidal structure maps preserve them because they are obtained from the strong monoidal functor $\cot$.
 The abstract parameter construction gives an intermediate functor
 \[
-\potlens=\para{\snl}{\lmfd^\rr}\to\para{\snl}{\poly},
+\potlens=\para{\pnla}{\lmfd^\rr}\to\para{\pnla}{\poly},
 \]
-where $\snl$ acts on $\poly$ by
+where $\pnla$ acts on $\poly$ by
 \[
 P\cdot p\coloneqq\cot{P}\otimes p.
 \]
@@ -1721,7 +1714,7 @@ or equivalently
 \ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
 \end{equation}
 
-This is the point at which we use a property specific to polynomial functors. Since $P$ is a SNL, \cref{prop:scan-polynomial} gives
+This is the point at which we use a property specific to polynomial functors. Since $P$ is a PN Lie Algebra, \cref{prop:pnla-polynomial} gives
 \[
 \cot{P}\cong P\yon^P.
 \]
@@ -1729,25 +1722,25 @@ By \cref{ex:coalg-as-poly-map}, the map \eqref{eqn:parameter-to-action} is equiv
 
 \section{The cotangent-state refinement}\label{sec:cotangent-state-refinement}
 
-For the dynamics considered in this paper, we use $T^*P$ rather than $P$ as the state space. This is an additional step, not part of the abstract construction above. It fits a general framework: choose a strong monoidal endofunctor $F\colon\snl\to\snl$ and a monoidal natural transformation $\rho\colon\cot\circ F\Rightarrow\cot$, and precompose.
+For the dynamics considered in this paper, we use $T^*P$ rather than $P$ as the state space. This is an additional step, not part of the abstract construction above. It fits a general framework: choose a strong monoidal endofunctor $F\colon\pnla\to\pnla$ and a monoidal natural transformation $\rho\colon\cot\circ F\Rightarrow\cot$, and precompose.
 
 \begin{proposition}[Parameter-refinement by a monoidal natural transformation]\label{prop:param-refinement}
-Let $F\colon\snl\to\snl$ be a strong monoidal endofunctor and let $\rho\colon\cot\circ F\Rightarrow\cot$ be a monoidal natural transformation (naturality required only for $\snl$-isomorphisms, since $\snl$ is a groupoid). Precomposition with $\rho$ defines an identity-on-objects functor
+Let $F\colon\pnla\to\pnla$ be a strong monoidal endofunctor and let $\rho\colon\cot\circ F\Rightarrow\cot$ be a monoidal natural transformation (naturality required only for $\pnla$-isomorphisms, since $\pnla$ is a groupoid). Precomposition with $\rho$ defines an identity-on-objects functor
 \[
-\rho^*\colon\Para_{\snl,\,\cot}(\poly)\;\longrightarrow\;\Para_{\snl,\,\cot\circ F}(\poly),
+\rho^*\colon\Para_{\pnla,\,\cot}(\poly)\;\longrightarrow\;\Para_{\pnla,\,\cot\circ F}(\poly),
 \qquad
 (P,\,f\colon\cot P\otimes x\to y)\;\mapsto\;\bigl(P,\,f\circ(\rho_P\otimes\id)\bigr).
 \]
-Composing with the coalgebra interpretation $\cot F(P)\cong F(P)\yon^{F(P)}$ (\cref{prop:scan-polynomial}, \cref{ex:coalg-as-poly-map}) yields a functor $\Para_{\snl,\,\cot}(\poly)\to\org$ with state set $F(P)$.
+Composing with the coalgebra interpretation $\cot F(P)\cong F(P)\yon^{F(P)}$ (\cref{prop:pnla-polynomial}, \cref{ex:coalg-as-poly-map}) yields a functor $\Para_{\pnla,\,\cot}(\poly)\to\org$ with state set $F(P)$.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Functoriality of $\rho^*$ on composition uses monoidality of $\rho$ (the comparison $\rho_{P\otimes Q}$ factors as $\rho_P\otimes\rho_Q$ under the strong monoidal structures of $\cot$ and $\cot\circ F$); well-definedness on 2-cells uses naturality of $\rho$ with respect to $\snl$-isomorphisms.
+\emph{[Proof deferred.]} Functoriality of $\rho^*$ on composition uses monoidality of $\rho$ (the comparison $\rho_{P\otimes Q}$ factors as $\rho_P\otimes\rho_Q$ under the strong monoidal structures of $\cot$ and $\cot\circ F$); well-definedness on 2-cells uses naturality of $\rho$ with respect to $\pnla$-isomorphisms.
 \end{proof}
 
-The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{Legendre projection} below; \cref{rmk:tangent-state} records the analogous tangent-state alternative.
+The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{pairing projection} below; \cref{rmk:tangent-state} records the analogous tangent-state alternative.
 
-For any SNL $(P,\sharp_P)$, \cref{prop:TstarG-scn} left-trivializes
+For any PN Lie Algebra $(P,\sharp_P)$, \cref{prop:TstarG-pnla} left-trivializes
 \[
 T^*P\cong P\times\lie{p}^*.
 \]
@@ -1756,14 +1749,14 @@ We call a point $(u,\pi)$ a pair consisting of a \emph{position} $u:P$ and a \em
 T^*_{(u,\pi)}(T^*P)\cong\lie{p}^*\oplus\lie{p}.
 \]
 
-\begin{definition}[Legendre projection]\label{def:anchored-proj}
-The \emph{Legendre projection} $\rho_P\colon\cot{T^*P}\to\cot{P}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
+\begin{definition}[pairing projection]\label{def:pairing-proj}
+The \emph{pairing projection} $\rho_P\colon\cot{T^*P}\to\cot{P}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
 \[
 T^*_uP\cong\lie{p}^*\To{\sigma\mapsto(\sigma,\,\sharp_P(\pi))}\lie{p}^*\oplus\lie{p}\cong T^*_{(u,\pi)}(T^*P).
 \]
 \end{definition}
 
-On positions, $\rho_P$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $\lie{p}^*$-slot and injects the Legendre-lifted momentum $\sharp_P(\pi)\in\lie{p}$ into the $\lie{p}$-slot, independently of $\sigma$. Thus $\rho_P$ is not of the form $\cot{h}$ for any smooth $h\colon T^*P\to P$: the $\lie{p}$-component of its direction-action is constant in $\sigma$, whereas $\cot$ always produces a linear direction-action.
+On positions, $\rho_P$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $\lie{p}^*$-slot and injects the pairing-lifted momentum $\sharp_P(\pi)\in\lie{p}$ into the $\lie{p}$-slot, independently of $\sigma$. Thus $\rho_P$ is not of the form $\cot{h}$ for any smooth $h\colon T^*P\to P$: the $\lie{p}$-component of its direction-action is constant in $\sigma$, whereas $\cot$ always produces a linear direction-action.
 
 Precomposing \eqref{eqn:parameter-to-action} with $\rho_P$ gives
 \[
@@ -1773,22 +1766,22 @@ Precomposing \eqref{eqn:parameter-to-action} with $\rho_P$ gives
 \to
 \ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
 \]
-Since $T^*P$ is a SNL by \cref{prop:TstarG-scn,prop:canonical-anchor}, \cref{prop:scan-polynomial} gives
+Since $T^*P$ is a PN Lie Algebra by \cref{prop:TstarG-pnla,prop:canonical-pairing}, \cref{prop:pnla-polynomial} gives
 \[
 \cot{T^*P}\cong (T^*P)\yon^{T^*P}.
 \]
 Thus \cref{ex:coalg-as-poly-map} presents the above map as an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $T^*P$. This is the 1-cell $\Phi(f)$ in $\org$.
 
 \begin{remark}[Tangent-state alternative]\label{rmk:tangent-state}
-Taking $F\coloneqq T$ (\cref{prop:TT-endofunctors}) instead of $T^*$ fits \cref{prop:param-refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\sharp_P\inv(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$, using the inverse Legendre iso $\sharp_P\inv\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop:param-refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry canonical symplectic forms, giving canonical SNL structures by \cref{prop:canonical-anchor}, and the dynamics coincide with textbook Hamilton's equations).
+Taking $F\coloneqq T$ (\cref{prop:TT-endofunctors}) instead of $T^*$ fits \cref{prop:param-refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\sharp_P\inv(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$, using the inverse pairing $\sharp_P\inv\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop:param-refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry canonical symplectic forms, giving canonical PN Lie Algebra structures by \cref{prop:canonical-pairing}, and the dynamics coincide with textbook Hamilton's equations).
 \end{remark}
 
 \begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk:legendre-equivalence}
-By \cref{prop:legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so the parameter-refinements $\rho$ and $\tilde\rho$ correspond via $\cot\sharp$. Consequently, the two functors produced by \cref{prop:param-refinement},
+By \cref{prop:legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so the parameter-refinements $\rho$ and $\tilde\rho$ correspond via $\cot{\sharp}$. Consequently, the two functors produced by \cref{prop:param-refinement},
 \[
 \Phi^{T^*},\;\Phi^{T}\colon\potlens\to\org,
 \]
-are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org$ induced by $\sharp_P\colon T^*P\to TP$ identifies $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$ as 1-cells. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting: the two formulations disagree on literal state spaces ($T^*P$ vs $TP$), but the Legendre iso mediates a canonical isomorphism between them. The paper works with $\Phi^{T^*}$ for the reasons given in \cref{rmk:tangent-state}.
+are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org$ induced by $\sharp_P\colon T^*P\to TP$ identifies $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$ as 1-cells. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting: the two formulations disagree on literal state spaces ($T^*P$ vs $TP$), but the pairing mediates a canonical isomorphism between them. The paper works with $\Phi^{T^*}$ for the reasons given in \cref{rmk:tangent-state}.
 \end{remark}
 
 \section{Supporting corollaries}\label{sec:corollaries}
@@ -1796,7 +1789,7 @@ are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org
 The following two corollaries of the abstract machinery specialized to $\cot\colon\mfd\to\poly$ are used in the proofs below. Both are direct consequences of \cref{prop:cot-monoidal,lem:cot-comonoid,prop:Theta}.
 
 \begin{corollary}[Cotangent chain rule]\label{cor:chain-rule}
-For smooth maps $u_i\colon M\to A_i$ ($i=1,\ldots,k$) and $\psi\colon A_1\times\cdots\times A_k\to N$, setting $h\coloneqq\psi\circ\langle u_1,\ldots,u_k\rangle$, we have $\cot h = \cot\psi\circ(\cot u_1\otimes\cdots\otimes\cot u_k)\circ\cot\Delta_M^{(k)}$ in $\poly$. At position $m:M$ and direction $\sigma:T^*_{h(m)}N$,
+For smooth maps $u_i\colon M\to A_i$ ($i=1,\ldots,k$) and $\psi\colon A_1\times\cdots\times A_k\to N$, setting $h\coloneqq\psi\circ\langle u_1,\ldots,u_k\rangle$, we have $\cot{h} = \cot{\psi}\circ(\cot{u_1}\otimes\cdots\otimes\cot{u_k})\circ\cot{\Delta_M^{(k)}}$ in $\poly$. At position $m:M$ and direction $\sigma:T^*_{h(m)}N$,
 \[
 (dh_m)^*\sigma = \sum_{i=1}^k (du_{i,m})^*(\partial_i\psi)^*\sigma\in T^*_m M,
 \]
@@ -1815,7 +1808,7 @@ For every manifold $N$, $\ihom{\cot N,\yon}$ is a commutative monoid in $(\poly,
 \end{corollary}
 
 \begin{proof}
-\emph{[Proof deferred.]} The comonoid structure on $\cot N$ from \cref{lem:cot-comonoid} dualizes via closedness to a commutative monoid structure on $\ihom{\cot N,\yon}$. At each position $n:N$, the comultiplication $\cot\Delta_N^{(k)}$ is the $k$-fold fiberwise addition on $T^*_n N$, and its adjoint yields pointwise addition of covector fields.
+\emph{[Proof deferred.]} The comonoid structure on $\cot{N}$ from \cref{lem:cot-comonoid} dualizes via closedness to a commutative monoid structure on $\ihom{\cot{N},\yon}$. At each position $n:N$, the comultiplication $\cot{\Delta_N^{(k)}}$ is the $k$-fold fiberwise addition on $T^*_n N$, and its adjoint yields pointwise addition of covector fields.
 \end{proof}
 
 \section{Hamilton-like equations}\label{sec:hamilton}
@@ -1846,7 +1839,7 @@ When the system is coupled to an environment that can exchange momentum with it,
 \subsection{The reduction theorem}\label{sec:reduction}
 
 \begin{theorem}[Reduction]\label{thm:reduction}
-Let $f=(P,\outp f,\inpt f,V)\colon\lensob L\to\lensob M$ be a morphism in $\potlens$. By \cref{cor:covector-monoid}, a position of $\Phi_1\lensob M=\cot\outp M\otimes\ihom{\cot\inpt M,\yon}$ is a pair $(m,\beta)$ with $m:\outp M$ and $\beta\in\Omega^1(\inpt M)$, and a direction there is a pair $(\nu,m')\in T^*_m\outp M\times\inpt M$. At state $(u,\pi)\in T^*P$ on input $(\ell,\alpha)\in\Phi_1\lensob L(1)$:
+Let $f=(P,\outp f,\inpt f,V)\colon\lensob L\to\lensob M$ be a morphism in $\potlens$. By \cref{cor:covector-monoid}, a position of $\Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}$ is a pair $(m,\beta)$ with $m:\outp M$ and $\beta\in\Omega^1(\inpt M)$, and a direction there is a pair $(\nu,m')\in T^*_m\outp M\times\inpt M$. At state $(u,\pi)\in T^*P$ on input $(\ell,\alpha)\in\Phi_1\lensob L(1)$:
 \begin{enumerate}
 \item The action of $\Phi(f)$ produces output $(m,\beta)\in\Phi_1\lensob M(1)$ with
 \[
@@ -1871,7 +1864,7 @@ All partials are evaluated at $(u,\ell,m')$.
 \end{theorem}
 
 \begin{proof}
-\emph{[Proof deferred.]} The $\sharp_P(\pi)$ contribution to $\dot u$ comes from the Legendre projection $\rho_P$ (\cref{def:anchored-proj}), whose $\lie{p}$-component is constant in the input direction. The three force-like terms in $\dot\pi$, $\mu^\mathrm{fb}$, and $\beta$ arise from tracing directions through the three-fold codiagonal on $P\times\outp L\times\inpt M$ and the three branches corresponding to $V$, $\outp f$, $\inpt f$; their sum is the pointwise addition of \cref{cor:covector-monoid}. A full proof uses \cref{cor:chain-rule} applied in each slot.
+\emph{[Proof deferred.]} The $\sharp_P(\pi)$ contribution to $\dot u$ comes from the pairing projection $\rho_P$ (\cref{def:pairing-proj}), whose $\lie{p}$-component is constant in the input direction. The three force-like terms in $\dot\pi$, $\mu^\mathrm{fb}$, and $\beta$ arise from tracing directions through the three-fold codiagonal on $P\times\outp L\times\inpt M$ and the three branches corresponding to $V$, $\outp f$, $\inpt f$; their sum is the pointwise addition of \cref{cor:covector-monoid}. A full proof uses \cref{cor:chain-rule} applied in each slot.
 \end{proof}
 
 \begin{remark}[Correspondence with textbook Hamilton's equations]\label{rmk:hamilton-correspondence}
@@ -1885,7 +1878,7 @@ as a state-dependent Hamiltonian on $T^*P$ (parameterized by the current input $
 \qquad
 \dot\pi \;=\; \underbrace{-d_P V}_{-\partial_u H} \;+\; \underbrace{(\partial_P\outp f)^*\nu \;+\; (\partial_P\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr)}_{F_\mathrm{ext}}.
 \]
-The Legendre iso $\sharp_P$ plays the role of the inverse inertia $M^{-1}$. The two pullback terms in $F_\mathrm{ext}$ are the non-conservative generalized forces transmitted through the lens's forward map $\outp f$ (carrying the back-force $\nu$ from the target interface) and its backward map $\inpt f$ (carrying the covector field $\alpha$ from the source interface). When both are zero --- a closed system --- the equations collapse to the standard closed-form \eqref{eqn:hamilton-mechanical}.
+The pairing $\sharp_P$ plays the role of the inverse inertia $M^{-1}$. The two pullback terms in $F_\mathrm{ext}$ are the non-conservative generalized forces transmitted through the lens's forward map $\outp f$ (carrying the back-force $\nu$ from the target interface) and its backward map $\inpt f$ (carrying the covector field $\alpha$ from the source interface). When both are zero --- a closed system --- the equations collapse to the standard closed-form \eqref{eqn:hamilton-mechanical}.
 \end{remark}
 
 \section{Functoriality}\label{sec:functoriality}
@@ -1901,21 +1894,21 @@ The assignment $f\mapsto\Phi(f)$ extends to a functor $\Phi\colon\potlens\to\org
 \section{Lax symmetric monoidality}\label{sec:lax-monoidal}
 
 \begin{proposition}\label{prop:potlens-monoidal}
-$\potlens$ inherits from $\lmfd$ and $\snl$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor product
+$\potlens$ inherits from $\lmfd$ and $\pnla$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor product
 \[
 \lensob L\otimes\lensob{L'}\coloneqq\lensobs{L}{L'}.
 \]
-On morphisms, $f\otimes f'$ has parameter $P\times P'$ (with Legendre iso $\sharp_P\oplus\sharp_{P'}$), independent forward and backward components, and potential $V^\otimes=V\circ\pr+V'\circ\pr'$.
+On morphisms, $f\otimes f'$ has parameter $P\times P'$ (with pairing $\sharp_P\oplus\sharp_{P'}$), independent forward and backward components, and potential $V^\otimes=V\circ\pr+V'\circ\pr'$.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Inherited from the symmetric monoidal structures on $\lmfd=\Lens{\mfd}$ (\cref{sec:lenses-general}) and on $\snl$ (\cref{prop:scan-smc-action}), via the $\Para$ construction (\cref{sec:para-general}).
+\emph{[Proof deferred.]} Inherited from the symmetric monoidal structures on $\lmfd=\Lens{\mfd}$ (\cref{sec:lenses-general}) and on $\pnla$ (\cref{prop:pnla-smc-action}), via the $\Para$ construction (\cref{sec:para-general}).
 \end{proof}
 
 \begin{theorem}\label{thm:lax-monoidal}
-$\Phi\colon\potlens\to\org$ is lax symmetric monoidal. The morphism laxator $\Phi(f)\otimes\Phi(f')\to\Phi(f\otimes f')$ has state component the canonical $T^*P\times T^*P'\cong T^*(P\times P')$, and its interface component is the tensor of \cref{prop:cot-monoidal}'s strong comparison on the $\cot\outp{(-)}$ factor with the pairing
+$\Phi\colon\potlens\to\org$ is lax symmetric monoidal. The morphism laxator $\Phi(f)\otimes\Phi(f')\to\Phi(f\otimes f')$ has state component the canonical $T^*P\times T^*P'\cong T^*(P\times P')$, and its interface component is the tensor of \cref{prop:cot-monoidal}'s strong comparison on the $\cot{\outp{(-)}}$ factor with the pairing
 \[
-\ihom{\cot\inpt L,\yon}\otimes\ihom{\cot\inpt{L'},\yon}\to\ihom{\cot(\inpt L\times\inpt{L'}),\yon}
+\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{(\inpt L\times\inpt{L'})},\yon}
 \]
 from \cref{prop:Theta} on the hom factor. The pairing is not invertible: it classifies external-sum covector fields on $\inpt L\times\inpt{L'}$, missing those with genuine $\inpt L$-$\inpt{L'}$ mixed dependence. Hence $\Phi$ is lax, not strong.
 \end{theorem}
@@ -1935,7 +1928,7 @@ Fix $\kappa,\mu>0$. The \emph{spring cell} is the $\potlens$-morphism
 \[
 f_\mathrm{spring}\colon\binom{\rr^2}{\rr}\to\binom{\rr^2}{\rr}
 \]
-with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), SNL parameter $P\coloneqq(\rr,+,0)$ with Legendre iso $\sharp_P(p)\coloneqq p/\mu$, and data
+with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), PN Lie Algebra parameter $P\coloneqq(\rr,+,0)$ with pairing $\sharp_P(p)\coloneqq p/\mu$, and data
 \[
 \outp f(x,y)\coloneqq x,
 \quad
@@ -1945,8 +1938,8 @@ V(x,y,(\ell,r))\coloneqq\tfrac{\kappa}{2}(x-\ell)^2+\tfrac{\kappa}{2}(r-x)^2.
 \]
 \end{definition}
 
-\begin{remark}\label{rmk:spring-anchor}
-The Legendre iso $\sharp_P(p)=p/\mu$ is chosen (\cref{rmk:anchor-chosen}), not the canonical Legendre iso of \cref{prop:canonical-anchor}. The free parameter $\mu$ encodes inverse mass; the canonical Legendre iso corresponds to $\mu=1$.
+\begin{remark}\label{rmk:spring-pairing}
+The pairing $\sharp_P(p)=p/\mu$ is chosen, not the canonical pairing of \cref{prop:canonical-pairing}. The free parameter $\mu$ encodes inverse mass; the canonical pairing corresponds to $\mu=1$.
 \end{remark}
 
 \begin{proposition}\label{prop:spring-dynamics}
@@ -1959,7 +1952,7 @@ At state $(x,p)\in T^*P$ on input $(y,\alpha)$ with vanishing received covector 
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Apply \cref{thm:reduction}. The $\inpt f$-contribution to $\dot p$ vanishes because $\partial_P\inpt f=0$; the $\outp f$-contribution vanishes because $\nu=0$; the $V$-contribution is $-\partial_xV=\kappa(\ell+r-2x)$. The $\sharp_P(p)=p/\mu$ term comes from the Legendre projection (\cref{def:anchored-proj}).
+\emph{[Proof deferred.]} Apply \cref{thm:reduction}. The $\inpt f$-contribution to $\dot p$ vanishes because $\partial_P\inpt f=0$; the $\outp f$-contribution vanishes because $\nu=0$; the $V$-contribution is $-\partial_xV=\kappa(\ell+r-2x)$. The $\sharp_P(p)=p/\mu$ term comes from the pairing projection (\cref{def:pairing-proj}).
 \end{proof}
 
 \begin{remark}[Harmonic oscillator Hamiltonian]\label{rmk:spring-hamiltonian}
