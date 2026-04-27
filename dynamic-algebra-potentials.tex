@@ -162,9 +162,9 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 % Adjunctions
 \newcommand{\adj}[5][30pt]{%[size] Cat L, Left, Right, Cat R.
 \begin{tikzcd}[ampersand replacement=\&, column sep=#1]
-  #2\ar[r, shift left=7pt, "#3"]
+  #2\ar[r, shift left=6pt, "#3"]
   \ar[r, phantom, "\scriptstyle\Rightarrow"]\&
-  #5\ar[l, shift left=7pt, "#4"]
+  #5\ar[l, shift left=6pt, "#4"]
 \end{tikzcd}
 }
 
@@ -187,7 +187,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \usepackage{aliascnt}
 
 \theoremstyle{definition}
-\newtheorem{definitionx}{Definition}[chapter]
+\newtheorem{definitionx}{Definition}[section]
 
 \newaliascnt{examplex}{definitionx}
 \newtheorem{examplex}[examplex]{Example}
@@ -300,6 +300,8 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\Mor}{Mor}
 \DeclareMathOperator{\dom}{dom}
+\newcommand{\Int}{\mathop{\Fun{Int}}\nolimits}
+\newcommand{\Lie}{\mathop{\Fun{Lie}}\nolimits}
 \DeclareMathOperator{\cod}{cod}
 \DeclareMathOperator{\idy}{idy}
 \DeclareMathOperator*{\colim}{colim}
@@ -381,6 +383,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\smcat}{\Cat{Cat}}
 \newcommand{\catsharp}{\Cat{Cat}^{\sharp}}
 \newcommand{\en}{\Cat{End}}
+\newcommand{\vect}{\Cat{Vect}}
 
 \newcommand{\List}{\Fun{List}}
 \newcommand{\set}{\tn{-}\Cat{Set}}
@@ -457,8 +460,8 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 
 \linespread{1.1}
 %\allowdisplaybreaks
-\setsecnumdepth{section}
-\settocdepth{section}
+\setsecnumdepth{subsection}
+\settocdepth{subsection}
 \setlength{\parindent}{15pt}
 \setcounter{tocdepth}{1}
 
@@ -467,7 +470,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 %--------------- Document ---------------%
 \begin{document}
 
-\title{Dynamic Algebra of Potentials}
+\title{Nested Potentials}
 
 \author{David I. Spivak}
 
@@ -482,7 +485,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \tableofcontents
 
 %--------------------------------------------------------------------
-\chapter{Introduction}\label{ch:intro}
+\chapter{Introduction}\label{ch.intro}
 %--------------------------------------------------------------------
 
 % TODO: write introduction
@@ -490,10 +493,10 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 
 
 %--------------------------------------------------------------------
-\chapter{Background}\label{ch:background}
+\chapter{Background}\label{ch.background}
 %--------------------------------------------------------------------
 
-\section{Notation and preliminaries}\label{sec:prelim}
+\section{Notation and preliminaries}\label{sec.prelim}
 
 We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor in sans-serif, $\Fun{T},\Fun{Box}$. Lie algebras use fraktur, $\lie{g},\lie{p}$; number systems use blackboard bold, $\nn,\rr$, as does the only bicategory we work with, $\org$. 
 
@@ -501,20 +504,20 @@ In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-como
 
 A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice, compatible with $\otimes$, of a cocommutative such structure on every object of $\cat{C}$. Any cartesian monoidal category canonically supplies its diagonals and terminal maps, and every morphism is then automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
 
-\section{Polynomial functors, comonads, and coalgebras}\label{sec:poly-dynamic-bg}
+\section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
 
-\subsection{The symmetric monoidal closed category $\poly$}\label{sec:poly}
+\subsection{The symmetric monoidal closed category $\poly$}\label{sec.poly}
 
 We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
 
 A \emph{polynomial functor} is an endofunctor $p\colon\smset\to\smset$ of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
-\begin{equation}\label{eqn:poly}
+\begin{equation}\label{eqn.poly}
 p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
 \end{equation}
-We use juxtaposition for scalar multiplication: $pq\coloneqq p\times q$, and we write $1=\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m:M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
+We use juxtaposition for scalar multiplication: $pq\coloneqq p\times q$, and we write $1=\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m\in M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
 
 One can derive from the universal property of coproducts and the Yoneda lemma that natural transformations $\varphi\colon p\to q$ are given by:
-\begin{equation}\label{eqn:poly_map}
+\begin{equation}\label{eqn.poly_map}
 \poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
 \end{equation}
 The outer $\prod_i\sum_j$ yields an ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote this function
@@ -522,23 +525,23 @@ The outer $\prod_i\sum_j$ yields an ``forward on-positions'' function $\varphi_1
 writing the overline-bracket $\bk{(\,\cdot\,)}$ for the backward component throughout. We take the morphisms $p\to q$ in $\poly$ to be the natural transformations between the underlying functors.
 
 For polynomials $p,q$, their \emph{Dirichlet tensor product} is
-\begin{equation}\label{eqn:dirichlet}
+\begin{equation}\label{eqn.dirichlet}
 p\otimes q\coloneqq\sum_{(i,j):p(1)\times q(1)}\yon^{p[i]\times q[j]}\;.
 \end{equation}
 The unit is $\yon=\yon^1$. The Dirichlet product is symmetric monoidal and closed: the \emph{internal hom} is
-\begin{equation}\label{eqn:dirichlet_hom}
+\begin{equation}\label{eqn.dirichlet_hom}
 \ihom{p,q}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
 \end{equation}
-satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn:dirichlet_hom} with \eqref{eqn:poly_map}. We can rewrite it as
+satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it as
 \[
 \ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
 \]
 A direction at $\varphi:\ihom{p,q}(1)$ consists of a pair $(i,e)$, where $i:p(1)$ is a $p$-position and $e:q[\varphi_1(i)]$ is a $q$-direction.
 
-\subsection{Polynomial comonads as categories}\label{sec:comonads}
+\subsection{Polynomial comonads as categories}\label{sec.comonads}
 
-The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$, with unit $\yon$. Using the expanded form of \eqref{eqn:poly}:
-\begin{equation}\label{eqn:substitution}
+The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$, with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
+\begin{equation}\label{eqn.substitution}
 p\tri q=\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon.
 \end{equation}
 A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, substitution recovers evaluation: $p\tri S=p(S)$.
@@ -551,29 +554,29 @@ c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
 The counit $\epsilon\colon c\to\yon$ picks out an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $f\then g:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative.
 
-\begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop:comonads-cats}
+\begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
 The above correspondence defines an isomorphism between polynomial comonads and small categories.
 \end{proposition}
 
-\begin{example}[The store comonad and the pair groupoid]\label{ex:store}
+\begin{example}[The store comonad and the pair groupoid]\label{ex.store}
 For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times-\;\dashv\;(-)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. We can also write
-\begin{equation}\label{eqn:store-decomp}
+\begin{equation}\label{eqn.store_decomp}
 S\yon^S\;\cong\;\ihom{S\yon,\yon}\otimes S\yon
 \end{equation}
 since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1}\cong S\yon^S$. The counit $\epsilon\colon S\yon^S\to\yon$ sends each position $s:S$ to the identity $\id_s\coloneqq s:S=c[s]$. The comultiplication $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$ acts as follows: on positions, $\delta$ sends $s:S$ to the pair $(s,\cod)$ where $\cod\colon S\to S$ is the identity---so $\cod(t)=t$ for all $t:S$. On directions, given $s:S$ and $t:c[s]=S$, the codomain is $\cod(t)=t$, and given a further $u:c[t]=S$, the composite is $t\then u\coloneqq u$.
 
-By \cref{prop:comonads-cats} this is a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete category}) on $S$.
+By \cref{prop.comonads_cats} this is a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete category}) on $S$.
 \end{example}
 
 
 
-\subsection{Polynomial coalgebras as dynamical systems}\label{sec:coalgebras}
+\subsection{Polynomial coalgebras as dynamical systems}\label{sec.coalgebras}
 
 For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\smset$ is a set and $\beta\colon S\to p(S)$ is a function. We call elements of $S$ states; given a state $s:S$, the map assigns a \emph{readout} position $r_s\coloneqq\beta_1(s):p(1)$ and an \emph{update} function $\bk{\beta}_s\colon p[r_s]\to S$ sending each direction at $r_s$ to a new state. For example when $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
-\begin{example}[Coalgebras as polynomial maps]\label{ex:coalg-as-poly-map}
+\begin{example}[Coalgebras as polynomial maps]\label{ex.coalg_as_poly_map}
 A $p$-coalgebra $\beta\colon S\to p\tri S$ can be identified as a map $S\yon^S\to p$.%
 \footnote{
 Indeed, $\poly$ has a left Kan operation $\lens{p}{q}$ with $\poly(p,q'\tri q)\cong\poly\left(\lens{p}{q},q'\right)$
@@ -583,21 +586,363 @@ given by the formula $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{
 
 
 
-\section{Manifolds, Lie groups, and PN Lie Algebras}\label{sec:lie-pnla-bg}
+\section{Manifolds, Lie groups, and PN Lie Algebras}\label{sec.lie_pnla_bg}
 
-\subsection{The cotangent functor}\label{sec:cot}
+\subsection{Brief review of basic Lie theory}\label{sec.lie_groups}
+
+Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We sometimes write
+\[
+e\coloneqq \eta(*)\in G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
+\]
+
+The \emph{Lie algebra of $G$} is the tangent space at the identity:
+\[
+\lie{g}\coloneqq T_eG.
+\]
+Currying $\mu$ gives the \emph{left regular action} of $G$ on itself,
+\[
+L\colon G\to\mathrm{Diff}(G), \qquad L_g(h)\coloneqq gh,
+\]
+a smooth group homomorphism into the diffeomorphism group of $G$. A Lie-group homomorphism $\Phi\colon G\to H$ is exactly an $L$-equivariant map; indeed, $\Phi\circ L_g = L_{\Phi(g)}\circ\Phi$ unwinds to $\Phi(gh)=\Phi(g)\Phi(h)$. Thus the differential of $L_g$ at the identity and its transpose are linear isomorphisms, denoted
+\begin{equation}\label{eqn.left_translation}
+dL_g|_e\colon \lie{g}\To{\cong} T_gG
+\qqand
+(dL_g|_e)^*\colon T^*_gG\To{\cong} \lie{g}^*.
+\end{equation}
+A vector field $\tilde X\colon G\to TG$ is \emph{left-invariant}, written $\tilde X\in\mathrm{Vect}^L(G)$, if it is $L$-equivariant: $dL_g\circ\tilde X = \tilde X\circ L_g$ for every $g$. Each $X\in\lie{g}$ extends to a unique such $\tilde X$ via $\tilde X(g)\coloneqq dL_g|_e(X)$, giving the linear isomorphism
+\begin{equation}\label{eqn.livf}
+\lie{g}\To{\cong}\mathrm{Vect}^L(G),\qquad X\mapsto\tilde X.
+\end{equation}
+Each left-invariant vector field $\tilde X$ has a complete integral flow, and we write
+\begin{equation}\label{eqn.flow}
+\mathrm{Fl}^1\colon\mathrm{Vect}^L(G)\to\mathrm{Diff}(G), \qquad \tilde X\mapsto\mathrm{Fl}^1_{\tilde X},
+\end{equation}
+for the smooth assignment of a left-invariant vector field to its time-1 flow, the diffeomorphism of $G$ obtained by solving the ODE $\dot\sigma=\tilde X\circ\sigma$ for one unit of time.
+Dually, every cotangent fiber $T^*_gG$ is canonically identified with the single vector space $\lie{g}^*$ by pulling covectors back along left translation.%
+\footnote{
+Note that $\lie{g}^*$ is a Lie coalgebra, not a Lie algebra in general.
+}
+Collecting these fiberwise identifications gives vector-bundle isomorphisms over $G$:
+\begin{equation}\label{eqn.left_triv}
+TG \cong G\times\lie{g}
+\qqand
+T^*G \cong G\times\lie{g}^*,
+\end{equation}
+$v\mapsto(g,(dL_g|_e)\inv v)$ for $v\in T_gG$ and $\xi\mapsto(g,(dL_g|_e)^*\xi)$ for $\xi\in T^*_gG$. We refer to these as the \emph{left-trivializations} of $TG$ and $T^*G$.
+
+Conjugation by $g$ is the Lie group automorphism
+\[
+c_g\colon G\to G,\qquad h\mapsto ghg\inv.
+\]
+Its differential at the identity is called the \emph{adjoint action}, and the transpose of the adjoint action is the \emph{coadjoint action}:
+\[
+\Ad_g\coloneqq dc_g|_e\colon \lie{g}\to \lie{g}
+\qqand
+\Ad_g^*\coloneqq (dc_g|_e)^*\colon \lie{g}^*\to \lie{g}^*.
+\]
+
+For a finite-dimensional vector space $V$, we write $\End(V)$ for the vector space of linear maps $V\to V$ and $\Aut(V)$ for the group, under composition, of linear isomorphisms $V\to V$. Both are smooth manifolds: $\End(V)$ is a finite-dimensional vector space, and $\Aut(V)\subset\End(V)$ is open (the complement of the vanishing locus of $\det$).
+
+\begin{lemma}\label{lem.Ad_facts}
+The adjoint and coadjoint actions define group homomorphisms%
+\footnote{
+Each $\Ad_g$ in fact preserves the Lie bracket, so the lemma strengthens to $\Ad\colon G\to \Aut_\Cat{LieAlg}(\lie{g})$ and $\Ad^*\colon G\op\to \Aut_\Cat{LieAlg}(\lie{g}^*)$, but we don't need preservation of the Lie bracket in this paper.
+}
+\[
+\Ad\colon G\to \Aut(\lie{g})
+\qqand
+\Ad^*\colon G\op\to \Aut(\lie{g}^*).
+\]
+\end{lemma}
+
+\begin{proof}
+We need to show
+\[
+\Ad_e=^?\id_{\lie{g}}
+\qqand
+\Ad_{gh}=^?\Ad_g\circ \Ad_h.
+\]
+Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h\in G$, so differentiating at $e$ (using the chain rule and $c_h(e)=e$) gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes shows that $\Ad^*$ is also a group homomorphism.
+\end{proof}
+
+Conjugation $c\colon \mfd(G\times G, G)$ in a Lie group uses multiplication and inversion $c(g,h)\coloneqq ghg\inv$ and is hence smooth. Differentiating at the identity in the second variable depends smoothly on the first, so $\Ad$ is smooth. Since $\Ad^*$ factors as $\Ad$ followed by the transpose operation $\End(\lie{g})\to\End(\lie{g}^*)$, which is linear and hence smooth, $\Ad^*$ is also smooth. Under the canonical identification of a vector space with its tangent space at any point---which we will record formally in \cref{cor.tangent_vec}---differentiating $\Ad$ and $\Ad^*$ at the identity gives
+\[
+\ad\colon \lie{g}\to \End(\lie{g}),
+\qqand
+\ad^*\colon \lie{g}\to \End(\lie{g}^*).
+\]
+To denote the applyication at any $X\in \lie{g}$ we write
+\[
+\ad_X\coloneqq\ad(X)\colon \lie{g}\to \lie{g}
+\qqand
+\ad_X^*\coloneqq\ad^*(X)\colon \lie{g}^*\to \lie{g}^*
+\]
+for what are called the \emph{adjoint operator} and \emph{coadjoint operator} associated to $X$. Since the transpose operation is linear, differentiating $\Ad_g^*=(\Ad_g)^*$ at the identity gives $\ad_X^*=(\ad_X)^*$.
+
+The Lie bracket on $\lie{g}$ is defined by
+\[
+[X,Y]\coloneqq \ad_X(Y),
+\]
+which makes $\lie{g}$ into a Lie algebra. A homomorphism of Lie algebras $\phi\colon\lie{g}\to\lie{h}$ is then a linear map satisfying $\phi\circ\ad_X = \ad_{\phi X}\circ\phi$ for all $X\in \lie{g}$. Because we use brackets $[p,q]$ for internal hom of polynomials and have little use for Lie brackets in the paper, we will never again use the bracket notation for Lie algebras, using $\ad$ instead.
+
+\begin{proposition}[Direct sums in $\Cat{LieAlg}$]\label{prop.lie_alg_oplus}
+Given Lie algebras $\lie{g}_1,\lie{g}_2$, their \emph{direct sum} $\lie{g}_1\oplus\lie{g}_2$ is the Lie algebra whose adjoint operator decomposes componentwise:
+\begin{equation}\label{eqn.ad_oplus}
+\ad_{(X_1,X_2)}=(\ad_{X_1},\ad_{X_2}).
+\end{equation}
+This is the categorical product in $\Cat{LieAlg}$, with terminal object the zero Lie algebra $0$.
+
+The underlying-manifold functor $U_{\mathrm{LA}}\colon\Cat{LieAlg}\to\mfd$, sending each Lie algebra to its underlying real vector space (a smooth manifold) and each Lie-algebra hom to its underlying linear map, preserves products.
+%\[
+%U_{\mathrm{LA}}(0)=\rr^0
+%\qqand
+%U_{\mathrm{LA}}(\lie g_1\oplus\lie g_2)=U_{\mathrm{LA}}(\lie g_1)\times U_{\mathrm{LA}}(\lie g_2)
+%.\]
+\end{proposition}
+
+A Lie algebra is \emph{abelian} if every $\ad_X$ is the zero map. For abelian Lie algebras, the $\ad$-preservation condition on a Lie-algebra hom is vacuous, so a Lie-algebra hom between abelian Lie algebras is just a linear map. Letting $\Cat{LieAlg}^{\mathrm{ab}}$ denote the full subcategory on abelian Lie algebras, this gives an equivalence of categories
+\[
+\vect \;\simeq\; \Cat{LieAlg}^{\mathrm{ab}}.
+\]
+
+Write $\Cat{LieAlg}$ for the category of (finite dimensional) real Lie algebras and Lie-algebra homomorphisms, and $\Cat{LieGrp}$ for the category of (finite dimensional) Lie groups and smooth group homomorphisms.%
+\footnote{
+All manifolds in this paper are finite-dimensional, so we leave the parenthetical (finite dimensional) implicit throughout.
+}
+The Lie functor $\Lie\colon G\mapsto T_eG$ has a fully faithful left adjoint, the \emph{integration functor}
+\begin{equation}\label{eqn.lie_adj}
+\adj{\Cat{LieAlg}}{\Int}{\Lie}{\Cat{LieGrp}}.
+\end{equation}
+The Lie algebra of an abelian Lie group is abelian, i.e.\ \eqref{eqn.lie_adj} restricts to an adjunction between $\Cat{LieAlg}^{\mathrm{ab}}$ and $\Cat{LieGrp}^{\mathrm{ab}}$.
+The unit $\lie{g}\To{\cong}\Lie\Int\lie{g}$ of either adjunction is an isomorphism---this is \emph{Lie's third theorem}~\cite[Appendix B]{knapp2002lie}---so $\Int$ is fully faithful and $\Int\lie{g}$ is connected and simply connected (SC). Chaining the abelian-restricted adjunction with $\vect\simeq\Cat{LieAlg}^{\mathrm{ab}}$ thus gives an equivalence
+\begin{equation}\label{eqn.vect_ab_sc}
+\vect\simeq\Cat{LieAlg}^{\mathrm{ab}}\simeq\Cat{LieGrp}^{\mathrm{ab,SC}}, \qquad V\mapsto(V,0,+), \qquad G\mapsto\Lie G,
+\end{equation}
+whose unit isomorphism is $V\To{\cong}\Lie(V,0,+) = T_0V$.
+
+\begin{corollary}[Canonical identifications $T_pV\cong V$ and $T^*_pV\cong V^*$]\label{cor.tangent_vec}
+For a real vector space $V$ and any $p\in V$, there are canonical isomorphisms
+\[
+T_pV \;\cong\; V \qqand T^*_pV \;\cong\; V^*.
+\]
+\end{corollary}
+
+\begin{proof}
+View $V:\vect$ as the abelian Lie group $(V,0,+)$, with Lie algebra $\lie{v}\coloneqq T_0V$. Under $\vect\simeq\Cat{LieAlg}^{\mathrm{ab}}$, we have $\lie{v}=V$, so $T_0V=V$. Specializing \eqref{eqn.left_translation} to this Lie group at $g=p$ gives a linear iso $dL_p|_0\colon T_0V\To{\cong}T_pV$, hence $T_pV\cong V$. Dualizing gives $T^*_pV\cong V^*$.
+\end{proof}
+
+The \emph{exponential map} is the 2-cell $\exp$ in the triangle
+\[
+\begin{tikzcd}[column sep=large]
+& \Cat{LieAlg} \ar[dr, "U_{\mathrm{LA}}"] & \\
+\Cat{LieGrp} \ar[ur, "\Lie"] \ar[rr, "U_{\mathrm{LG}}"', ""{name=Ulg, above}] & & \mfd
+\arrow[Rightarrow, from=1-2, to=Ulg, "\exp", shorten=4pt]
+\end{tikzcd}
+\]
+where $U_{\mathrm{LA}}$ is from \cref{prop.lie_alg_oplus} and $U_{\mathrm{LG}}$ is the underlying-manifold functor on Lie groups. The top composite $U_{\mathrm{LA}}\circ\Lie$ sends $G\mapsto\lie g$ as a manifold; the bottom $U_{\mathrm{LG}}$ sends $G\mapsto G$ as a manifold. The component of $\exp$ at $G$ is the smooth map
+\[
+\exp_G\colon\lie{g} \;\To{\eqref{eqn.livf}}\; \mathrm{Vect}^L(G) \;\To{\eqref{eqn.flow}}\; \mathrm{Diff}(G) \;\To{\ev_e}\; G,
+\]
+the composite of \eqref{eqn.livf}, \eqref{eqn.flow}, and evaluation at $e$. 
+%Naturality of $\exp$ follows because each step is $L$-equivariant: a Lie-group hom $\Phi$ is $L$-equivariant by definition, left-invariant vector fields are $L$-equivariant vector fields, and flows of $L$-equivariant fields commute with $L$-translations.
+
+Writing $\rr$ for the additive Lie group $(\rr,0,+)$, the integral curve $\gamma_X\colon\rr\to G$ given by $\gamma_X(t)\coloneqq\mathrm{Fl}^t_{\tilde X}(e)$ is a smooth group homomorphism, classically called the \emph{one-parameter subgroup} of $G$ corresponding to $X$.%
+\footnote{
+By \cref{cor.tangent_vec}, the differential $d\gamma_X|_0\colon\rr\to\lie{g}$ sends $1\mapsto X$; abbreviating $\dot\gamma_X(0)\coloneqq d\gamma_X|_0(1)$, this recovers the textbook description of $\gamma_X$ as the unique 1-parameter subgroup with $\dot\gamma_X(0)=X$.
+}
+Then $\exp_G(X)=\gamma_X(1)$ and $\gamma_X(t)=\exp_G(tX)$.%
+\footnote{
+Under the free--forgetful adjunction $\Cat{Set}\rightleftarrows\Cat{LieAlg}$, $\rr$ is the free Lie algebra on one generator, so evaluation at $1$ gives a bijection $\Hom_{\Cat{LieAlg}}(\rr,\lie{g})\cong|\lie{g}|$ to the underlying set of $\lie{g}$. Composing with the adjunction \eqref{eqn.lie_adj} at $\rr$, since $\Int\rr=\rr$, any $X\in\lie{g}$ corresponds to $\gamma_X\in\Hom_{\Cat{LieGrp}}(\rr,G)$, and the underlying set map of $\exp_G$ factors as $|\lie{g}|\To{\;\cong\;}\Hom_{\Cat{LieGrp}}(\rr,G)\To{\ev_1}G$.
+}
+
+A Lie algebra $\lie{g}$ is \emph{nilpotent} if there exists $n\in \nn$ such that the iterated composite $\ad_{X_1}\circ\cdots\circ\ad_{X_n}=0\colon\lie{g}\to\lie{g}$ for all $X_1,\ldots,X_n\in \lie{g}$; the least such $n$ is the \emph{nilpotency class} of $\lie{g}$. (Abelian Lie algebras are exactly those of nilpotency class~$1$.) By \emph{Malcev's theorem}~\cite[Thm.~1.127]{knapp2002lie}, when $\lie{g}$ is nilpotent the exponential
+\[
+\exp_{\Int\lie{g}}\colon \lie{g}\To{\cong} \Int\lie{g}
+\]
+is a diffeomorphism. 
+
+We use this to identify a nilpotent $\lie{g}$ with $\Int\lie{g}$ as smooth manifolds, writing $\Int\lie{g}$ when the group structure is primary (multiplication, translation, cotangent bundle as a Lie group) and $\lie{g}$ when the algebraic structure is primary (pairing, morphisms, direct sums).
+
+\begin{lemma}[Lie-group structure on $TG$]\label{lem.TG_lie}
+For any Lie group $G$, the tangent bundle $TG$ is itself a Lie group: under left-trivialization $TG\cong G\times\lie{g}$ \eqref{eqn.left_triv}, the multiplication is the semidirect product
+\[
+(g_1,X_1)\cdot(g_2,X_2) \;\coloneqq\; (g_1g_2,\;\Ad_{g_2\inv}X_1+X_2),
+\]
+with unit $(e,0)$ and inverse $(g,X)\inv = (g\inv,\,-\Ad_g X)$. Its Lie algebra is $\Lie(TG)\cong\lie{g}\oplus\lie{g}$ with adjoint operator
+\[
+\ad_{(X_1,Y_1)}(X_2,Y_2) \;=\; (\ad_{X_1}X_2,\;\ad_{Y_1}X_2+\ad_{X_1}Y_2).
+\]
+\end{lemma}
+
+\begin{lemma}[Lie-group structure on $T^*G$]\label{lem.TstarG_lie}
+For any Lie group $G$, the cotangent bundle $T^*G$ is itself a Lie group: under left-trivialization $T^*G\cong G\times\lie{g}^*$ \eqref{eqn.left_triv}, the multiplication is the semidirect product
+\[
+(g_1,\xi_1)\cdot(g_2,\xi_2) \;\coloneqq\; (g_1g_2,\;\xi_1+\Ad^*_{g_1\inv}\xi_2),
+\]
+with unit $(e,0)$ and inverse $(g,\xi)\inv = (g\inv,\,-\Ad^*_g\xi)$. Its Lie algebra is $\Lie(T^*G)\cong\lie{g}\oplus\lie{g}^*$ with adjoint operator
+\[
+\ad_{(X_1,\nu_1)}(X_2,\nu_2) \;=\; (\ad_{X_1}X_2,\;\ad^*_{X_2}\nu_1-\ad^*_{X_1}\nu_2).
+\]
+\end{lemma}
+
+\subsection{Paired nilpotent Lie algebras}\label{sec.pnla}
+
+\begin{definition}\label{def.pnla}
+We define a \emph{pairing} on a Lie algebra $\lie{g}$ to be a linear map
+\[
+\pairing{-,-}\colon\lie{g}\otimes\lie{g}\to\rr,
+\]
+such that the induced \emph{flat} map $\flat_{\lie{g}}\colon\lie{g}\to\lie{g}^*$, given by $X\mapsto\pairing{X,-}_{\lie{g}}$, is a linear isomorphism;%
+\footnote{
+In other words $\pairing{-,-}$ is a \emph{nondegenerate bilinear form}.
+}
+its inverse is the \emph{sharp} map $\sharp_{\lie{g}}\colon\lie{g}^*\To{\cong}\lie{g}$.
+
+A \emph{paired nilpotent Lie algebra} (PN Lie Algebra) is a pair $(\lie{g}, \sharp_{\lie{g}})$ consisting of a finite-dimensional nilpotent real Lie algebra $\lie{g}$ and a pairing on $\lie{g}$. We write $\pnla$ for the groupoid whose objects are PN Lie Algebras and whose morphisms $(\lie{g},\sharp_{\lie{g}})\to(\lie{h},\sharp_{\lie{h}})$ are Lie-algebra isomorphisms $\phi\colon\lie{g}\To{\cong}\lie{h}$ preserving the pairing:
+\[
+\begin{tikzcd}
+\lie{g}\otimes\lie{g} \ar[rr,"\phi\otimes\phi"] \ar[dr,"{\pairing{-,-}_{\lie{g}}}"'] & & \lie{h}\otimes\lie{h} \ar[dl,"{\pairing{-,-}_{\lie{h}}}"] \\
+& \rr &
+\end{tikzcd}
+\qedhere\]
+\end{definition}
+
+\begin{example}\label{ex.Rn_pnla}
+The simply connected Lie group associated by \eqref{eqn.vect_ab_sc} to the vector space $\mathbb{R}^n$ is $(\mathbb{R}^n,0,+)$, with exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ the identity. Since the differential of left translation $L_p\colon q\mapsto p+q$ is also the identity, we have $(dL_p|_e)^*=\id$ at every point $p\in \rr^n$. Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as a pairing.
+\end{example}
+
+\begin{remark}[Why $\pnla$ is a groupoid]\label{rmk.pnla_groupoid}
+\Cref{def.pnla} requires morphisms to be Lie-algebra \emph{isomorphisms}, not merely Lie-algebra maps making the triangle commute: an inclusion $\lie{g}\hookrightarrow\lie{g}\oplus\lie{h}$ satisfies the condition but is not an iso, so is not a map in $\pnla$. 
+
+We need this restriction because each $\pnla$-morphism is used both covariantly and contravariantly, via $\phi$ and $\phi^*$. Various constructions in this section---a covariant action of $\pnla$ on $\mfd$, $T^*$ and $T$ as covariant endofunctors of $\pnla$, the Legendre transform $T^*\cong T$, and the polynomial identification of $\cot{G}$---need both directions to be available simultaneously, which is automatic when $\phi$ is invertible and breaks otherwise.
+\end{remark}
+
+\begin{proposition}\label{prop.pnla_monoidal}
+The groupoid $\pnla$ has a symmetric monoidal structure $(0,\oplus)$.
+\end{proposition}
+
+\begin{proof}
+The zero Lie algebra with its (vacuous) pairing is the monoidal unit. 
+
+Let $(\lie{g}_1,\sharp_1)$ and $(\lie{g}_2,\sharp_2)$ be PN Lie Algebras. Iterating \eqref{eqn.ad_oplus}, for $X_j=(X_j^1,X_j^2)\in\lie{g}_1\oplus\lie{g}_2$,
+\[
+\ad_{X_n}\cdots\ad_{X_1}=\bigl(\ad_{X_n^1}\cdots\ad_{X_1^1},\;\ad_{X_n^2}\cdots\ad_{X_1^2}\bigr).
+\]
+Taking $n=\max(n_1,n_2)$ where $n_i$ is the nilpotency class of $\lie{g}_i$, both components vanish, so $\lie{g}_1\oplus\lie{g}_2$ is nilpotent. The direct-sum pairing
+\[
+\pairing{(X_1,X_2),(Y_1,Y_2)}_{\lie{g}_1\oplus\lie{g}_2}\coloneqq \pairing{X_1,Y_1}_{\lie{g}_1}+\pairing{X_2,Y_2}_{\lie{g}_2}
+\]
+is nondegenerate because each summand is. 
+\end{proof}
+
+
+\begin{proposition}\label{prop.pnla_smc_action}
+The composite
+\[
+(\cdot)\colon\pnla\times\mfd\to\mfd,\qquad ((\lie{g},\sharp_{\lie{g}}),M)\mapsto \lie{g}\times M
+\]
+is a strong symmetric monoidal action of $\pnla$ on $\mfd$.
+\end{proposition}
+
+\begin{proof}
+The forgetful $\pnla\to\Cat{LieAlg}$ (drop the pairing) is strong symmetric monoidal, and post-composing with the product-preserving functor $U_{\mathrm{LA}}\colon\Cat{LieAlg}\to\mfd$ from \cref{prop.lie_alg_oplus} gives a strong monoidal functor $\pnla\to\mfd$. The action factors as a composite of strong monoidal functors:
+\[
+\pnla\times\mfd\To{}\Cat{LieAlg}\times\mfd\To{U_{\mathrm{LA}}\times\id}\mfd\times\mfd\To{\times}\mfd.
+\qedhere
+\]
+\end{proof}
+
+\begin{proposition}\label{prop.TstarG_pnla}
+For any PN Lie Algebra $\lie{g}$, with associated Lie group $G\coloneqq\Int\lie{g}$, the Lie algebra $\Lie(T^*G)$ is nilpotent, with nilpotency class at most $2n-1$ if $\lie{g}$ has class $n$.
+\end{proposition}
+
+\begin{proof}
+By \cref{lem.TstarG_lie}, $\Lie(T^*G)\cong\lie{g}\oplus\lie{g}^*$ with adjoint operator
+\[
+\ad_{(X,\nu)}(X',\nu')=(\ad_X X',\;\ad^*_{X'}\nu-\ad^*_X\nu').
+\]
+Relative to the decomposition $\lie{g}\oplus\lie{g}^*$, each $\ad_{(X,\nu)}$ has block form
+\[
+\ad_{(X,\nu)}=
+\begin{bmatrix}
+\ad_X & 0\\
+* & -\ad_X^*
+\end{bmatrix},
+\]
+where the entries are linear maps and we read products of such matrices as composition of linear endomorphisms of $\lie{g}\oplus\lie{g}^*$. The $(2,1)$ entry is the linear map $X'\mapsto\ad^*_{X'}\nu$, abbreviated $*$ since its specific form does not enter the argument below. 
+
+Suppose $\lie{g}$ has nilpotency class $n$, so every $n$-fold composite of operators $\ad_X$ is zero on $\lie{g}$; transposing, every $n$-fold composite of operators $\ad_X^*$ is zero on $\lie{g}^*$. We show that any $(2n-1)$-fold composite $A_k\cdots A_1$ (where $A_i=\ad_{(X_i,\nu_i)}$) is zero.
+
+Write $A_i=\begin{bsmallmatrix}\ad_{X_i} & 0\\ *_i & -\ad_{X_i}^*\end{bsmallmatrix}$. A product of lower-triangular block matrices is lower-triangular, and the diagonal blocks of $A_k\cdots A_1$ are $0$ by assumption. Each summand of its off-diagonal entry is a product
+\[
+(-\ad_{X_k}^*)\cdots(-\ad_{X_{j+1}}^*)\cdot *_j\cdot \ad_{X_{j-1}}\cdots\ad_{X_1}
+\]
+for some choice of $j\in\{1,\ldots,k\}$. When $k=2n-1$, either $j-1\geq n$ or $k-j\geq n$, and either way it vanishes, so the sum does too.
+\end{proof}
+
+\begin{proposition}\label{prop.canonical_pairing}
+For any Lie group $G$, the cotangent bundle $T^*G$ has a canonical pairing $\sharp_{T^*G}\colon(\lie{g}\oplus\lie{g}^*)^*\to\lie{g}\oplus\lie{g}^*$, making $T^*G$ a PN Lie Algebra.%
+\footnote{
+The pairing is the inverse of the iso $\flat_\omega\colon\lie{g}\oplus\lie{g}^*\To{\cong}(\lie{g}\oplus\lie{g}^*)^*$ induced at $(e,0)$ by the canonical symplectic form $\omega$ on $T^*G$; see Marsden--Ratiu~\cite[Prop.~6.1.1]{marsden1999introduction}. (The simpler braiding-style iso $(\lie{g}\oplus\lie{g}^*)^*\cong\lie{g}^*\oplus\lie{g}\to\lie{g}\oplus\lie{g}^*$ via swap is also a perfectly valid pairing; the symplectic-derived one is chosen here because it matches textbook conventions for Hamilton's equations downstream.)
+}
+\end{proposition}
+
+\begin{proposition}\label{prop.TG_pnla}
+For any PN Lie Algebra $(G,\sharp_G)$, the tangent bundle manifold $TG$ is a PN Lie Algebra under left-trivialization $TG\cong G\times\lie{g}$ with group law
+\[
+(g_1,X_1)\cdot(g_2,X_2)\coloneqq (g_1 g_2,\; \Ad_{g_2\inv}X_1 + X_2),
+\]
+unit $(e,0)$, and pairing $\sharp_{TG}\colon(\lie{g}\oplus\lie{g})^*\cong\lie{g}^*\oplus\lie{g}^*\To{\sharp_G\oplus\sharp_G}\lie{g}\oplus\lie{g}$.
+\end{proposition}
+
+\begin{proof}
+By \cref{lem.TG_lie}, $\Lie(TG)\cong\lie{g}\oplus\lie{g}$ with adjoint operator having block form
+\[
+\ad_{(X,Y)}=
+\begin{bmatrix}
+\ad_X & 0\\
+\ad_Y & \ad_X
+\end{bmatrix}.
+\]
+The same block-triangular argument as in the proof of \cref{prop.TstarG_pnla}, with both diagonals $\ad_X$ in place of $(\ad_X,-\ad_X^*)$, shows that $\Lie(TG)$ has nilpotency class at most $2n-1$ if $\lie{g}$ has class $n$. The pairing $\sharp_{TG}=\sharp_G\oplus\sharp_G$ is a linear isomorphism by construction.
+\end{proof}
+
+\begin{proposition}[$T^*$ and $T$ as strong monoidal endofunctors of $\pnla$]\label{prop.TT_endofunctors}
+The assignments $G\mapsto T^*G$ (\cref{prop.TstarG_pnla,prop.canonical_pairing}) and $G\mapsto TG$ (\cref{prop.TG_pnla}) extend to strong symmetric monoidal endofunctors
+\[
+T^*,\, T\colon\pnla\to\pnla.
+\]
+\end{proposition}
+
+\begin{proof}
+\emph{[Proof remains to be supplied or cited.]} Functoriality is the chain rule; preservation of PN Lie Algebra morphism structure uses that the pairing-intertwining square (\cref{def.pnla}) is preserved by $T^*$ and $T$ on differentials. Strong monoidality is the canonical isomorphism $T^*(G\times H)\cong T^*G\times T^*H$ (resp.\ $T(G\times H)\cong TG\times TH$) combined with the direct-sum pairing.
+\end{proof}
+
+\begin{proposition}[{Pairing as monoidal natural isomorphism $T^*\cong T$}]\label{prop.legendre}
+The pairings $\sharp_P\colon\lie p^*\to\lie p$ of PN Lie Algebra groups assemble, in left-trivialization, into a family
+\[
+\sharp_P\colon T^*P\to TP,\qquad (u,\pi)\mapsto(u,\sharp_P(\pi)),
+\]
+which is a monoidal natural isomorphism of strong monoidal endofunctors of $\pnla$:
+\[
+\sharp\colon T^*\;\xRightarrow{\;\sim\;}\;T.
+\]
+Naturality with respect to $\pnla$-isomorphisms is the pairing-intertwining axiom of \cref{def.pnla}; monoidality $\sharp_{P\times Q}=\sharp_P\oplus\sharp_Q$ is the direct-sum pairing convention on products (\cref{prop.TT_endofunctors}); each component $\sharp_P$ is an isomorphism by the definition of PN Lie Algebra. This is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\sharp_P\inv\colon\lie p\to\lie p^*$ sends velocity to conjugate momentum, $\sharp_P$ sends momentum to velocity.
+\end{proposition}
+
+\subsection{The cotangent functor}\label{sec.cot}
 
 The category of smooth manifolds provides the source of polynomials relevant to physics. Each manifold has a cotangent bundle, and each smooth map has a Jacobian transpose; combining these gives a functor into $\poly$.
 
-\begin{definition}[Cotangent functor]\label{def:cot}
+\begin{definition}[Cotangent functor]\label{def.cot}
 The \emph{cotangent functor} $\cot\colon\mfd\to\poly$ sends a smooth manifold $M$ to
-\begin{equation}\label{eqn:cot_def}
-\cot{M}\coloneqq\sum_{m:M}\yon^{T^*_mM}
+\begin{equation}\label{eqn.cot_def}
+\cot{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
 \end{equation}
 where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cot{f}\colon\cot{M}\to\cot{N}$ with forward part $f$ and backward part $(Df_m)^\top\colon T^*_{f(m)}N\to T^*_mM$ (the Jacobian transpose at $m$).
 \end{definition}
 
-\begin{proposition}\label{prop:cot-monoidal}
+\begin{proposition}\label{prop.cot_monoidal}
 The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
 \[
 \cot{\mathbb{R}^0}\cong\yon
@@ -617,16 +962,16 @@ which is the backward part of $\cot{f}\then\cot{g}$. (Note: $\cot$ is covariant 
 
 \textit{Products.} The cotangent space of a product splits: $T^*_{(m,n)}(M\times N)\cong T^*_mM\times T^*_nN$. Thus
 \begin{equation}\label{eqn.cot_times}
-\cot{M\times N}=\sum_{(m,n):M\times N}\yon^{T^*_mM\times T^*_nN}=\cot{M}\otimes\cot{N}
+\cot{M\times N}=\sum_{(m,n)\in M\times N}\yon^{T^*_mM\times T^*_nN}=\cot{M}\otimes\cot{N}
 \end{equation}
-using the definition of the Dirichlet product \eqref{eqn:dirichlet}.
+using the definition of the Dirichlet product \eqref{eqn.dirichlet}.
 
 \textit{Naturality.} For a product map $(f,g)\colon M\times N\to M'\times N'$, the Jacobian is block-diagonal: $D(f,g)_{(m,n)}=Df_m\oplus Dg_n$. Hence $(D(f,g)_{(m,n)})^\top=(Df_m)^\top\times(Dg_n)^\top$, so the isomorphism $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$ is natural in $M$ and~$N$.
 
 \textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
 \end{proof}
 
-\Cref{prop:cot-monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem:cot-comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot{M}$.
+\Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot{M}$.
 
 \begin{remark}
 In fact, $\cot$ also preserves coproducts,
@@ -636,14 +981,14 @@ In fact, $\cot$ also preserves coproducts,
 Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributive monoidal functor.
 \end{remark}
 
-\begin{lemma}\label{lem:cot-comonoid}
+\begin{lemma}\label{lem.cot_comonoid}
 For any smooth manifold $M$, the polynomial $\cot{M}$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
 \[
 \cot{\Delta_M}\colon\cot{M}\to\cot{M}\otimes\cot{M}
 \qqand
  \cot{!_M}\colon\cot{M}\to\yon
 \]
-sends each position $m:M$ to $(m,m)$. On directions, each cotangent fibre $T^*_mM$ carries the induced cocommutative comonoid structure
+sends each position $m\in M$ to $(m,m)$. On directions, each cotangent fibre $T^*_mM$ carries the induced cocommutative comonoid structure
 \[
 T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\eta)\mapsto\xi+\eta
 \qqand 1\to T^*_mM,\quad *\mapsto 0,
@@ -652,303 +997,65 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 \end{lemma}
 
 \begin{proof}
-Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop:cot-monoidal}), it preserves comonoid structures. On positions this gives $m\mapsto(m,m)$ and $m\mapsto *$. For the backward maps: the Jacobian of $\Delta_M$ at $m$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The Jacobian of $!_M$ at $m$ is $T_mM\to 0$, whose transpose is the map $1\to T^*_mM$ that selects the zero covector.
+Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. On positions this gives $m\mapsto(m,m)$ and $m\mapsto *$. For the backward maps: the Jacobian of $\Delta_M$ at $m$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The Jacobian of $!_M$ at $m$ is $T_mM\to 0$, whose transpose is the map $1\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
-\subsection{Brief review of basic Lie theory}\label{sec:lie-groups}
+\subsection{Cotangent bundles as polynomials}\label{sec.cot_as_poly}
 
-Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. We sometimes write
-\[
-e\coloneqq \eta(*):G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
-\]
+We now identify the cotangent bundle $\cot G$ as a polynomial: first as a Hopf monoid in $\poly$ for any Lie group, then in the special form $G\yon^G$ when $G$ is a PN Lie Algebra.
 
-\begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop:cot-hopf}
+\begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop.cot_hopf}
 Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cot{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
 \[
 \cot{\eta}\colon\yon\to\cot{G},\qquad \cot{\mu}\colon\cot{G}\otimes\cot{G}\to\cot{G},
 \]
-the comonoid structure is as in \cref{lem:cot-comonoid}, and the antipode is $\cot{\iota}\colon\cot{G}\to\cot{G}$.
+the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\cot{\iota}\colon\cot{G}\to\cot{G}$.
 \end{proposition}
 
 \begin{proof}
 The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot{\eta},\cot{\mu})$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
-The \emph{Lie algebra of $G$} is the tangent space at the identity:
-\[
-\lie{g}\coloneqq T_eG.
-\]
-Currying $\mu$ we obtain for each $g:G$ the \emph{left translation by $g$}, which is a diffeomorphism
-\[
-L_g\colon G\to G,\qquad h\mapsto gh.
-\]
-Its differential at the identity is a linear isomorphism, and we denote it and its transpose by
-\[
-dL_g|_e\colon \lie{g}\to T_gG
-\qqand
-(dL_g|_e)^*\colon T^*_gG\to \lie{g}^*.
-\]
-Thus every cotangent fiber $T^*_gG$ is canonically identified with the single vector space $\lie{g}^*$ by pulling covectors back along left translation.%
-\footnote{Note that $\lie{g}^*$ is a Lie coalgebra, not a Lie algebra in general.} Collecting these fiberwise identifications gives a vector-bundle isomorphism over $G$:
-\begin{equation}\label{eqn.left_triv}
-T^*G \cong G\times\lie{g}^*,\qquad \xi\mapsto (g,(dL_g|_e)^*\xi)\quad\text{for }\xi:T^*_gG.
-\end{equation}
-We refer to this bundle isomorphism as the \emph{left-trivialization} of $T^*G$.
-
-Conjugation by $g$ is the Lie group automorphism
-\[
-c_g\colon G\to G,\qquad h\mapsto ghg\inv.
-\]
-Its differential at the identity is called the \emph{adjoint action}, and the transpose of the adjoint action is the \emph{coadjoint action}:
-\[
-\Ad_g\coloneqq dc_g|_e\colon \lie{g}\to \lie{g}
-\qqand
-\Ad_g^*\coloneqq (dc_g|_e)^*\colon \lie{g}^*\to \lie{g}^*.
-\]
-
-For a finite-dimensional vector space $V$, we write $\End(V)$ for the vector space of linear maps $V\to V$ and $\Aut(V)$ for the group, under composition, of linear isomorphisms $V\to V$. Both are smooth manifolds: $\End(V)$ is a finite-dimensional vector space, and $\Aut(V)\subset\End(V)$ is open (the complement of the vanishing locus of $\det$).
-
-\begin{lemma}\label{lem:Ad-facts}
-The adjoint and coadjoint actions define group homomorphisms%
-\footnote{
-Each $\Ad_g$ in fact preserves the Lie bracket, so the lemma strengthens to $\Ad\colon G\to \Aut_\Cat{LieAlg}(\lie{g})$ and $\Ad^*\colon G\op\to \Aut_\Cat{LieAlg}(\lie{g}^*)$, but we don't need preservation of the Lie bracket in this paper.
-}
-\[
-\Ad\colon G\to \Aut(\lie{g})
-\qqand
-\Ad^*\colon G\op\to \Aut(\lie{g}^*).
-\]
-\end{lemma}
-
-\begin{proof}
-We need to show
-\[
-\Ad_e=^?\id_{\lie{g}}
-\qqand
-\Ad_{gh}=^?\Ad_g\circ \Ad_h.
-\]
-Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h:G$, so differentiating at $e$ (using the chain rule and $c_h(e)=e$) gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes shows that $\Ad^*$ is also a group homomorphism.
-\end{proof}
-
-Conjugation $c\colon G\times G\to G$ in a Lie group uses multiplication and inversion $c(g,h)\coloneqq ghg\inv$ and is hence smooth. Differentiating at the identity in the second variable depends smoothly on the first, so $\Ad$ is smooth. Since $\Ad^*$ factors as $\Ad$ followed by the transpose operation $\End(\lie{g})\to\End(\lie{g}^*)$, which is linear and hence smooth, $\Ad^*$ is also smooth. Under the canonical identification of the tangent space of a vector space at any point with the vector space itself, differentiating $\Ad$ and $\Ad^*$ at the identity gives
-\[
-\ad\colon \lie{g}\to \End(\lie{g}),
-\qqand
-\ad^*\colon \lie{g}\to \End(\lie{g}^*).
-\]
-To denote the applyication at any $X:\lie{g}$ we write
-\[
-\ad_X\coloneqq\ad(X)\colon \lie{g}\to \lie{g}
-\qqand
-\ad_X^*\coloneqq\ad^*(X)\colon \lie{g}^*\to \lie{g}^*
-\]
-for what are called the \emph{adjoint operator} and \emph{coadjoint operator} associated to $X$. Since the transpose operation is linear, differentiating $\Ad_g^*=(\Ad_g)^*$ at the identity gives $\ad_X^*=(\ad_X)^*$.
-
-The Lie bracket on $\lie{g}$ is defined by
-\[
-[X,Y]\coloneqq \ad_X(Y),
-\]
-which makes $\lie{g}$ into a Lie algebra. However, because we use brackets $[p,q]$ for internal hom of polynomials and have little use for Lie brackets in the paper, we will never again use the bracket notation for Lie algebras, using $\ad$ instead.
-
-The Lie algebra $\lie{g}$ is \emph{nilpotent} if there exists $n\in\nn$ such that the iterated composite $\ad_{X_1}\circ\ad_{X_2}\circ\cdots\circ\ad_{X_n}=0\colon\lie{g}\to\lie{g}$ for all $X_1,\ldots,X_n\in\lie{g}$; the least such $n$ is called the \emph{nilpotency class} of $\lie{g}$. A Lie group is \emph{abelian} if $[-,-]=0$, i.e.\ has nilpotency class 1.
-
-For each $X\in\lie{g}$, there is a unique smooth group homomorphism $\rho_X\colon(\rr,+,0)\to G$ with $\rho_X'(0)=X$; such a $\rho_X$ is called a \emph{one-parameter subgroup} of $G$. The \emph{exponential map}
-\[
-\exp_G\colon \lie{g}\to G
-\]
-is defined by $\exp_G(X)\coloneqq\rho_X(1)$; equivalently, $\rho_X(t)=\exp_G(tX)$.
-
-By Lie's third theorem~\cite[Appendix B]{knapp2002lie}, every finite-dimensional real Lie algebra $\lie{g}$ is the Lie algebra of a (unique up to iso) simply connected Lie group $G$; when $\lie{g}$ is nilpotent, Malcev's theorem further guarantees that $\exp_G\colon\lie{g}\to G$ is a diffeomorphism~\cite[Thm 1.127]{knapp2002lie}. We use $\exp_G$ to freely identify a nilpotent $\lie{g}$ with its associated simply connected Lie group $G$ as smooth manifolds, writing $G$ when the group structure is primary (multiplication, translation, cotangent bundle as a Lie group) and $\lie{g}$ when the algebraic structure is primary (pairing, morphisms, direct sums).
-
-\subsection{Paired nilpotent Lie algebras}\label{sec:pnla}
-
-For any Lie group $G$, we've seen in \cref{prop:cot-hopf} that $\cot{G}$ is a Hopf monoid. In fact, it is sometimes a $\tri$-comonoid as well, i.e.\ a category, as we now explain.
-
-\begin{definition}\label{def:pnla}
-We define a \emph{pairing} on a Lie algebra $\lie{g}$ to be a linear map
-\[
-\pairing{-,-}\colon\lie{g}\otimes\lie{g}\to\rr,
-\]
-such that the induced \emph{flat} map $\flat_{\lie{g}}\colon\lie{g}\to\lie{g}^*$, $X\mapsto\pairing{X,-}_{\lie{g}}$, is a linear isomorphism;%
-\footnote{In other words $\pairing{-,-}$ is a \emph{nondegenerate bilinear form}.}
-its inverse is the \emph{sharp} map $\sharp_{\lie{g}}\colon\lie{g}^*\To{\cong}\lie{g}$.
-
-A \emph{paired nilpotent Lie algebra} (PN Lie Algebra) is a pair $(\lie{g}, \sharp_{\lie{g}})$ consisting of a finite-dimensional nilpotent real Lie algebra $\lie{g}$ and a pairing on $\lie{g}$. We write $\pnla$ for the groupoid whose objects are PN Lie Algebras and whose morphisms $(\lie{g},\sharp_{\lie{g}})\to(\lie{h},\sharp_{\lie{h}})$ are Lie-algebra isomorphisms $\phi\colon\lie{g}\xrightarrow{\cong}\lie{h}$ preserving the pairing:
-\[
-\begin{tikzcd}
-\lie{g}\otimes\lie{g} \ar[rr,"\phi\otimes\phi"] \ar[dr,"{\pairing{-,-}_{\lie{g}}}"'] & & \lie{h}\otimes\lie{h} \ar[dl,"{\pairing{-,-}_{\lie{h}}}"] \\
-& \rr &
-\end{tikzcd}
-\qedhere\]
-\end{definition}
-
-\begin{example}\label{ex:Rn-pnla}
-The simply connected Lie group associated to the abelian Lie algebra $\mathbb{R}^n$ is $(\mathbb{R}^n,+)$, with exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ the identity, and left translation $L_p\colon q\mapsto p+q$ has differential the identity, so $(dL_p|_e)^*=\id$ at every $p$. 
-
-Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as a pairing. Under the resulting PN Lie Algebra structure $(\mathbb{R}^n,\sharp)$, the on-directions bijection $F_p\colon T^*_p\mathbb{R}^n\to\mathbb{R}^n$ of \cref{prop:pnla-polynomial} reduces to $\sharp$, and the induced codomain map on $\cot{\mathbb{R}^n}\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ sends $\xi:T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
-\end{example}
-
-\begin{proposition}\label{prop:pnla-smc-action}
-The groupoid $\pnla$ has a symmetric monoidal structure $(\oplus,0)$, and the composite
-\[
-(\cdot)\colon\pnla\times\mfd\to\mfd,\qquad ((\lie{g},\sharp_{\lie{g}}),M)\mapsto \lie{g}\times M
-\]
-is a strong symmetric monoidal action of $\pnla$ on $\mfd$.
-\end{proposition}
-
-\begin{proof}
-Let $(\lie{g}_1,\sharp_1)$ and $(\lie{g}_2,\sharp_2)$ be PN Lie Algebras. The direct sum $\lie{g}_1\oplus\lie{g}_2$ is a Lie algebra under componentwise bracket, so for $X_j=(X_j^1,X_j^2)$,
-\[
-\ad_{X_c}\cdots\ad_{X_1}=\bigl(\ad_{X_c^1}\cdots\ad_{X_1^1},\;\ad_{X_c^2}\cdots\ad_{X_1^2}\bigr).
-\]
-Taking $c=\max(c_1,c_2)$ where $c_i$ is the nilpotency class of $\lie{g}_i$, both components vanish, so $\lie{g}_1\oplus\lie{g}_2$ is nilpotent. The direct-sum pairing
-\[
-\pairing{(X_1,X_2),(Y_1,Y_2)}_{\lie{g}_1\oplus\lie{g}_2}\coloneqq \pairing{X_1,Y_1}_{\lie{g}_1}+\pairing{X_2,Y_2}_{\lie{g}_2}
-\]
-is nondegenerate because each summand is. The zero Lie algebra with its (vacuous) pairing is the monoidal unit. For PN-Lie-Algebra isos $\phi_i\colon(\lie{g}_i,\sharp_i)\to(\lie{h}_i,\sharp'_i)$, the direct sum $\phi_1\oplus\phi_2$ is a Lie-algebra iso whose pairing-preservation triangle is the direct sum of the two component triangles. The associator, unitors, and braiding from $(\Cat{Vect},\oplus,0)$ are PN-Lie-Algebra isos, giving $(\pnla,\oplus,0)$ the structure of a symmetric monoidal groupoid. Note $\oplus$ is not a categorical product in $\pnla$: the projections $\lie{g}\oplus\lie{h}\to\lie{g}$ are not Lie-algebra isomorphisms in general.
-
-The underlying-manifold functor $U\colon\pnla\to\mfd$ sends $(\lie{g},\sharp_{\lie{g}})$ to $\lie{g}$ as a finite-dimensional real vector space (hence a smooth manifold) and each PN-Lie-Algebra iso to its underlying linear diffeomorphism; it is strong symmetric monoidal because $\lie{g}_1\oplus\lie{g}_2$ and $\lie{g}_1\times\lie{g}_2$ coincide as manifolds. The action factors as
-\[
-\pnla\times\mfd\xrightarrow{U\times\id}\mfd\times\mfd\xrightarrow{\times}\mfd,
-\]
-strong symmetric monoidal as a composite of two such.
-\end{proof}
-
-\begin{proposition}[{$\cot\cong(-)\yon^{(-)}$ as functors $\pnla\to\poly$}]\label{prop:pnla-polynomial}
-The assignment $G\mapsto G\yon^G$ extends to a functor $\pnla\to\poly$ sending each $\pnla$-morphism $\phi\colon G\to H$ to the lens with position-action $\Phi\colon G\to H$ and backward-direction $\Phi\inv\colon H\to G$. There is a natural isomorphism $\cot\cong(-)\yon^{(-)}$, whose component at $G$ is given on directions at each $g\in G$ by
+\begin{proposition}[{$\cot\cong(-)\yon^{(-)}$ as functors $\pnla\to\poly$}]\label{prop.pnla_polynomial}
+The assignment $G\mapsto G\yon^G$ extends to a functor $\pnla\to\poly$ sending each $\pnla$-morphism $\phi\colon G\to H$ to the lens with position-action $\Phi\colon G\to H$ and backward-direction $\Phi\inv\colon H\to G$. There is a natural isomorphism $\cot\cong(-)\yon^{(-)}$, whose component at $G$ is given on directions at each $g: G$ by
 \begin{equation}\label{eqn.directions_malcev}
-F_g\colon T^*_g G \xrightarrow{(dL_g|_e)^*} \lie{g}^* \xrightarrow{\sharp_G} \lie{g} \xrightarrow{\exp_G} G.
+F_g\colon T^*_g G \To{(dL_g|_e)^*} \lie{g}^* \To{\sharp_G} \lie{g} \To{\exp_G} G.
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-Each $F_g$ is a bijection: $(dL_g|_e)^*$ is a linear iso, $\sharp_G$ is a linear iso by \cref{def:pnla}, and $\exp_G$ is a diffeomorphism by Malcev's theorem (\cref{sec:lie-groups}). Positions agree on the nose, so $F_G\colon\cot G\cong G\yon^G$ in $\poly$ for each $G$.
+Each $F_g$ is a bijection: $(dL_g|_e)^*$ is a linear iso, $\sharp_G$ is a linear iso by \cref{def.pnla}, and $\exp_G$ is a diffeomorphism by Malcev's theorem (\cref{sec.lie_groups}). Positions agree on the nose, so $F_G\colon\cot G\cong G\yon^G$ in $\poly$ for each $G$.
 
 For naturality, let $\phi\colon(\lie g,\sharp_G)\to(\lie h,\sharp_H)$ be a $\pnla$-iso with Lie-group lift $\Phi\colon G\to H$. The position-part of the naturality square is trivial; the back-direction part at $g$ reduces to
 \[
 \Phi\circ F_g \;=\; F_{\Phi(g)}\circ(d\Phi|_g)^{-*},
 \]
-which unpacks using (a) $\Phi\circ\exp_G=\exp_H\circ\phi$ (Lie-group iso commutes with exp), (b) $\phi\circ\sharp_G\circ\phi^* = \sharp_H$ (pairing-preservation triangle of \cref{def:pnla}), and (c) $\Phi\circ L_g = L_{\Phi(g)}\circ\Phi$ (group iso commutes with left-translation), so $d\Phi|_{\Phi(g)}\circ dL_g|_e = dL_{\Phi(g)}|_e\circ\phi$.
+which unpacks using (a) $\Phi\circ\exp_G=\exp_H\circ\phi$ (Lie-group iso commutes with exp), (b) $\phi\circ\sharp_G\circ\phi^* = \sharp_H$ (pairing-preservation triangle of \cref{def.pnla}), and (c) $\Phi\circ L_g = L_{\Phi(g)}\circ\Phi$ (group iso commutes with left-translation), so $d\Phi|_{\Phi(g)}\circ dL_g|_e = dL_{\Phi(g)}|_e\circ\phi$.
 \end{proof}
 
-\begin{remark}\label{rmk:pnla-fiberwise-addition}
-For a PN Lie Algebra $(G,\sharp_G)$ and point $g:G$, the on-directions part of the isomorphism $\cot{G}\cong G\yon^G$ from \cref{prop:pnla-polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
+\begin{remark}\label{rmk.pnla_fiberwise_addition}
+For a PN Lie Algebra $(G,\sharp_G)$ and point $g\in G$, the on-directions part of the isomorphism $\cot{G}\cong G\yon^G$ from \cref{prop.pnla_polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
 
-By \cref{prop:comonads-cats}, a $\tri$-comonoid structure on $G\yon^G$ is a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. We describe such a category, the \emph{translation category} of $G$ acting on itself by left multiplication: objects are elements of $G$, a morphism $g\to h$ is an element $x:G$ satisfying $h=gx$ (there is exactly one such $x$, namely $g\inv h$), identities are $e:G$, and composition is group multiplication. This category is isomorphic to the pair groupoid on $G$, but the translation-category presentation is the one that matches \eqref{eqn.directions_malcev}: the bijection $F_g\colon T^*_gG\to G$ identifies a cotangent vector at $g$ with a morphism $g\to gF_g(\xi)$ in the translation category. Thus we have maps
+By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $G\yon^G$ is a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. We describe such a category, the \emph{translation category} of $G$ acting on itself by left multiplication: objects are elements of $G$, a morphism $g\to h$ is an element $x\in G$ satisfying $h=gx$ (there is exactly one such $x$, namely $g\inv h$), identities are $e\in G$, and composition is group multiplication. This category is isomorphic to the pair groupoid on $G$, but the translation-category presentation is the one that matches \eqref{eqn.directions_malcev}: the bijection $F_g\colon T^*_gG\to G$ identifies a cotangent vector at $g$ with a morphism $g\to gF_g(\xi)$ in the translation category. Thus we have maps
 \[
 \epsilon\colon\cot{G}\to\yon
 \qqand
 \delta\colon\cot{G}\to\cot{G}\tri\cot{G}.
 \]
-The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi:T^*_gG$ is sent to the point
+The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi\in T^*_gG$ is sent to the point
 \[
-\cod_g(\xi)\coloneqq gF_g(\xi):G,
+\cod_g(\xi)\coloneqq gF_g(\xi)\in G,
 \]
-and for $\xi':T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determined by group multiplication:
+and for $\xi'\in T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determined by group multiplication:
 \[
 F_g(\xi\then\xi') =F_g(\xi)\,F_{\cod_g(\xi)}(\xi').
 \]
 Thus the chosen pairing $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot{G}$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those familiar with the Baker--Campbell--Hausdorff formula on nilpotent Lie algebras, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot{G}$ is given by the BCH product.
 \end{remark}
 
-\begin{proposition}\label{prop:TstarG-pnla}
-For any PN Lie Algebra $\lie{g}$, the Lie algebra $\lie{g}\oplus\lie{g}^*$ --- the Lie algebra of the cotangent bundle $T^*G$ under left-trivialization --- is nilpotent, with nilpotency class at most $2n-1$ if $\lie{g}$ has class $n$.
-\end{proposition}
-
-\begin{proof}
-Left-trivialize $T^*G \cong G \times \lie{g}^*$ via $(g, \xi) \leftrightarrow (g, (dL_g|_e)^*\xi)$ as in \eqref{eqn.left_triv}. Give $G \times \lie{g}^*$ the operation
-\[
-(g_1, \xi_1) \cdot (g_2, \xi_2) := (g_1 g_2, \; \xi_1 + (\Ad^*_{g_1\inv}\xi_2)),
-\]
-with unit $(e, 0)$ and inverse $(g, \xi)\inv = (g\inv, -\Ad^*_g \xi)$. The unit and associativity both follow from \cref{lem:Ad-facts}; in particular,
-\[
-\Ad_e^*=\id_{\lie{g}^*}
-\qqand
-\Ad^*_{g_2\inv}\circ\Ad^*_{g_1\inv}=\Ad^*_{(g_2g_1)\inv}.
-\]
-The cotangent bundle is well-known to be a smooth manifold. Since $G$ is simply connected and $\lie{g}^*$ is contractible, the product is simply connected. It remains to show nilpotency.
-
-The Lie algebra of $G\times\lie{g}^*$ is its tangent space at the identity element $(e,0)$, namely
-\[
-T_{(e,0)}(G\times\lie{g}^*) \cong T_eG\oplus T_0(\lie{g}^*)=\lie{g}\oplus\lie{g}^*.
-\]
-Its adjoint action is
-\[
-\ad_{(X_1,\nu_1)}(X_2,\nu_2)=\big(\ad_{X_1}(X_2), \; \ad^*_{X_2}\nu_1 - \ad^*_{X_1}\nu_2\big),
-\]
-obtained by differentiating the product law. Relative to the decomposition $\lie{g}\oplus\lie{g}^*$, each operator $\ad_{(X,\nu)}$ has block form
-\[
-\ad_{(X,\nu)}=
-\begin{bmatrix}
-\ad_X & 0\\
-* & -\ad_X^*
-\end{bmatrix}.
-\]
-Suppose $\lie{g}$ has nilpotency class $n$, so every $n$-fold composite of operators $\ad_X$ is zero on $\lie{g}$; transposing, every $n$-fold composite of operators $\ad_X^*$ is zero on $\lie{g}^*$. We show that any $(2n-1)$-fold composite $A_k\cdots A_1$ (where $A_i=\ad_{(X_i,\nu_i)}$) is zero.
-
-Write $A_i=\begin{bsmallmatrix}\ad_{X_i} & 0\\ *_i & -\ad_{X_i}^*\end{bsmallmatrix}$. A product of lower-triangular block matrices is lower-triangular, with diagonal blocks the products of diagonal blocks. So the $(1,1)$ entry of $A_k\cdots A_1$ is $\ad_{X_k}\cdots\ad_{X_1}$, which is zero for $k\geq n$; similarly for the $(2,2)$ entry $(-1)^k\ad^*_{X_k}\cdots\ad^*_{X_1}$.
-
-For the $(2,1)$ entry: expanding the matrix product, each term in the $(2,1)$ entry of $A_k\cdots A_1$ is a product
-\[
-D_k^{(2,2)}\cdots D_{j+1}^{(2,2)}\cdot *_j\cdot D_{j-1}^{(1,1)}\cdots D_1^{(1,1)}
-\]
-for some choice of $j:\{1,\ldots,k\}$, where $D_i^{(1,1)}=\ad_{X_i}$ and $D_i^{(2,2)}=-\ad^*_{X_i}$. When $k=2n-1$, either $j-1\geq n$ (the right factor contains an $n$-fold $\ad$-composite and vanishes) or $k-j\geq n$ (the left factor contains an $n$-fold $\ad^*$-composite and vanishes). So every term is zero, and $\lie{g}\oplus\lie{g}^*$ has nilpotency class at most $2n-1$.
-\end{proof}
-
-\begin{proposition}\label{prop:canonical-pairing}
-The canonical symplectic form $\omega$ on $T^*G$ induces a canonical pairing $\sharp_{T^*G}\colon (\lie{g} \oplus \lie{g}^*)^* \to \lie{g} \oplus \lie{g}^*$, giving $T^*G$ a canonical PN Lie Algebra structure.
-\end{proposition}
-
-\begin{proof}
-This is standard; see Marsden--Ratiu~\cite[Prop 6.1.1]{marsden1999introduction}. The canonical symplectic form on $T^*G$ is nondegenerate, so at $(e,0)$ it induces an isomorphism
-\[
-\flat_\omega\colon \lie{g}\oplus\lie{g}^* \to (\lie{g}\oplus\lie{g}^*)^*,
-\]
-whose inverse is the required pairing $\sharp_{T^*G}$.
-\end{proof}
-
-\begin{proposition}\label{prop:TG-pnla}
-For any PN Lie Algebra $(G,\sharp_G)$, the tangent bundle manifold $TG$ is a PN Lie Algebra under left-trivialization $TG\cong G\times\lie{g}$ with group law
-\[
-(g_1,X_1)\cdot(g_2,X_2)\coloneqq (g_1 g_2,\; \Ad_{g_2\inv}X_1 + X_2),
-\]
-unit $(e,0)$, and pairing $\sharp_{TG}\colon(\lie{g}\oplus\lie{g})^*\cong\lie{g}^*\oplus\lie{g}^*\To{\sharp_G\oplus\sharp_G}\lie{g}\oplus\lie{g}$.
-\end{proposition}
-
-\begin{proof}
-\emph{[Proof deferred.]} Simply connected: product of simply-connected factors. Nilpotent: analogous to the block-triangular argument in \cref{prop:TstarG-pnla}, with $\ad$ in both diagonal blocks in place of $(\ad,-\ad^*)$. The pairing is a linear isomorphism by construction.
-\end{proof}
-
-\begin{proposition}[$T^*$ and $T$ as strong monoidal endofunctors of $\pnla$]\label{prop:TT-endofunctors}
-The assignments $G\mapsto T^*G$ (\cref{prop:TstarG-pnla,prop:canonical-pairing}) and $G\mapsto TG$ (\cref{prop:TG-pnla}) extend to strong symmetric monoidal endofunctors
-\[
-T^*,\, T\colon\pnla\to\pnla.
-\]
-\end{proposition}
-
-\begin{proof}
-\emph{[Proof deferred.]} Functoriality is the chain rule; preservation of PN Lie Algebra morphism structure uses that the pairing-intertwining square (\cref{def:pnla}) is preserved by $T^*$ and $T$ on differentials. Strong monoidality is the canonical isomorphism $T^*(G\times H)\cong T^*G\times T^*H$ (resp.\ $T(G\times H)\cong TG\times TH$) combined with the direct-sum pairing.
-\end{proof}
-
-\begin{proposition}[{Pairing as monoidal natural isomorphism $T^*\cong T$}]\label{prop:legendre}
-The pairings $\sharp_P\colon\lie p^*\to\lie p$ of PN Lie Algebra groups assemble, in left-trivialization, into a family
-\[
-\sharp_P\colon T^*P\to TP,\qquad (u,\pi)\mapsto(u,\sharp_P(\pi)),
-\]
-which is a monoidal natural isomorphism of strong monoidal endofunctors of $\pnla$:
-\[
-\sharp\colon T^*\;\xRightarrow{\;\sim\;}\;T.
-\]
-Naturality with respect to $\pnla$-isomorphisms is the pairing-intertwining axiom of \cref{def:pnla}; monoidality $\sharp_{P\times Q}=\sharp_P\oplus\sharp_Q$ is the direct-sum pairing convention on products (\cref{prop:TT-endofunctors}); each component $\sharp_P$ is an isomorphism by the definition of PN Lie Algebra. This is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\sharp_P\inv\colon\lie p\to\lie p^*$ sends velocity to conjugate momentum, $\sharp_P$ sends momentum to velocity.
-\end{proposition}
-
-\begin{remark}[Why $\pnla$ is a groupoid]\label{rmk:pnla-groupoid}
-Restricting $\pnla$-morphisms to Lie-algebra \emph{isomorphisms} is forced in two independent ways:
-\begin{itemize}
-\item \emph{Covariantizing $T^*$.} The cotangent functor is classically contravariant on $\mfd$; for $T^*$ to define a \emph{covariant} endofunctor on $\pnla$ (\cref{prop:TT-endofunctors}), the morphism $T^*\phi$ must act on the $\lie{g}^*$-summand by $(\phi^*)\inv\colon\lie{g}^*\to\lie{h}^*$, which requires $\phi$ invertible. Naturality of the Legendre transform $\sharp\colon T^*\Rightarrow T$ (\cref{prop:legendre}) is then a consequence.
-\item \emph{Translation-category functoriality.} For $G\mapsto G\yon^G$ to extend to a functor $\pnla\to\poly$, a morphism $\phi\colon G\to H$ is sent to the $\poly$-morphism with position-action $\Phi$ and backward-direction $\Phi\inv$ (see \cref{rmk:pnla-fiberwise-addition}); the backward-direction again requires invertibility. This is what upgrades \cref{prop:pnla-polynomial} from a pointwise iso to a natural one, and so makes the functor construction in \cref{prop:param-refinement} well-defined on morphisms.
-\end{itemize}
-\end{remark}
+\begin{example}[$\rr^n$ continued]\label{ex.Rn_polynomial}
+For the PN Lie Algebra $(\mathbb{R}^n,\sharp)$ of \cref{ex.Rn_pnla}, the on-directions bijection of \cref{prop.pnla_polynomial} reduces to $F_p=\sharp$ at every $p$, since $(dL_p|_e)^*$ and $\exp_{\mathbb{R}^n}$ are both the identity. The induced codomain map on $\cot{\mathbb{R}^n}\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ from \cref{rmk.pnla_fiberwise_addition} sends $\xi\colon T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
+\end{example}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
 
@@ -1045,7 +1152,9 @@ There is a potentially-confusing level-shift in that there is an operad $\cat{W}
 }
 
 A $\cat{W}$-algebra $\cat{C}\colon\cat{W}\to\smset$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for little boxes to a filler of the big box.%
-\footnote{By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$.}
+\footnote{
+By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$.
+}
 
 \begin{example}
 For a set $O$, let $\ob\cat{W}_{\tn{O-Cat}}\coloneqq O\times O$ and
@@ -1063,7 +1172,7 @@ A variety of examples of these ideas---wiring-diagram operads whose algebras are
 An advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
 consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine: it is the suboperad comprising the left class of a certain factorization system on $1\tn{-}\Cat{Cob}$.
 
-Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\Cat{Vect}$-enriched category with object set $O$ is an opeard functor $\cat{W}_{\tn{O-Cat}}\to\Cat{Vect}$.
+Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\vect$-enriched category with object set $O$ is an opeard functor $\cat{W}_{\tn{O-Cat}}\to\vect$.
 
 
 One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras.  In \cite{shapiro2022dynamic}, a dynamic category is a category enriched in $\org$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
@@ -1076,23 +1185,23 @@ One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_example
 \] 
 for some $O$. Our next goal then is to recall $\org$.
 
-\subsection{The monoidal bicategory $\org$}\label{sec:org}
+\subsection{The monoidal bicategory $\org$}\label{sec.org}
 
 We recall the monoidal bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials, and for polynomials $p,q$ the hom-category is
 \[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
 Its monoidal structure is induced by the tensor product of polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}(S))$, specifying for each $s:S$ an action $\act(s):\poly(p,q)$ and an update $\upd_s\colon\ihom{p,q}[\act(s)]\to S$ assigning a successor state to each direction.
 
-\begin{definition}\label{def:pq-coalg}
+\begin{definition}\label{def.pq_coalg}
 The category $\ihom{p,q}\coalg$ has as objects pairs $(S,\beta)$ where $S$ is a set and $\beta\colon S\to\ihom{p,q}\tri S$ is a function, and where a morphism from $(S,\beta)$ to $(S',\beta')$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. We refer to $S$ as the \emph{state set}.
 \end{definition}
 
-Unwinding this using \eqref{eqn:dirichlet}, $\beta=(\act^\beta,\upd^\beta)$ decomposes as an \emph{action} function
+Unwinding this using \eqref{eqn.dirichlet}, $\beta=(\act^\beta,\upd^\beta)$ decomposes as an \emph{action} function
 \[\act^\beta\colon S\to\poly(p,q)=\ihom{p,q}(1)\]
 and, for each state $s:S$, an \emph{update} function
 \[\upd^\beta_s\colon\sum_{I:p(1)}q\left[\act^\beta_s(I)\right]\to S.\]
 For a state $s:S$ and position $I:p(1)$ we often write $\act^\beta_s\colon p\to q$ and $\upd^\beta_s(I)\colon q[\act^\beta_s(I)]\to S$. We may suppress $\beta$ when clear from context.
 
-\begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop:org}
+\begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop.org}
 The hom-categories $\ihom{p,q}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects and tensor product induced by the tensor product of polynomials.
 \end{proposition}
 
@@ -1109,28 +1218,28 @@ Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce th
 [p,q]\coalg\times[q,r]\coalg\to[p,r]\coalg.
 \]
 
-\subsection{Example: deep learning as a dynamic monoidal category}\label{sec:deep-learning}
+\subsection{Example: deep learning as a dynamic monoidal category}\label{sec.deep_learning}
 
-We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and PN Lie Algebras. Take the object set $O\coloneqq\nn$ and assign to each $n:\nn$ the polynomial $\cot{\mathbb{R}^n}\cong{\cot{\mathbb{R}}}\tpow n$; a layer $m\to n$ will be an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra.
+We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and PN Lie Algebras. Take the object set $O\coloneqq\nn$ and assign to each $n\in \nn$ the polynomial $\cot{\mathbb{R}^n}\cong{\cot{\mathbb{R}}}\tpow n$; a layer $m\to n$ will be an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra.
 
-The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a PN Lie Algebra with pairing $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex:Rn-pnla}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop:cot-monoidal}) gives a polynomial map
+The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a PN Lie Algebra with pairing $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex.Rn_pnla}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop.cot_monoidal}) gives a polynomial map
 \[\cot{P}\otimes\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n},\]
-which by closedness of $\poly$ is equivalently a map $\cot{P}\to\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$. By \cref{ex:Rn-pnla}, $\cot{P}\cong P\yon^P$, so \cref{ex:coalg-as-poly-map} presents it as an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra with state set $P$.
+which by closedness of $\poly$ is equivalently a map $\cot{P}\to\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$. By \cref{ex.Rn_polynomial}, $\cot{P}\cong P\yon^P$, so \cref{ex.coalg_as_poly_map} presents it as an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra with state set $P$.
 
-Unwinding: the action at $p:P$ is $\cot{f_p}\colon\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n}$ (forward part $x\mapsto f_p(x)$, backward part $(Df_p)_x^\top$), and the update at $p$ on direction $(x,\nu):\mathbb{R}^m\times T^*_{f_p(x)}\mathbb{R}^n$ is
+Unwinding: the action at $p\in P$ is $\cot{f_p}\colon\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n}$ (forward part $x\mapsto f_p(x)$, backward part $(Df_p)_x^\top$), and the update at $p$ on direction $(x,\nu)\in \mathbb{R}^m\times T^*_{f_p(x)}\mathbb{R}^n$ is
 \[
 \upd_p(x,\nu)=p+\sharp_P\bigl((\partial_Pf)_{(p,x)}^\top\nu\bigr)=p-\eta\cdot(\partial_Pf)_{(p,x)}^\top\nu,
 \]
-using \cref{ex:Rn-pnla}'s codomain map on $\cot{P}\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
+using \cref{ex.Rn_polynomial}'s codomain map on $\cot{P}\cong P\yon^P$. When $\nu$ is the gradient of a loss $L$ at $f_p(x)$, the chain rule gives $(\partial_Pf)_{(p,x)}^\top\nu=\nabla_pL$, so $\upd_p$ is one step of stochastic gradient descent.
 
-Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop:cot-monoidal} to $\cot{\mathbb{R}^m}\otimes\cot{\mathbb{R}^{m'}}\cong\cot{\mathbb{R}^{m+m'}}$, and the whole assembles into an operad functor
+Composition in $\org$ reproduces backpropagation; parallel composition of layers corresponds via \cref{prop.cot_monoidal} to $\cot{\mathbb{R}^m}\otimes\cot{\mathbb{R}^{m'}}\cong\cot{\mathbb{R}^{m+m'}}$, and the whole assembles into an operad functor
 \[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
 
-\chapter{Potentialized lenses}\label{ch:potentials}
+\chapter{Potentialized lenses}\label{ch.potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec:lenses-general} develops the abstract construction in one pass: lenses, the backward-monad construction, the represented functor, evaluation at a $\Fun{T}$-algebra, and parameterization. \Cref{sec:potlens-manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops the abstract construction in one pass: lenses, the backward-monad construction, the represented functor, evaluation at a $\Fun{T}$-algebra, and parameterization. \Cref{sec.potlens_manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
 
-\section{The abstract construction}\label{sec:lenses-general}\label{sec:abstract-representation}
+\section{The abstract construction}\label{sec.lenses_general}\label{sec.abstract_representation}
 
 \subsection{Lenses}
 We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{A}$ in which $\outp A$ carries a commutative comonoid structure $(\delta_{\outp A},\varepsilon_{\outp A})$. A morphism $f\colon\lensob{A}\to\lensob{B}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
@@ -1140,7 +1249,10 @@ We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal 
 \inpt f\colon \outp A\otimes\inpt B\to\inpt A,
 \end{equation}
 and $\outp f$ is a comonoid homomorphism.%
-\footnote{When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.} These can be depicted as follows:
+\footnote{
+When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
+}
+These can be depicted as follows:
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={1}{1}] (fo) {$\outp f$};
@@ -1276,9 +1388,9 @@ We next record the closed-monoidal part of the construction, which will later be
 \]
 compatible with $\eta$, $\mu$, and the strength.
 
-\subsection{The represented functor}\label{sec:represented-functor}
+\subsection{The represented functor}\label{sec.represented_functor}
 
-\begin{definition}\label{def:Theta}
+\begin{definition}\label{def.Theta}
 Define
 \[
 \Theta\colon\Lens{\cat{C}}\to\cat{C}
@@ -1312,8 +1424,8 @@ d\otimes\ihom{n,I}.
 \]
 \end{definition}
 
-\begin{proposition}\label{prop:Theta}
-\Cref{def:Theta} defines a lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$. The lax product comparison
+\begin{proposition}\label{prop.Theta}
+\Cref{def.Theta} defines a lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$. The lax product comparison
 \[
 \bigl(c\otimes\ihom{m,I}\bigr)\otimes\bigl(d\otimes\ihom{n,I}\bigr)
 \To{}
@@ -1328,7 +1440,7 @@ For identities, $\inpt{\id}$ is obtained from the counit of $c$, and the transpo
 Laxness reduces to closedness: the unit and associativity coherences follow from $I\otimes I\cong I$ and the evaluation--coevaluation triangle, and naturality of the product comparison with respect to lens morphisms is the pairing analog of the composition argument above.
 \end{proof}
 
-\subsection{The represented functor with effect}\label{sec:strong-monad-backward}
+\subsection{The represented functor with effect}\label{sec.strong_monad_backward}
 
 Using the coKleisli category defined above, a morphism
 \[
@@ -1359,7 +1471,7 @@ For the monoidal statements, assume moreover that $\Fun{T}$ is a monoidal strong
 \]
 where $\lambda_I\colon I\otimes I\cong I$ is the unitor.
 
-\begin{definition}\label{def:Theta-T-alpha}
+\begin{definition}\label{def.Theta_T_alpha}
 Define
 \[
 \Theta^{\Fun{T},\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}
@@ -1393,8 +1505,8 @@ d\otimes\ihom{n,I}.
 \]
 \end{definition}
 
-\begin{proposition}\label{prop:Theta-T-alpha}
-\Cref{def:Theta-T-alpha} defines a functor
+\begin{proposition}\label{prop.Theta_T_alpha}
+\Cref{def.Theta_T_alpha} defines a functor
 \[
 \Theta^{\Fun{T},\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}.
 \]
@@ -1402,18 +1514,18 @@ Under the monoidal hypotheses above, $\Theta^{\Fun{T},\alpha}$ is lax monoidal.
 \end{proposition}
 
 \begin{proof}
-Functoriality: the coKleisli identity on $\binom{m}{c}$ has backward part $\eta_m\circ(\varepsilon_c\otimes\id_m)$; inserting this into the definition of $\chi^{\Fun{T},\alpha}_{\id}$ and using the unit-coherence axiom of strength together with the algebra unit $\eta_I\then\alpha=\id_I$ reduces it to $\varepsilon_c\otimes\id\colon c\otimes\ihom{m,I}\to\ihom{m,I}$, as in \cref{prop:Theta}. CoKleisli composition uses $\mu$ in the backward leg; preservation of composition follows from naturality of $\sigma$ in both arguments, the associator axiom of strength (which merges the nested $\sigma$'s), and the algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$.
+Functoriality: the coKleisli identity on $\binom{m}{c}$ has backward part $\eta_m\circ(\varepsilon_c\otimes\id_m)$; inserting this into the definition of $\chi^{\Fun{T},\alpha}_{\id}$ and using the unit-coherence axiom of strength together with the algebra unit $\eta_I\then\alpha=\id_I$ reduces it to $\varepsilon_c\otimes\id\colon c\otimes\ihom{m,I}\to\ihom{m,I}$, as in \cref{prop.Theta}. CoKleisli composition uses $\mu$ in the backward leg; preservation of composition follows from naturality of $\sigma$ in both arguments, the associator axiom of strength (which merges the nested $\sigma$'s), and the algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$.
 
-Lax monoidality: the unit comparison picks out $\id_I\in\ihom{I,I}$ using $\tau_0\then\alpha=\id_I$. The product comparison combines the pairing $\ihom{m,I}\otimes\ihom{n,I}\to\ihom{m\otimes n,I}$ from \cref{prop:Theta} with the monoidal-monad structure map $\tau_{I,I}$; the monoid-hom hypothesis $\tau_{I,I}\then\Fun{T}\lambda_I\then\alpha=(\alpha\otimes\alpha)\then\lambda_I$ is exactly what makes this comparison natural under coKleisli composition. Coherence reduces to the axioms of the monoidal monad and the unitors on $I$.
+Lax monoidality: the unit comparison picks out $\id_I:\ihom{I,I}$ using $\tau_0\then\alpha=\id_I$. The product comparison combines the pairing $\ihom{m,I}\otimes\ihom{n,I}\to\ihom{m\otimes n,I}$ from \cref{prop.Theta} with the monoidal-monad structure map $\tau_{I,I}$; the monoid-hom hypothesis $\tau_{I,I}\then\Fun{T}\lambda_I\then\alpha=(\alpha\otimes\alpha)\then\lambda_I$ is exactly what makes this comparison natural under coKleisli composition. Coherence reduces to the axioms of the monoidal monad and the unitors on $I$.
 \end{proof}
 
-\begin{remark}\label{rmk:general-z}
-The construction above uses the monoidal unit $z\coloneqq I$ as the target of evaluation. More generally, for any $\otimes$-monoid $(z,e_z,m_z)$ equipped with a $\Fun{T}$-algebra $\alpha\colon\Fun{T}z\to z$ satisfying monoid-preservation ($\tau_0\then\Fun{T}e_z\then\alpha=e_z$ and $\tau_{z,z}\then\Fun{T}m_z\then\alpha=(\alpha\otimes\alpha)\then m_z$), the same construction with $\ihom{m,I}$ replaced throughout by $\ihom{m,z}$ yields a lax monoidal functor $\Theta^{\Fun{T},\alpha}_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$ with $\binom{m}{c}\mapsto c\otimes\ihom{m,z}$; the underlying abstract framework --- a strong monoidal lift to $[\cat{C},\cat{C}]$ via Day convolution followed by evaluation at $(z,\alpha)$ --- is developed in \cref{ch:CC-framework}. For a writer monad $\Fun{T}(x)=x\otimes g$, such an algebra is equivalently a monoid homomorphism $\beta\colon g\to z$ with central image in $z$, via $\alpha(r',g')\coloneqq r'\cdot\beta(g')$; the case $z=I$ used in the main text corresponds to a monoid homomorphism $g\to I$. We use only $z=I$ in what follows.
+\begin{remark}\label{rmk.general_z}
+The construction above uses the monoidal unit $z\coloneqq I$ as the target of evaluation. More generally, for any $\otimes$-monoid $(z,e_z,m_z)$ equipped with a $\Fun{T}$-algebra $\alpha\colon\Fun{T}z\to z$ satisfying monoid-preservation ($\tau_0\then\Fun{T}e_z\then\alpha=e_z$ and $\tau_{z,z}\then\Fun{T}m_z\then\alpha=(\alpha\otimes\alpha)\then m_z$), the same construction with $\ihom{m,I}$ replaced throughout by $\ihom{m,z}$ yields a lax monoidal functor $\Theta^{\Fun{T},\alpha}_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$ with $\binom{m}{c}\mapsto c\otimes\ihom{m,z}$; the underlying abstract framework --- a strong monoidal lift to $[\cat{C},\cat{C}]$ via Day convolution followed by evaluation at $(z,\alpha)$ --- is developed in \cref{ch.CC_framework}. For a writer monad $\Fun{T}(x)=x\otimes g$, such an algebra is equivalently a monoid homomorphism $\beta\colon g\to z$ with central image in $z$, via $\alpha(r',g')\coloneqq r'\cdot\beta(g')$; the case $z=I$ used in the main text corresponds to a monoid homomorphism $g\to I$. We use only $z=I$ in what follows.
 \end{remark}
 
-\subsection{Parameterization}\label{sec:para-general}\label{sec:abstract-parameters}
+\subsection{Parameterization}\label{sec.para_general}\label{sec.abstract_parameters}
 
-We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\para{\cat{A}}{\cat{D}}$ has the same objects as $\cat{D}$, and a morphism $x\to y$ is a pair $(a,f)$ with $a\in\cat{A}$ and
+We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\para{\cat{A}}{\cat{D}}$ has the same objects as $\cat{D}$, and a morphism $x\to y$ is a pair $(a,f)$ with $a:\cat{A}$ and
 \[
 f\colon a\cdot x\to y
 \]
@@ -1441,13 +1553,13 @@ or, by closedness of $\cat{C}$, a map
 J(a)\to\ihom{\Theta^{\Fun{T},\alpha}(L),\Theta^{\Fun{T},\alpha}(M)}.
 \]
 
-\section{Specialization to manifolds}\label{sec:potlens-manifolds}
+\section{Specialization to manifolds}\label{sec.potlens_manifolds}
 
-\subsection{Manifold lenses}\label{sec:manifold-lenses}
+\subsection{Manifold lenses}\label{sec.manifold_lenses}
 
-Taking $\cat{M}\coloneqq\mfd$, the cartesian monoidal category of smooth manifolds and smooth maps, specializes the construction of \cref{sec:lenses-general} to the category $\lmfd\coloneqq\Lens{\mfd}$ of \emph{manifold lenses}. An object is a pair of manifolds $\lensob{M}$; a morphism is a pair $f=(\outp f,\inpt f)$ of smooth maps as in \eqref{eqn.lens_def}.
+Taking $\cat{M}\coloneqq\mfd$, the cartesian monoidal category of smooth manifolds and smooth maps, specializes the construction of \cref{sec.lenses_general} to the category $\lmfd\coloneqq\Lens{\mfd}$ of \emph{manifold lenses}. An object is a pair of manifolds $\lensob{M}$; a morphism is a pair $f=(\outp f,\inpt f)$ of smooth maps as in \eqref{eqn.lens_def}.
 
-\subsection{The potential monad from a Lie monoid}\label{sec:potential-monad}
+\subsection{The potential monad from a Lie monoid}\label{sec.potential_monad}
 
 Any Lie monoid $(G,\cdot,e)$ (a monoid object in $\mfd$) gives rise to a strong monad $\Fun{T}_G$ on $\mfd$:
 \[
@@ -1455,26 +1567,26 @@ Any Lie monoid $(G,\cdot,e)$ (a monoid object in $\mfd$) gives rise to a strong 
 \]
 with strength $\sigma_{X,Y}\colon X\times(Y\times G)\To{\cong}(X\times Y)\times G$ given by reassociation. The strength axioms reduce to the monoid axioms for $G$.
 
-Applying the backward-monad construction of \cref{sec:lenses-general} yields a comonad $\Lens{\Fun{T}_G}$ on $\lmfd$. We denote the coKleisli category simply by $\lmfd^G$; a morphism in it is a lens $\lensob{L}\to\lensob{M}$ whose backward component takes the form
+Applying the backward-monad construction of \cref{sec.lenses_general} yields a comonad $\Lens{\Fun{T}_G}$ on $\lmfd$. We denote the coKleisli category simply by $\lmfd^G$; a morphism in it is a lens $\lensob{L}\to\lensob{M}$ whose backward component takes the form
 \[
 \inpt f\colon\outp L\times\inpt M\to\inpt L\times G,
 \]
 i.e.\ a usual backward map augmented by a smooth $G$-valued map. coKleisli composition sums the $G$-components via the monoid multiplication on $G$.
 
-The case of primary interest is $G\coloneqq(\rr,+,0)$, the additive Lie group, which we call the \emph{potential monad}. The $\rr$-component of the augmented backward map is a smooth map
+The case of primary interest is $G\coloneqq(\rr,0,+)$, the additive Lie group, which we call the \emph{potential monad}. The $\rr$-component of the augmented backward map is a smooth map
 \[
 V\colon\outp L\times\inpt M\to\rr
 \]
 called the \emph{potential}, and coKleisli composition adds potentials along the backward pass.
 
-\subsection{PN Lie Algebra-parameterized potentialized lenses}\label{sec:potlens}
+\subsection{PN Lie Algebra-parameterized potentialized lenses}\label{sec.potlens}
 
-We lift the $\pnla$-action on $\mfd$ from \cref{prop:pnla-smc-action} to $\lmfd$ by acting on the $\outp M$-slot:
+We lift the $\pnla$-action on $\mfd$ from \cref{prop.pnla_smc_action} to $\lmfd$ by acting on the $\outp M$-slot:
 \[
 (\cdot)\colon\pnla\times\lmfd\to\lmfd,\qquad P\cdot\lensob{M}\coloneqq\binom{\inpt M}{P\times\outp M}.
 \]
 (One could equally well act on the $\inpt M$-slot; we choose the $\outp M$-slot because its product with $P$ automatically inherits a comonoid structure, as required by the definition of a lens.)
-Applying the $\Para$ construction of \cref{sec:para-general} to the coKleisli category of the potential monad from \cref{sec:potential-monad}, we define the category of \emph{potentialized lenses}
+Applying the $\Para$ construction of \cref{sec.para_general} to the coKleisli category of the potential monad from \cref{sec.potential_monad}, we define the category of \emph{potentialized lenses}
 \[
 \potlens\coloneqq\para{\pnla}{\lmfd^\rr}.
 \]
@@ -1524,7 +1636,7 @@ V\colon P\times\outp L\times\inpt M\to\rr.
   \draw[ar] (V_in1) to (R);
 \end{tikzpicture}
 \]
-The identity on $\lensob{L}$ has parameter $\rr^0\in\pnla$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
+The identity on $\lensob{L}$ has parameter $\rr^0:\pnla$, backward projection on $\lmfd$, and $V=0$ (the unit $e=0$ of $\rr$). Given also $g=(Q,\outp g,\inpt g,W)\colon\lensob{M}\to\lensob{N}$, the composite $f\then g$ has parameter $P\times Q$, inherits forward and backward components from $\lmfd$, and its potential adds the two via the coKleisli multiplication $\mu=+$:
 \begin{align*}
 V\bigl(p,\ell,\,\inpt g(q,\outp f(p,\ell),n')\bigr)+W\bigl(q,\outp f(p,\ell),n'\bigr).
 \end{align*}
@@ -1593,7 +1705,7 @@ The monoidal product is inherited from $\lmfd$. The following depicts compositio
 \]
 
 
-\section{Lenses represent serial, parallel, feedback, and splitting}\label{sec:plenspot-ops}
+\section{Lenses represent serial, parallel, feedback, and splitting}\label{sec.plenspot_ops}
 
 Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{M}}$ of lenses in a symmetric monoidal category $\cat{M}$ with a supply of commutative comonoids does just that for ``traced symmetric monoidal semi-categories equipped with a supply of comonoids'', as we now explain.
 
@@ -1630,22 +1742,22 @@ But these maps are obvious: they are just projections.
 
 Lenses are much more general than wiring diagrams. Indeed, all of the maps required by wiring diagrams are projections and diagonals, whereas there are many more maps, e.g.\ of the form $B\times D\times C\to C\times D$, than the projection(s). Looking at \eqref{eqn.arb_wd}, one can imagine that the outputs of the boxes, $B,D,C$ can be combined in any way in order to get the output of the big box (similarly for the inputs of the little boxes), not just by the direct channel shown in the pictures.
 
-But adding parameterizations as in \cref{sec:para-general} makes things even more general: the parameter can affect how information is sent around:
+But adding parameterizations as in \cref{sec.para_general} makes things even more general: the parameter can affect how information is sent around:
 \[
 P\times B\times D\times C\to C\times D
 \qqand
 P\times B\times D\times C\times A\to C\times A\times B.
 \]
-In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $V$ as in \cref{sec:potlens}, we can grade the information flow.
+In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $V$ as in \cref{sec.potlens}, we can grade the information flow.
 
 
-\chapter{From lenses to dynamics}\label{ch:potlens-to-org}
+\chapter{From lenses to dynamics}\label{ch.potlens_to_org}
 
-This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec:abstract-representation} to polynomial functors. The specific inputs are the cotangent functor, the potential monad, the PN Lie Algebra parameterization, and finally the passage from polynomial maps out of $\cot{P}$ to coalgebras in $\org$.
+This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec.abstract_representation} to polynomial functors. The specific inputs are the cotangent functor, the potential monad, the PN Lie Algebra parameterization, and finally the passage from polynomial maps out of $\cot{P}$ to coalgebras in $\org$.
 
-\section{Specialization to polynomial functors}\label{sec:specialize-source}
+\section{Specialization to polynomial functors}\label{sec.specialize_source}
 
-We now take $\cat{C}=\poly$. The monoidal structure is the Dirichlet product and the closed structure is the internal hom recalled in \cref{sec:poly}. By \cref{prop:cot-monoidal,lem:cot-comonoid}, the cotangent functor induces a functor
+We now take $\cat{C}=\poly$. The monoidal structure is the Dirichlet product and the closed structure is the internal hom recalled in \cref{sec.poly}. By \cref{prop.cot_monoidal,lem.cot_comonoid}, the cotangent functor induces a functor
 \[
 \Fun{Lens}(\cot)\colon\lmfd\to\Lens{\poly}.
 \]
@@ -1656,29 +1768,29 @@ For potentials, take the strong monad
 \]
 on $\poly$. Under the identifications $\yon\otimes\cot{\rr}\cong\cot{\rr}$ and $\cot{\rr}\otimes\cot{\rr}\cong\cot{\rr\times\rr}$, the monad unit and multiplication are $\cot{0}\colon\yon\to\cot{\rr}$ and $\cot{+}\colon\cot{\rr}\otimes\cot{\rr}\to\cot{\rr}$, where $0\colon\rr^0\to\rr$ and $+\colon\rr\times\rr\to\rr$ are the unit and product of the additive group.
 
-The algebra $\alpha\colon\cot{\rr}\to\yon$ required by \cref{sec:strong-monad-backward} is a monoid homomorphism from $\cot{\rr}$ (a Hopf monoid by \cref{prop:cot-hopf}) to the trivial monoid on $\yon$. The next lemma shows that such $\alpha$ form a one-parameter family.
+The algebra $\alpha\colon\cot{\rr}\to\yon$ required by \cref{sec.strong_monad_backward} is a monoid homomorphism from $\cot{\rr}$ (a Hopf monoid by \cref{prop.cot_hopf}) to the trivial monoid on $\yon$. The next lemma shows that such $\alpha$ form a one-parameter family.
 
-\begin{lemma}\label{lem:alpha-constant}
-The $\Fun{T}$-algebra structures on $\yon$ that preserve the trivial monoid are in bijection with $\rr$: each such $\alpha\colon\cot{\rr}\to\yon$ has direction-action at each $x:\rr$ given by a constant $c\in\rr$ independent of $x$, and every constant $c$ arises this way.
+\begin{lemma}\label{lem.alpha_constant}
+The $\Fun{T}$-algebra structures on $\yon$ that preserve the trivial monoid are in bijection with $\rr$: each such $\alpha\colon\cot{\rr}\to\yon$ has direction-action at each $x\in \rr$ given by a constant $c\in \rr$ independent of $x$, and every constant $c$ arises this way.
 \end{lemma}
 
 \begin{proof}
-The position-action of $\alpha$ is the unique map $\rr\to 1$, so $\alpha$ is determined by its direction-action, a family $c_x\coloneqq\bk{\alpha}_x(*)\in T_x^*\rr\cong\rr$ indexed by $x:\rr$. Evaluating the monoid-preservation law $\cot{+}\then\alpha=(\alpha\otimes\alpha)\then\lambda_\yon$ on the unique direction of $\yon$ at position $(x,y):\rr\times\rr$ gives
+The position-action of $\alpha$ is the unique map $\rr\to 1$, so $\alpha$ is determined by its direction-action, a family $c_x\coloneqq\bk{\alpha}_x(*): T_x^*\rr\cong\rr$ indexed by $x\in \rr$. Evaluating the monoid-preservation law $\cot{+}\then\alpha=(\alpha\otimes\alpha)\then\lambda_\yon$ on the unique direction of $\yon$ at position $(x,y)\in \rr\times\rr$ gives
 \[
-(c_{x+y},\,c_{x+y}) = (c_x,\,c_y)\in T_x^*\rr\oplus T_y^*\rr,
+(c_{x+y},\,c_{x+y}) = (c_x,\,c_y): T_x^*\rr\oplus T_y^*\rr,
 \]
-using that $D(+)=(1,1)$ transposes to the diagonal. Setting $x=0$ yields $c_y=c_0$ for all $y$, so $c_y$ is a constant $c\coloneqq c_0\in\rr$.
+using that $D(+)=(1,1)$ transposes to the diagonal. Setting $x=0$ yields $c_y=c_0$ for all $y$, so $c_y$ is a constant $c\coloneqq c_0\in \rr$.
 
-Conversely, for any constant $c\in\rr$, setting $\bk{\alpha}_x(*)\coloneqq c$ defines $\alpha\colon\cot{\rr}\to\yon$. Both sides of the monoid-preservation law send the unique direction at $(x,y)$ to $(c,c)$, and the same $(c,c)$-computation verifies the $\Fun{T}$-algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$. The unit laws $\eta_I\then\alpha=\id_\yon$ and $\tau_0\then\alpha=\id_\yon$ coincide (both reduce to $\cot{0}\then\alpha$) and hold because $T^*_*\rr^0$ is a one-element set, forcing the backward leg to be the identity on $1$.
+Conversely, for any constant $c\in \rr$, setting $\bk{\alpha}_x(*)\coloneqq c$ defines $\alpha\colon\cot{\rr}\to\yon$. Both sides of the monoid-preservation law send the unique direction at $(x,y)$ to $(c,c)$, and the same $(c,c)$-computation verifies the $\Fun{T}$-algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$. The unit laws $\eta_I\then\alpha=\id_\yon$ and $\tau_0\then\alpha=\id_\yon$ coincide (both reduce to $\cot{0}\then\alpha$) and hold because $T^*_*\rr^0$ is a one-element set, forcing the backward leg to be the identity on $1$.
 \end{proof}
 
 We choose
 \[
 \dec\colon\cot{\rr}\to\yon,
 \qquad
-\bk{\dec}_x(*)\coloneqq -1\in T_x^*\rr\cong\rr.
+\bk{\dec}_x(*)\coloneqq -1: T_x^*\rr\cong\rr.
 \]
-The sign fixes the sign of the Hamilton-like equations below; $c=0$ would give the trivial algebra (no potential contribution), and $c=+1$ would give the opposite-sign physics. \Cref{rmk:general-z} allows also more exotic algebras valued in monoids $z\neq\yon$; we do not pursue them.
+The sign fixes the sign of the Hamilton-like equations below; $c=0$ would give the trivial algebra (no potential contribution), and $c=+1$ would give the opposite-sign physics. \Cref{rmk.general_z} allows also more exotic algebras valued in monoids $z\neq\yon$; we do not pursue them.
 
 Hence
 \[
@@ -1695,7 +1807,7 @@ Now take $\cat{A}=\pnla$ and
 \[
 J(P)\coloneqq\cot{P}.
 \]
-This is strong monoidal by \cref{prop:cot-monoidal,prop:pnla-smc-action}, and \cref{lem:cot-comonoid} supplies compatible comonoid structures on its values; the functorial and monoidal structure maps preserve them because they are obtained from the strong monoidal functor $\cot$.
+This is strong monoidal by \cref{prop.cot_monoidal,prop.pnla_smc_action}, and \cref{lem.cot_comonoid} supplies compatible comonoid structures on its values; the functorial and monoidal structure maps preserve them because they are obtained from the strong monoidal functor $\cot$.
 The abstract parameter construction gives an intermediate functor
 \[
 \potlens=\para{\pnla}{\lmfd^\rr}\to\para{\pnla}{\poly},
@@ -1709,47 +1821,48 @@ Thus a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ with parameter $P
 \cot{P}\otimes\Phi_1\lensob{L}\to\Phi_1\lensob{M},
 \]
 or equivalently
-\begin{equation}\label{eqn:parameter-to-action}
+\begin{equation}\label{eqn.parameter_to_action}
 \cot{P}\to
 \ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
 \end{equation}
 
-This is the point at which we use a property specific to polynomial functors. Since $P$ is a PN Lie Algebra, \cref{prop:pnla-polynomial} gives
+This is the point at which we use a property specific to polynomial functors. Since $P$ is a PN Lie Algebra, \cref{prop.pnla_polynomial} gives
 \[
 \cot{P}\cong P\yon^P.
 \]
-By \cref{ex:coalg-as-poly-map}, the map \eqref{eqn:parameter-to-action} is equivalently an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $P$. This is the $\org$-morphism obtained from the parameterized lens before adding the phase-space refinement.
+By \cref{ex.coalg_as_poly_map}, the map \eqref{eqn.parameter_to_action} is equivalently an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $P$. This is the $\org$-morphism obtained from the parameterized lens before adding the phase-space refinement.
 
-\section{The cotangent-state refinement}\label{sec:cotangent-state-refinement}
+\section{The cotangent-state refinement}\label{sec.cotangent_state_refinement}
 
 For the dynamics considered in this paper, we use $T^*P$ rather than $P$ as the state space. This is an additional step, not part of the abstract construction above. It fits a general framework: choose a strong monoidal endofunctor $F\colon\pnla\to\pnla$ and a monoidal natural transformation $\rho\colon\cot\circ F\Rightarrow\cot$, and precompose.
 
-\begin{proposition}[Parameter-refinement by a monoidal natural transformation]\label{prop:param-refinement}
+\begin{proposition}[Parameter-refinement by a monoidal natural transformation]\label{prop.param_refinement}
 Let $F\colon\pnla\to\pnla$ be a strong monoidal endofunctor and let $\rho\colon\cot\circ F\Rightarrow\cot$ be a monoidal natural transformation (naturality required only for $\pnla$-isomorphisms, since $\pnla$ is a groupoid). Precomposition with $\rho$ defines an identity-on-objects functor
 \[
 \rho^*\colon\Para_{\pnla,\,\cot}(\poly)\;\longrightarrow\;\Para_{\pnla,\,\cot\circ F}(\poly),
 \qquad
 (P,\,f\colon\cot P\otimes x\to y)\;\mapsto\;\bigl(P,\,f\circ(\rho_P\otimes\id)\bigr).
 \]
-Composing with the coalgebra interpretation $\cot F(P)\cong F(P)\yon^{F(P)}$ (\cref{prop:pnla-polynomial}, \cref{ex:coalg-as-poly-map}) yields a functor $\Para_{\pnla,\,\cot}(\poly)\to\org$ with state set $F(P)$.
+Composing with the coalgebra interpretation $\cot F(P)\cong F(P)\yon^{F(P)}$ (\cref{prop.pnla_polynomial}, \cref{ex.coalg_as_poly_map}) yields a functor $\Para_{\pnla,\,\cot}(\poly)\to\org$ with state set $F(P)$.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Functoriality of $\rho^*$ on composition uses monoidality of $\rho$ (the comparison $\rho_{P\otimes Q}$ factors as $\rho_P\otimes\rho_Q$ under the strong monoidal structures of $\cot$ and $\cot\circ F$); well-definedness on 2-cells uses naturality of $\rho$ with respect to $\pnla$-isomorphisms.
+\emph{[Proof remains to be supplied or cited.]} Functoriality of $\rho^*$ on composition uses monoidality of $\rho$ (the comparison $\rho_{P\otimes Q}$ factors as $\rho_P\otimes\rho_Q$ under the strong monoidal structures of $\cot$ and $\cot\circ F$); well-definedness on 2-cells uses naturality of $\rho$ with respect to $\pnla$-isomorphisms.
 \end{proof}
 
-The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{pairing projection} below; \cref{rmk:tangent-state} records the analogous tangent-state alternative.
+The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{pairing projection} below; \cref{rmk.tangent_state} records the analogous tangent-state alternative.
 
-For any PN Lie Algebra $(P,\sharp_P)$, \cref{prop:TstarG-pnla} left-trivializes
+For any PN Lie Algebra $(P,\sharp_P)$, \cref{prop.TstarG_pnla} left-trivializes
 \[
 T^*P\cong P\times\lie{p}^*.
 \]
-We call a point $(u,\pi)$ a pair consisting of a \emph{position} $u:P$ and a \emph{momentum} $\pi:\lie{p}^*$. The cotangent space there decomposes as
+We call a point $(u,\pi)$ a pair consisting of a \emph{position} $u\in P$ and a \emph{momentum} $\pi\in \lie{p}^*$. The cotangent space there decomposes as
 \[
-T^*_{(u,\pi)}(T^*P)\cong\lie{p}^*\oplus\lie{p}.
+T^*_{(u,\pi)}(T^*P)\cong T^*_uP\oplus T^*_\pi(\lie{p}^*)\cong\lie{p}^*\oplus\lie{p},
 \]
+where the first identification is left-trivialization on the $P$-factor and \cref{cor.tangent_vec} on the $\lie{p}^*$-factor (then double-dualizing $(\lie{p}^*)^*\cong\lie{p}$).
 
-\begin{definition}[pairing projection]\label{def:pairing-proj}
+\begin{definition}[pairing projection]\label{def.pairing_proj}
 The \emph{pairing projection} $\rho_P\colon\cot{T^*P}\to\cot{P}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
 \[
 T^*_uP\cong\lie{p}^*\To{\sigma\mapsto(\sigma,\,\sharp_P(\pi))}\lie{p}^*\oplus\lie{p}\cong T^*_{(u,\pi)}(T^*P).
@@ -1758,7 +1871,7 @@ T^*_uP\cong\lie{p}^*\To{\sigma\mapsto(\sigma,\,\sharp_P(\pi))}\lie{p}^*\oplus\li
 
 On positions, $\rho_P$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $\lie{p}^*$-slot and injects the pairing-lifted momentum $\sharp_P(\pi)\in\lie{p}$ into the $\lie{p}$-slot, independently of $\sigma$. Thus $\rho_P$ is not of the form $\cot{h}$ for any smooth $h\colon T^*P\to P$: the $\lie{p}$-component of its direction-action is constant in $\sigma$, whereas $\cot$ always produces a linear direction-action.
 
-Precomposing \eqref{eqn:parameter-to-action} with $\rho_P$ gives
+Precomposing \eqref{eqn.parameter_to_action} with $\rho_P$ gives
 \[
 \cot{T^*P}
 \To{\rho_P}
@@ -1766,41 +1879,41 @@ Precomposing \eqref{eqn:parameter-to-action} with $\rho_P$ gives
 \to
 \ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
 \]
-Since $T^*P$ is a PN Lie Algebra by \cref{prop:TstarG-pnla,prop:canonical-pairing}, \cref{prop:pnla-polynomial} gives
+Since $T^*P$ is a PN Lie Algebra by \cref{prop.TstarG_pnla,prop.canonical_pairing}, \cref{prop.pnla_polynomial} gives
 \[
 \cot{T^*P}\cong (T^*P)\yon^{T^*P}.
 \]
-Thus \cref{ex:coalg-as-poly-map} presents the above map as an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $T^*P$. This is the 1-cell $\Phi(f)$ in $\org$.
+Thus \cref{ex.coalg_as_poly_map} presents the above map as an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $T^*P$. This is the 1-cell $\Phi(f)$ in $\org$.
 
-\begin{remark}[Tangent-state alternative]\label{rmk:tangent-state}
-Taking $F\coloneqq T$ (\cref{prop:TT-endofunctors}) instead of $T^*$ fits \cref{prop:param-refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\sharp_P\inv(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$, using the inverse pairing $\sharp_P\inv\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop:param-refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry canonical symplectic forms, giving canonical PN Lie Algebra structures by \cref{prop:canonical-pairing}, and the dynamics coincide with textbook Hamilton's equations).
+\begin{remark}[Tangent-state alternative]\label{rmk.tangent_state}
+Taking $F\coloneqq T$ (\cref{prop.TT_endofunctors}) instead of $T^*$ fits \cref{prop.param_refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\sharp_P\inv(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$ (left-trivialization on the $P$-factor and \cref{cor.tangent_vec} on the $\lie p$-factor), using the inverse pairing $\sharp_P\inv\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop.param_refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry canonical symplectic forms, giving canonical PN Lie Algebra structures by \cref{prop.canonical_pairing}, and the dynamics coincide with textbook Hamilton's equations).
 \end{remark}
 
-\begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk:legendre-equivalence}
-By \cref{prop:legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so the parameter-refinements $\rho$ and $\tilde\rho$ correspond via $\cot{\sharp}$. Consequently, the two functors produced by \cref{prop:param-refinement},
+\begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk.legendre_equivalence}
+By \cref{prop.legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so the parameter-refinements $\rho$ and $\tilde\rho$ correspond via $\cot{\sharp}$. Consequently, the two functors produced by \cref{prop.param_refinement},
 \[
 \Phi^{T^*},\;\Phi^{T}\colon\potlens\to\org,
 \]
-are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org$ induced by $\sharp_P\colon T^*P\to TP$ identifies $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$ as 1-cells. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting: the two formulations disagree on literal state spaces ($T^*P$ vs $TP$), but the pairing mediates a canonical isomorphism between them. The paper works with $\Phi^{T^*}$ for the reasons given in \cref{rmk:tangent-state}.
+are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org$ induced by $\sharp_P\colon T^*P\to TP$ identifies $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$ as 1-cells. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting: the two formulations disagree on literal state spaces ($T^*P$ vs $TP$), but the pairing mediates a canonical isomorphism between them. The paper works with $\Phi^{T^*}$ for the reasons given in \cref{rmk.tangent_state}.
 \end{remark}
 
-\section{Supporting corollaries}\label{sec:corollaries}
+\section{Supporting corollaries}\label{sec.corollaries}
 
-The following two corollaries of the abstract machinery specialized to $\cot\colon\mfd\to\poly$ are used in the proofs below. Both are direct consequences of \cref{prop:cot-monoidal,lem:cot-comonoid,prop:Theta}.
+The following two corollaries of the abstract machinery specialized to $\cot\colon\mfd\to\poly$ are used in the proofs below. Both are direct consequences of \cref{prop.cot_monoidal,lem.cot_comonoid,prop.Theta}.
 
-\begin{corollary}[Cotangent chain rule]\label{cor:chain-rule}
-For smooth maps $u_i\colon M\to A_i$ ($i=1,\ldots,k$) and $\psi\colon A_1\times\cdots\times A_k\to N$, setting $h\coloneqq\psi\circ\langle u_1,\ldots,u_k\rangle$, we have $\cot{h} = \cot{\psi}\circ(\cot{u_1}\otimes\cdots\otimes\cot{u_k})\circ\cot{\Delta_M^{(k)}}$ in $\poly$. At position $m:M$ and direction $\sigma:T^*_{h(m)}N$,
+\begin{corollary}[Cotangent chain rule]\label{cor.chain_rule}
+For smooth maps $u_i\colon M\to A_i$ ($i=1,\ldots,k$) and $\psi\colon A_1\times\cdots\times A_k\to N$, setting $h\coloneqq\psi\circ\langle u_1,\ldots,u_k\rangle$, we have $\cot{h} = \cot{\psi}\circ(\cot{u_1}\otimes\cdots\otimes\cot{u_k})\circ\cot{\Delta_M^{(k)}}$ in $\poly$. At position $m\in M$ and direction $\sigma\in T^*_{h(m)}N$,
 \[
-(dh_m)^*\sigma = \sum_{i=1}^k (du_{i,m})^*(\partial_i\psi)^*\sigma\in T^*_m M,
+(dh_m)^*\sigma = \sum_{i=1}^k (du_{i,m})^*(\partial_i\psi)^*\sigma: T^*_m M,
 \]
 where partial derivatives of $\psi$ are evaluated at $(u_1(m),\ldots,u_k(m))$.
 \end{corollary}
 
 \begin{proof}
-\emph{[Proof deferred.]} Apply \cref{prop:cot-monoidal} and \cref{lem:cot-comonoid} to factor $\cot h$ through the iterated diagonal, then read the direction-action component-by-component.
+\emph{[Proof remains to be supplied or cited.]} Apply \cref{prop.cot_monoidal} and \cref{lem.cot_comonoid} to factor $\cot h$ through the iterated diagonal, then read the direction-action component-by-component.
 \end{proof}
 
-\begin{corollary}[Monoid of covector fields]\label{cor:covector-monoid}
+\begin{corollary}[Monoid of covector fields]\label{cor.covector_monoid}
 For every manifold $N$, $\ihom{\cot N,\yon}$ is a commutative monoid in $(\poly,\yon,\otimes)$. Its positions correspond to smooth covector fields on $N$ via $\varphi\mapsto\bigl(n\mapsto\bk{\varphi}_n(*)\bigr)$. The $k$-fold multiplication $\mu_N^{(k)}\colon\ihom{\cot N,\yon}^{\otimes k}\to\ihom{\cot N,\yon}$ is pointwise addition:
 \[
 \mu_N^{(k)}(\alpha_1,\ldots,\alpha_k)(n) = \alpha_1(n)+\cdots+\alpha_k(n).
@@ -1808,40 +1921,40 @@ For every manifold $N$, $\ihom{\cot N,\yon}$ is a commutative monoid in $(\poly,
 \end{corollary}
 
 \begin{proof}
-\emph{[Proof deferred.]} The comonoid structure on $\cot{N}$ from \cref{lem:cot-comonoid} dualizes via closedness to a commutative monoid structure on $\ihom{\cot{N},\yon}$. At each position $n:N$, the comultiplication $\cot{\Delta_N^{(k)}}$ is the $k$-fold fiberwise addition on $T^*_n N$, and its adjoint yields pointwise addition of covector fields.
+\emph{[Proof remains to be supplied or cited.]} The comonoid structure on $\cot{N}$ from \cref{lem.cot_comonoid} dualizes via closedness to a commutative monoid structure on $\ihom{\cot{N},\yon}$. At each position $n\in N$, the comultiplication $\cot{\Delta_N^{(k)}}$ is the $k$-fold fiberwise addition on $T^*_n N$, and its adjoint yields pointwise addition of covector fields.
 \end{proof}
 
-\section{Hamilton-like equations}\label{sec:hamilton}
+\section{Hamilton-like equations}\label{sec.hamilton}
 
-\subsection{Textbook Hamilton's equations}\label{sec:textbook-hamilton}
+\subsection{Textbook Hamilton's equations}\label{sec.textbook_hamilton}
 
 We recall Hamilton's equations in the three forms used below; see Marsden--Ratiu~\cite[\S2.4 (canonical form, Prop.~2.4.4), \S7.7 eq.~(7.7.7) (simple mechanical), \S7.8 eq.~(7.8.14) and Thm.~7.8.6 (Lagrange--d'Alembert with external forces)]{marsden1999introduction} for a systematic treatment.
 
-Let $Q$ be a smooth manifold (the \emph{configuration space}) and $H\colon T^*Q\to\rr$ a smooth function (the \emph{Hamiltonian}). In canonical coordinates $(q^i, p_i)$ on $T^*Q$, Hamilton's equations govern the time evolution of a state $(q(t), p(t))\in T^*Q$:
-\begin{equation}\label{eqn:hamilton-general}
+Let $Q$ be a smooth manifold (the \emph{configuration space}) and $H\colon T^*Q\to\rr$ a smooth function (the \emph{Hamiltonian}). In canonical coordinates $(q^i, p_i)$ on $T^*Q$, Hamilton's equations govern the time evolution of a state $(q(t), p(t)): T^*Q$:
+\begin{equation}\label{eqn.hamilton_general}
 \dot q^i \;=\; \frac{\partial H}{\partial p_i},
 \qquad
 \dot p_i \;=\; -\frac{\partial H}{\partial q^i}.
 \end{equation}
-For a \emph{simple mechanical system} with kinetic term $\tfrac{1}{2}p^\top M^{-1}p$ (where $M$ is the inertia tensor, a positive-definite symmetric matrix) and potential $V\colon Q\to\rr$, the Hamiltonian is $H(q,p)=\tfrac{1}{2}p^\top M^{-1}p+V(q)$ and \eqref{eqn:hamilton-general} reduces to
-\begin{equation}\label{eqn:hamilton-mechanical}
+For a \emph{simple mechanical system} with kinetic term $\tfrac{1}{2}p^\top M^{-1}p$ (where $M$ is the inertia tensor, a positive-definite symmetric matrix) and potential $V\colon Q\to\rr$, the Hamiltonian is $H(q,p)=\tfrac{1}{2}p^\top M^{-1}p+V(q)$ and \eqref{eqn.hamilton_general} reduces to
+\begin{equation}\label{eqn.hamilton_mechanical}
 \dot q \;=\; M^{-1}p,
 \qquad
 \dot p \;=\; -\nabla V(q).
 \end{equation}
 When the system is coupled to an environment that can exchange momentum with it, the momentum equation acquires an \emph{external generalized force} $F_\mathrm{ext}(q,p,t)$:
-\begin{equation}\label{eqn:hamilton-forced}
+\begin{equation}\label{eqn.hamilton_forced}
 \dot q \;=\; M^{-1}p,
 \qquad
 \dot p \;=\; -\nabla V(q) + F_\mathrm{ext}.
 \end{equation}
 
-\subsection{The reduction theorem}\label{sec:reduction}
+\subsection{The reduction theorem}\label{sec.reduction}
 
-\begin{theorem}[Reduction]\label{thm:reduction}
-Let $f=(P,\outp f,\inpt f,V)\colon\lensob L\to\lensob M$ be a morphism in $\potlens$. By \cref{cor:covector-monoid}, a position of $\Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}$ is a pair $(m,\beta)$ with $m:\outp M$ and $\beta\in\Omega^1(\inpt M)$, and a direction there is a pair $(\nu,m')\in T^*_m\outp M\times\inpt M$. At state $(u,\pi)\in T^*P$ on input $(\ell,\alpha)\in\Phi_1\lensob L(1)$:
+\begin{theorem}[Reduction]\label{thm.reduction}
+Let $f=(P,\outp f,\inpt f,V)\colon\lensob L\to\lensob M$ be a morphism in $\potlens$. By \cref{cor.covector_monoid}, a position of $\Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}$ is a pair $(m,\beta)$ with $m:\outp M$ and $\beta:\Omega^1(\inpt M)$, and a direction there is a pair $(\nu,m'): T^*_m\outp M\times\inpt M$. At state $(u,\pi): T^*P$ on input $(\ell,\alpha):\Phi_1\lensob L(1)$:
 \begin{enumerate}
-\item The action of $\Phi(f)$ produces output $(m,\beta)\in\Phi_1\lensob M(1)$ with
+\item The action of $\Phi(f)$ produces output $(m,\beta):\Phi_1\lensob M(1)$ with
 \[
 m = \outp f(u,\ell),
 \qquad
@@ -1853,7 +1966,7 @@ m = \outp f(u,\ell),
 \qquad
 \dot\pi = -d_PV + (\partial_P\outp f)^*\nu + (\partial_P\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr).
 \]
-\item The feedback on the input slot is $(l^\mathrm{fb},\mu^\mathrm{fb})\in\inpt L\times T^*_\ell\outp L$ with
+\item The feedback on the input slot is $(l^\mathrm{fb},\mu^\mathrm{fb}):\inpt L\times T^*_\ell\outp L$ with
 \[
 l^\mathrm{fb} = \inpt f(u,\ell,m'),
 \qquad
@@ -1864,36 +1977,36 @@ All partials are evaluated at $(u,\ell,m')$.
 \end{theorem}
 
 \begin{proof}
-\emph{[Proof deferred.]} The $\sharp_P(\pi)$ contribution to $\dot u$ comes from the pairing projection $\rho_P$ (\cref{def:pairing-proj}), whose $\lie{p}$-component is constant in the input direction. The three force-like terms in $\dot\pi$, $\mu^\mathrm{fb}$, and $\beta$ arise from tracing directions through the three-fold codiagonal on $P\times\outp L\times\inpt M$ and the three branches corresponding to $V$, $\outp f$, $\inpt f$; their sum is the pointwise addition of \cref{cor:covector-monoid}. A full proof uses \cref{cor:chain-rule} applied in each slot.
+\emph{[Proof remains to be supplied or cited.]} The $\sharp_P(\pi)$ contribution to $\dot u$ comes from the pairing projection $\rho_P$ (\cref{def.pairing_proj}), whose $\lie{p}$-component is constant in the input direction. The three force-like terms in $\dot\pi$, $\mu^\mathrm{fb}$, and $\beta$ arise from tracing directions through the three-fold codiagonal on $P\times\outp L\times\inpt M$ and the three branches corresponding to $V$, $\outp f$, $\inpt f$; their sum is the pointwise addition of \cref{cor.covector_monoid}. A full proof uses \cref{cor.chain_rule} applied in each slot.
 \end{proof}
 
-\begin{remark}[Correspondence with textbook Hamilton's equations]\label{rmk:hamilton-correspondence}
+\begin{remark}[Correspondence with textbook Hamilton's equations]\label{rmk.hamilton_correspondence}
 Taking $Q\coloneqq P$ as the configuration manifold and setting
 \[
 H(u,\pi) \;\coloneqq\; \tfrac{1}{2}\,\langle\pi,\sharp_P(\pi)\rangle \;+\; V(u,\ell,m')
 \]
-as a state-dependent Hamiltonian on $T^*P$ (parameterized by the current input $(\ell,\alpha)$ and received direction $(\nu,m')$, which are held fixed for the purposes of the flow), \cref{thm:reduction}'s state update matches the forced Hamilton's equations \eqref{eqn:hamilton-forced}:
+as a state-dependent Hamiltonian on $T^*P$ (parameterized by the current input $(\ell,\alpha)$ and received direction $(\nu,m')$, which are held fixed for the purposes of the flow), \cref{thm.reduction}'s state update matches the forced Hamilton's equations \eqref{eqn.hamilton_forced}:
 \[
 \dot u \;=\; \sharp_P(\pi) \;=\; \partial_\pi H,
 \qquad
 \dot\pi \;=\; \underbrace{-d_P V}_{-\partial_u H} \;+\; \underbrace{(\partial_P\outp f)^*\nu \;+\; (\partial_P\inpt f)^*\alpha\bigl(\inpt f(u,\ell,m')\bigr)}_{F_\mathrm{ext}}.
 \]
-The pairing $\sharp_P$ plays the role of the inverse inertia $M^{-1}$. The two pullback terms in $F_\mathrm{ext}$ are the non-conservative generalized forces transmitted through the lens's forward map $\outp f$ (carrying the back-force $\nu$ from the target interface) and its backward map $\inpt f$ (carrying the covector field $\alpha$ from the source interface). When both are zero --- a closed system --- the equations collapse to the standard closed-form \eqref{eqn:hamilton-mechanical}.
+The pairing $\sharp_P$ plays the role of the inverse inertia $M^{-1}$. The two pullback terms in $F_\mathrm{ext}$ are the non-conservative generalized forces transmitted through the lens's forward map $\outp f$ (carrying the back-force $\nu$ from the target interface) and its backward map $\inpt f$ (carrying the covector field $\alpha$ from the source interface). When both are zero --- a closed system --- the equations collapse to the standard closed-form \eqref{eqn.hamilton_mechanical}.
 \end{remark}
 
-\section{Functoriality}\label{sec:functoriality}
+\section{Functoriality}\label{sec.functoriality}
 
-\begin{theorem}\label{thm:functor}
+\begin{theorem}\label{thm.functor}
 The assignment $f\mapsto\Phi(f)$ extends to a functor $\Phi\colon\potlens\to\org$.
 \end{theorem}
 
 \begin{proof}
-\emph{[Proof deferred.]} The identity on $\lensob L$ has $P=\rr^0$, $V=0$, and $\outp f,\inpt f$ the projections; \cref{thm:reduction} then produces the terminal coalgebra on $\Phi_1\lensob L$. For composition, $\Phi$ factors as the abstract construction of \cref{ch:potentials} (functorial by the $\Para$-machinery), followed by parameter-refinement through the monoidal natural transformation $\rho$ (functorial by \cref{prop:param-refinement}), followed by coalgebra interpretation (functorial by \cref{ex:coalg-as-poly-map}). The chain-rule content (\cref{cor:chain-rule}) feeds the first step; monoidality of $\rho$ ($\rho_{P_1\times P_2}=\rho_{P_1}\otimes\rho_{P_2}$, via $\sharp_{P_1\times P_2}=\sharp_{P_1}\oplus\sharp_{P_2}$ from \cref{prop:TT-endofunctors}) feeds the second.
+\emph{[Proof remains to be supplied or cited.]} The identity on $\lensob L$ has $P=\rr^0$, $V=0$, and $\outp f,\inpt f$ the projections; \cref{thm.reduction} then produces the terminal coalgebra on $\Phi_1\lensob L$. For composition, $\Phi$ factors as the abstract construction of \cref{ch.potentials} (functorial by the $\Para$-machinery), followed by parameter-refinement through the monoidal natural transformation $\rho$ (functorial by \cref{prop.param_refinement}), followed by coalgebra interpretation (functorial by \cref{ex.coalg_as_poly_map}). The chain-rule content (\cref{cor.chain_rule}) feeds the first step; monoidality of $\rho$ ($\rho_{P_1\times P_2}=\rho_{P_1}\otimes\rho_{P_2}$, via $\sharp_{P_1\times P_2}=\sharp_{P_1}\oplus\sharp_{P_2}$ from \cref{prop.TT_endofunctors}) feeds the second.
 \end{proof}
 
-\section{Lax symmetric monoidality}\label{sec:lax-monoidal}
+\section{Lax symmetric monoidality}\label{sec.lax_monoidal}
 
-\begin{proposition}\label{prop:potlens-monoidal}
+\begin{proposition}\label{prop.potlens_monoidal}
 $\potlens$ inherits from $\lmfd$ and $\pnla$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor product
 \[
 \lensob L\otimes\lensob{L'}\coloneqq\lensobs{L}{L'}.
@@ -1902,33 +2015,33 @@ On morphisms, $f\otimes f'$ has parameter $P\times P'$ (with pairing $\sharp_P\o
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Inherited from the symmetric monoidal structures on $\lmfd=\Lens{\mfd}$ (\cref{sec:lenses-general}) and on $\pnla$ (\cref{prop:pnla-smc-action}), via the $\Para$ construction (\cref{sec:para-general}).
+\emph{[Proof remains to be supplied or cited.]} Inherited from the symmetric monoidal structures on $\lmfd=\Lens{\mfd}$ (\cref{sec.lenses_general}) and on $\pnla$ (\cref{prop.pnla_monoidal}), via the $\Para$ construction (\cref{sec.para_general}).
 \end{proof}
 
-\begin{theorem}\label{thm:lax-monoidal}
-$\Phi\colon\potlens\to\org$ is lax symmetric monoidal. The morphism laxator $\Phi(f)\otimes\Phi(f')\to\Phi(f\otimes f')$ has state component the canonical $T^*P\times T^*P'\cong T^*(P\times P')$, and its interface component is the tensor of \cref{prop:cot-monoidal}'s strong comparison on the $\cot{\outp{(-)}}$ factor with the pairing
+\begin{theorem}\label{thm.lax_monoidal}
+$\Phi\colon\potlens\to\org$ is lax symmetric monoidal. The morphism laxator $\Phi(f)\otimes\Phi(f')\to\Phi(f\otimes f')$ has state component the canonical $T^*P\times T^*P'\cong T^*(P\times P')$, and its interface component is the tensor of \cref{prop.cot_monoidal}'s strong comparison on the $\cot{\outp{(-)}}$ factor with the pairing
 \[
 \ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{(\inpt L\times\inpt{L'})},\yon}
 \]
-from \cref{prop:Theta} on the hom factor. The pairing is not invertible: it classifies external-sum covector fields on $\inpt L\times\inpt{L'}$, missing those with genuine $\inpt L$-$\inpt{L'}$ mixed dependence. Hence $\Phi$ is lax, not strong.
+from \cref{prop.Theta} on the hom factor. The pairing is not invertible: it classifies external-sum covector fields on $\inpt L\times\inpt{L'}$, missing those with genuine $\inpt L$-$\inpt{L'}$ mixed dependence. Hence $\Phi$ is lax, not strong.
 \end{theorem}
 
 \begin{proof}
-\emph{[Proof deferred.]} Action and update compatibility of the morphism laxator reduce, via \cref{thm:reduction}, to block-diagonality of the slot-partials of the tensor-product data $V^\otimes$, $\outp{(f\otimes f')}$, $\inpt{(f\otimes f')}$, which follows from \cref{cor:chain-rule} applied to the componentwise-independent definition in \cref{prop:potlens-monoidal}. Coherence (associator, unitor, symmetry) is inherited from $(\mfd,\times)$ and $(\poly,\otimes)$.
+\emph{[Proof remains to be supplied or cited.]} Action and update compatibility of the morphism laxator reduce, via \cref{thm.reduction}, to block-diagonality of the slot-partials of the tensor-product data $V^\otimes$, $\outp{(f\otimes f')}$, $\inpt{(f\otimes f')}$, which follows from \cref{cor.chain_rule} applied to the componentwise-independent definition in \cref{prop.potlens_monoidal}. Coherence (associator, unitor, symmetry) is inherited from $(\mfd,\times)$ and $(\poly,\otimes)$.
 \end{proof}
 
 %--------------------------------------------------------------------
-\chapter{Example: the spring cell}\label{ch:spring}
+\chapter{Example: the spring cell}\label{ch.spring}
 %--------------------------------------------------------------------
 
 We illustrate $\Phi$ with a one-dimensional spring cell and recover the discrete and continuum wave equations by wiring copies of it.
 
-\begin{definition}\label{def:spring-cell}
+\begin{definition}\label{def.spring_cell}
 Fix $\kappa,\mu>0$. The \emph{spring cell} is the $\potlens$-morphism
 \[
 f_\mathrm{spring}\colon\binom{\rr^2}{\rr}\to\binom{\rr^2}{\rr}
 \]
-with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), PN Lie Algebra parameter $P\coloneqq(\rr,+,0)$ with pairing $\sharp_P(p)\coloneqq p/\mu$, and data
+with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), PN Lie Algebra parameter $P\coloneqq(\rr,0,+)$ with pairing $\sharp_P(p)\coloneqq p/\mu$, and data
 \[
 \outp f(x,y)\coloneqq x,
 \quad
@@ -1938,12 +2051,12 @@ V(x,y,(\ell,r))\coloneqq\tfrac{\kappa}{2}(x-\ell)^2+\tfrac{\kappa}{2}(r-x)^2.
 \]
 \end{definition}
 
-\begin{remark}\label{rmk:spring-pairing}
-The pairing $\sharp_P(p)=p/\mu$ is chosen, not the canonical pairing of \cref{prop:canonical-pairing}. The free parameter $\mu$ encodes inverse mass; the canonical pairing corresponds to $\mu=1$.
+\begin{remark}\label{rmk.spring_pairing}
+The pairing $\sharp_P(p)=p/\mu$ is chosen, not the canonical pairing of \cref{prop.canonical_pairing}. The free parameter $\mu$ encodes inverse mass; the canonical pairing corresponds to $\mu=1$.
 \end{remark}
 
-\begin{proposition}\label{prop:spring-dynamics}
-At state $(x,p)\in T^*P$ on input $(y,\alpha)$ with vanishing received covector $\nu=0$ and input direction $(\ell,r)\in\rr^2$, the update of $\Phi(f_\mathrm{spring})$ is
+\begin{proposition}\label{prop.spring_dynamics}
+At state $(x,p): T^*P$ on input $(y,\alpha)$ with vanishing received covector $\nu=0$ and input direction $(\ell,r)\in \rr^2$, the update of $\Phi(f_\mathrm{spring})$ is
 \[
 \dot x = p/\mu,
 \qquad
@@ -1952,18 +2065,18 @@ At state $(x,p)\in T^*P$ on input $(y,\alpha)$ with vanishing received covector 
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Apply \cref{thm:reduction}. The $\inpt f$-contribution to $\dot p$ vanishes because $\partial_P\inpt f=0$; the $\outp f$-contribution vanishes because $\nu=0$; the $V$-contribution is $-\partial_xV=\kappa(\ell+r-2x)$. The $\sharp_P(p)=p/\mu$ term comes from the pairing projection (\cref{def:pairing-proj}).
+Apply \cref{thm.reduction}. The $\inpt f$-contribution to $\dot p$ vanishes because $\partial_P\inpt f=0$; the $\outp f$-contribution vanishes because $\nu=0$; the $V$-contribution is $-\partial_xV=\kappa(\ell+r-2x)$. The $\sharp_P(p)=p/\mu$ term comes from the pairing projection (\cref{def.pairing_proj}).
 \end{proof}
 
-\begin{remark}[Harmonic oscillator Hamiltonian]\label{rmk:spring-hamiltonian}
-Under the correspondence of \cref{rmk:hamilton-correspondence}, the spring cell's state-update is textbook Hamilton's equations for the harmonic-oscillator Hamiltonian
+\begin{remark}[Harmonic oscillator Hamiltonian]\label{rmk.spring_hamiltonian}
+Under the correspondence of \cref{rmk.hamilton_correspondence}, the spring cell's state-update is textbook Hamilton's equations for the harmonic-oscillator Hamiltonian
 \[
 H(x,p) \;=\; \frac{p^2}{2\mu} \;+\; \tfrac{\kappa}{2}(x-\ell)^2 \;+\; \tfrac{\kappa}{2}(r-x)^2
 \]
-on $T^*\rr\cong\rr^2$: kinetic energy $p^2/(2\mu)$ (mass $\mu$) plus two Hooke potentials (one spring to the left neighbor at $\ell$, one to the right neighbor at $r$, both with spring constant $\kappa$). \Cref{prop:spring-dynamics}'s equations $\dot x=p/\mu$, $\dot p=\kappa(\ell+r-2x)$ are precisely $\dot x=\partial_p H$, $\dot p=-\partial_x H$. Differentiating once more recovers Newton's second law $\mu\ddot x=\kappa(\ell+r-2x)$.
+on $T^*\rr\cong\rr^2$: kinetic energy $p^2/(2\mu)$ (mass $\mu$) plus two Hooke potentials (one spring to the left neighbor at $\ell$, one to the right neighbor at $r$, both with spring constant $\kappa$). \Cref{prop.spring_dynamics}'s equations $\dot x=p/\mu$, $\dot p=\kappa(\ell+r-2x)$ are precisely $\dot x=\partial_p H$, $\dot p=-\partial_x H$. Differentiating once more recovers Newton's second law $\mu\ddot x=\kappa(\ell+r-2x)$.
 \end{remark}
 
-\begin{proposition}\label{prop:spring-wave}
+\begin{proposition}\label{prop.spring_wave}
 Wiring a $\zz$-indexed chain of spring cells with each cell's input $(\ell,r)$ identified with the outputs of its left and right neighbors yields joint dynamics
 \[
 \mu\ddot x_i = \kappa(x_{i-1}-2x_i+x_{i+1}).
@@ -1972,11 +2085,11 @@ In the continuum limit $x_i\to u(i\Delta x,t)$ with density $\rho\coloneqq\mu/\D
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} The wiring is a closed-system 1-cell in $\org$ obtained by $\otimes$-product and feedback identifying each cell's input slot with neighbors' output slots (cf.\ \cref{sec:plenspot-ops}). Apply \cref{prop:spring-dynamics} cell-wise and time-differentiate $\dot x_i=p_i/\mu$; substitute $\dot p_i=\kappa(x_{i-1}+x_{i+1}-2x_i)$ to obtain the discrete equation, and pass to the continuum limit.
+The wiring is a closed-system 1-cell in $\org$ obtained by $\otimes$-product and feedback identifying each cell's input slot with neighbors' output slots (cf.\ \cref{sec.plenspot_ops}). Apply \cref{prop.spring_dynamics} cell-wise and time-differentiate $\dot x_i=p_i/\mu$; substitute $\dot p_i=\kappa(x_{i-1}+x_{i+1}-2x_i)$ to obtain the discrete equation, and pass to the continuum limit.
 \end{proof}
 
 %--------------------------------------------------------------------
-\chapter{The abstract $[\cat{C},\cat{C}]$ framework}\label{ch:CC-framework}
+\chapter{The abstract $[\cat{C},\cat{C}]$ framework}\label{ch.CC_framework}
 %--------------------------------------------------------------------
 
 The main text works with $\Theta$ and $\Theta^{\Fun{T},\alpha}$ as functors valued directly in $\cat{C}$, with $z=I$. This chapter collects the abstract statements from which those functors arise: a strong monoidal lift into the Day-convolution monoidal category $[\cat{C},\cat{C}]$, a Kleisli version for an effect, and a lax monoidal evaluation at an arbitrary $\otimes$-monoid algebra. Assume throughout that $\cat{C}$ is cocomplete symmetric monoidal closed with unit $I$, internal hom $\ihom{-,-}$, and Day-convolution monoidal structure on $[\cat{C},\cat{C}]$ given by
@@ -1985,16 +2098,16 @@ The main text works with $\Theta$ and $\Theta^{\Fun{T},\alpha}$ as functors valu
 \qquad\text{unit}\;\ihom{I,-}\cong\id_{\cat{C}}.
 \]
 
-\section{The $\Fun{B}$-functor}\label{sec:B-functor}
+\section{The $\Fun{B}$-functor}\label{sec.B_functor}
 
-\begin{proposition}[{Strong monoidal lift to $[\cat{C},\cat{C}]$}]\label{prop:B-functor}
+\begin{proposition}[{Strong monoidal lift to $[\cat{C},\cat{C}]$}]\label{prop.B_functor}
 The assignment
 \[
 \Fun{B}\colon\Lens{\cat{C}}\to[\cat{C},\cat{C}],
 \qquad
 \binom{m}{c}\mapsto\bigl(x\mapsto c\otimes\ihom{m,x}\bigr),
 \]
-with morphism action defined exactly as in \cref{def:Theta} but at variable $x$ in place of $I$, is a strong monoidal functor. The comparison
+with morphism action defined exactly as in \cref{def.Theta} but at variable $x$ in place of $I$, is a strong monoidal functor. The comparison
 \[
 (c\otimes\ihom{m,-})\star(d\otimes\ihom{n,-})\;\cong\;c\otimes d\otimes\ihom{m\otimes n,-}
 \]
@@ -2003,19 +2116,19 @@ is a natural isomorphism, obtained by the iterated co-Yoneda reduction
 \int^{u,v}\ihom{u\otimes v,x}\otimes\ihom{m,u}\otimes\ihom{n,v}\;\cong\;\int^v\ihom{m\otimes v,x}\otimes\ihom{n,v}\;\cong\;\ihom{m\otimes n,x},
 \]
 using tensor--hom adjunction $\ihom{u\otimes v,x}\cong\ihom{u,\ihom{v,x}}$ and density $\int^v\ihom{v,w}\otimes v\cong w$.
-The functor $\Theta$ of \cref{def:Theta} is the composite $\Lens{\cat{C}}\To{\Fun{B}}[\cat{C},\cat{C}]\To{\ev_I}\cat{C}$; evaluation $\ev_I$ at the unit is lax monoidal (unit comparison $\lambda_I\colon I\otimes I\cong I$), recovering the lax structure of \cref{prop:Theta}.
+The functor $\Theta$ of \cref{def.Theta} is the composite $\Lens{\cat{C}}\To{\Fun{B}}[\cat{C},\cat{C}]\To{\ev_I}\cat{C}$; evaluation $\ev_I$ at the unit is lax monoidal (unit comparison $\lambda_I\colon I\otimes I\cong I$), recovering the lax structure of \cref{prop.Theta}.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} Functoriality is the argument of \cref{prop:Theta} carried at variable $x$. The co-Yoneda identity is standard for SMCCs with coends.
+\emph{[Proof remains to be supplied or cited.]} Functoriality is the argument of \cref{prop.Theta} carried at variable $x$. The co-Yoneda identity is standard for SMCCs with coends.
 \end{proof}
 
-\section{The $\Fun{B}^{\Fun{T}}$-functor}\label{sec:B-T-functor}
+\section{The $\Fun{B}^{\Fun{T}}$-functor}\label{sec.B_T_functor}
 
 Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on $\cat{C}$. Let $\mathbb{T}$ be the monad on $[\cat{C},\cat{C}]$ given by precomposition, $\mathbb{T}(H)\coloneqq H\circ\Fun{T}$. A morphism in the Kleisli category $[\cat{C},\cat{C}]^{\mathbb{T}}$ from $H$ to $K$ is a natural transformation $H\to K\circ\Fun{T}$.
 
-\begin{proposition}[{Strong monoidal lift to $[\cat{C},\cat{C}]^{\mathbb{T}}$}]\label{prop:B-T-functor}
-The functor $\Fun{B}$ of \cref{prop:B-functor} lifts to a functor
+\begin{proposition}[{Strong monoidal lift to $[\cat{C},\cat{C}]^{\mathbb{T}}$}]\label{prop.B_T_functor}
+The functor $\Fun{B}$ of \cref{prop.B_functor} lifts to a functor
 \[
 \Fun{B}^{\Fun{T}}\colon\Lens{\cat{C}}^{\Fun{T}}\to[\cat{C},\cat{C}]^{\mathbb{T}}
 \]
@@ -2023,16 +2136,16 @@ agreeing with $\Fun{B}$ on objects and sending a coKleisli morphism $f\colon\bin
 \[
 c\otimes\ihom{m,x}\to d\otimes\ihom{n,\Fun{T}x}
 \]
-obtained by inserting the strength $\sigma$ into the $\chi_f^{\Fun{T},\alpha}$ construction of \cref{def:Theta-T-alpha} at variable $x$ in place of $I$. Under the monoidal hypotheses on $\Fun{T}$, $\Fun{B}^{\Fun{T}}$ is strong monoidal, with Day-convolution comparison induced by $\tau_{x,y}\colon\Fun{T}x\otimes\Fun{T}y\to\Fun{T}(x\otimes y)$.
+obtained by inserting the strength $\sigma$ into the $\chi_f^{\Fun{T},\alpha}$ construction of \cref{def.Theta_T_alpha} at variable $x$ in place of $I$. Under the monoidal hypotheses on $\Fun{T}$, $\Fun{B}^{\Fun{T}}$ is strong monoidal, with Day-convolution comparison induced by $\tau_{x,y}\colon\Fun{T}x\otimes\Fun{T}y\to\Fun{T}(x\otimes y)$.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} The identity coKleisli morphism uses $\eta$; the Kleisli identity in $[\cat{C},\cat{C}]^{\mathbb{T}}$ is also induced by $\eta$. CoKleisli composition uses $\mu$; Kleisli composition in $[\cat{C},\cat{C}]^{\mathbb{T}}$ is precomposition with $\mu$. The monoidal comparison is the Day-convolution identity of \cref{prop:B-functor}; naturality for coKleisli morphisms uses $\tau_{x,y}$, and the monoidal-monad axioms for $\eta$ and $\mu$ give Kleisli unit and composition.
+\emph{[Proof remains to be supplied or cited.]} The identity coKleisli morphism uses $\eta$; the Kleisli identity in $[\cat{C},\cat{C}]^{\mathbb{T}}$ is also induced by $\eta$. CoKleisli composition uses $\mu$; Kleisli composition in $[\cat{C},\cat{C}]^{\mathbb{T}}$ is precomposition with $\mu$. The monoidal comparison is the Day-convolution identity of \cref{prop.B_functor}; naturality for coKleisli morphisms uses $\tau_{x,y}$, and the monoidal-monad axioms for $\eta$ and $\mu$ give Kleisli unit and composition.
 \end{proof}
 
-\section{Evaluation at a $\otimes$-monoid algebra}\label{sec:ev-T-alpha}
+\section{Evaluation at a $\otimes$-monoid algebra}\label{sec.ev_T_alpha}
 
-\begin{proposition}[Evaluation at a $\otimes$-monoid algebra]\label{prop:ev-T-alpha}
+\begin{proposition}[Evaluation at a $\otimes$-monoid algebra]\label{prop.ev_T_alpha}
 Let $(z,\alpha)$ be a $\Fun{T}$-algebra with $z$ a $\otimes$-monoid $(z,e_z,m_z)$, and suppose $\alpha$ preserves the induced unit and product:
 \[
 \tau_0\then\Fun{T}e_z\then\alpha = e_z
@@ -2045,19 +2158,19 @@ Evaluation at $(z,\alpha)$ defines a lax monoidal functor
 \qquad
 (\tau\colon H\to K\circ\Fun{T})\mapsto\bigl(H(z)\To{\tau_z}K(\Fun{T}z)\To{K(\alpha)}K(z)\bigr).
 \]
-Composing with \cref{prop:B-T-functor} yields a lax monoidal functor
+Composing with \cref{prop.B_T_functor} yields a lax monoidal functor
 \[
 \Theta^{\Fun{T},\alpha}_z\coloneqq\Fun{B}^{\Fun{T}}\then\ev_{(z,\alpha)}\colon\Lens{\cat{C}}^{\Fun{T}}\to\cat{C}
 \]
-with object assignment $\binom{m}{c}\mapsto c\otimes\ihom{m,z}$. This generalizes \cref{prop:Theta-T-alpha} of the main text, which is the special case $z=I$.
+with object assignment $\binom{m}{c}\mapsto c\otimes\ihom{m,z}$. This generalizes \cref{prop.Theta_T_alpha} of the main text, which is the special case $z=I$.
 \end{proposition}
 
 \begin{proof}
-\emph{[Proof deferred.]} The algebra law $\alpha\circ\Fun{T}\alpha=\alpha\circ\mu_z$ makes $\ev_{(z,\alpha)}$ a functor. The monoid-preservation hypotheses give laxness: the product comparison $H(z)\otimes K(z)\to(H\star K)(z)$ is the Day-convolution coend map selected by $m_z$; the unit comparison is selected by $e_z$. Strong monoidality of $\Fun{B}^{\Fun{T}}$ (\cref{prop:B-T-functor}) composed with laxness of $\ev_{(z,\alpha)}$ gives the stated laxness of $\Theta^{\Fun{T},\alpha}_z$.
+\emph{[Proof remains to be supplied or cited.]} The algebra law $\alpha\circ\Fun{T}\alpha=\alpha\circ\mu_z$ makes $\ev_{(z,\alpha)}$ a functor. The monoid-preservation hypotheses give laxness: the product comparison $H(z)\otimes K(z)\to(H\star K)(z)$ is the Day-convolution coend map selected by $m_z$; the unit comparison is selected by $e_z$. Strong monoidality of $\Fun{B}^{\Fun{T}}$ (\cref{prop.B_T_functor}) composed with laxness of $\ev_{(z,\alpha)}$ gives the stated laxness of $\Theta^{\Fun{T},\alpha}_z$.
 \end{proof}
 
-\begin{remark}\label{rmk:strong-vs-set-level}
-The strong monoidality in \cref{prop:B-functor,prop:B-T-functor} is a statement about a \emph{natural isomorphism of functors} $\cat{C}\to\cat{C}$ — an iso in the 1-category $[\cat{C},\cat{C}]$. It is not a statement about hom-sets of natural transformations being in bijection with hom-sets of the form $\cat{C}(A,B\otimes\ihom{B',A'})$; the latter is a set-level claim that can fail when $I$ is not a generator (for instance, in the category of sup-lattices, where $I$ is a zero object). The natural iso of functors is provided directly by the co-Yoneda reduction and holds in any cocomplete SMCC.
+\begin{remark}\label{rmk.strong_vs_set_level}
+The strong monoidality in \cref{prop.B_functor,prop.B_T_functor} is a statement about a \emph{natural isomorphism of functors} $\cat{C}\to\cat{C}$ — an iso in the 1-category $[\cat{C},\cat{C}]$. It is not a statement about hom-sets of natural transformations being in bijection with hom-sets of the form $\cat{C}(A,B\otimes\ihom{B',A'})$; the latter is a set-level claim that can fail when $I$ is not a generator (for instance, in the category of sup-lattices, where $I$ is a zero object). The natural iso of functors is provided directly by the co-Yoneda reduction and holds in any cocomplete SMCC.
 \end{remark}
 
 \printbibliography
