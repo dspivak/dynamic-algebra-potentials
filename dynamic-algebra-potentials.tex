@@ -445,7 +445,8 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\potlens}{\Cat{PotLens}}
 \newcommand{\Para}{\Cat{Para}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
-\newcommand{\pnla}{\Cat{PNLA}}
+\newcommand{\pnla}{\Cat{PVect}}
+\newcommand{\pvect}{\Cat{PVect}}
 \newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
 \newcommand{\plm}{\Cat{PLM}}
@@ -586,648 +587,175 @@ given by the formula $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{
 
 
 
-\section{Manifolds, Lie groups, and PN Lie Algebras}\label{sec.lie_pnla_bg}
+\section{Manifolds and paired vector spaces}\label{sec.lie_pnla_bg}
 
 \subsection{Manifolds and notation}\label{sec.manifolds_notation}
 
-We work in the category $\mfd$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $p\in M$, write $T_pM$ for the tangent space at $p$ and $TM$ for the tangent bundle (itself a manifold). For a smooth map $f\colon M\to N$, write
+We work in the cartesian category $(\mfd,\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $p\colon\rr^0\to M$, write $T_pM$ for the tangent space at $p$ and $TM$ for the tangent bundle; $T^*_pM$ and $T^*M$ for the cotangent space and bundle. For a smooth map $f\colon M\to N$, write
 \[
 Tf\colon TM\to TN
 \]
-for the \emph{tangent map} (the tangent functor applied to $f$, equivalently the global differential), and
+for the \emph{tangent map} (the global differential), and
 \[
 df|_p\colon T_pM\to T_{f(p)}N
 \]
-for the \emph{differential at $p$}, the restriction of $Tf$ to the fiber over $p$. The two are related by $Tf|_{T_pM} = df|_p$. We use $T$-notation for global tangent maps and tangent spaces/bundles, and $d|_p$-notation for differentials at a specified point. As usual, differentials at a point are linear:
-\begin{equation}\label{eqn.diff_linear}
-df|_p(av+bw)=a\,df|_p(v)+b\,df|_p(w)
-\qquad
-(v,w\in T_pM,\ a,b\in\rr).
-\end{equation}
-The tangent functor preserves products, so $T(M\times N)\cong TM\times TN$, so in particular $T_{(p,q)}(M\times N)\cong T_pM\oplus T_qN$ and dually $T^*_{(p,q)}(M\times N)\cong T^*_pM\oplus T^*_qN$.
+for the \emph{differential at $p$}, the restriction of $Tf$ to the fiber over a point $p\in M$. The tangent functor preserves products, so $T(M\times N)\cong TM\times TN$; in particular $T_{(p,q)}(M\times N)\cong T_pM\oplus T_qN$ and dually $T^*_{(p,q)}(M\times N)\cong T^*_pM\oplus T^*_qN$.
 
-For any finite-dimensional vector space $V$, write $\End(V)$ for the vector space of linear maps $V\to V$ and $\Aut(V)$ for the group, under composition, of linear isomorphisms $V\to V$. Both are smooth manifolds: $\End(V)$ is a finite-dimensional vector space, and $\Aut(V)\ss\End(V)$ is open (the complement of the vanishing locus of the determinant). We often elide the functor $\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds, so we may write $\Aut(V)\in\mfd$. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
+We often elide the inclusion $\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure in $\vect$ is (a coproduct and) a product, and the inclusion is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
 \begin{equation}\label{eqn.tangent_vec}
 T_pV \;\cong\; V \qqand T^*_pV \;\cong\; V^*
 \end{equation}
-at every point $p\in V$; we use these throughout, often without comment. In particular, applying \eqref{eqn.tangent_vec} to $\End(V)$ at $p=\id$, together with $\Aut(V)\ss\End(V)$ being open, gives
-\begin{equation}\label{eqn.T_id_Aut}
-T_{\id}\Aut(V) \;\cong\; \End(V).
-\end{equation}
+at every point $p\in V$; we use these identifications throughout, often without comment.
 
-For any smooth curve $f\colon\rr\to M$ and $s_0\in\rr$, write
-\begin{equation}\label{eqn.partial}
-\partial_s|_{s_0} f(s) \;\coloneqq\; df|_{s_0}(1) \;\in\; T_{f(s_0)}M
-\end{equation}
-for the velocity at $s_0$, identifying $T_{s_0}\rr\cong\rr$ via \eqref{eqn.tangent_vec}; this agrees with the dot-notation $\dot f(s_0)$ when the curve is named, and we use $\partial_s|_{s_0}$ when the curve is given by an expression in the parameter $s$ rather than by a name.
-
-For a manifold $M$, write $\mathrm{Diff}(M)$ for the group of diffeomorphisms $M\to M$ and $\mathrm{Vect}(M)$ for the vector space of smooth vector fields on $M$, i.e.\ smooth sections $X\colon M\to TM$ of the tangent-bundle projection. If $f\colon M\To{\cong} N$ is a diffeomorphism, then for every $p\in M$ the differential and its transpose are linear isomorphisms
-\[
-df|_p\colon T_pM\To{\cong} T_{f(p)}N
-\qqand
-(df|_p)^*\colon T^*_{f(p)}N\To{\cong} T^*_pM.
-\]
-
-For $X\in\mathrm{Vect}(M)$ and $p\in M$, an \emph{integral curve} of $X$ through $p$ is a smooth curve $\sigma_p\colon\rr\to M$ with $\sigma_p(0)=p$ and $\dot\sigma_p(t)=X(\sigma_p(t))$. If $X$ is \emph{complete}, meaning that each $p$ admits a unique integral curve defined for all $t\in\rr$, we write
-\[
-\mathrm{Fl}_X\colon\rr\times M\to M,\qquad (t,p)\mapsto \mathrm{Fl}^t_X(p)\coloneqq \sigma_p(t),
-\]
-for its flow. Each $\mathrm{Fl}^t_X$ is then a diffeomorphism of $M$, and $\mathrm{Fl}^1_X$ is its time-1 flow.
-
-\subsection{Brief review of basic Lie theory}\label{sec.lie_groups}
-
-Recall that a Lie group is a group object in $\mfd$, i.e.\ a manifold $G$ equipped with a unit $\eta\colon \mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$, all smooth. We sometimes write
-\[
-e\coloneqq \eta(*)\in G,\qquad gh\coloneqq \mu(g,h),\qquad g\inv\coloneqq \iota(g).
-\]
-
-The \emph{Lie algebra of $G$} is the tangent space at the identity:
-\[
-\lie{g}\coloneqq T_eG.
-\]
-In other words, $\lie{g}$ is the space of infinitesimal directions in $G$ based at the identity.
-Currying $\mu$ in either variable gives the \emph{left} and \emph{right regular actions},
-\[
-L\colon G\to\mathrm{Diff}(G),\quad L_g(h)\coloneqq gh
-\qqand
-R\colon G\op\to\mathrm{Diff}(G),\quad R_g(h)\coloneqq hg,
-\]
-equivalently the smooth maps $L,R\colon G\times G\to G$ given by $(g,h)\mapsto gh$ and $(g,h)\mapsto hg$. A Lie-group homomorphism $\Phi\colon G\to H$ is equivalently an $L$-equivariant map; indeed, $\Phi\circ L_g = L_{\Phi(g)}\circ\Phi$ unwinds to $\Phi(gh)=\Phi(g)\Phi(h)$. Since $L_{g\inv}$ is inverse to $L_g$, the differential of $L_g$ at the identity and its transpose are linear isomorphisms, denoted
-\begin{equation}\label{eqn.left_translation}
-dL_g|_e\colon \lie{g}\To{\cong} T_gG
-\qqand
-(dL_g|_e)^*\colon T^*_gG\To{\cong} \lie{g}^*.
-\end{equation}
-Thus any tangent vector at any point of $G$ can be translated back to the identity and viewed as an element of $\lie{g}$.
-A vector field $\tilde X\in\mathrm{Vect}(G)$ is \emph{left-invariant}, written $\tilde X\in\mathrm{Vect}^L(G)$, if it is $L$-equivariant: $TL_g\circ\tilde X = \tilde X\circ L_g$ for every $g$. Each $X\in\lie{g}$ extends to a unique such $\tilde X$ via $\tilde X(g)\coloneqq dL_g|_e(X)$, giving the linear isomorphism
-\begin{equation}\label{eqn.livf}
-\lie{g}\To{\cong}\mathrm{Vect}^L(G),\qquad X\mapsto\tilde X.
-\end{equation}
-So one may think of an element of $\lie{g}$ either as a tangent vector at $e$ or as the unique left-invariant vector field having that value at $e$.
-Each left-invariant vector field $\tilde X$ is complete: if $\gamma$ is the local integral curve through $e$, then left invariance makes $t\mapsto g\gamma(t)$ the local integral curve through $g$, and uniqueness gives $\gamma(s+t)=\gamma(s)\gamma(t)$ whenever both sides are defined. Thus $\gamma$ is a local one-parameter subgroup, hence extends to all $t\in\rr$ by
-\[
-\gamma(t)=\bigl(\gamma(t/n)\bigr)^n
-\]
-once $t/n$ lies in its existence interval, where $(\gamma(t/n))^n$ denotes the $n$-fold product in $G$. We also write
-\begin{equation}\label{eqn.flow}
-\mathrm{Fl}^1\colon\mathrm{Vect}^L(G)\to\mathrm{Diff}(G), \qquad \tilde X\mapsto\mathrm{Fl}^1_{\tilde X},
-\end{equation}
-for the smooth assignment of a left-invariant vector field $\tilde X$ to its time-1 flow.
-Collecting the pointwise isomorphisms \eqref{eqn.left_translation} over all $g$ gives vector-bundle isomorphisms over $G$:
-\begin{equation}\label{eqn.left_triv}
-TG \cong G\times\lie{g}
-\qqand
-T^*G \cong G\times\lie{g}^*,%
-\footnote{
-Note that $\lie{g}^*$ is a Lie coalgebra, not a Lie algebra in general.
-}
-\end{equation}
-$v\mapsto(g,(dL_g|_e)\inv v)$ for $v\in T_gG$ and $\xi\mapsto(g,(dL_g|_e)^*\xi)$ for $\xi\in T^*_gG$. We refer to these as the \emph{left-trivializations} of $TG$ and $T^*G$.
-In other words, left-trivialization records a tangent vector by its basepoint $g$ together with the corresponding infinitesimal vector back at the identity.
-
-Conjugation by $g$ is the Lie group automorphism
-\[
-c_g\colon G\to G,\qquad h\mapsto ghg\inv.
-\]
-Its differential at the identity is called the \emph{adjoint action}, and the transpose of the adjoint action is the \emph{coadjoint action}:
-\[
-\Ad_g\coloneqq dc_g|_e\colon \lie{g}\to \lie{g}
-\qqand
-\Ad_g^*\coloneqq (dc_g|_e)^*\colon \lie{g}^*\to \lie{g}^*.
-\]
-In other words, $\Ad_g$ tells how conjugation by $g$ acts on infinitesimal directions at the identity.
-In particular, each $\Ad_g$ is linear by \eqref{eqn.diff_linear}.
-
-\begin{lemma}\label{lem.Ad_facts}
-The adjoint and coadjoint actions define group homomorphisms%
-\footnote{
-Each $\Ad_g$ in fact preserves the Lie bracket, so the lemma strengthens to $\Ad\colon G\to \Aut_\Cat{LieAlg}(\lie{g})$ and $\Ad^*\colon G\op\to \Aut_\Cat{LieAlg}(\lie{g}^*)$, but we don't need preservation of the Lie bracket in this paper.
-}
-\[
-\Ad\colon G\to \Aut(\lie{g})
-\qqand
-\Ad^*\colon G\op\to \Aut(\lie{g}^*).
-\]
-\end{lemma}
-
-\begin{proof}
-We need to show
-\[
-\Ad_e=^?\id_{\lie{g}}
-\qqand
-\Ad_{gh}=^?\Ad_g\circ \Ad_h.
-\]
-Indeed, $c_e=\id_G$, so $\Ad_e=dc_e|_e=\id_{\lie{g}}$, and $c_{gh}=c_g\circ c_h$ for all $g,h\in G$, so differentiating at $e$ (using the chain rule and $c_h(e)=e$) gives $\Ad_{gh}=\Ad_g\circ \Ad_h$. Taking transposes shows that $\Ad^*$ is also a group homomorphism.
-\end{proof}
-
-Conjugation $c\colon \mfd(G\times G, G)$ in a Lie group uses multiplication and inversion $c(g,h)\coloneqq ghg\inv$ and is hence smooth. Differentiating at the identity in the second variable depends smoothly on the first, so $\Ad\colon G\to\Aut(\lie{g})$ is smooth. Since $\Ad^*$ factors as $\Ad$ followed by the transpose operation $\End(\lie{g})\to\End(\lie{g}^*)$, which is linear and hence smooth, $\Ad^*$ is also smooth. By \eqref{eqn.T_id_Aut}, differentiating $\Ad$ and $\Ad^*$ at the identity defines
-\[
-\ad\coloneqq d\Ad|_e\colon \lie{g}\to \End(\lie{g}),
-\qqand
-\ad^*\coloneqq d\Ad^*|_e\colon \lie{g}\to \End(\lie{g}^*).
-\]
-Thus $\ad$ is the infinitesimal version of the action $\Ad$.
-To denote the application at any $X\in \lie{g}$ we write
-\[
-\ad_X\coloneqq\ad(X)\colon \lie{g}\to \lie{g}
-\qqand
-\ad_X^*\coloneqq\ad^*(X)\colon \lie{g}^*\to \lie{g}^*
-\]
-for what are called the \emph{adjoint operator} and \emph{coadjoint operator} associated to $X$. Since $\Ad^*\colon G\to\Aut(\lie{g}^*)$ factors as $\Ad$ followed by the linear transpose operation $\End(\lie{g})\to\End(\lie{g}^*)$, $A\mapsto A^*$, differentiating at the identity gives $\ad^*_X=(\ad_X)^*$ for every $X\in\lie{g}$. Applying the chain rule to $\ad=d\Ad|_e$ along any smooth curve $\gamma\colon\rr\to G$ with $\gamma(0)=e$,
-\begin{equation}\label{eqn.curve_ad}
-\partial_s|_0\Ad_{\gamma(s)} \;=\; \ad_{\dot\gamma(0)}.
-\end{equation}
-In other words, $\ad_X$ measures the first-order change of $\Ad_g$ as $g$ moves away from the identity in the tangent direction $X$.
-
-The \emph{Lie bracket} on $\lie{g}$ is defined by
-\[
-[X,Y]\coloneqq \ad_X(Y),
-\]
-which makes $\lie{g}$ into a \emph{Lie algebra}. A homomorphism of Lie algebras $\phi\colon\lie{g}\to\lie{h}$ is then a linear map satisfying
-\begin{equation}\label{eqn.liealg_hom}
-\phi\circ\ad_X \;=\; \ad_{\phi X}\circ\phi
-\qquad(X\in \lie{g}).
-\end{equation}
-Because we use brackets $[p,q]$ for internal hom of polynomials \eqref{eqn.dirichlet_hom} and have little use for Lie brackets in the paper, we will never again use the bracket notation for Lie algebras, using $\ad$ instead.
-
-\begin{proposition}[Direct sums in $\Cat{LieAlg}$]\label{prop.lie_alg_oplus}
-The forgetful functor $U\colon\Cat{LieAlg}\to\vect$ creates finite products. That is, given Lie algebras $\lie{g}_1,\lie{g}_2$, their product is the direct sum $\lie{g}_1\oplus\lie{g}_2$ of the underlying vector spaces, equipped with adjoint operator
-\begin{equation}\label{eqn.ad_oplus}
-\ad_{(X_1,X_2)}=(\ad_{X_1},\ad_{X_2}).
-\end{equation}
-The terminal object is the zero Lie algebra $0$.
-\end{proposition}
-
-A Lie algebra is \emph{abelian} if every $\ad_X$ is the zero map. For abelian Lie algebras, the $\ad$-preservation condition on a Lie-algebra hom is vacuous, so a Lie-algebra hom between abelian Lie algebras is just a linear map. Letting $\Cat{LieAlg}^{\mathrm{ab}}$ denote the full subcategory on abelian Lie algebras, this gives an equivalence of categories
-\[
-\vect \;\simeq\; \Cat{LieAlg}^{\mathrm{ab}}.
-\]
-
-Write $\Cat{LieAlg}$ for the category of (finite dimensional) real Lie algebras and Lie-algebra homomorphisms, and $\Cat{LieGrp}$ for the category of (finite dimensional) Lie groups and smooth group homomorphisms.%
-\footnote{
-All manifolds in this paper are finite-dimensional, so we leave the parenthetical (finite dimensional) implicit throughout.
-}
-The Lie functor $\Lie\colon G\mapsto T_eG$ has a fully faithful left adjoint, the \emph{integration functor}
-\begin{equation}\label{eqn.lie_adj}
-\adj{\Cat{LieAlg}}{\Int}{\Lie}{\Cat{LieGrp}}.
-\end{equation}
-The Lie algebra of an abelian Lie group is abelian, i.e.\ \eqref{eqn.lie_adj} restricts to an adjunction between $\Cat{LieAlg}^{\mathrm{ab}}$ and $\Cat{LieGrp}^{\mathrm{ab}}$.
-The unit $\lie{g}\To{\cong}\Lie\Int\lie{g}$ of either adjunction is an isomorphism---this is \emph{Lie's third theorem}~\cite[Appendix B]{knapp2002lie}---so $\Int$ is fully faithful and $\Int\lie{g}$ is connected and simply connected (SC). Chaining the abelian-restricted adjunction with $\vect\simeq\Cat{LieAlg}^{\mathrm{ab}}$ thus gives an equivalence
-\begin{equation}\label{eqn.vect_ab_sc}
-\vect\simeq\Cat{LieAlg}^{\mathrm{ab}}\simeq\Cat{LieGrp}^{\mathrm{ab,SC}}, \qquad V\mapsto(V,0,+), \qquad G\mapsto\Lie G,
-\end{equation}
-whose unit isomorphism is $V\To{\cong}\Lie(V,0,+) = T_0V$, recovering the $p=0$ case of \eqref{eqn.tangent_vec} functorially.
-
-Let $U_{\mathrm{LA}}\colon\Cat{LieAlg}\to\mfd$ denote the underlying-manifold functor on Lie algebras, i.e.\ the composite of the forgetful functor $\Cat{LieAlg}\to\vect$ with the inclusion $\vect\to\mfd$, both of which preserve products. The \emph{exponential map} is the 2-cell $\exp$ in the triangle
-\[
-\begin{tikzcd}[column sep=large]
-& \Cat{LieAlg} \ar[dr, "U_{\mathrm{LA}}"] & \\
-\Cat{LieGrp} \ar[ur, "\Lie"] \ar[rr, "U_{\mathrm{LG}}"', ""{name=Ulg, above}] & & \mfd
-\arrow[Rightarrow, from=1-2, to=Ulg, "\exp", shorten=4pt]
-\end{tikzcd}
-\]
-where $U_{\mathrm{LG}}$ is the underlying-manifold functor on Lie groups. The top composite $U_{\mathrm{LA}}\circ\Lie$ sends $G\mapsto\lie g$ as a manifold; the bottom $U_{\mathrm{LG}}$ sends $G\mapsto G$ as a manifold. The component of $\exp$ at $G$ is the smooth map
-\[
-\exp_G\colon\lie{g} \;\To{\eqref{eqn.livf}}\; \mathrm{Vect}^L(G) \;\To{\eqref{eqn.flow}}\; \mathrm{Diff}(G) \;\To{\ev_e}\; G,
-\]
-the composite of \eqref{eqn.livf}, \eqref{eqn.flow}, and evaluation at $e$.%
-\footnote{
-Under the free--forgetful adjunction $\Cat{Set}\rightleftarrows\Cat{LieAlg}$, $\rr$ is the free Lie algebra on one generator, so evaluation at $1$ gives a bijection $\Hom_{\Cat{LieAlg}}(\rr,\lie{g})\cong|\lie{g}|$ to the underlying set of $\lie{g}$. Composing with the adjunction \eqref{eqn.lie_adj} at $\rr$, since $\Int\rr=\rr$, any $X\in\lie{g}$ corresponds to $\gamma_X\in\Hom_{\Cat{LieGrp}}(\rr,G)$, and the underlying set map of $\exp_G$ factors as $|\lie{g}|\To{\;\cong\;}\Hom_{\Cat{LieGrp}}(\rr,G)\To{\ev_1}G$.
-}
-In other words, $\exp_G(X)$ is obtained by extending $X$ to a left-invariant vector field and flowing from the identity for unit time.
-%Naturality of $\exp$ follows because each step is $L$-equivariant: a Lie-group hom $\Phi$ is $L$-equivariant by definition, left-invariant vector fields are $L$-equivariant vector fields, and flows of $L$-equivariant fields commute with $L$-translations.
-
-Writing $\rr$ for the additive Lie group $(\rr,0,+)$, the integral curve $\gamma_X\colon\rr\to G$ given by $\gamma_X(t)\coloneqq\mathrm{Fl}^t_{\tilde X}(e)$ is a smooth group homomorphism, classically called the \emph{one-parameter subgroup} of $G$ corresponding to $X$. Thus
-\[
-\exp_G(X)=\gamma_X(1).
-\]
-By \eqref{eqn.partial} and \eqref{eqn.tangent_vec}, $\partial_t|_0\gamma_X(t)=\dot\gamma_X(0)=X$, recovering the textbook description of $\gamma_X$ as the unique 1-parameter subgroup with $\dot\gamma_X(0)=X$. Since also $\gamma_X(t)=\exp_G(tX)$, we have
-\begin{equation}\label{eqn.curve_exp}
-\partial_t|_0\exp_G(tX) \;=\; X.
-\end{equation}
-
-A Lie algebra $\lie{g}$ is \emph{nilpotent} if there exists $n\in \nn$ such that the iterated composite $\ad_{X_1}\circ\cdots\circ\ad_{X_n}=0\colon\lie{g}\to\lie{g}$ for all $X_1,\ldots,X_n\in \lie{g}$; the least such $n$ is the \emph{nilpotency class} of $\lie{g}$. (Abelian Lie algebras are exactly those of nilpotency class~$1$.) By \emph{Malcev's theorem}~\cite[Thm.~1.127]{knapp2002lie}, when $\lie{g}$ is nilpotent the exponential
-\begin{equation}\label{eqn.malcev}
-\exp_{\Int\lie{g}}\colon \lie{g}\To{\cong} \Int\lie{g}
-\end{equation}
-is a diffeomorphism. 
-
-For later use, we note that the differential of $\mu$ at $(g_1,g_2)\in G\times G$ on a tangent vector $(v_1,v_2)\in T_{g_1}G\oplus T_{g_2}G$ is the standard ``Leibniz rule''
-\begin{equation}\label{eqn.dmu}
-d\mu|_{(g_1,g_2)}(v_1,v_2) \;=\; dL_{g_1}|_{g_2}(v_2) + dR_{g_2}|_{g_1}(v_1),
-\end{equation}
-obtained by summing the partials in each variable. Composing with $L$- and $R$-translation gives the identity of maps $G\to G$
-\begin{equation}\label{eqn.RL_factor}
-R_{g_2}\circ L_{g_1} \;=\; L_{g_1g_2}\circ c_{g_2\inv},
-\end{equation}
-since both send $h\mapsto g_1hg_2 = (g_1g_2)(g_2\inv hg_2)$.
-
-\begin{lemma}[Lie-group structure on $TG$]\label{lem.TG_group}
-For any Lie group $G$, the tangent bundle $TG$ is itself a Lie group: under left-trivialization $TG\cong G\times\lie{g}$ \eqref{eqn.left_triv}, the multiplication is the semidirect product
-\begin{equation}\label{eqn.TG_mult}
-(g_1,X_1)\cdot(g_2,X_2) \;\coloneqq\; (g_1g_2,\;\Ad_{g_2\inv}X_1+X_2),
-\end{equation}
-with unit $(e,0)$ and inverse $(g,X)\inv = (g\inv,\,-\Ad_g X)$.
-\end{lemma}
-
-\begin{proof}
-The tangent bundle of any Lie group is a Lie group with multiplication $T\mu_G$ and inversion $T\iota_G$. Left-trivializing $v_i = dL_{g_i}|_e(X_i)$ in \eqref{eqn.dmu}, and using $L_{g_1}\circ L_{g_2}=L_{g_1g_2}$ on the first summand and \eqref{eqn.RL_factor} on the second (which gives $dR_{g_2}|_{g_1}\circ dL_{g_1}|_e = dL_{g_1g_2}|_e\circ\Ad_{g_2\inv}$ after differentiation at $e$), we have
-\[
-d\mu_G|_{(g_1,g_2)}(v_{g_1},v_{g_2}) \;=\; dL_{g_1g_2}|_e(\Ad_{g_2\inv}X_1+X_2),
-\]
-whose left-trivialization \eqref{eqn.left_triv} is exactly \eqref{eqn.TG_mult}. The unit $(e,0)$ and inverse $(g\inv,-\Ad_g X)$ are then forced by the group axioms.
-\end{proof}
-
-\begin{lemma}[Lie-algebra structure on $\Lie(TG)$]\label{lem.TG_alg}
-Under the Lie-group structure of \cref{lem.TG_group}, one has $\Lie(TG)\cong\lie{g}\oplus\lie{g}$ with adjoint operator
-\begin{equation}\label{eqn.TG_ad}
-\ad_{(X_1,Y_1)}(X_2,Y_2) \;=\; (\ad_{X_1}X_2,\;\ad_{Y_1}X_2+\ad_{X_1}Y_2).
-\end{equation}
-\end{lemma}
-
-\begin{proof}
-Under the left-trivialization \eqref{eqn.left_triv}, the identity of $TG$ is $(e,0)$, so
-\[
-\Lie(TG)=T_{(e,0)}(TG)\cong T_{(e,0)}(G\times\lie{g})\cong T_eG\oplus T_0\lie{g}\cong\lie{g}\oplus\lie{g},
-\]
-the first isomorphism by \eqref{eqn.left_triv}, the second because $T$ preserves products, and the third by \eqref{eqn.tangent_vec}.
-To prove \eqref{eqn.TG_ad}, we use that $\ad$ is the derivative of $\Ad$ at the identity: by \eqref{eqn.curve_ad}, to compute $\ad_{(X_1,Y_1)}(X_2,Y_2)$ we may choose any smooth curve in $TG$ through the identity $(e,0)$ with tangent $(X_1,Y_1)$, compute $\Ad$ along that curve, and differentiate at $s=0$. We take
-\[
-\gamma(s)\coloneqq (\exp(sX_1),sY_1),
-\]
-whose tangent at $s=0$ is $(X_1,Y_1)$ by \eqref{eqn.curve_exp} and \eqref{eqn.tangent_vec}. Thus
-\[
-\ad_{(X_1,Y_1)}(X_2,Y_2) \;=\; \partial_s|_0\,\Ad_{\gamma(s)}(X_2,Y_2).
-\]
-So it remains to compute $\Ad_{(g_1,X_1)}$ for a general element $(g_1,X_1)\in TG$.
-
-Conjugation by $(g_1,X_1)$ acts as
-\begin{equation}\label{eqn.TG_conj}
-\begin{aligned}
-c_{(g_1,X_1)}(g_2,X_2)
-&= (g_1,X_1)(g_2,X_2)(g_1\inv,-\Ad_{g_1}X_1) && \text{[inverse formula]}\\
-&= (g_1g_2,\;\Ad_{g_2\inv}X_1+X_2)\cdot(g_1\inv,-\Ad_{g_1}X_1) && \text{[group law]}\\
-&= (g_1g_2g_1\inv,\;\Ad_{g_1}\Ad_{g_2\inv}X_1+\Ad_{g_1}X_2-\Ad_{g_1}X_1) && \text{[group law; linearity]}.
-\end{aligned}
-\end{equation}
-By definition, $\Ad_{(g_1,X_1)}$ is obtained by differentiating \eqref{eqn.TG_conj} at the identity $(e,0)$ in the variable $(g_2,X_2)$. To evaluate it on $(X_2,Y_2)\in\lie{g}\oplus\lie{g}$, we use the curve
-\[
-\eta(u)\coloneqq (\exp(uX_2),uY_2),
-\]
-whose tangent at $u=0$ is $(X_2,Y_2)$ by \eqref{eqn.curve_exp} and \eqref{eqn.tangent_vec}.
-
-\emph{First component.} $\partial_u|_0\, g_1\exp(uX_2)g_1\inv = \partial_u|_0\, c_{g_1}(\exp(uX_2)) = dc_{g_1}|_e(X_2) = \Ad_{g_1}X_2$ by chain rule and \eqref{eqn.curve_exp}.
-
-\emph{Second component.} Substituting $g_2=\exp(uX_2)$ and $X_2=uY_2$ into the second component of \eqref{eqn.TG_conj} gives
-\[
-\Ad_{g_1}\Ad_{\exp(-uX_2)}X_1+\Ad_{g_1}(uY_2)-\Ad_{g_1}X_1
-\;=\;
-\Ad_{g_1}\bigl(\Ad_{\exp(-uX_2)}X_1+uY_2-X_1\bigr),
-\]
-where we used linearity of $\Ad_{g_1}$; see \eqref{eqn.diff_linear}. Since $\Ad_{g_1}$ is independent of $u$, it may be pulled through $\partial_u|_0$. Applying \eqref{eqn.curve_ad} to $\delta(u)=\exp(-uX_2)$, so that $\dot\delta(0)=-X_2$ by \eqref{eqn.curve_exp}, and then using antisymmetry gives
-\begin{align*}
-\partial_u|_0\,\Ad_{g_1}\bigl(\Ad_{\exp(-uX_2)}X_1+uY_2-X_1\bigr)
-&= \Ad_{g_1}\,\partial_u|_0\bigl(\Ad_{\exp(-uX_2)}X_1+uY_2-X_1\bigr)\\
-&= \Ad_{g_1}(-\ad_{X_2} X_1+Y_2) && \text{[\eqref{eqn.curve_ad}, \eqref{eqn.curve_exp}]}\\
-&= \Ad_{g_1}(\ad_{X_1}X_2+Y_2) && \text{[antisymmetry]}.
-\end{align*}
-Thus the two component-computations give
-\begin{equation}\label{eqn.TG_Ad}
-\Ad_{(g_1,X_1)}(X_2,Y_2) = \bigl(\Ad_{g_1}X_2,\;\Ad_{g_1}(\ad_{X_1}X_2+Y_2)\bigr).
-\end{equation}
-Now substitute $(g_1,X_1)=\gamma(s)$ into \eqref{eqn.TG_Ad} and differentiate at $s=0$:
-\begin{align*}
-\ad_{(X_1,Y_1)}(X_2,Y_2)
-&= \partial_s|_0\, \bigl(\Ad_{\exp(sX_1)}X_2,\;\Ad_{\exp(sX_1)}(\ad_{sY_1}X_2+Y_2)\bigr) && \text{[\eqref{eqn.curve_ad}, \eqref{eqn.TG_Ad}]}\\
-&= \bigl(\ad_{X_1}X_2,\;\ad_{X_1}Y_2+\ad_{Y_1}X_2\bigr) && \text{[(\eqref{eqn.curve_ad}, Leibniz)]},
-\end{align*}
-since the second component splits at $s=0$ as $\partial_s|_0\Ad_{\exp(sX_1)}(Y_2)+\Ad_e(\partial_s|_0\ad_{sY_1}X_2)=\ad_{X_1}Y_2+\ad_{Y_1}X_2$ by \eqref{eqn.curve_ad}. This is \eqref{eqn.TG_ad}.
-\end{proof}
-
-\begin{lemma}[Lie-group structure on $T^*G$]\label{lem.TstarG_lie}
-For any Lie group $G$, the cotangent bundle $T^*G$ is itself a Lie group: under left-trivialization $T^*G\cong G\times\lie{g}^*$ \eqref{eqn.left_triv}, the multiplication is the semidirect product
-\[
-(g_1,\xi_1)\cdot(g_2,\xi_2) \;\coloneqq\; (g_1g_2,\;\xi_1+\Ad^*_{g_1\inv}\xi_2),
-\]
-with unit $(e,0)$ and inverse $(g,\xi)\inv = (g\inv,\,-\Ad^*_g\xi)$. Its Lie algebra is $\Lie(T^*G)\cong\lie{g}\oplus\lie{g}^*$ with adjoint operator
-\[
-\ad_{(X_1,\nu_1)}(X_2,\nu_2) \;=\; (\ad_{X_1}X_2,\;\ad^*_{X_2}\nu_1-\ad^*_{X_1}\nu_2).
-\]
-\end{lemma}
-
-\subsection{Paired nilpotent Lie algebras}\label{sec.pnla}
+\subsection{Paired vector spaces}\label{sec.pnla}
 
 \begin{definition}\label{def.pnla}
-We define a \emph{pairing} on a Lie algebra $\lie{g}$ to be a linear map
-\[
-\pairing{-,-}\colon\lie{g}\otimes\lie{g}\to\rr,
-\]
-such that the induced \emph{flat} map $\flat_{\lie{g}}\colon\lie{g}\to\lie{g}^*$, given by $X\mapsto\pairing{X,-}_{\lie{g}}$, is a linear isomorphism;%
-\footnote{
-In other words $\pairing{-,-}$ is a \emph{nondegenerate bilinear form}.
-}
-its inverse is the \emph{sharp} map $\sharp_{\lie{g}}\colon\lie{g}^*\To{\cong}\lie{g}$.
+A \emph{paired vector space} is a finite-dimensional real vector space $V$ together with a linear isomorphism $\sharp_V\colon V^*\To{\cong}V$, the \emph{sharp} map, with inverse $\flat_V\coloneqq\sharp_V\inv\colon V\to V^*$, the \emph{flat} map. The corresponding nondegenerate bilinear form on $V$, the \emph{pairing}, is
+\begin{equation}\label{eqn.pairing}
+\pairing{X,X'}_V\coloneqq\flat_V(X)(X')\colon V\otimes V\to\rr
+\end{equation}
+The three forms $\sharp_V$, $\flat_V$, and $\pairing{-,-}_V$ package the same data; we use whichever is most convenient.
 
-A \emph{paired nilpotent Lie algebra} (PN Lie Algebra) is a pair $(\lie{g}, \sharp_{\lie{g}})$ consisting of a finite-dimensional nilpotent real Lie algebra $\lie{g}$ and a pairing on $\lie{g}$. We write $\pnla$ for the groupoid whose objects are PN Lie Algebras and whose morphisms $(\lie{g},\sharp_{\lie{g}})\to(\lie{h},\sharp_{\lie{h}})$ are Lie-algebra isomorphisms $\phi\colon\lie{g}\To{\cong}\lie{h}$ preserving the pairing:
-\[
-\begin{tikzcd}
-\lie{g}\otimes\lie{g} \ar[rr,"\phi\otimes\phi"] \ar[dr,"{\pairing{-,-}_{\lie{g}}}"'] & & \lie{h}\otimes\lie{h} \ar[dl,"{\pairing{-,-}_{\lie{h}}}"] \\
-& \rr &
-\end{tikzcd}
-\qedhere\]
+We define the category $\pvect$ to have paired vector spaces as objects, and as morphisms $(V,\sharp_V)\to(W,\sharp_W)$ the linear isomorphisms $\phi\colon V\To{\cong}W$ preserving the pairing: $\pairing{\phi X,\phi X'}_W=\pairing{X,X'}_V$ for all $X,X'\in V$.%
+\footnote{
+Restricting to isomorphisms (making $\pvect$ a groupoid) is essential for our development below: each $\pvect$-morphism is used both as $\phi$ on vectors and as $(\phi^*)\inv$ on covectors, e.g.\ in $T^*\phi$ \eqref{eqn.TT_phi} below.
+}
+\qedhere
 \end{definition}
 
-\begin{example}\label{ex.Rn_pnla}
-The simply connected Lie group associated by \eqref{eqn.vect_ab_sc} to the vector space $\mathbb{R}^n$ is $(\mathbb{R}^n,0,+)$, with exponential map $\exp_{\mathbb{R}^n}\colon\mathbb{R}^n\to\mathbb{R}^n$ the identity. Since the differential of left translation $L_p\colon q\mapsto p+q$ is also the identity, we have $(dL_p|_e)^*=\id$ at every point $p\in \rr^n$. Any linear isomorphism $\sharp\colon(\mathbb{R}^n)^*\to\mathbb{R}^n$ can serve as a pairing.
-\end{example}
-
-\begin{remark}[Why $\pnla$ is a groupoid]\label{rmk.pnla_groupoid}
-\Cref{def.pnla} requires morphisms to be Lie-algebra \emph{isomorphisms}, not merely Lie-algebra maps making the triangle commute: an inclusion $\lie{g}\hookrightarrow\lie{g}\oplus\lie{h}$ satisfies the condition but is not an isomorphism, so is not a map in $\pnla$. 
-
-We need this restriction because each $\pnla$-morphism is used both covariantly and contravariantly, via $\phi$ and $\phi^*$. Various constructions in this section---a covariant action of $\pnla$ on $\mfd$, $T^*$ and $T$ as covariant endofunctors of $\pnla$, the Legendre transform $T^*\cong T$, and the polynomial identification of $\cot{G}$---need both directions to be available simultaneously, which is automatic when $\phi$ is invertible and breaks otherwise.
-\end{remark}
-
 \begin{proposition}\label{prop.pnla_monoidal}
-The groupoid $\pnla$ has a symmetric monoidal structure $(0,\oplus)$.
+Direct sum gives $\pvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space (vacuous pairing) as unit and direct-sum pairing $\sharp_{V\oplus W}\coloneqq\sharp_V\oplus\sharp_W$ on $V\oplus W$.
 \end{proposition}
 
 \begin{proof}
-The zero Lie algebra with its (vacuous) pairing is the monoidal unit. 
-
-Let $(\lie{g}_1,\sharp_1)$ and $(\lie{g}_2,\sharp_2)$ be PN Lie Algebras. Iterating \eqref{eqn.ad_oplus}, for $X_j=(X_j^1,X_j^2)\in\lie{g}_1\oplus\lie{g}_2$,
-\[
-\ad_{X_n}\cdots\ad_{X_1}=\bigl(\ad_{X_n^1}\cdots\ad_{X_1^1},\;\ad_{X_n^2}\cdots\ad_{X_1^2}\bigr).
-\]
-Taking $n=\max(n_1,n_2)$ where $n_i$ is the nilpotency class of $\lie{g}_i$, both components vanish, so $\lie{g}_1\oplus\lie{g}_2$ is nilpotent. The direct-sum pairing
-\[
-\pairing{(X_1,X_2),(Y_1,Y_2)}_{\lie{g}_1\oplus\lie{g}_2}\coloneqq \pairing{X_1,Y_1}_{\lie{g}_1}+\pairing{X_2,Y_2}_{\lie{g}_2}
-\]
-is nondegenerate because each summand is. 
+A direct sum of linear isomorphisms is a linear isomorphism. Coherence is inherited from $(\vect,0,\oplus)$.\qedhere
 \end{proof}
-
 
 \begin{proposition}\label{prop.pnla_smc_action}
-The composite
-\[
-(\cdot)\colon\pnla\times\mfd\to\mfd,\qquad ((\lie{g},\sharp_{\lie{g}}),M)\mapsto \lie{g}\times M
-\]
-is a strong symmetric monoidal action of $\pnla$ on $\mfd$.
+The composite $\pvect\to\vect\hookrightarrow\mfd$ is strong symmetric monoidal, so $\pvect$ acts on $\mfd$ via $((V,\sharp_V),M)\mapsto V\times M$.
 \end{proposition}
 
 \begin{proof}
-The forgetful functor $\pnla\to\Cat{LieAlg}$ is strong symmetric monoidal, and post-composing with the product-preserving functor $U_{\mathrm{LA}}\colon\Cat{LieAlg}\to\mfd$ from \cref{prop.lie_alg_oplus} gives a strong monoidal functor $\pnla\to\mfd$. The action factors as a composite of strong monoidal functors:
-\[
-\pnla\times\mfd\To{}\Cat{LieAlg}\times\mfd\To{U_{\mathrm{LA}}\times\id}\mfd\times\mfd\To{\times}\mfd.
-\qedhere
-\]
+The forgetful $\pvect\to\vect$ preserves direct sums and identities; the inclusion $\vect\hookrightarrow\mfd$ preserves products.\qedhere
 \end{proof}
 
-\begin{proposition}\label{prop.TstarG_pnla}
-For any PN Lie Algebra $\lie{g}$, with associated Lie group $G\coloneqq\Int\lie{g}$, the Lie algebra $\Lie(T^*G)$ is nilpotent, with nilpotency class at most $2n-1$ if $\lie{g}$ has class $n$.
-\end{proposition}
-
-\begin{proof}
-By \cref{lem.TstarG_lie}, $\Lie(T^*G)\cong\lie{g}\oplus\lie{g}^*$ with adjoint operator
-\[
-\ad_{(X,\nu)}(X',\nu')=(\ad_X X',\;\ad^*_{X'}\nu-\ad^*_X\nu').
-\]
-Relative to the decomposition $\lie{g}\oplus\lie{g}^*$, each $\ad_{(X,\nu)}$ has block form
-\[
-\ad_{(X,\nu)}=
-\begin{bmatrix}
-\ad_X & 0\\
-* & -\ad_X^*
-\end{bmatrix},
-\]
-where the entries are linear maps and we read products of such matrices as composition of linear endomorphisms of $\lie{g}\oplus\lie{g}^*$. The $(2,1)$ entry is the linear map $X'\mapsto\ad^*_{X'}\nu$, abbreviated $*$ since its specific form does not enter the argument below. 
-
-Suppose $\lie{g}$ has nilpotency class $n$, so every $n$-fold composite of operators $\ad_X$ is zero on $\lie{g}$; transposing, every $n$-fold composite of operators $\ad_X^*$ is zero on $\lie{g}^*$. We show that any $(2n-1)$-fold composite $A_k\cdots A_1$ (where $A_i=\ad_{(X_i,\nu_i)}$) is zero.
-
-Write $A_i=\begin{bsmallmatrix}\ad_{X_i} & 0\\ *_i & -\ad_{X_i}^*\end{bsmallmatrix}$. A product of lower-triangular block matrices is lower-triangular, and the diagonal blocks of $A_k\cdots A_1$ are $0$ by assumption. Each summand of its off-diagonal entry is a product
-\[
-(-\ad_{X_k}^*)\cdots(-\ad_{X_{j+1}}^*)\cdot *_j\cdot \ad_{X_{j-1}}\cdots\ad_{X_1}
-\]
-for some choice of $j\in\{1,\ldots,k\}$. When $k=2n-1$, either $j-1\geq n$ or $k-j\geq n$, and either way it vanishes, so the sum does too.
-\end{proof}
+For any vector space $V$, the natural iso
+\begin{equation}\label{eqn.dual_iso}
+(V\oplus V^*)^*\cong V^*\oplus V,\qquad (\nu,X)\cdot(X',\nu')\;=\;\nu(X')+\nu'(X)
+\end{equation}
+identifies $(\nu,X)\in V^*\oplus V$ with the linear functional on the right (using $V^{**}\cong V$).
 
 \begin{proposition}\label{prop.canonical_pairing}
-For any Lie group $G$, the cotangent bundle $T^*G$ has a canonical pairing $\sharp_{T^*G}\colon(\lie{g}\oplus\lie{g}^*)^*\to\lie{g}\oplus\lie{g}^*$, making $T^*G$ a PN Lie Algebra.%
-\footnote{
-Explicitly, the corresponding bilinear form on $\lie{g}\oplus\lie{g}^*$ is
-\[
-\pairing{(X_1,\nu_1),(X_2,\nu_2)} \;=\; \nu_2(X_1)-\nu_1(X_2),
-\]
-equivalently, under $(\lie{g}\oplus\lie{g}^*)^*\cong\lie{g}^*\oplus\lie{g}$, the sharp map is $(\alpha,X)\mapsto(X,-\alpha)$. We choose this canonical pairing because it matches textbook conventions for Hamilton's equations downstream.
-}
-\end{proposition}
-
-\begin{proposition}\label{prop.TG_pnla}
-For any PN Lie Algebra $(\lie{g},\sharp_{\lie{g}})$, with associated Lie group $G\coloneqq\Int\lie{g}$, the tangent bundle manifold $TG$ is a PN Lie Algebra under left-trivialization $TG\cong G\times\lie{g}$ with group law
-\[
-(g_1,X_1)\cdot(g_2,X_2)\coloneqq (g_1 g_2,\; \Ad_{g_2\inv}X_1 + X_2),
-\]
-unit $(e,0)$, and pairing $\sharp_{TG}\colon(\lie{g}\oplus\lie{g})^*\cong\lie{g}^*\oplus\lie{g}^*\To{\sharp_{\lie{g}}\oplus\sharp_{\lie{g}}}\lie{g}\oplus\lie{g}$.
-\end{proposition}
-
-\begin{proof}
-By \cref{lem.TG_alg}, $\Lie(TG)\cong\lie{g}\oplus\lie{g}$ with adjoint operator having block form
-\[
-\ad_{(X,Y)}=
-\begin{bmatrix}
-\ad_X & 0\\
-\ad_Y & \ad_X
-\end{bmatrix}.
-\]
-The same block-triangular argument as in the proof of \cref{prop.TstarG_pnla}, with both diagonals $\ad_X$ in place of $(\ad_X,-\ad_X^*)$, shows that $\Lie(TG)$ has nilpotency class at most $2n-1$ if $\lie{g}$ has class $n$. The pairing $\sharp_{TG}=\sharp_{\lie{g}}\oplus\sharp_{\lie{g}}$ is a linear isomorphism by construction.
-\end{proof}
-
-\begin{proposition}[$T^*$ and $T$ as endofunctors of $\pnla$]\label{prop.TT_endofunctors}
-The assignments
-\[
-(\lie{g},\sharp_{\lie{g}})\mapsto T^*(\Int\lie{g})
-\qqand
-(\lie{g},\sharp_{\lie{g}})\mapsto T(\Int\lie{g})
-\]
-from \cref{prop.canonical_pairing,prop.TG_pnla} extend to endofunctors
-\[
-T^*,\, T\colon\pnla\to\pnla.
-\]
-\end{proposition}
-
-\begin{proof}
-For a $\pnla$-morphism $\phi\colon(\lie{g},\sharp_{\lie{g}})\to(\lie{h},\sharp_{\lie{h}})$, write $G\coloneqq\Int\lie{g}$ and $H\coloneqq\Int\lie{h}$. Recall from \cref{lem.TG_alg} that $\Lie(TG)=\lie{g}\oplus\lie{g}$ and from \cref{lem.TstarG_lie} that $\Lie(T^*G)=\lie{g}\oplus\lie{g}^*$, and similarly for $\lie{h}$; define
-\begin{equation}\label{eqn.TT_phi}
-T\phi\coloneqq\phi\oplus\phi\colon\lie{g}\oplus\lie{g}\to\lie{h}\oplus\lie{h}
-\qqand
-T^*\phi\coloneqq\phi\oplus(\phi^*)\inv\colon\lie{g}\oplus\lie{g}^*\to\lie{h}\oplus\lie{h}^*.
-\end{equation}
-For brevity, we write
-\[
-T\lie{g}\coloneqq \lie{g}\oplus\lie{g},
-\qquad
-T^*\lie{g}\coloneqq \lie{g}\oplus\lie{g}^*,
-\]
-and similarly for $\lie{h}$.
-Both are linear isomorphisms because $\phi$ is. We verify in turn that they preserve brackets, preserve pairings, and are functorial.
-
-\emph{$T\phi$ preserves brackets.}
-\begin{align*}
-\ad_{T\phi(X_1,Y_1)}T\phi(X_2,Y_2)
-&= \ad_{(\phi X_1,\phi Y_1)}(\phi X_2,\phi Y_2) && \text{[$T\phi=\phi\oplus\phi$, \eqref{eqn.TT_phi}]}\\
-&= \bigl(\ad_{\phi X_1}\phi X_2,\;\ad_{\phi Y_1}\phi X_2+\ad_{\phi X_1}\phi Y_2\bigr) && \text{[\cref{lem.TG_alg}]}\\
-&= \bigl(\phi(\ad_{X_1}X_2),\;\phi(\ad_{Y_1}X_2)+\phi(\ad_{X_1}Y_2)\bigr) && \text{[$\phi$ preserves $\ad$, \eqref{eqn.liealg_hom}]}\\
-&= \bigl(\phi(\ad_{X_1}X_2),\;\phi(\ad_{Y_1}X_2+\ad_{X_1}Y_2)\bigr) && \text{[linearity of $\phi$]}\\
-&= T\phi\bigl(\ad_{X_1}X_2,\;\ad_{Y_1}X_2+\ad_{X_1}Y_2\bigr) && \text{[$T\phi=\phi\oplus\phi$, \eqref{eqn.TT_phi}]}\\
-&= T\phi\bigl(\ad_{(X_1,Y_1)}(X_2,Y_2)\bigr) && \text{[\cref{lem.TG_alg}]}.
-\end{align*}
-
-\emph{$T^*\phi$ preserves brackets.} Transposing $\phi\circ\ad_X=\ad_{\phi X}\circ\phi$ and inverting yields the dual identity
-\begin{equation}\label{eqn.coad_dual}
-(\phi^*)\inv\circ\ad^*_X = \ad^*_{\phi X}\circ(\phi^*)\inv\qquad(X\in\lie{g}).
-\end{equation}
-Write $\chi\coloneqq(\phi^*)\inv$, so that $T^*\phi=\phi\oplus\chi$ by \eqref{eqn.TT_phi}, and \eqref{eqn.coad_dual} becomes
-\[
-\chi\circ\ad^*_X = \ad^*_{\phi X}\circ\chi.
-\]
-Then:
-\begin{align*}
-\ad_{T^*\phi(X_1,\nu_1)}T^*\phi(X_2,\nu_2)
-&= \ad_{(\phi X_1,\chi\nu_1)}(\phi X_2,\chi\nu_2) && \text{[$T^*\phi=\phi\oplus\chi$, \eqref{eqn.TT_phi}]}\\
-&= \bigl(\ad_{\phi X_1}\phi X_2,\;\ad^*_{\phi X_2}(\chi\nu_1)-\ad^*_{\phi X_1}(\chi\nu_2)\bigr) && \text{[\cref{lem.TstarG_lie}]}\\
-&= \bigl(\phi(\ad_{X_1}X_2),\;\chi(\ad^*_{X_2}\nu_1)-\chi(\ad^*_{X_1}\nu_2)\bigr) && \text{[\eqref{eqn.liealg_hom}, \eqref{eqn.coad_dual}]}\\
-&= \bigl(\phi(\ad_{X_1}X_2),\;\chi(\ad^*_{X_2}\nu_1-\ad^*_{X_1}\nu_2)\bigr) && \text{[linearity of $\chi$]}\\
-&= T^*\phi\bigl(\ad_{X_1}X_2,\;\ad^*_{X_2}\nu_1-\ad^*_{X_1}\nu_2\bigr) && \text{[$T^*\phi=\phi\oplus\chi$]}\\
-&= T^*\phi\bigl(\ad_{(X_1,\nu_1)}(X_2,\nu_2)\bigr) && \text{[\cref{lem.TstarG_lie}]}.
-\end{align*}
-
-\emph{$T\phi$ preserves pairings.} Writing $\pairing{-,-}_{T\lie{g}}$ and $\pairing{-,-}_{T\lie{h}}$ for the direct-sum pairings $\sharp_{\lie{g}}\oplus\sharp_{\lie{g}}$ on $T\lie{g}$ and $\sharp_{\lie{h}}\oplus\sharp_{\lie{h}}$ on $T\lie{h}$:
-\begin{align*}
-\pairing{T\phi(X_1,Y_1),\,T\phi(X_2,Y_2)}_{T\lie{h}}
-&= \pairing{(\phi X_1,\phi Y_1),\,(\phi X_2,\phi Y_2)}_{T\lie{h}} && \text{[$T\phi=\phi\oplus\phi$, \eqref{eqn.TT_phi}]}\\
-&= \pairing{\phi X_1,\phi X_2}_{\lie{h}}+\pairing{\phi Y_1,\phi Y_2}_{\lie{h}} && \text{[def.\ of $\sharp_{\lie h}\oplus\sharp_{\lie h}$]}\\
-&= \pairing{X_1,X_2}_{\lie{g}}+\pairing{Y_1,Y_2}_{\lie{g}} && \text{[$\phi$ preserves pairings]}\\
-&= \pairing{(X_1,Y_1),(X_2,Y_2)}_{T\lie{g}} && \text{[def.\ of $\sharp_{\lie g}\oplus\sharp_{\lie g}$]}.
-\end{align*}
-
-\emph{$T^*\phi$ preserves pairings.} The canonical pairing on $\lie{g}\oplus\lie{g}^*$ has explicit form
+For any vector space $V$, the direct sum $V\oplus V^*$ is a paired vector space under the \emph{canonical pairing}
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(X_1,\nu_1),(X_2,\nu_2)}_{T^*\lie{g}} = \nu_2(X_1)-\nu_1(X_2),
+\pairing{(X,\nu),(X',\nu')}_{V\oplus V^*} \;=\; \nu'(X)-\nu(X').
 \end{equation}
-which is exactly the canonical pairing from \cref{prop.canonical_pairing} in left-trivialization. The defining property of $\phi^*$ gives, for any $\nu\in\lie{g}^*$ and $Y\in\lie{g}$,
+\end{proposition}
+
+\begin{proof}
+The flat map $\flat_{V\oplus V^*}\colon V\oplus V^*\to(V\oplus V^*)^*$ corresponding to \eqref{eqn.canonical_form} sends $(X,\nu)$ to the functional $(X',\nu')\mapsto\nu'(X)-\nu(X')$, i.e.\ to $(-\nu,X)\in V^*\oplus V$ via \eqref{eqn.dual_iso}. Suppose $(X,\nu)\in\ker\flat_{V\oplus V^*}$, so $\nu'(X)=\nu(X')$ for all $(X',\nu')$: taking $X'=0$ forces $X=0$, and taking $\nu'=0$ forces $\nu=0$. By equal dimensions, $\flat_{V\oplus V^*}$ is an isomorphism, with inverse $\sharp_{V\oplus V^*}\colon (\nu,X)\mapsto(X,-\nu)$.\qedhere
+\end{proof}
+
+\begin{remark}[Sign convention]\label{rmk.swap_pairing}
+The swap map $(\nu,X)\mapsto(X,\nu)$ also makes $V\oplus V^*$ a paired vector space, with bilinear form $\pairing{(X,\nu),(X',\nu')}=\nu'(X)+\nu(X')$. We use \eqref{eqn.canonical_form} because its antisymmetry is required for the dynamics in \cref{thm.reduction} to be Hamiltonian rather than gradient; see the aside on Hamilton's equations following \cref{prop.TT_endofunctors}.\qedhere
+\end{remark}
+
+\subsection{Tangent and cotangent endofunctors}\label{sec.TT}
+
+For a paired vector space $(V,\sharp_V):\pvect$, define
+\begin{equation}\label{eqn.TT_def}
+TV\coloneqq V\oplus V \qqand T^*V\coloneqq V\oplus V^*.
+\end{equation}
+Each is naturally a paired vector space: $TV$ via $\sharp_V\oplus\sharp_V$ (\cref{prop.pnla_monoidal}), $T^*V$ via the canonical pairing (\cref{prop.canonical_pairing}).%
+\footnote{
+The names match the geometric content: under \eqref{eqn.tangent_vec}, the tangent and cotangent bundles of $V$ as a manifold trivialize as $TV\cong V\oplus V$ and $T^*V\cong V\oplus V^*$.
+}
+For a $\pvect$-morphism $\phi\colon V\to W$, define
+\begin{equation}\label{eqn.TT_phi}
+T\phi\coloneqq\phi\oplus\phi,\qquad T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
+\end{equation}
+
+\begin{proposition}\label{prop.TT_endofunctors}
+The assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define endofunctors $T,T^*\colon\pvect\to\pvect$.
+\end{proposition}
+
+\begin{proof}
+Both $T\phi$ and $T^*\phi$ are linear isomorphisms because $\phi$ is.
+
+\emph{$T\phi$ preserves pairings.}
+\begin{align*}
+\pairing{T\phi(u,X),T\phi(u',X')}_{TW}
+&= \pairing{(\phi u,\phi X),(\phi u',\phi X')}_{TW} && \text{[\eqref{eqn.TT_phi}]}\\
+&= \pairing{\phi u,\phi u'}_W+\pairing{\phi X,\phi X'}_W && \text{[direct-sum pairing]}\\
+&= \pairing{u,u'}_V+\pairing{X,X'}_V && \text{[$\phi$ preserves pairings]}\\
+&= \pairing{(u,X),(u',X')}_{TV}.
+\end{align*}
+
+\emph{$T^*\phi$ preserves pairings.} Writing $\chi\coloneqq(\phi^*)\inv$, the defining property of $\phi^*$ gives, for any $\nu\in V^*$ and $Y\in V$,
 \begin{equation}\label{eqn.dualeval}
-((\phi^*)\inv\nu)(\phi Y) = \nu(Y).
+(\chi\nu)(\phi Y) = \nu(Y).
 \end{equation}
-Then:
+Then
 \begin{align*}
-\pairing{T^*\phi(X_1,\nu_1),\,T^*\phi(X_2,\nu_2)}_{T^*\lie{h}}
-&= \pairing{(\phi X_1,\chi\nu_1),\,(\phi X_2,\chi\nu_2)}_{T^*\lie{h}} && \text{[$T^*\phi=\phi\oplus\chi$]}\\
-&= (\chi\nu_2)(\phi X_1)-(\chi\nu_1)(\phi X_2) && \text{[\eqref{eqn.canonical_form}]}\\
-&= \nu_2(X_1) - \nu_1(X_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(X_1,\nu_1),(X_2,\nu_2)}_{T^*\lie{g}} && \text{[\eqref{eqn.canonical_form}]}.
+\pairing{T^*\phi(u,\pi),T^*\phi(u',\pi')}_{T^*W}
+&= (\chi\pi')(\phi u)-(\chi\pi)(\phi u') && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
+&= \pi'(u)-\pi(u') && \text{[\eqref{eqn.dualeval}]}\\
+&= \pairing{(u,\pi),(u',\pi')}_{T^*V} && \text{[\eqref{eqn.canonical_form}]}.
 \end{align*}
 
-So both $T\phi$ and $T^*\phi$ are $\pnla$-morphisms.
-
-\emph{Functoriality.} $T(\id_{\lie{g}})=\id\oplus\id=\id$, and $T^*(\id_{\lie{g}})=\id\oplus(\id^*)\inv=\id\oplus\id=\id$. For composable $\psi\colon\lie{f}\to\lie{g}$ and $\phi\colon\lie{g}\to\lie{h}$,
-\begin{align*}
-T(\phi\circ\psi)&=(\phi\circ\psi)\oplus(\phi\circ\psi)=(\phi\oplus\phi)\circ(\psi\oplus\psi)=T\phi\circ T\psi,\\
-T^*(\phi\circ\psi)&=(\phi\circ\psi)\oplus((\phi\circ\psi)^*)\inv=(\phi\circ\psi)\oplus((\phi^*)\inv\circ(\psi^*)\inv)=T^*\phi\circ T^*\psi,
-\end{align*}
-the second using $(\phi\circ\psi)^*=\psi^*\circ\phi^*$, hence $((\phi\circ\psi)^*)\inv=(\phi^*)\inv\circ(\psi^*)\inv$.\qedhere
+\emph{Functoriality.} On identities: $T(\id_V)=\id\oplus\id=\id$ and $T^*(\id_V)=\id\oplus(\id^*)\inv=\id$. On composites $\psi\colon U\to V$, $\phi\colon V\to W$: $T(\phi\circ\psi)=(\phi\oplus\phi)\circ(\psi\oplus\psi)=T\phi\circ T\psi$, and $T^*$ is similar via $(\phi\circ\psi)^*=\psi^*\circ\phi^*$.\qedhere
 \end{proof}
 
-\begin{proposition}[$T^*$ and $T$ as strong symmetric monoidal endofunctors of $\pnla$]\label{prop.TT_monoidal}
-The endofunctors $T^*,\,T\colon\pnla\to\pnla$ of \cref{prop.TT_endofunctors} are strong symmetric monoidal with respect to the monoidal structure $(0,\oplus)$ on $\pnla$.
+\paragraph{Aside on Hamilton's equations.}\label{para.hamilton_aside}
+Take $V$ a paired vector space and $H\colon T^*V\to\rr$ a smooth function (the \emph{Hamiltonian}). A point of $T^*V\cong V\oplus V^*$ is a pair $(u,\pi)$ with $u\in V$ the \emph{position} and $\pi\in V^*$ the \emph{momentum}. The differential $dH$ at $(u,\pi)$ lies in $T^*_{(u,\pi)}(T^*V)\cong V^*\oplus V$ (using $(V\oplus V^*)^*\cong V^*\oplus V$), decomposing as $(\partial_u H,\partial_\pi H)$ with
+\[
+\partial_u H\in V^*,\qquad \partial_\pi H\in V.
+\]
+A trajectory $(u(t),\pi(t))$ in $T^*V$ has velocity $(\dot u,\dot\pi)\in V\oplus V^*$, and the chain rule for $H$ along it reads
+\[
+\frac{dH}{dt}=(\partial_u H)(\dot u)+\dot\pi(\partial_\pi H),
+\]
+each term a $V^*$-against-$V$ evaluation in $\rr$. \Cref{thm.reduction} downstream, applied with the canonical pairing \eqref{eqn.canonical_form}, yields Hamilton's equations
+\[
+\dot u=\partial_\pi H,\qquad \dot\pi=-\partial_u H;
+\]
+the minus sign on $\dot\pi$ is exactly the sign in \eqref{eqn.canonical_form}. Substituting,
+\[
+\frac{dH}{dt}=(\partial_u H)(\partial_\pi H)+(-\partial_u H)(\partial_\pi H)=0,
+\]
+so $H$ is conserved along trajectories. Had we used the swap pairing $(\nu,X)\mapsto(X,\nu)$ instead, the framework would give $\dot\pi=+\partial_u H$, yielding $\frac{dH}{dt}=2(\partial_u H)(\partial_\pi H)$ — generically nonzero, a gradient flow rather than a Hamiltonian one. The antisymmetry of \eqref{eqn.canonical_form} is thus substantive.
+
+\begin{proposition}\label{prop.TT_monoidal}
+The endofunctors $T,T^*\colon\pvect\to\pvect$ are strong symmetric monoidal with respect to $(0,\oplus)$.
 \end{proposition}
 
 \begin{proof}
-\emph{Units.} The unit of $\pnla$ is the zero Lie algebra $0$ with vacuous pairing. We have $T0=0\oplus0=0$ and $T^*0=0\oplus 0^*=0$, so the unit comparisons are identities.
-
-\emph{Products for $T$.} For PN Lie Algebras $(\lie{g}_1,\sharp_1)$ and $(\lie{g}_2,\sharp_2)$, the product comparison is the linear isomorphism
-\begin{equation}\label{eqn.T_swap}
-\sigma\colon T(\lie{g}_1\oplus\lie{g}_2)\To{\cong} T\lie{g}_1\oplus T\lie{g}_2,\qquad ((X_1,X_2),(Y_1,Y_2))\mapsto((X_1,Y_1),(X_2,Y_2)),
-\end{equation}
-on $(\lie{g}_1\oplus\lie{g}_2)\oplus(\lie{g}_1\oplus\lie{g}_2)\cong(\lie{g}_1\oplus\lie{g}_1)\oplus(\lie{g}_2\oplus\lie{g}_2)$.
-
-To see $\sigma$ preserves brackets, expand \cref{lem.TG_alg} on each side. On the left, using also that the bracket on $\lie{g}_1\oplus\lie{g}_2$ is componentwise, $\ad_{(A_1,A_2)}(B_1,B_2)=(\ad_{A_1}B_1,\ad_{A_2}B_2)$,
-\begin{align*}
-&\ad_{((X_1,X_2),(Y_1,Y_2))}\bigl((X_1',X_2'),(Y_1',Y_2')\bigr) \\
-&\qquad=\bigl((\ad_{X_1}X_1',\;\ad_{X_2}X_2'),\;\;(\ad_{Y_1}X_1'+\ad_{X_1}Y_1',\;\ad_{Y_2}X_2'+\ad_{X_2}Y_2')\bigr).
-\end{align*}
-On the right, applying \cref{lem.TG_alg} separately in each summand $T\lie{g}_i$,
-\begin{align*}
-&\ad_{((X_1,Y_1),(X_2,Y_2))}\bigl((X_1',Y_1'),(X_2',Y_2')\bigr) \\
-&\qquad=\bigl((\ad_{X_1}X_1',\;\ad_{Y_1}X_1'+\ad_{X_1}Y_1'),\;\;(\ad_{X_2}X_2',\;\ad_{Y_2}X_2'+\ad_{X_2}Y_2')\bigr).
-\end{align*}
-The two are matched by $\sigma$.
-
-For pairing preservation,
-\begin{align*}
-&\pairing{((X_1,X_2),(Y_1,Y_2)),\,((X_1',X_2'),(Y_1',Y_2'))}_{T(\lie{g}_1\oplus\lie{g}_2)} \\
-&\qquad=\pairing{(X_1,X_2),(X_1',X_2')}_{\lie{g}_1\oplus\lie{g}_2}+\pairing{(Y_1,Y_2),(Y_1',Y_2')}_{\lie{g}_1\oplus\lie{g}_2} \\
-&\qquad=\pairing{X_1,X_1'}_{\lie{g}_1}+\pairing{X_2,X_2'}_{\lie{g}_2}+\pairing{Y_1,Y_1'}_{\lie{g}_1}+\pairing{Y_2,Y_2'}_{\lie{g}_2},
-\end{align*}
-while
-\begin{align*}
-&\pairing{((X_1,Y_1),(X_2,Y_2)),\,((X_1',Y_1'),(X_2',Y_2'))}_{T\lie{g}_1\oplus T\lie{g}_2} \\
-&\qquad=\pairing{(X_1,Y_1),(X_1',Y_1')}_{T\lie{g}_1}+\pairing{(X_2,Y_2),(X_2',Y_2')}_{T\lie{g}_2} \\
-&\qquad=\pairing{X_1,X_1'}_{\lie{g}_1}+\pairing{Y_1,Y_1'}_{\lie{g}_1}+\pairing{X_2,X_2'}_{\lie{g}_2}+\pairing{Y_2,Y_2'}_{\lie{g}_2}.
-\end{align*}
-These agree, so $\sigma$ is a $\pnla$-isomorphism.
-
-\emph{Products for $T^*$.} Using the natural isomorphism $(\lie{g}_1\oplus\lie{g}_2)^*\cong\lie{g}_1^*\oplus\lie{g}_2^*$, the product comparison is the linear isomorphism
-\begin{equation}\label{eqn.Tstar_swap}
-\sigma^*\colon T^*(\lie{g}_1\oplus\lie{g}_2)\To{\cong}T^*\lie{g}_1\oplus T^*\lie{g}_2,\qquad ((X_1,X_2),(\nu_1,\nu_2))\mapsto((X_1,\nu_1),(X_2,\nu_2)).
-\end{equation}
-
-For bracket preservation, expand \cref{lem.TstarG_lie} on each side. On the left, using also that the bracket and coadjoint action on $\lie{g}_1\oplus\lie{g}_2$ are componentwise, $\ad_{(A_1,A_2)}(B_1,B_2)=(\ad_{A_1}B_1,\ad_{A_2}B_2)$ and $\ad^*_{(A_1,A_2)}(\xi_1,\xi_2)=(\ad^*_{A_1}\xi_1,\ad^*_{A_2}\xi_2)$,
-\begin{align*}
-&\ad_{((X_1,X_2),(\nu_1,\nu_2))}\bigl((X_1',X_2'),(\nu_1',\nu_2')\bigr) \\
-&\qquad=\bigl((\ad_{X_1}X_1',\;\ad_{X_2}X_2'),\;\;(\ad^*_{X_1'}\nu_1-\ad^*_{X_1}\nu_1',\;\ad^*_{X_2'}\nu_2-\ad^*_{X_2}\nu_2')\bigr).
-\end{align*}
-On the right, applying \cref{lem.TstarG_lie} separately in each summand $T^*\lie{g}_i$,
-\begin{align*}
-&\ad_{((X_1,\nu_1),(X_2,\nu_2))}\bigl((X_1',\nu_1'),(X_2',\nu_2')\bigr) \\
-&\qquad=\bigl((\ad_{X_1}X_1',\;\ad^*_{X_1'}\nu_1-\ad^*_{X_1}\nu_1'),\;\;(\ad_{X_2}X_2',\;\ad^*_{X_2'}\nu_2-\ad^*_{X_2}\nu_2')\bigr).
-\end{align*}
-The two are matched by $\sigma^*$.
-
-For pairing preservation, applying \eqref{eqn.canonical_form} to $\lie{g}_1\oplus\lie{g}_2$,
-\begin{align*}
-&\pairing{((X_1,X_2),(\nu_1,\nu_2)),\,((X_1',X_2'),(\nu_1',\nu_2'))}_{T^*(\lie{g}_1\oplus\lie{g}_2)} \\
-&\qquad=(\nu_1',\nu_2')(X_1,X_2)-(\nu_1,\nu_2)(X_1',X_2') \\
-&\qquad=\nu_1'(X_1)+\nu_2'(X_2)-\nu_1(X_1')-\nu_2(X_2'),
-\end{align*}
-while applying \eqref{eqn.canonical_form} separately to each summand $T^*\lie{g}_i$,
-\begin{align*}
-&\pairing{((X_1,\nu_1),(X_2,\nu_2)),\,((X_1',\nu_1'),(X_2',\nu_2'))}_{T^*\lie{g}_1\oplus T^*\lie{g}_2} \\
-&\qquad=\pairing{(X_1,\nu_1),(X_1',\nu_1')}_{T^*\lie{g}_1}+\pairing{(X_2,\nu_2),(X_2',\nu_2')}_{T^*\lie{g}_2} \\
-&\qquad=\bigl(\nu_1'(X_1)-\nu_1(X_1')\bigr)+\bigl(\nu_2'(X_2)-\nu_2(X_2')\bigr).
-\end{align*}
-These agree, so $\sigma^*$ is a $\pnla$-isomorphism.
-
-\emph{Naturality and coherence.} Naturality of $\sigma$ and $\sigma^*$ in $\lie{g}_1,\lie{g}_2$ is immediate: for $\pnla$-morphisms $\phi_i\colon\lie{g}_i\to\lie{h}_i$, both $(T\phi_1\oplus T\phi_2)\circ\sigma$ and $\sigma\circ T(\phi_1\oplus\phi_2)$ apply $\phi_1$ to entries from $\lie{g}_1$ and $\phi_2$ to entries from $\lie{g}_2$ (and similarly for $\sigma^*$, with $(\phi_i^*)\inv$ on the $\lie{g}_i^*$-entries). Coherence (associator/unitor/braiding) is inherited from $(\vect,0,\oplus)$, since $\sigma$ and $\sigma^*$ are the standard four-fold-sum reorganizations.
+The unit comparisons are identities since $T0=0\oplus 0=0$ and $T^*0=0\oplus 0^*=0$. The product comparisons are the standard four-fold-sum reorganizations
+\begin{align}
+\sigma\colon T(V_1\oplus V_2)&\To{\cong}TV_1\oplus TV_2,\quad ((u_1,u_2),(X_1,X_2))\mapsto((u_1,X_1),(u_2,X_2)),\label{eqn.T_swap}\\
+\sigma^*\colon T^*(V_1\oplus V_2)&\To{\cong}T^*V_1\oplus T^*V_2,\quad ((u_1,u_2),(\pi_1,\pi_2))\mapsto((u_1,\pi_1),(u_2,\pi_2))\label{eqn.Tstar_swap}
+\end{align}
+(using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$ for $\sigma^*$). Both are linear isomorphisms; both preserve pairings, since each side of $\sigma$ expands to $\pairing{u_1,u_1'}_{V_1}+\pairing{u_2,u_2'}_{V_2}+\pairing{X_1,X_1'}_{V_1}+\pairing{X_2,X_2'}_{V_2}$ and each side of $\sigma^*$ expands via \eqref{eqn.canonical_form} to $\pi_1'(u_1)+\pi_2'(u_2)-\pi_1(u_1')-\pi_2(u_2')$. Naturality and coherence are inherited from $(\vect,0,\oplus)$.\qedhere
 \end{proof}
 
-\begin{proposition}[{Pairing as monoidal natural isomorphism $T^*\cong T$}]\label{prop.legendre}
-For each PN Lie Algebra $(\lie p,\sharp_P)$, with associated Lie group $P\coloneqq\Int\lie p$, the pairing $\sharp_P\colon\lie p^*\to\lie p$ assembles, in left-trivialization, into a smooth map
+\begin{proposition}\label{prop.legendre}
+The sharp maps assemble into a monoidal natural isomorphism
 \[
-\sharp_P\colon T^*P\to TP,\qquad (u,\pi)\mapsto(u,\sharp_P(\pi)),
-\]
-and these maps form a monoidal natural isomorphism of strong monoidal endofunctors of $\pnla$:
-\[
-\sharp\colon T^*\;\xRightarrow{\cong}\;T.
+\sharp\colon T^*\;\xRightarrow{\cong}\;T,\qquad\text{with components}\quad\sharp_V\colon T^*V\to TV,\quad (u,\pi)\mapsto(u,\sharp_V(\pi)).
 \]
 \end{proposition}
 
 \begin{proof}
-Each component $\sharp_P$ is a linear isomorphism by the definition of PN Lie Algebra (\cref{def.pnla}). Naturality with respect to $\pnla$-isomorphisms is the pairing-intertwining axiom of \cref{def.pnla}. Monoidality $\sharp_{P\times Q}=\sharp_P\oplus\sharp_Q$ is the direct-sum pairing convention on products (\cref{prop.TT_monoidal}).
+Each component is a linear isomorphism by \cref{def.pnla}; naturality is the pairing-preservation axiom of \cref{def.pnla}; monoidality $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ is the direct-sum pairing convention (\cref{prop.pnla_monoidal}).\qedhere
 \end{proof}
 
 \begin{remark}[Legendre transform]\label{rmk.legendre}
-\Cref{prop.legendre} is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\sharp_P\inv\colon\lie p\to\lie p^*$ sends velocity to conjugate momentum, $\sharp_P$ sends momentum to velocity.
+\Cref{prop.legendre} is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\flat_V$ sends velocity to conjugate momentum, $\sharp_V$ sends momentum to velocity.\qedhere
 \end{remark}
 
+\begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.pnla_generalization}
+The framework above extends to \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra $\lie g$ with a pairing on its underlying vector space. The integration functor (Lie's third theorem, \cite[Appendix B]{knapp2002lie}) attaches a simply connected Lie group $\Int\lie g$ to each such $\lie g$, and Malcev's theorem~\cite[Thm.~1.127]{knapp2002lie} makes the exponential $\exp\colon\lie g\To{\cong}\Int\lie g$ a diffeomorphism. The cotangent and tangent bundles $T^*(\Int\lie g),T(\Int\lie g)$ inherit semidirect-product Lie-group structures, with Lie algebras $\lie g\oplus\lie g^*$ and $\lie g\oplus\lie g$ carrying brackets that mix the $\ad$ and $\ad^*$ actions. The categorical content of \cref{prop.TT_endofunctors,prop.TT_monoidal,prop.legendre} lifts verbatim, but pairing- and bracket-preservation in $T\phi, T^*\phi$ then require Lie-group input. The vector-space case treated here corresponds to abelian $\lie g$, where $\ad$ vanishes and the brackets collapse.\qedhere
+\end{remark}
 \subsection{The cotangent functor}\label{sec.cot}
 
 The category of smooth manifolds provides the source of polynomials relevant to physics. Each manifold has a cotangent bundle, and each smooth map has a Jacobian transpose; combining these gives a functor into $\poly$.
@@ -1326,47 +854,25 @@ the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\c
 The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot{\eta},\cot{\mu})$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
-\begin{proposition}[{$\cot\cong(-)\yon^{(-)}$ as functors $\pnla\to\poly$}]\label{prop.pnla_polynomial}
-The assignment sending a PN Lie Algebra $(\lie{g},\sharp_G)$, with associated Lie group $G\coloneqq\Int\lie{g}$, to $G\yon^G$ extends to a functor $\pnla\to\poly$. 
-
-There is a natural isomorphism $\cot{G}\cong G\yon^G$, given by identity on positions and on directions at each $g: G$ by the following composite which we denote $F_g$:
-\begin{equation}\label{eqn.directions_malcev}
-T^*_g G \To{(dL_g|_e)^*} \lie{g}^* \To{\sharp_G} \lie{g} \To{\exp_G} G.
+\begin{proposition}[{$\cot\cong(-)\yon^{(-)}$ as functors $\pvect\to\poly$}]\label{prop.pnla_polynomial}
+The assignment sending a paired vector space $(V,\sharp_V)$ to $V\yon^V$ extends to a functor $\pvect\to\poly$, and there is a natural isomorphism $\cot V\cong V\yon^V$, given by identity on positions and on directions at each $u\in V$ by
+\begin{equation}\label{eqn.directions_sharp}
+T^*_uV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V.
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-Each $F_g$ is a bijection: $(dL_g|_e)^*$ is a linear isomorphism, $\sharp_G$ is a linear isomorphism by \cref{def.pnla}, and $\exp_G$ is a diffeomorphism by Malcev's theorem \eqref{eqn.malcev}. The position-map is identity, so $F_G\colon\cot G\cong G\yon^G$ in $\poly$ for each $G$.
-
-For naturality, let $\phi\colon(\lie g,\sharp_G)\to(\lie h,\sharp_H)$ be a $\pnla$-isomorphism, and write $G\coloneqq\Int\lie g$ and $H\coloneqq\Int\lie h$ for the associated Lie groups, with Lie-group lift $\Phi\colon G\to H$. The position-part of the naturality square is trivial; the back-direction part at $g$ reduces to
-\[
-\Phi\circ F_g \;=\; F_{\Phi(g)}\circ(d\Phi|_g)^{-*},
-\]
-which unpacks using (a) $\Phi\circ\exp_G=\exp_H\circ\phi$ (Lie-group isomorphism commutes with exp), (b) $\phi\circ\sharp_G\circ\phi^* = \sharp_H$ (pairing-preservation triangle of \cref{def.pnla}), and (c) $\Phi\circ L_g = L_{\Phi(g)}\circ\Phi$ (group isomorphism commutes with left-translation), so $d\Phi|_{\Phi(g)}\circ dL_g|_e = dL_{\Phi(g)}|_e\circ\phi$.
+At each $u\in V$, \eqref{eqn.directions_sharp} is a composite of linear isomorphisms, hence a bijection; the position-map is identity. So the polynomial isomorphism $\cot V\cong V\yon^V$ holds for each $V$. Naturality at a $\pvect$-isomorphism $\phi\colon V\to W$ reduces, on directions, to the pairing-preservation triangle of \cref{def.pnla}, $\phi\circ\sharp_V\circ\phi^*=\sharp_W$.\qedhere
 \end{proof}
 
 \begin{remark}\label{rmk.pnla_fiberwise_addition}
-For a PN Lie Algebra $(\lie g,\sharp_G)$ with associated Lie group $G\coloneqq\Int\lie g$ and point $g\in G$, the on-directions part of the isomorphism $\cot{G}\cong G\yon^G$ from \cref{prop.pnla_polynomial} is the bijection \eqref{eqn.directions_malcev}, which we'll temporarily denote $F_g\colon T^*_gG\to G.$
+For a paired vector space $(V,\sharp_V)$ and point $u\in V$, the on-directions part of the isomorphism $\cot V\cong V\yon^V$ from \cref{prop.pnla_polynomial} is the bijection \eqref{eqn.directions_sharp}, which we'll temporarily denote $F_u\colon T^*_uV\to V$.
 
-By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $G\yon^G$ is a category whose object set is $G$ and whose arrows out of each object are indexed by $G$. We describe such a category, the \emph{translation category} of $G$ acting on itself by left multiplication: objects are elements of $G$, a morphism $g\to h$ is an element $x\in G$ satisfying $h=gx$ (there is exactly one such $x$, namely $g\inv h$), identities are $e\in G$, and composition is group multiplication. This category is isomorphic to the pair groupoid on $G$, but the translation-category presentation is the one that matches \eqref{eqn.directions_malcev}: the bijection $F_g\colon T^*_gG\to G$ identifies a cotangent vector at $g$ with a morphism $g\to gF_g(\xi)$ in the translation category. Thus we have maps
-\[
-\epsilon\colon\cot{G}\to\yon
-\qqand
-\delta\colon\cot{G}\to\cot{G}\tri\cot{G}.
-\]
-The former, which provides identities, picks out the zero covector at each point of $G$, because $F_g(0)=\exp_G(0)=e$. The latter induces codomain and composition maps on cotangent vectors as follows. A covector $\xi\in T^*_gG$ is sent to the point
-\[
-\cod_g(\xi)\coloneqq gF_g(\xi)\in G,
-\]
-and for $\xi'\in T^*_{\cod_g(\xi)}G$, the composite of $\xi$ with $\xi'$ is determined by group multiplication:
-\[
-F_g(\xi\then\xi') =F_g(\xi)\,F_{\cod_g(\xi)}(\xi').
-\]
-Thus the chosen pairing $\sharp_G$, together with $\exp_G$, identifies each cotangent space with $G$ in a way that presents the induced category structure on $\cot{G}$ as the translation category of $G$ acting on itself by left multiplication, hence as a category isomorphic to the pair groupoid. For those familiar with the Baker--Campbell--Hausdorff formula on nilpotent Lie algebras, after transporting further along $\sharp_G\colon\lie{g}^*\to\lie{g}$, the composition law on $\cot{G}$ is given by the BCH product.
+By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. The relevant category here is the \emph{translation category} of $V$ acting on itself by addition: objects are elements of $V$, a morphism $u\to u'$ is the unique element $X\in V$ with $u'=u+X$, identities are $0\in V$, and composition is addition. The bijection $F_u\colon T^*_uV\to V$ identifies a cotangent vector $\nu\in T^*_uV$ at $u$ with a morphism $u\to u+F_u(\nu)$ in this category, so the induced category structure on $\cot V$ presents the translation category of $V$, hence the pair groupoid on $V$. The pairing $\sharp_V$ thus identifies each cotangent space with $V$ in a way that makes the comonoid composition on $\cot V$ literally addition of momenta.\qedhere
 \end{remark}
 
 \begin{example}[$\rr^n$ continued]\label{ex.Rn_polynomial}
-For the PN Lie Algebra $(\mathbb{R}^n,\sharp)$ of \cref{ex.Rn_pnla}, the on-directions bijection of \cref{prop.pnla_polynomial} reduces to $F_p=\sharp$ at every $p$, since $(dL_p|_e)^*$ and $\exp_{\mathbb{R}^n}$ are both the identity. The induced codomain map on $\cot{\mathbb{R}^n}\cong\mathbb{R}^n\yon^{\mathbb{R}^n}$ from \cref{rmk.pnla_fiberwise_addition} sends $\xi\colon T^*_p\mathbb{R}^n$ to $p+\sharp(\xi)$, since group multiplication on $\mathbb{R}^n$ is addition.
+For a paired vector space $(\rr^n,\sharp)$, the on-directions bijection of \cref{prop.pnla_polynomial} is just $\sharp$ itself at every $u\in\rr^n$. The induced codomain map on $\cot{\rr^n}\cong\rr^n\yon^{\rr^n}$ from \cref{rmk.pnla_fiberwise_addition} sends $\nu\in T^*_u\rr^n$ to $u+\sharp(\nu)$.\qedhere
 \end{example}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
@@ -1534,7 +1040,7 @@ Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce th
 
 We recast the deep-learning example of~\cite{shapiro2022dynamic} using the cotangent functor and PN Lie Algebras. Take the object set $O\coloneqq\nn$ and assign to each $n\in \nn$ the polynomial $\cot{\mathbb{R}^n}\cong{\cot{\mathbb{R}}}\tpow n$; a layer $m\to n$ will be an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra.
 
-The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a PN Lie Algebra with pairing $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$ (\cref{ex.Rn_pnla}), together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop.cot_monoidal}) gives a polynomial map
+The data of a layer is a parameter space $P=\mathbb{R}^k$, regarded as a paired vector space with pairing $\sharp_P=-\eta\cdot\id$ for a learning rate $\eta>0$, together with a smooth architecture $f\colon P\times\mathbb{R}^m\to\mathbb{R}^n$. Applying $\cot$ and using its strong monoidality (\cref{prop.cot_monoidal}) gives a polynomial map
 \[\cot{P}\otimes\cot{\mathbb{R}^m}\to\cot{\mathbb{R}^n},\]
 which by closedness of $\poly$ is equivalently a map $\cot{P}\to\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$. By \cref{ex.Rn_polynomial}, $\cot{P}\cong P\yon^P$, so \cref{ex.coalg_as_poly_map} presents it as an $\ihom{\cot{\mathbb{R}^m},\cot{\mathbb{R}^n}}$-coalgebra with state set $P$.
 
@@ -2164,9 +1670,9 @@ Composing with the coalgebra interpretation from \cref{prop.pnla_polynomial,ex.c
 
 The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{pairing projection} below; \cref{rmk.tangent_state} records the analogous tangent-state alternative.
 
-For any PN Lie Algebra $(\lie p,\sharp_P)$, with associated Lie group $P\coloneqq\Int\lie p$, \eqref{eqn.left_triv} left-trivializes
+For any paired vector space $(P,\sharp_P)$, \eqref{eqn.tangent_vec} gives
 \[
-T^*P\cong P\times\lie{p}^*.
+T^*P\cong P\oplus P^*.
 \]
 We call a point $(u,\pi)$ a pair consisting of a \emph{position} $u\in P$ and a \emph{momentum} $\pi\in \lie{p}^*$. The cotangent space there decomposes as
 \[
@@ -2191,14 +1697,14 @@ Precomposing \eqref{eqn.parameter_to_action} with $\rho_P$ gives
 \to
 \ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
 \]
-Since $T^*P$ is a PN Lie Algebra by \cref{prop.TstarG_pnla,prop.canonical_pairing}, \cref{prop.pnla_polynomial} gives
+Since $T^*P$ is a paired vector space by \cref{prop.canonical_pairing}, \cref{prop.pnla_polynomial} gives
 \[
 \cot{T^*P}\cong (T^*P)\yon^{T^*P}.
 \]
 Thus \cref{ex.coalg_as_poly_map} presents the above map as an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $T^*P$. This is the 1-cell $\Phi(f)$ in $\org$.
 
 \begin{remark}[Tangent-state alternative]\label{rmk.tangent_state}
-Taking $F\coloneqq T$ (\cref{prop.TT_endofunctors}) instead of $T^*$ fits \cref{prop.param_refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\sharp_P\inv(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$ (left-trivialization on the $P$-factor and \eqref{eqn.tangent_vec} on the $\lie p$-factor), using the inverse pairing $\sharp_P\inv\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop.param_refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry the canonical pairing of \cref{prop.canonical_pairing}, and the resulting dynamics coincide with textbook Hamilton's equations).
+Taking $F\coloneqq T$ (\cref{prop.TT_endofunctors}) instead of $T^*$ fits \cref{prop.param_refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_P\colon\cot{TP}\to\cot P$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\flat_P(X))$ under a decomposition $T^*_{(u,X)}(TP)\cong\lie p^*\oplus\lie p^*$ (left-trivialization on the $P$-factor and \eqref{eqn.tangent_vec} on the $\lie p$-factor), using the flat map $\flat_P\colon\lie p\to\lie p^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TP$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop.param_refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry the canonical pairing of \cref{prop.canonical_pairing}, and the resulting dynamics coincide with textbook Hamilton's equations).
 \end{remark}
 
 \begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk.legendre_equivalence}
