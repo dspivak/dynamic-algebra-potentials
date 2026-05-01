@@ -1205,10 +1205,10 @@ in $\cat{D}$. The identity on $x$ has parameter $I$ and the action unitor $I\cdo
 The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $\alpha\colon a\to a'$ in $\cat A$ such that $f'\circ(\alpha\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
 
 \begin{proposition}[Para functoriality from action squares {\cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}}]\label{prop.para_square}
-Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot G(x)\To{\cong}G(a\cdot x)$ is a natural isomorphism compatible with the action unitors and associators:
+Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot G(x)\to G(a\cdot x)$ is a natural transformation compatible with the action unitors and associators:
 \begin{equation}\label{eqn.para_square}
 \begin{tikzcd}[ampersand replacement=\&]
-\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"']\ar[dr,phantom,"\cong^\theta"description]\& \cat D\ar[d,"G"]\\
+\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"']\ar[dr,phantom,"\theta"description]\& \cat D\ar[d,"G"]\\
 \cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
 \end{tikzcd}
 \end{equation}
@@ -1226,15 +1226,15 @@ The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 
 A common source of action-squares is a weakly commuting square of strong monoidal functors, as in \cref{eqn.pnla_polynomial_square}.
 
 \begin{lemma}[Action squares from functor squares]\label{lem.functor_square_action}
-Given strong monoidal functors $L,M,N,L'$ between symmetric monoidal categories and a monoidal isomorphism $\theta$ as on the left, one obtains an action square as on the right
+Given strong monoidal functors $L,M,N,L'$ between symmetric monoidal categories and a monoidal natural transformation $\theta$ as on the left, one obtains an action square as on the right
 \[
 \begin{tikzcd}[ampersand replacement=\&]
-\cat A\ar[r,"L"]\ar[d,"M"']\ar[dr,phantom,"\cong^\theta"description]\& \cat B\ar[d,"N"]\\
+\cat A\ar[r,"L"]\ar[d,"M"']\ar[dr,phantom,"\theta"description]\& \cat B\ar[d,"N"]\\
 \cat A'\ar[r,"L'"']\& \cat B'
 \end{tikzcd}
 \quad\leadsto\quad
 \begin{tikzcd}[ampersand replacement=\&]
-\cat A\times\cat B\ar[r,"(\cdot)"]\ar[d,"M\times N"']\ar[dr,phantom,"\cong"description]\& \cat B\ar[d,"N"]\\
+\cat A\times\cat B\ar[r,"(\cdot)"]\ar[d,"M\times N"']\& \cat B\ar[d,"N"]\\
 \cat A'\times\cat B'\ar[r,"(\cdot')"']\& \cat B'
 \end{tikzcd}
 \]
@@ -1242,25 +1242,11 @@ by $a\cdot b\coloneqq L(a)\otimes_{\cat B} b$ and similar for $(\cdot')$.
 \end{lemma}
 
 \begin{proof}
-The natural isomorphism is given by
+The natural transformation is given by
 \[
 L'(M(a))\otimes N(b)\To{\theta_a\otimes\id}N(L(a))\otimes N(b)\To{\cong}N(L(a)\otimes b).
 \]
-Both factors are monoidal natural isomorphisms (the input $\theta$ and the strong monoidal comparison of $N$), so the composite is too; compatibility with action unitors and associators reduces to that of $\theta$ and the strong-monoidal data of $L,L',M,N$.\qedhere
-\end{proof}
-
-\begin{corollary}\label{cor.pvect_mfd_to_set_poly}
-We have a strong symmetric monoidal functor
-\[
-\para{\pvect}{\mfd}\;\longrightarrow\;\para{\smset_\cong}{\poly}.
-\]
-\end{corollary}
-\begin{proof}
-Apply \cref{prop.para_square,lem.functor_square_action} to \cref{prop.pnla_polynomial}. The functor sends $M\mapsto\cot{M}$ and $f\colon V\times M\to N$ to the morphism with parameter $|V|$ and map
-\[
-V\yon^V\otimes\cot{M}\;\To{\theta_V\otimes\id}\;\cot{V}\otimes\cot{M}\;\To{\cong}\;\cot{(V\times M)}\;\To{\cot f}\;\cot{N},
-\]
-where the second arrow is the strong monoidal comparison of $\cot$ (\cref{prop.cot_monoidal}).\qedhere
+The first factor is the input $\theta$ tensored with identity; the second is the strong monoidal comparison of $N$ (an iso). Compatibility with action unitors and associators reduces to that of $\theta$ and the strong-monoidal data of $L,L',M,N$.\qedhere
 \end{proof}
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
@@ -1287,17 +1273,26 @@ by \cref{eqn.dirichlet_hom,prop.coalg_as_poly_map}. It remains to show that the 
 In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\phi)$, and it is easy to see too are identified as above.
 \end{proof}
 
-\subsection{Cotangent learners}\label{sec.cotangent_learners}
-
-Composing \cref{cor.pvect_mfd_to_set_poly} with \cref{prop.org_as_para} gives a strong symmetric monoidal functor
+\begin{corollary}[Cotangent learners]\label{cor.cotangent_learners}
+There is a strong symmetric monoidal functor
 \begin{equation}\label{eqn.cotangent_learners}
-\Psi\colon\para{\pvect}{\mfd}\to\org,
+\Psi\colon\para{\pvect}{\mfd}\to\org.
 \end{equation}
-the \emph{cotangent-learners} functor. On objects, $M\mapsto\cot M$. On a morphism $(V,f\colon V\times M\to N)$, $\Psi(V,f)$ is the $\ihom{\cot M,\cot N}$-coalgebra with state set $V$ whose action at $v\in V$ is $\cot f_v\colon\cot M\to\cot N$ (with $f_v(m)\coloneqq f(v,m)$) and whose update on a direction $(m,\nu)$ with $\nu\in T^*_{f(v,m)}N$ is
+On objects, $M\mapsto\cot M$. On a morphism $(V,f\colon V\times M\to N)$, $\Psi(V,f)$ is the $\ihom{\cot M,\cot N}$-coalgebra with state set $V$ whose action at $v\in V$ is $\cot f_v\colon\cot M\to\cot N$ (with $f_v(m)\coloneqq f(v,m)$) and whose update on a direction $(m,\nu)$ with $\nu\in T^*_{f(v,m)}N$ is
 \begin{equation}\label{eqn.cotangent_learner_update}
 \upd_v(m,\nu)=v+\sharp_V\bigl((\partial_Vf)_{(v,m)}^\top\nu\bigr).
 \end{equation}
+\end{corollary}
+
+\begin{proof}
+\Cref{prop.para_square,lem.functor_square_action} applied to \cref{prop.pnla_polynomial} give a strong symmetric monoidal functor $\para{\pvect}{\mfd}\to\para{\smset_\cong}{\poly}$ sending $M\mapsto\cot M$ and $f\colon V\times M\to N$ to the morphism with parameter $|V|$ and map
+\[
+V\yon^V\otimes\cot M\;\To{\theta_V\otimes\id}\;\cot V\otimes\cot M\;\To{\cong}\;\cot(V\times M)\;\To{\cot f}\;\cot N,
+\]
+where the second arrow is the strong monoidal comparison of $\cot$ (\cref{prop.cot_monoidal}). Composing with the equivalence $\para{\smset_\cong}{\poly}\cong\org_\cong$ of \cref{prop.org_as_para} gives $\Psi$.
+
 The update formula unwinds $\cot f$'s backward part: $(Df)_{(v,m)}^\top\nu=((\partial_Vf)_{(v,m)}^\top\nu,\,(\partial_Mf)_{(v,m)}^\top\nu)\in T_v^*V\oplus T_m^*M$; the $V$-component $\alpha\coloneqq(\partial_Vf)_{(v,m)}^\top\nu$ is identified with the new state $v+\sharp_V(\alpha)$ via $\cot V\cong V\yon^V$ (\cref{prop.pnla_polynomial}).
+\end{proof}
 
 \subsection{Example: deep learning as a dynamic monoidal category}\label{sec.deep_learning}
 
@@ -1561,88 +1556,57 @@ Everything else is the same as in \cref{prop.Theta}.
 
 
 \begin{remark}\label{rmk.general_z}
-The construction above uses the monoidal unit $z\coloneqq I$ as the target of evaluation. More generally, for any $\otimes$-monoid $(z,e_z,m_z)$ equipped with a $\Fun{T}$-algebra $\alpha\colon\Fun{T}z\to z$ which is also a monoid homomorphism, the above generalize to 
+The construction above uses the monoidal unit $z\coloneqq I$ as the target of evaluation. More generally, for any $\otimes$-monoid $(z,e_z,m_z)$ equipped with a $\Fun{T}$-algebra $\alpha\colon\Fun{T}z\to z$ which is also a monoid homomorphism, the above generalizes to a lax monoidal functor  
 \[
 \Theta^{\Fun{T},z,\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
 \lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,z}.
+\qedhere
 \]
 \end{remark}
 
 \subsection{Parameterized lenses}\label{sec.abstract_parameters}
 
-We apply the Para construction (\cref{sec.para_general}) to lenses. Let $J\colon\cat{A}\to\cat{C}$ be a strong monoidal functor whose values are commutative comonoids and whose maps and monoidal structure maps preserve those comonoids. It gives an action of $\cat{A}$ on $\Lens{\cat{C}}^\Fun{T}$ by
+We apply the Para construction (\cref{sec.para_general}) to potentialized lenses. A strong monoidal functor $J\colon\cat{A}\to\cat{C}$ landing in commutative comonoids gives an $\cat{A}$-action on $\Lens{\cat{C}}^\Fun{T}$ by $a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}$ (the extra $J(a)$ in the outp slot is killed in the backward leg by its counit), and $\Theta^{\Fun{T},\alpha}$ intertwines this with the action $a\cdot x\coloneqq J(a)\otimes x$ on $\cat{C}$. Applying \cref{prop.para_square,lem.functor_square_action} gives a strong symmetric monoidal functor
 \[
-a\cdot\binom{m}{c}\coloneqq\binom{m}{J(a)\otimes c}.
+\para{\cat{A}}{\Lens{\cat{C}}^\Fun{T}}\to\para{\cat{A}}{\cat{C}},
 \]
-The extra $J(a)$ in the output slot is discarded in the backward leg using its counit, while the coKleisli comonad still only changes the input slot. The same $J$ acts on $\cat{C}$ by $a\cdot x\coloneqq J(a)\otimes x$.
+sending a parameterized coKleisli lens $(a,f\colon a\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism $J(a)\otimes\Theta^{\Fun{T},\alpha}\lensob c\to\Theta^{\Fun{T},\alpha}\lensob d$.
 
-With these actions, $\Theta^{\Fun{T},\alpha}$ is action-preserving up to the canonical associativity isomorphisms, giving a functor
+\section{Potentialized manifold lenses}\label{sec.potlens_manifolds}
+
+We specialize the abstract construction of \cref{sec.lenses_general} to $\cat C=\mfd$ (cartesian monoidal). The resulting category $\lmfd\coloneqq\Lens\mfd$ of \emph{manifold lenses} has pairs of manifolds $\lensob M$ as objects and pairs $f=(\outp f,\inpt f)$ of smooth maps as morphisms (\eqref{eqn.lens_def}).
+
+Any Lie monoid $(G,\cdot,e)$ gives a strong monad on $\mfd$:
 \[
-\para{\cat{A}}{\Lens{\cat{C}}^\Fun{T}}\To{\Theta^{\Fun{T},\alpha}}\para{\cat{A}}{\cat{C}}.
+\Fun T_G(X)\coloneqq X\times G,\qquad\eta_X(x)\coloneqq(x,e),\qquad\mu_X(x,g,g')\coloneqq(x,g\cdot g'),
 \]
-Thus a parameterized lens with parameter $a$ gives a map
-\[
-J(a)\otimes\Theta^{\Fun{T},\alpha}(L)\to\Theta^{\Fun{T},\alpha}(M),
-\]
-or, by closedness of $\cat{C}$, a map
-\[
-J(a)\to\ihom{\Theta^{\Fun{T},\alpha}(L),\Theta^{\Fun{T},\alpha}(M)}.
-\]
-
-\section{Specialization to manifolds}\label{sec.potlens_manifolds}
-
-\[
-P\times\outp{M}\to\outp{N}
-\qqand
-P\times\outp{M}\times\inpt{N}\to\inpt{M}\times\rr
-\]
-
-
-\subsection{Manifold lenses}\label{sec.manifold_lenses}
-
-Taking $\cat{M}\coloneqq\mfd$, the cartesian monoidal category of smooth manifolds and smooth maps, specializes the construction of \cref{sec.lenses_general} to the category $\lmfd\coloneqq\Lens{\mfd}$ of \emph{manifold lenses}. An object is a pair of manifolds $\lensob{M}$; a morphism is a pair $f=(\outp f,\inpt f)$ of smooth maps as in \eqref{eqn.lens_def}.
-
-\subsection{The potential monad from a Lie monoid}\label{sec.potential_monad}
-
-Any Lie monoid $(G,\cdot,e)$ (a monoid object in $\mfd$) gives rise to a strong monad $\Fun{T}_G$ on $\mfd$:
-\[
-\Fun{T}_G(X)\coloneqq X\times G,\qquad \eta_X(x)\coloneqq(x,e),\qquad \mu_X(x,g,g')\coloneqq(x,g\cdot g'),
-\]
-with strength $\sigma_{X,Y}\colon X\times(Y\times G)\To{\cong}(X\times Y)\times G$ given by reassociation. The strength axioms reduce to the monoid axioms for $G$.
-
-Applying the backward-monad construction of \cref{sec.lenses_general} yields a comonad $\Lens{\Fun{T}_G}$ on $\lmfd$. We denote the coKleisli category simply by $\lmfd^G$; a morphism in it is a lens $\lensob{L}\to\lensob{M}$ whose backward component takes the form
+with strength $X\times(Y\times G)\To{\cong}(X\times Y)\times G$ by reassociation. The backward-monad construction (\cref{subsec.backwards}) produces a comonad $\Lens{\Fun T_G}$ on $\lmfd$; we write $\lmfd^G$ for its coKleisli category. A morphism $\lensob L\coto\lensob M$ in $\lmfd^G$ has backward component
 \[
 \inpt f\colon\outp L\times\inpt M\to\inpt L\times G,
 \]
-i.e.\ a usual backward map augmented by a smooth $G$-valued map. coKleisli composition sums the $G$-components via the monoid multiplication on $G$.
+a usual backward map augmented by a smooth $G$-valued map; coKleisli composition multiplies $G$-components.
 
-The case of primary interest is $G\coloneqq(\rr,0,+)$, the additive Lie group, which we call the \emph{potential monad}. The $\rr$-component of the augmented backward map is a smooth map
+The case of primary interest is $G=(\rr,0,+)$, the \emph{potential monad}: the $\rr$-component
 \[
 U\colon\outp L\times\inpt M\to\rr
 \]
-called the \emph{potential}, and coKleisli composition adds potentials along the backward pass.
+is the \emph{potential}, and coKleisli composition adds potentials.
 
-\subsection{PN Lie Algebra-parameterized potentialized lenses}\label{sec.potlens}
-
-We lift the $\pvect$-action on $\mfd$ from \cref{prop.pnla_smc_action} to $\lmfd$ by acting on the $\outp M$-slot:
+We lift the $\pvect$-action on $\mfd$ (\cref{prop.pnla_smc_action}) to $\lmfd$ by acting on the $\outp M$-slot,
 \[
-(\cdot)\colon\pvect\times\lmfd\to\lmfd,\qquad V\cdot\lensob{M}\coloneqq\binom{\inpt M}{V\times\outp M}.
+(\cdot)\colon\pvect\times\lmfd\to\lmfd,\qquad V\cdot\lensob M\coloneqq\binom{\inpt M}{V\times\outp M},
 \]
-(One could equally well act on the $\inpt M$-slot; we choose the $\outp M$-slot because its product with $V$ automatically inherits a comonoid structure, as required by the definition of a lens.)
-Applying the $\Para$ construction of \cref{sec.para_general} to the coKleisli category of the potential monad from \cref{sec.potential_monad}, we define the category of \emph{potentialized lenses}
+and define the category of \emph{potentialized lenses}
 \[
 \potlens\coloneqq\para{\pvect}{\lmfd^\rr}.
 \]
-Unfolding, a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ is a tuple $f=(V,\outp f,\inpt f,U)$ with $V$ a paired vector space,
+A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ is a tuple $(V,\outp f,\inpt f,U)$ with $V$ a paired vector space,
 \begin{equation}\label{eqn.map_paralens}
 \outp f\colon V\times\outp L\to\outp M
 \qqand
 \inpt f\colon V\times\outp L\times\inpt M\to\inpt L,
 \end{equation}
-and a smooth \emph{potential}
-\[
-U\colon V\times\outp L\times\inpt M\to\rr.
-\]
+and a smooth potential $U\colon V\times\outp L\times\inpt M\to\rr$:
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={2}{1}] (fo) {$\outp f$};
@@ -1791,230 +1755,104 @@ V\times B\times D\times C\to C\times D
 \qqand
 V\times B\times D\times C\times A\to C\times A\times B.
 \]
-In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $U$ as in \cref{sec.potlens}, we can grade the information flow.
+In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $U$ as in \cref{sec.potlens_manifolds}, we can grade the information flow.
 
 
 \chapter{From lenses to dynamics}\label{ch.potlens_to_org}
 
-This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec.abstract_representation} to polynomial functors. The key infrastructure --- that $\Cat{Para}$ over the store action of $\Cat{Set}_{\cong}$ on $\poly$ presents $\org$ --- was set up in \cref{sec.org_as_para,sec.cotangent_learners}. The remaining inputs are the cotangent functor, the potential monad, and the PN Lie Algebra parameterization.
+This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec.abstract_representation} to polynomial functors. The key infrastructure --- that $\Cat{Para}$ over the store action of $\Cat{Set}_{\cong}$ on $\poly$ presents $\org$ --- was set up in \cref{sec.org_as_para,cor.cotangent_learners}. The remaining inputs are the cotangent functor, the potential monad, and the PN Lie Algebra parameterization.
 
 \section{Specialization to polynomial functors}\label{sec.specialize_source}
 
-We now take $\cat{C}=\poly$. The monoidal structure is the Dirichlet product and the closed structure is the internal hom recalled in \cref{sec.poly}. By \cref{prop.cot_monoidal,lem.cot_comonoid}, the cotangent functor induces a functor
+Take $\cat C=\poly$, with the strong monad
 \[
-\Fun{Lens}(\cot)\colon\lmfd\to\Lens{\poly}.
+\Fun T(p)\coloneqq p\otimes\cot\rr,
 \]
-
-For potentials, take the strong monad
-\[
-\Fun{T}(p)\coloneqq p\otimes\cot{\rr}
-\]
-on $\poly$. Under the identifications $\yon\otimes\cot{\rr}\cong\cot{\rr}$ and $\cot{\rr}\otimes\cot{\rr}\cong\cot{\rr\times\rr}$, the monad unit and multiplication are $\cot{0}\colon\yon\to\cot{\rr}$ and $\cot{+}\colon\cot{\rr}\otimes\cot{\rr}\to\cot{\rr}$, where $0\colon\rr^0\to\rr$ and $+\colon\rr\times\rr\to\rr$ are the unit and product of the additive group.
-
-The algebra $\alpha\colon\cot{\rr}\to\yon$ required by \cref{sec.strong_monad_backward} is a monoid homomorphism from $\cot{\rr}$ (a Hopf monoid by \cref{prop.cot_hopf}) to the trivial monoid on $\yon$. The next lemma shows that such $\alpha$ form a one-parameter family.
+whose unit and multiplication are $\cot 0\colon\yon\to\cot\rr$ and $\cot{+}\colon\cot\rr\otimes\cot\rr\to\cot\rr$ from \cref{prop.cot_hopf}. The algebra $\alpha\colon\cot\rr\to\yon$ required by \cref{prop.Theta_T_alpha} must be a monoid homomorphism from $\cot\rr$ (a Hopf monoid by \cref{prop.cot_hopf}) to the trivial monoid on $\yon$.
 
 \begin{lemma}\label{lem.alpha_constant}
-The $\Fun{T}$-algebra structures on $\yon$ that preserve the trivial monoid are in bijection with $\rr$: each such $\alpha\colon\cot{\rr}\to\yon$ has direction-action at each $x\in \rr$ given by a constant $c\in \rr$ independent of $x$, and every constant $c$ arises this way.
+The $\Fun T$-algebra structures on $\yon$ that preserve the trivial monoid are in bijection with $\rr$: each such $\alpha\colon\cot\rr\to\yon$ has direction-action at each $x\in\rr$ given by a constant $c\in\rr$ independent of $x$, and every constant $c$ arises this way.
 \end{lemma}
 
 \begin{proof}
-The position-action of $\alpha$ is the unique map $\rr\to 1$, so $\alpha$ is determined by its direction-action, a family $c_x\coloneqq\bk{\alpha}_x(*): T_x^*\rr\cong\rr$ indexed by $x\in \rr$. Evaluating the monoid-preservation law $\cot{+}\then\alpha=(\alpha\otimes\alpha)\then\lambda_\yon$ on the unique direction of $\yon$ at position $(x,y)\in \rr\times\rr$ gives
+The position-action of $\alpha$ is the unique map $\rr\to 1$, so $\alpha$ is determined by its direction-action, a family $c_x\coloneqq\bk\alpha_x(*)\colon T_x^*\rr\cong\rr$ indexed by $x\in\rr$. Evaluating the monoid-preservation law $\cot{+}\then\alpha=(\alpha\otimes\alpha)\then\lambda_\yon$ on the unique direction of $\yon$ at position $(x,y)\in\rr\times\rr$ gives
 \[
-(c_{x+y},\,c_{x+y}) = (c_x,\,c_y): T_x^*\rr\oplus T_y^*\rr,
+(c_{x+y},\,c_{x+y})=(c_x,\,c_y)\colon T_x^*\rr\oplus T_y^*\rr,
 \]
-using that $D(+)=(1,1)$ transposes to the diagonal. Setting $x=0$ yields $c_y=c_0$ for all $y$, so $c_y$ is a constant $c\coloneqq c_0\in \rr$.
-
-Conversely, for any constant $c\in \rr$, setting $\bk{\alpha}_x(*)\coloneqq c$ defines $\alpha\colon\cot{\rr}\to\yon$. Both sides of the monoid-preservation law send the unique direction at $(x,y)$ to $(c,c)$, and the same $(c,c)$-computation verifies the $\Fun{T}$-algebra multiplication law $\mu_I\then\alpha=\Fun{T}\alpha\then\alpha$. The unit laws $\eta_I\then\alpha=\id_\yon$ and $\tau_0\then\alpha=\id_\yon$ coincide (both reduce to $\cot{0}\then\alpha$) and hold because $T^*_*\rr^0$ is a one-element set, forcing the backward leg to be the identity on $1$.
+using that $D(+)=(1,1)$ transposes to the diagonal. Setting $x=0$ yields $c_y=c_0$ for all $y$, so $c_y$ is a constant $c\coloneqq c_0\in\rr$. Conversely, for any constant $c$, setting $\bk\alpha_x(*)\coloneqq c$ defines $\alpha$, and the algebra and monoid-hom laws all reduce to the trivial $(c,c)$-computation; the unit laws hold because $T^*_*\rr^0$ is a one-element set.
 \end{proof}
 
 We choose
 \[
-\dec\colon\cot{\rr}\to\yon,
-\qquad
-\bk{\dec}_x(*)\coloneqq -1: T_x^*\rr\cong\rr.
+\dec\colon\cot\rr\to\yon,\qquad\bk\dec_x(*)\coloneqq -1.
 \]
-The sign fixes the sign of the Hamilton-like equations below; $c=0$ would give the trivial algebra (no potential contribution), and $c=+1$ would give the opposite-sign physics. \Cref{rmk.general_z} allows also more exotic algebras valued in monoids $z\neq\yon$; we do not pursue them.
+The sign fixes the sign of Hamilton's equations below; $c=0$ gives the trivial algebra (no potential), $c=+1$ the opposite-sign physics. \Cref{rmk.general_z} allows algebras valued in monoids $z\neq\yon$; we do not pursue them.
 
-Hence
+The lensification of $\cot\colon\mfd\to\poly$ (\cref{prop.cot_monoidal,lem.cot_comonoid}) and $\Theta^{\Fun T,\dec}\colon\Lens\poly^{\Fun T}\to\poly$ (\cref{prop.Theta_T_alpha}) compose to
 \[
-\Phi_1\colon\lmfd^\rr\to\poly
+\Phi_1\colon\lmfd^\rr\to\poly,\qquad
+\Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
 \]
-is obtained by composing the cotangent lift $\lmfd^\rr\to\Lens{\poly}^\Fun{T}$ with $\Theta^{\Fun{T},\dec}$. On objects,
-\[
-\Phi_1\lensob{M}
-=
-\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
-\]
-
-Now take $\cat{A}=\pvect$ and
-\[
-J(V)\coloneqq\cot{V}.
-\]
-This is strong monoidal by \cref{prop.cot_monoidal,prop.pnla_smc_action}, and \cref{lem.cot_comonoid} supplies compatible comonoid structures on its values; the functorial and monoidal structure maps preserve them because they are obtained from the strong monoidal functor $\cot$.
-The abstract parameter construction gives an intermediate functor
+Specializing the parameterized-lens construction (\cref{sec.abstract_parameters}) to $\cat A=\pvect$ with $J=\cot$ (strong monoidal and comonoid-valued by \cref{prop.cot_monoidal,prop.pnla_smc_action,lem.cot_comonoid}) gives
 \[
 \potlens=\para{\pvect}{\lmfd^\rr}\to\para{\pvect}{\poly},
 \]
-where $\pvect$ acts on $\poly$ by
-\[
-V\cdot p\coloneqq\cot{V}\otimes p.
-\]
-Thus a morphism $f\colon\lensob{L}\to\lensob{M}$ in $\potlens$ with parameter PN Lie Algebra $(V,\sharp_V)$ gives a polynomial map
-\[
-\cot{V}\otimes\Phi_1\lensob{L}\to\Phi_1\lensob{M},
-\]
-or equivalently
+where $\pvect$ acts on $\poly$ by $V\cdot p\coloneqq\cot V\otimes p$. A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ with parameter $(V,\sharp_V)$ gives the map
 \begin{equation}\label{eqn.parameter_to_action}
-\cot{V}\to
-\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
+\cot V\otimes\Phi_1\lensob L\to\Phi_1\lensob M.
 \end{equation}
-
-Applying \cref{prop.pnla_polynomial} to the paired vector space $(V,\sharp_V)$ gives
-\[
-\cot{V}\cong V\yon^V.
-\]
-By \cref{prop.coalg_as_poly_map}, the map \eqref{eqn.parameter_to_action} is equivalently an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $V$. This is the $\org$-morphism obtained from the parameterized lens before adding the phase-space refinement.
 
 \section{The cotangent-state refinement}\label{sec.cotangent_state_refinement}
 
-For the dynamics considered in this paper, we use $T^*V$ rather than $V$ as the state space. This is an additional step, not part of the abstract construction above. It fits a general framework: choose a strong monoidal endofunctor $F\colon\pvect\to\pvect$ and a monoidal natural transformation $\rho\colon\cot\circ F\Rightarrow\cot$, and precompose.
+For the dynamics in this paper, we want $T^*V$ rather than $V$ as the state space in $\org$. This is achieved by changing the action of $\pvect$ on $\poly$ from $V\cdot p=\cot V\otimes p$ to $V\cdot p=\cot{T^*V}\otimes p$, mediated by a (non-iso) natural transformation $\rho_V\colon\cot{T^*V}\to\cot V$.
 
-\begin{proposition}[Parameter-refinement by a monoidal natural transformation]\label{prop.param_refinement}
-Let $F\colon\pvect\to\pvect$ be a strong monoidal endofunctor and let $\rho\colon\cot\circ F\Rightarrow\cot$ be a monoidal natural transformation (naturality required only for $\pvect$-isomorphisms, since $\pvect$ is a groupoid). Precomposition with $\rho$ defines an identity-on-objects functor
-\[
-\rho^*\colon\Para_{\pvect,\,\cot}(\poly)\;\longrightarrow\;\Para_{\pvect,\,\cot\circ F}(\poly),
-\qquad
-(V,\,f\colon\cot{V}\otimes p\to q)\;\mapsto\;\bigl(V,\,f\circ(\rho_V\otimes\id)\bigr).
-\]
-Composing with the coalgebra interpretation from \cref{prop.pnla_polynomial,prop.coalg_as_poly_map}, applied to $F(V)$, yields a functor $\Para_{\pvect,\,\cot}(\poly)\to\org$ with state set $F(V)$.
-\end{proposition}
-
-\begin{proof}
-$\rho^*$ is identity on objects, sending a morphism $(V,f\colon\cot{V}\otimes p\to q)$ to $(V,\,f\circ(\rho_V\otimes\id))\colon\cot{F(V)}\otimes p\to q$.
-
-\emph{Identity preservation.} The Para identity on $p$ has parameter $\rr^0$ (the unit of $\pvect$) and morphism the action unitor $\cot{\rr^0}\otimes p\cong p$. Strong monoidality of $F$ gives $F(\rr^0)\cong\rr^0$, and monoidality of $\rho$ identifies $\rho_{\rr^0}$ with the canonical $\cot{F(\rr^0)}\cong\cot{\rr^0}$. Hence $\rho^*(\id_p)$ equals the action unitor for $\cot\circ F$, i.e., the identity in $\Para_{\pvect,\cot\circ F}(\poly)$.
-
-\emph{Composition preservation.} For composable Para morphisms $(V,f)\colon p\to q$ and $(W,g)\colon q\to r$, the composite $(W\oplus V,h)$ has
-\[
-h\colon\cot{W\oplus V}\otimes p\To{\sigma\otimes\id}\cot{W}\otimes\cot{V}\otimes p\To{\id\otimes f}\cot{W}\otimes q\To{g}r,
-\]
-where $\sigma\colon\cot{W\oplus V}\To{\cong}\cot{W}\otimes\cot{V}$ is the strong-monoidal comparison from \cref{prop.cot_monoidal}. The Para composite of $\rho^*(V,f)$ and $\rho^*(W,g)$ in $\Para_{\pvect,\cot\circ F}(\poly)$ uses the analogous comparison $\sigma_F\colon\cot{F(W\oplus V)}\To{\cong}\cot{F(W)}\otimes\cot{F(V)}$ for the action $V\mapsto\cot{F(V)}$ and reads
-\[
-\cot{F(W\oplus V)}\otimes p\To{\sigma_F\otimes\id}\cot{F(W)}\otimes\cot{F(V)}\otimes p\To{(\rho_W\otimes\rho_V)\otimes\id}\cot{W}\otimes\cot{V}\otimes p\To{\id\otimes f}\cot{W}\otimes q\To{g}r.
-\]
-Monoidality of $\rho$ asserts that the square
-\[
-\begin{tikzcd}[ampersand replacement=\&]
-\cot{F(W\oplus V)}\ar[r,"\rho_{W\oplus V}"]\ar[d,"\sigma_F"']\&\cot{W\oplus V}\ar[d,"\sigma"]\\
-\cot{F(W)}\otimes\cot{F(V)}\ar[r,"\rho_W\otimes\rho_V"']\&\cot{W}\otimes\cot{V}
-\end{tikzcd}
-\]
-commutes; this identifies $\rho^*(W\oplus V,h) = (W\oplus V,h\circ(\rho_{W\oplus V}\otimes\id))$ with the Para composite of $\rho^*(V,f)$ and $\rho^*(W,g)$.
-
-\emph{Coalgebra interpretation.} For a morphism $(V,h\colon\cot{F(V)}\otimes p\to q)$ in $\Para_{\pvect,\cot\circ F}(\poly)$, applying \cref{prop.pnla_polynomial} to the paired vector space $F(V)\in\pvect$ gives $\cot{F(V)}\cong F(V)\yon^{F(V)}$, so $h$ is a polynomial map $F(V)\yon^{F(V)}\otimes p\to q$. By \cref{prop.coalg_as_poly_map} this presents $h$ as an $\ihom{p,q}$-coalgebra with state set $F(V)$, equivalently a 1-cell in $\org$. Functoriality is direct: composition of two such morphisms uses $\cot{F(W\oplus V)}\cong\cot{F(W)}\otimes\cot{F(V)}$ together with \cref{prop.pnla_polynomial}, which corresponds to coalgebra composition in $\org$.\qedhere
-\end{proof}
-
-The main text takes $F\coloneqq T^*$ with $\rho$ the \emph{pairing projection} below; \cref{rmk.tangent_state} records the analogous tangent-state alternative.
-
-For any paired vector space $(V,\sharp_V)$, \eqref{eqn.tangent_vec} gives
-\[
-T^*V\cong V\oplus V^*.
-\]
-We call a point $(u,\pi)$ a pair consisting of a \emph{position} $u\in V$ and a \emph{momentum} $\pi\in V^*$. The cotangent space there decomposes as
+For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(u,\pi)$ for a \emph{position} $u\in V$ and \emph{momentum} $\pi\in V^*$. The cotangent space decomposes as
 \[
 T^*_{(u,\pi)}(T^*V)\cong T^*_uV\oplus T^*_\pi(V^*)\cong V^*\oplus V,
 \]
-both identifications by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
+again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
 
-\begin{definition}[pairing projection]\label{def.pairing_proj}
-The \emph{pairing projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
+\begin{definition}[Pairing projection]\label{def.pairing_proj}
+The \emph{pairing projection} $\rho_V\colon\cot{T^*V}\to\cot V$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
 \[
 T^*_uV\cong V^*\To{\sigma\mapsto(\sigma,\,\sharp_V(\pi))}V^*\oplus V\cong T^*_{(u,\pi)}(T^*V).
 \]
 \end{definition}
 
-On positions, $\rho_V$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $V^*$-slot and injects the pairing-lifted momentum $\sharp_V(\pi)\in V$ into the $V$-slot, independently of $\sigma$. Thus $\rho_V$ is not of the form $\cot{h}$ for any smooth $h\colon T^*V\to V$: the $V$-component of its direction-action is constant in $\sigma$, whereas $\cot$ always produces a linear direction-action.
+On positions, $\rho_V$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $V^*$-slot and injects the pairing-lifted momentum $\sharp_V(\pi)\in V$ into the $V$-slot, independently of $\sigma$. So $\rho_V$ is not of the form $\cot h$ for any smooth $h\colon T^*V\to V$, and not invertible. It is monoidal and natural in $\pvect$-isomorphisms because $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}).
 
-Precomposing \eqref{eqn.parameter_to_action} with $\rho_V$ gives
-\[
-\cot{T^*V}
-\To{\rho_V}
-\cot{V}
-\to
-\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}.
-\]
-Since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}, \cref{prop.pnla_polynomial} gives
-\[
-\cot{T^*V}\cong (T^*V)\yon^{T^*V}.
-\]
-Thus \cref{prop.coalg_as_poly_map} presents the above map as an $\ihom{\Phi_1\lensob{L},\Phi_1\lensob{M}}$-coalgebra with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
+\Cref{lem.functor_square_action} applied with $L=\cot\circ\Fun{inc}$, $L'=\cot\circ\Fun{inc}\circ T^*$, $M=N=\id$, and $\theta_V=\rho_V$ produces an action square comparing the actions $V\cdot p=\cot V\otimes p$ and $V\cdot p=\cot{T^*V}\otimes p$ on $\poly$. \Cref{prop.para_square} gives a functor between the two Para constructions, and \cref{cor.cotangent_learners}'s coalgebra interpretation, applied at $T^*V$ (using \cref{prop.pnla_polynomial}: $\cot{T^*V}\cong (T^*V)\yon^{T^*V}$ since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}), packages the result as an $\org$-morphism with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
 
 \begin{remark}[Tangent-state alternative]\label{rmk.tangent_state}
-Taking $F\coloneqq T$ (\cref{prop.TT_endofunctors}) instead of $T^*$ fits \cref{prop.param_refinement} equally well. The analogous \emph{tangent projection} $\tilde\rho_V\colon\cot{TV}\to\cot{V}$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\flat_V(X))$ under the decomposition $T^*_{(u,X)}(TV)\cong V^*\oplus V^*$ (both factors via \eqref{eqn.tangent_vec}), using the flat map $\flat_V\colon V\to V^*$ to place $X$ in the second summand. This produces a functor $\potlens\to\org$ with state set $TV$, giving a Lagrangian-style (second-order) state update instead of Hamilton's equations. Beyond existence, we do not develop this alternative in the paper. The category-theoretic framework of \cref{prop.param_refinement} does not, by itself, single out $T^*$ over $T$; the preference for $T^*$ here is physics (cotangent bundles carry the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, and the resulting dynamics coincide with textbook Hamilton's equations).
+Taking $T$ instead of $T^*$ (\cref{prop.TT_endofunctors}) fits the same framework. The analogous \emph{tangent projection} $\tilde\rho_V\colon\cot{TV}\to\cot V$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\flat_V(X))$, using the flat map $\flat_V\colon V\to V^*$ to place $X$ in the second summand of $T^*_{(u,X)}(TV)\cong V^*\oplus V^*$. This produces a functor $\potlens\to\org$ with state set $TV$ (Lagrangian-style, second-order), which we don't develop here; the preference for $T^*$ is physics (cotangent bundles carry the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, recovering Hamilton's equations).
 \end{remark}
 
 \begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk.legendre_equivalence}
-By \cref{prop.legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so the parameter-refinements $\rho$ and $\tilde\rho$ correspond via $\cot{\sharp}$. Consequently, the two functors produced by \cref{prop.param_refinement},
-\[
-\Phi^{T^*},\;\Phi^{T}\colon\potlens\to\org,
-\]
-are naturally isomorphic: on each morphism $f\colon L\to M$, the 2-cell in $\org$ induced by $\sharp_V\colon T^*V\to TV$ identifies $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$ as 1-cells. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting: the two formulations disagree on literal state spaces ($T^*V$ vs $TV$), but the pairing mediates a canonical isomorphism between them. The paper works with $\Phi^{T^*}$ for the reasons given in \cref{rmk.tangent_state}.
+By \cref{prop.legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so $\rho$ and $\tilde\rho$ correspond via $\cot\sharp$. The two functors $\Phi^{T^*},\Phi^{T}\colon\potlens\to\org$ are naturally isomorphic: $\sharp_V\colon T^*V\to TV$ induces a 2-cell in $\org$ identifying $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting.
 \end{remark}
 
-\section{Functoriality}\label{sec.functoriality}
+\section{Functoriality and lax monoidality}\label{sec.functoriality}
 
 \begin{theorem}\label{thm.functor}
-The assignment $f\mapsto\Phi(f)$ extends to a functor $\Phi\colon\potlens\to\org$.
+$\Phi\colon\potlens\to\org$ is a lax symmetric monoidal functor.
 \end{theorem}
 
 \begin{proof}
-By construction in \cref{ch.potlens_to_org}, $\Phi$ is the composite
+$\Phi$ is the composite
 \[
-\potlens=\para{\pvect}{\lmfd^\rr}
-\To{\para{\pvect}{\Phi_1}}
-\para{\pvect}{\poly}
-\To{\rho^*}
-\para{\pvect}{\poly}
-\To{(*)}\org,
+\potlens=\para{\pvect}{\lmfd^\rr}\To{\para\pvect{\Phi_1}}\para{\pvect}{\poly}\To{\rho^*}\para{\pvect,\,\cot\circ T^*}{\poly}\To{(*)}\org,
 \]
-where $\Phi_1\colon\lmfd^\rr\to\poly$ is the composite of the cotangent lift $\widehat\cot\colon\lmfd^\rr\to\Lens\poly^{\Fun T}$ (induced from \cref{prop.cot_monoidal} by lensification, with the writer monad on $\rr$ transported via $\cot{0},\cot{+}$ from \cref{prop.cot_hopf}) with $\Theta^{\Fun T,\dec}\colon\Lens\poly^{\Fun T}\to\poly$ (\cref{prop.Theta_T_alpha}); $\rho^*$ is the parameter refinement of \cref{prop.param_refinement} for $F\coloneqq T^*$ and $\rho$ the pairing projection of \cref{def.pairing_proj}; and $(*)$ is the coalgebra interpretation $(V,f)\mapsto$ ($\ihom{p,q}$-coalgebra with state $T^*V$) from \cref{prop.pnla_polynomial} and \cref{prop.coalg_as_poly_map}, applied at $T^*V$.
+where $\Phi_1$ is from \cref{sec.specialize_source}, $\rho^*$ is the action-square refinement from \cref{sec.cotangent_state_refinement}, and $(*)$ is the coalgebra interpretation at state $T^*V$ (\cref{prop.coalg_as_poly_map,prop.pnla_polynomial}). Each is functorial; their composite is $\Phi$.
 
-Each step is a functor: $\Phi_1$ as a composite of functors; $\para{\pvect}{\Phi_1}$ as the standard Para lift of a functor that preserves the actions; $\rho^*$ by the first half of \cref{prop.param_refinement}; and $(*)$ by the second half. Their composite is $\Phi$.\qedhere
+For lax monoidality: $\Phi_1$ is lax (composing strong $\widehat\cot$ with lax $\Theta^{\Fun T,\dec}$ from \cref{prop.Theta_T_alpha}), $\para\pvect{\Phi_1}$ inherits laxness, $\rho^*$ is monoidal (\cref{prop.para_square}, since $\rho$ is monoidal), and $(*)$ is strong by \cref{prop.pnla_polynomial,prop.cot_monoidal}. Composing yields lax. The morphism laxator is the closedness pairing $\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{\inpt L\times\inpt{L'}},\yon}$ of \cref{prop.Theta}, which is not invertible (it misses covector fields on $\inpt L\times\inpt{L'}$ with genuine mixed dependence), so $\Phi$ is lax, not strong.\qedhere
 \end{proof}
 
-\section{Lax symmetric monoidality}\label{sec.lax_monoidal}
-
 \begin{proposition}\label{prop.potlens_monoidal}
-$\potlens$ inherits from $\lmfd$ and $\pvect$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor product
-\[
-\lensob L\otimes\lensob{L'}\coloneqq\lensobs{L}{L'}.
-\]
-On morphisms, $f\otimes f'$ has parameter $V\times V'$ (with pairing $\sharp_V\oplus\sharp_{V'}$), independent forward and backward components, and potential $U^\otimes=U\circ\pr+U'\circ\pr'$.
+$\potlens$ inherits from $\lmfd$ and $\pvect$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor $\lensob L\otimes\lensob{L'}\coloneqq\lensobs{L}{L'}$. On morphisms, $f\otimes f'$ has parameter $V\oplus V'$ (with pairing $\sharp_V\oplus\sharp_{V'}$), independent forward and backward components, and potential $U^\otimes=U\circ\pr+U'\circ\pr'$.
 \end{proposition}
 
 \begin{proof}
-$\potlens=\para{\pvect}{\lmfd^\rr}$. The Para construction over a symmetric monoidal action of an SMC on an SMC is itself symmetric monoidal: unit equals the unit of the underlying category (acted on by the unit of the action), tensor is parameterwise and slotwise on objects, and tensor of morphisms uses the strong-monoidal comparison of the action $(a\otimes b)\cdot(x\otimes z)\cong(a\cdot x)\otimes(b\cdot z)$ to interleave parameters; coherence is inherited componentwise from $\cat A$, $\cat D$, and the action.
-
-Here $\pvect$ is SMC by \cref{prop.pnla_monoidal}, and $\lmfd^\rr=\Lens\mfd^\rr$ inherits an SMC structure from $(\mfd,\times)$ via lensification together with the writer monad on $\rr$, whose monoid structure $0\colon\rr^0\to\rr$ and $+\colon\rr\times\rr\to\rr$ make $\rr$ a symmetric monoid object in $\mfd$. The $\pvect$-action on $\lmfd^\rr$ factors through the strong monoidal forgetful $\pvect\to\mfd$ (\cref{prop.pnla_smc_action}) and is symmetric monoidal. Reading off the inherited structure: the unit is $\binom{\rr^0}{\rr^0}$, and the tensor of $(V,\lensob L)$ with $(V',\lensob{L'})$ is $(V\oplus V',\lensobs{L}{L'})$, with independent forward $\outp f\times\outp{f'}$, independent backward $\inpt f\times\inpt{f'}$, and additive potential $U^\otimes=U\circ\pr+U'\circ\pr'$ from the writer's monoid structure.\qedhere
-\end{proof}
-
-\begin{theorem}\label{thm.lax_monoidal}
-$\Phi\colon\potlens\to\org$ is lax symmetric monoidal. The morphism laxator $\Phi(f)\otimes\Phi(f')\to\Phi(f\otimes f')$ has state component the canonical $T^*V\times T^*V'\cong T^*(V\times V')$, and its interface component is the tensor of \cref{prop.cot_monoidal}'s strong comparison on the $\cot{\outp{(-)}}$ factor with the pairing
-\[
-\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{(\inpt L\times\inpt{L'})},\yon}
-\]
-from \cref{prop.Theta} on the hom factor. The pairing is not invertible: it classifies external-sum covector fields on $\inpt L\times\inpt{L'}$, missing those with genuine $\inpt L$-$\inpt{L'}$ mixed dependence. Hence $\Phi$ is lax, not strong.
-\end{theorem}
-
-\begin{proof}
-We use the chain of functors from \cref{thm.functor}'s proof. Each piece is monoidal of the indicated strength:
-\begin{itemize}
-\item $\Phi_1\colon\lmfd^\rr\to\poly$ is lax symmetric monoidal: $\widehat\cot$ is strong (induced from \cref{prop.cot_monoidal} and the writer-monad transport via \cref{prop.cot_hopf}), and $\Theta^{\Fun T,\dec}$ is lax (\cref{prop.Theta_T_alpha}); composition of strong with lax is lax.
-\item $\para{\pvect}{\Phi_1}$ is lax symmetric monoidal: the Para lift of a (lax/strong) symmetric monoidal action-preserving functor is (lax/strong) of the same strength, since the laxator and unit comparison transport componentwise through the strong-monoidal action interchange isomorphism.
-\item $\rho^*$ is symmetric monoidal: the proof of \cref{prop.param_refinement} establishes that the Para tensor is preserved by $\rho^*$, with the necessary commutative square supplied by monoidality of $\rho$. Here the pairing projection $\rho$ is monoidal because $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}) and $T^*(V_1\oplus V_2)\cong T^*V_1\oplus T^*V_2$ (\cref{prop.TT_monoidal} again).
-\item The coalgebra interpretation $(*)$ is strong symmetric monoidal: \cref{prop.pnla_polynomial} gives $\cot{V}\cong V\yon^V$, and the strong-monoidal comparison $\cot{V\oplus W}\cong\cot{V}\otimes\cot{W}$ from \cref{prop.cot_monoidal} corresponds to the polynomial-tensor comparison $(V\yon^V)\otimes(W\yon^W)\cong(V\times W)\yon^{V\times W}$, which is the comparison used to define the SMC structure on $\org$ (\cref{prop.org}).
-\end{itemize}
-Composing strong $\circ$ monoidal $\circ$ lax $\circ$ strong yields a lax symmetric monoidal composite. Only $\Theta^{\Fun T,\dec}$ contributes nontrivial laxness; its forward laxator is the closedness pairing $\ihom{m,I}\otimes\ihom{n,I}\to\ihom{m\otimes n,I}$ of \cref{prop.Theta} (combined with the writer's $\tau_{I,I}$ and algebra $\dec$). Pulled through the strong identifications, this gives the morphism laxator stated in the theorem: state component $T^*V\otimes T^*V'\cong T^*(V\oplus V')$ from \cref{prop.TT_monoidal}; cotangent-bundle component $\cot{\outp L}\otimes\cot{\outp{L'}}\cong\cot{\outp L\times\outp{L'}}$ from \cref{prop.cot_monoidal}; hom-factor component $\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{\inpt L\times\inpt{L'}},\yon}$ from \cref{prop.Theta}. Coherence (associator, unitor, symmetry) is inherited from $(\mfd,\times)$ and $(\poly,\otimes)$ via the strong comparisons. The hom pairing is not invertible (\cref{prop.Theta} is lax, not strong), so $\Phi$ is lax, not strong.\qedhere
+Para over a symmetric monoidal action of an SMC on an SMC is itself symmetric monoidal. Here $\pvect$ is SMC (\cref{prop.pnla_monoidal}) and $\lmfd^\rr$ is SMC via lensification of $\mfd$ together with the writer monad on $\rr$; the $\pvect$-action on $\lmfd^\rr$ is symmetric monoidal via the forgetful $\pvect\to\mfd$ (\cref{prop.pnla_smc_action}). The morphism formula reads off from the Para tensor: parameter $V\oplus V'$, slotwise forward/backward, additive potential.\qedhere
 \end{proof}
 
 \begin{remark}[Lagrangian formulation]\label{rmk.lagrangian}
