@@ -1223,6 +1223,21 @@ strong (resp.\ lax) symmetric monoidal whenever $F,G$ are and $\theta$ is monoid
 The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\Cat{Para}$ on it.\qedhere
 \end{proof}
 
+\begin{corollary}[Parameter refinement]\label{cor.parameter_refinement}
+Let $K,K'\colon\cat A\to\cat C$ be strong symmetric monoidal functors and let $\rho\colon K'\to K$ be a monoidal natural transformation. Writing $\para{\cat A,K}{\cat C}$ for the Para construction using the action $a\cdot x\coloneqq K(a)\otimes x$, there is a strong symmetric monoidal functor
+\[
+\rho^*\colon\para{\cat A,K}{\cat C}\to\para{\cat A,K'}{\cat C}
+\]
+which sends $(a,f\colon K(a)\otimes x\to y)$ to
+\[
+K'(a)\otimes x\To{\rho_a\otimes\id}K(a)\otimes x\To{f}y.
+\]
+\end{corollary}
+
+\begin{proof}
+The maps $\rho_a\otimes\id_x$ form an action square from the $K$-action to the $K'$-action. Applying \cref{prop.para_square} gives the functor, and monoidality of $\rho$ gives its strong symmetric monoidal structure.
+\end{proof}
+
 A common source of action-squares is a weakly commuting square of strong monoidal functors, as in \cref{eqn.pnla_polynomial_square}.
 
 \begin{lemma}[Action squares from functor squares]\label{lem.functor_square_action}
@@ -1322,9 +1337,9 @@ Since $\Psi$ is a functor, composition in $\org$ reproduces backpropagation. Sin
 
 \chapter{Potentialized lenses}\label{ch.potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops the abstract construction in one pass: lenses, the backward-monad construction, the represented functor, evaluation at a $\Fun{T}$-algebra, and parameterization. \Cref{sec.potlens_manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors and their parameter refinements. \Cref{sec.potlens_manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
 
-\section{The abstract construction}\label{sec.lenses_general}\label{sec.abstract_representation}
+\section{The abstract construction}\label{sec.lenses_general}
 
 \subsection{Lenses}\label{subsec.lenses}
 We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a commutative comonoid structure $(\delta_{\outp c},\varepsilon_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
@@ -1405,26 +1420,50 @@ The identity on $\lensob{c}$ is $(\id_{\outp c},\id_{\inpt c}\otimes\varepsilon_
 
 
 
-\begin{proposition}\label{prop.Theta}
-For any symmetric monoidal closed category $(\cat{C},I,\otimes)$, there is a lax monoidal functor
-\[\Theta\colon\Lens{\cat{C}}\to\cat{C},\qquad
-\lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.\]
-\end{proposition}
-\begin{proof}
-Given a lens $f\colon\lensob c\to\lensob d$, define $\Theta(f)$ as the composite
+\subsection{Lenses represent serial, parallel, feedback, and splitting}\label{sec.plenspot_ops}
+
+Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{M}}$ of lenses in a symmetric monoidal category $\cat{M}$ with a supply of commutative comonoids does just that for ``traced symmetric monoidal semi-categories equipped with a supply of comonoids'', as we now explain.
+
+By a \emph{semi-category} we mean almost a category, except no identities (like a semigroup is a group without identities). So our goal is to show that $\Lens{C}$ interprets diagrams that look like this:
+\begin{equation}\label{eqn.arb_wd}
+\varphi\coloneqq
+\begin{tikzpicture}[oriented WD, bb min width=.6cm, bb port sep=1, bbx=.6cm, bby=1ex, bb port length=2.5pt, baseline=(X2)]
+  \node[bb port sep=2, bb={2}{2}] (X1) {};
+  \node[bb={1}{1}, right=.7 of X1_out1] (X2) {};
+  \node[bb={0}{0}, fit={(X1) (X2) ($(X1.north)+(0,2.5)$)}] (Y) {};
+  \node[coordinate] at (Y.west|-X1_in2) (Y_in1) {};
+  \node[coordinate] at (Y.east|-X2_out1) (Y_out1) {};
+  \node[coordinate] at (Y.east|-X1_out2) (Y_out2) {};
+  \draw[ar] (Y_in1) -- node[above, font=\scriptsize] {$A$} (X1_in2);
+  \draw[ar] (X1_out1) -- node[above, font=\scriptsize] {$B$} (X2_in1);
+  \draw[ar] (X2_out1) -- node[above, font=\scriptsize] {$C$} (Y_out1);
+  \draw[ar] (X1_out2) -- node[below, font=\scriptsize] {$D$} (Y_out2);
+  \draw[ar] let \p1=(X2.north east), \p2=(X1.north west), \n1={\y2+\bby}, \n2=\bbportlen in
+          (X2_out1) to[in=0,in looseness=.9] (\x1+.7*\n2,\n1) -- node[above, font=\scriptsize] {$C$} (\x2-.7*\n2,\n1) to[out=180] (X1_in1);
+  \end{tikzpicture}
+  \end{equation}
+
+Looking at the two inner boxes and the outer box, we see that this diagram should be represented in $\Lens{\cat{M}}$ by a map of the form
 \[
-\begin{tikzcd}[column sep=45pt, row sep=30pt]
-  \outp c\otimes[\inpt c,I]\ar[r, "{\delta_{\outp c}\otimes\id}"]\ar[d, dashed, "\Theta(f)"']&
-  \outp c\otimes\outp c\otimes[\inpt c,I]\ar[r, "{\outp f\otimes\coev}"]&
-  \outp d\otimes[\inpt d,\inpt d\otimes\outp c\otimes[\inpt c,I]]\ar[d, "{\id\otimes[\inpt d,\inpt f\otimes\id]}"]\\
-  \outp d\otimes[\inpt d,I]&&\outp d\otimes[\inpt d,\inpt c\otimes[\inpt c,I]]\ar[ll, "{\id\otimes[\inpt d,\ev]}"]
-\end{tikzcd}
+\varphi\colon\binom{C\times A}{B\times D}\otimes\binom{B}{C}\to\binom{A}{C\times D}
 \]
-One checks that this preserves identity and composition by the fact that $\outp{f}$ is a comonoid homomorphism and the closure triangle identity $[\inpt d,\ev]\circ\coev=\id_{[\inpt d,I]}$.
+Unfolding, we need two maps in $\cat{M}$:
+\[
+B\times D\times C\to C\times D
+\qqand
+B\times D\times C\times A\to C\times A\times B
+\]
+But these maps are obvious: they are just projections.
 
-To show it is (normal) lax, we have $I\otimes I\cong I$ and $[\inpt c,I]\otimes[\inpt d,I]\to[\inpt c\otimes\inpt d,I]$.\qedhere
-\end{proof}
+Lenses are much more general than wiring diagrams. Indeed, all of the maps required by wiring diagrams are projections and diagonals, whereas there are many more maps, e.g.\ of the form $B\times D\times C\to C\times D$, than the projection(s). Looking at \eqref{eqn.arb_wd}, one can imagine that the outputs of the boxes, $B,D,C$ can be combined in any way in order to get the output of the big box (similarly for the inputs of the little boxes), not just by the direct channel shown in the pictures.
 
+But adding parameterizations as in \cref{sec.para_general} makes things even more general: the parameter can affect how information is sent around:
+\[
+V\times B\times D\times C\to C\times D
+\qqand
+V\times B\times D\times C\times A\to C\times A\times B.
+\]
+In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $U$ as in \cref{sec.potlens_manifolds}, we can grade the information flow.
 
 
 \subsection{Backward monads on lenses}\label{subsec.backwards}
@@ -1497,14 +1536,26 @@ We denote the coKleisli category of $\Lens{\Fun{T}}$ by $\Lens{\cat{C}}^{\Fun{T}
 \inpt f\colon \inpt d\otimes\outp c\to\Fun{T}\inpt c.
 \]
 
+\section{The abstract representation}\label{sec.abstract_representation}
+
+The previous section gives the category of lenses, and discusses the comonad and coKleisli category associated to a monad on the base category. 
+
+\begin{proposition}\label{prop.Theta}
+For any symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, there is a normal lax monoidal functor
+\[\Theta\colon\Lens{\cat{C}}\to\cat{C},\qquad
+\lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.\]
+\end{proposition}
+
+This will be proved in \cref{prop.Theta_T_alpha}; indeed it corresponds to the case where $\Fun{T}=\id$ is the identity monad. We keep this basic case visible because it is more readable and interpretable. It says that we can interpret lens objects $\lensob{c}$as objects $\outp c\otimes\ihom{\inpt c,I}$ inside the base category.
+
 Recall that monoidal (equivalently, commutative) monads $(\Fun{T},\tau)$ have a natural strength
 \[
 \sigma_{X,Y}\colon X\otimes\Fun{T}Y\To{\eta_X\otimes\id}\Fun{T}X\otimes\Fun{T}Y\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
 \]
-and that monoidal monads $\Fun{T}$ preserve monoids. The following generalizes to any $\otimes$-monoid in place of $I$ (\cref{rmk.general_z}).
+and that monoidal monads $\Fun{T}$ preserve monoids.
 
 \begin{proposition}\label{prop.Theta_T_alpha}
-Suppose $(\Fun{T},\tau)$ is a monoidal monad and that the unit carries an algebra structure $\alpha\colon\Fun{T}I\to I$,
+Suppose $(\Fun{T},\tau)$ is a monoidal monad on a symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$. Suppose further that the unit carries an algebra structure $\alpha\colon\Fun{T}I\to I$,
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 I\ar[r,"\eta_I"]\ar[dr,equal]\& \Fun{T}I\ar[d,"\alpha"]\\
@@ -1532,7 +1583,6 @@ Then $\Theta$ from \cref{prop.Theta} extends to a lax monoidal functor
 \[
 \Theta^{\Fun{T},\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
 \lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.
-\qedhere
 \]
 \end{proposition}
 \begin{proof}
@@ -1551,7 +1601,15 @@ Given a coKleisli morphism $f\colon\lensob{c}\coto\lensob{d}$, define $\Theta^{\
 \& \outp d\otimes[\inpt d,\Fun{T}(\inpt c\otimes[\inpt c,I])]\ar[l,"{\id\otimes[\inpt d,\Fun{T}\ev]}"]
 \end{tikzcd}
 \]
-Everything else is the same as in \cref{prop.Theta}.
+For identities, the lens identity contributes the output counit, while the strength unit law, the algebra equation $\alpha\circ\eta_I=\id_I$, and the closure triangle identity reduce the display to the identity on $\outp c\otimes[\inpt c,I]$. For composition, expand the coKleisli composite. The two resulting composites agree by coassociativity and naturality of the output comonoids, the associativity and naturality axioms for the strength, functoriality of $\Fun T$, the closure triangle identity, and the algebra equation $\alpha\circ\mu_I=\alpha\circ\Fun T\alpha$.
+
+The normal lax structure is $I\otimes I\cong I$ together with the canonical map
+\[
+(\outp c\otimes[\inpt c,I])\otimes(\outp d\otimes[\inpt d,I])
+\to
+\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,I].
+\]
+Its compatibility with morphisms is exactly the monoidality of the monad and the assumption that $\alpha$ is a monoid homomorphism; normality uses $\alpha\circ\tau_0=\id_I$.
 \end{proof}
 
 
@@ -1564,13 +1622,30 @@ The construction above uses the monoidal unit $z\coloneqq I$ as the target of ev
 \]
 \end{remark}
 
-\subsection{Parameterized lenses}\label{sec.abstract_parameters}
-
-We apply the Para construction (\cref{sec.para_general}) to potentialized lenses. A strong monoidal functor $J\colon\cat{A}\to\cat{C}$ landing in commutative comonoids gives an $\cat{A}$-action on $\Lens{\cat{C}}^\Fun{T}$ by $a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}$ (the extra $J(a)$ in the outp slot is killed in the backward leg by its counit), and $\Theta^{\Fun{T},\alpha}$ intertwines this with the action $a\cdot x\coloneqq J(a)\otimes x$ on $\cat{C}$. Applying \cref{prop.para_square,lem.functor_square_action} gives a strong symmetric monoidal functor
+\begin{proposition}[Parameterized representation]\label{prop.parameterized_representation}
+Suppose $\cat A$ is symmetric monoidal, $\cat C$ is symmetric monoidal closed, $(\Fun T,\tau)$ is a monoidal monad on $\cat C$, and $\alpha\colon\Fun T I\to I$ is as in \cref{prop.Theta_T_alpha}. If $J\colon\cat A\to\cat C$ is strong monoidal and lands in commutative comonoids, then the $\cat A$-action
 \[
-\para{\cat{A}}{\Lens{\cat{C}}^\Fun{T}}\to\para{\cat{A}}{\cat{C}},
+a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}
 \]
-sending a parameterized coKleisli lens $(a,f\colon a\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism $J(a)\otimes\Theta^{\Fun{T},\alpha}\lensob c\to\Theta^{\Fun{T},\alpha}\lensob d$.
+on $\Lens{\cat C}^{\Fun T}$ and the action $a\cdot x\coloneqq J(a)\otimes x$ on $\cat C$ induce a lax symmetric monoidal functor
+\[
+\para{\cat A}{\Lens{\cat C}^{\Fun T}}\to\para{\cat A}{\cat C}.
+\]
+It sends a parameterized coKleisli lens $(a,f\colon a\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism
+\[
+J(a)\otimes\Theta^{\Fun T,\alpha}\lensob c\to\Theta^{\Fun T,\alpha}\lensob d.
+\]
+\end{proposition}
+
+\begin{proof}
+The assumption on $J$ gives the action on lenses: the tensor comonoid supplies the output comonoid of $a\cdot\lensob c$, and the extra $J(a)$ in the output slot is killed in the backward leg by its counit. The natural comparison
+\[
+J(a)\otimes\Theta^{\Fun T,\alpha}\lensob c
+\cong (J(a)\otimes\outp c)\otimes\ihom{\inpt c,I}
+=\Theta^{\Fun T,\alpha}(a\cdot\lensob c)
+\]
+is compatible with action unitors and associators by coherence for the strong monoidal structure of $J$. Thus $\Theta^{\Fun T,\alpha}$ and the identity on $\cat A$ form an action square, and \cref{prop.para_square} gives the displayed functor. Its lax monoidal structure is inherited from \cref{prop.Theta_T_alpha}.
+\end{proof}
 
 \section{Potentialized manifold lenses}\label{sec.potlens_manifolds}
 
@@ -1712,55 +1787,9 @@ The monoidal product is inherited from $\lmfd$. The following depicts compositio
 \]
 
 
-\section{Lenses represent serial, parallel, feedback, and splitting}\label{sec.plenspot_ops}
-
-Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{M}}$ of lenses in a symmetric monoidal category $\cat{M}$ with a supply of commutative comonoids does just that for ``traced symmetric monoidal semi-categories equipped with a supply of comonoids'', as we now explain.
-
-By a \emph{semi-category} we mean almost a category, except no identities (like a semigroup is a group without identities). So our goal is to show that $\Lens{C}$ interprets diagrams that look like this:
-\begin{equation}\label{eqn.arb_wd}
-\varphi\coloneqq
-\begin{tikzpicture}[oriented WD, bb min width=.6cm, bb port sep=1, bbx=.6cm, bby=1ex, bb port length=2.5pt, baseline=(X2)]
-  \node[bb port sep=2, bb={2}{2}] (X1) {};
-  \node[bb={1}{1}, right=.7 of X1_out1] (X2) {};
-  \node[bb={0}{0}, fit={(X1) (X2) ($(X1.north)+(0,2.5)$)}] (Y) {};
-  \node[coordinate] at (Y.west|-X1_in2) (Y_in1) {};
-  \node[coordinate] at (Y.east|-X2_out1) (Y_out1) {};
-  \node[coordinate] at (Y.east|-X1_out2) (Y_out2) {};
-  \draw[ar] (Y_in1) -- node[above, font=\scriptsize] {$A$} (X1_in2);
-  \draw[ar] (X1_out1) -- node[above, font=\scriptsize] {$B$} (X2_in1);
-  \draw[ar] (X2_out1) -- node[above, font=\scriptsize] {$C$} (Y_out1);
-  \draw[ar] (X1_out2) -- node[below, font=\scriptsize] {$D$} (Y_out2);
-  \draw[ar] let \p1=(X2.north east), \p2=(X1.north west), \n1={\y2+\bby}, \n2=\bbportlen in
-          (X2_out1) to[in=0,in looseness=.9] (\x1+.7*\n2,\n1) -- node[above, font=\scriptsize] {$C$} (\x2-.7*\n2,\n1) to[out=180] (X1_in1);
-  \end{tikzpicture}
-  \end{equation}
-
-Looking at the two inner boxes and the outer box, we see that this diagram should be represented in $\Lens{\cat{M}}$ by a map of the form
-\[
-\varphi\colon\binom{C\times A}{B\times D}\otimes\binom{B}{C}\to\binom{A}{C\times D}
-\]
-Unfolding, we need two maps in $\cat{M}$:
-\[
-B\times D\times C\to C\times D
-\qqand
-B\times D\times C\times A\to C\times A\times B
-\]
-But these maps are obvious: they are just projections.
-
-Lenses are much more general than wiring diagrams. Indeed, all of the maps required by wiring diagrams are projections and diagonals, whereas there are many more maps, e.g.\ of the form $B\times D\times C\to C\times D$, than the projection(s). Looking at \eqref{eqn.arb_wd}, one can imagine that the outputs of the boxes, $B,D,C$ can be combined in any way in order to get the output of the big box (similarly for the inputs of the little boxes), not just by the direct channel shown in the pictures.
-
-But adding parameterizations as in \cref{sec.para_general} makes things even more general: the parameter can affect how information is sent around:
-\[
-V\times B\times D\times C\to C\times D
-\qqand
-V\times B\times D\times C\times A\to C\times A\times B.
-\]
-In other words, the wiring itself can be smoothly varied. And finally by adding in a potential $U$ as in \cref{sec.potlens_manifolds}, we can grade the information flow.
-
-
 \chapter{From lenses to dynamics}\label{ch.potlens_to_org}
 
-This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract construction of \cref{sec.abstract_representation} to polynomial functors. The key infrastructure --- that $\Cat{Para}$ over the store action of $\Cat{Set}_{\cong}$ on $\poly$ presents $\org$ --- was set up in \cref{sec.org_as_para,cor.cotangent_learners}. The remaining inputs are the cotangent functor, the potential monad, and the PN Lie Algebra parameterization.
+This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract representation of \cref{sec.abstract_representation} to polynomial functors. The key infrastructure --- that $\Cat{Para}$ over the store action of $\Cat{Set}_{\cong}$ on $\poly$ presents $\org$ --- was set up in \cref{sec.org_as_para,cor.cotangent_learners}. The remaining inputs are the cotangent functor, the potential monad, and the PN Lie Algebra parameterization.
 
 \section{Specialization to polynomial functors}\label{sec.specialize_source}
 
@@ -1793,7 +1822,11 @@ The lensification of $\cot\colon\mfd\to\poly$ (\cref{prop.cot_monoidal,lem.cot_c
 \Phi_1\colon\lmfd^\rr\to\poly,\qquad
 \Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
 \]
-Specializing the parameterized-lens construction (\cref{sec.abstract_parameters}) to $\cat A=\pvect$ with $J=\cot$ (strong monoidal and comonoid-valued by \cref{prop.cot_monoidal,prop.pnla_smc_action,lem.cot_comonoid}) gives
+The $\pvect$-action on $\lmfd^\rr$ defined above and the action $V\cdot p\coloneqq\cot V\otimes p$ on $\poly$ fit into the parameterized representation of \cref{prop.parameterized_representation}: the comparison
+\[
+\cot V\otimes\Phi_1\lensob M\cong\Phi_1(V\cdot\lensob M)
+\]
+comes from the strong monoidality of $\cot$ on the output slot (\cref{prop.pnla_smc_action,prop.cot_monoidal}) and the comonoid structure of \cref{lem.cot_comonoid}. It gives
 \[
 \potlens=\para{\pvect}{\lmfd^\rr}\to\para{\pvect}{\poly},
 \]
@@ -1821,7 +1854,7 @@ T^*_uV\cong V^*\To{\sigma\mapsto(\sigma,\,\sharp_V(\pi))}V^*\oplus V\cong T^*_{(
 
 On positions, $\rho_V$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $V^*$-slot and injects the pairing-lifted momentum $\sharp_V(\pi)\in V$ into the $V$-slot, independently of $\sigma$. So $\rho_V$ is not of the form $\cot h$ for any smooth $h\colon T^*V\to V$, and not invertible. It is monoidal and natural in $\pvect$-isomorphisms because $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}).
 
-\Cref{lem.functor_square_action} applied with $L=\cot\circ\Fun{inc}$, $L'=\cot\circ\Fun{inc}\circ T^*$, $M=N=\id$, and $\theta_V=\rho_V$ produces an action square comparing the actions $V\cdot p=\cot V\otimes p$ and $V\cdot p=\cot{T^*V}\otimes p$ on $\poly$. \Cref{prop.para_square} gives a functor between the two Para constructions, and \cref{cor.cotangent_learners}'s coalgebra interpretation, applied at $T^*V$ (using \cref{prop.pnla_polynomial}: $\cot{T^*V}\cong (T^*V)\yon^{T^*V}$ since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}), packages the result as an $\org$-morphism with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
+\Cref{cor.parameter_refinement} applied to $K=\cot\circ\Fun{inc}$, $K'=\cot\circ\Fun{inc}\circ T^*$, and $\rho$ gives a functor comparing the actions $V\cdot p=\cot V\otimes p$ and $V\cdot p=\cot{T^*V}\otimes p$ on $\poly$. Then \cref{cor.cotangent_learners}'s coalgebra interpretation, applied at $T^*V$ (using \cref{prop.pnla_polynomial}: $\cot{T^*V}\cong (T^*V)\yon^{T^*V}$ since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}), packages the result as an $\org$-morphism with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
 
 \begin{remark}[Tangent-state alternative]\label{rmk.tangent_state}
 Taking $T$ instead of $T^*$ (\cref{prop.TT_endofunctors}) fits the same framework. The analogous \emph{tangent projection} $\tilde\rho_V\colon\cot{TV}\to\cot V$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\flat_V(X))$, using the flat map $\flat_V\colon V\to V^*$ to place $X$ in the second summand of $T^*_{(u,X)}(TV)\cong V^*\oplus V^*$. This produces a functor $\potlens\to\org$ with state set $TV$ (Lagrangian-style, second-order), which we don't develop here; the preference for $T^*$ is physics (cotangent bundles carry the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, recovering Hamilton's equations).
@@ -1842,9 +1875,9 @@ $\Phi$ is the composite
 \[
 \potlens=\para{\pvect}{\lmfd^\rr}\To{\para\pvect{\Phi_1}}\para{\pvect}{\poly}\To{\rho^*}\para{\pvect,\,\cot\circ T^*}{\poly}\To{(*)}\org,
 \]
-where $\Phi_1$ is from \cref{sec.specialize_source}, $\rho^*$ is the action-square refinement from \cref{sec.cotangent_state_refinement}, and $(*)$ is the coalgebra interpretation at state $T^*V$ (\cref{prop.coalg_as_poly_map,prop.pnla_polynomial}). Each is functorial; their composite is $\Phi$.
+where $\Phi_1$ is from \cref{sec.specialize_source}, $\rho^*$ is the parameter refinement of \cref{cor.parameter_refinement} applied in \cref{sec.cotangent_state_refinement}, and $(*)$ is the coalgebra interpretation at state $T^*V$ (\cref{prop.coalg_as_poly_map,prop.pnla_polynomial}). Each is functorial; their composite is $\Phi$.
 
-For lax monoidality: $\Phi_1$ is lax (composing strong $\widehat\cot$ with lax $\Theta^{\Fun T,\dec}$ from \cref{prop.Theta_T_alpha}), $\para\pvect{\Phi_1}$ inherits laxness, $\rho^*$ is monoidal (\cref{prop.para_square}, since $\rho$ is monoidal), and $(*)$ is strong by \cref{prop.pnla_polynomial,prop.cot_monoidal}. Composing yields lax. The morphism laxator is the closedness pairing $\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{\inpt L\times\inpt{L'}},\yon}$ of \cref{prop.Theta}, which is not invertible (it misses covector fields on $\inpt L\times\inpt{L'}$ with genuine mixed dependence), so $\Phi$ is lax, not strong.\qedhere
+For lax monoidality: $\Phi_1$ is lax (composing strong $\widehat\cot$ with lax $\Theta^{\Fun T,\dec}$ from \cref{prop.Theta_T_alpha}), $\para\pvect{\Phi_1}$ inherits laxness, $\rho^*$ is strong monoidal by \cref{cor.parameter_refinement}, and $(*)$ is strong by \cref{prop.pnla_polynomial,prop.cot_monoidal}. Composing yields lax. The morphism laxator is the closedness pairing $\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{\inpt L\times\inpt{L'}},\yon}$ of \cref{prop.Theta}, which is not invertible (it misses covector fields on $\inpt L\times\inpt{L'}$ with genuine mixed dependence), so $\Phi$ is lax, not strong.\qedhere
 \end{proof}
 
 \begin{proposition}\label{prop.potlens_monoidal}
