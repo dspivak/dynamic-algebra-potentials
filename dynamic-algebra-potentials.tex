@@ -24,6 +24,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 \usepackage[capitalize]{cleveref}
 
 \usepackage{tikz}
+\usepackage{pdflscape}
 
 \usepackage{amssymb}
 \usepackage{newpxtext}
@@ -506,7 +507,15 @@ We fix some typographic conventions. A generic category is written in calligraph
 
 In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$. 
 
-A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice, compatible with $\otimes$, of a cocommutative such structure on every object of $\cat{C}$. Any cartesian monoidal category canonically supplies its diagonals and terminal maps, and every morphism is then automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
+A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice, compatible with $\otimes$, of a cocommutative such structure on every object of $\cat{C}$. A supply is \emph{homomorphic} if every morphism of $\cat C$ is a comonoid homomorphism for the supplied structures.
+
+\begin{lemma}\label{lem.cartesian_homomorphic_supply}
+Any cartesian monoidal category canonically has a homomorphic supply of commutative comonoids, given by diagonals and terminal maps.
+\end{lemma}
+
+\begin{proof}
+This is the standard cartesian comonoid structure of \cite{fox1976coalgebras}.
+\end{proof}
 
 \section{Manifolds and paired vector spaces}\label{sec.lie_pnla_bg}
 
@@ -997,7 +1006,7 @@ The Lie group axioms are equations in $\mfd$; applying the strong monoidal funct
 Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ (\cref{prop.pnla_smc_action}) and $\Fun{smpl}(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
 
 \begin{proposition}\label{prop.pnla_polynomial}
-There is a weakly commuting square
+The following square, in which all maps are strong monoidal, commutes up to isomorphism:
 \begin{equation}\label{eqn.pnla_polynomial_square}
 \begin{tikzcd}[ampersand replacement=\&]
 \pvect\ar[r,"\Fun{inc}"]\ar[d,"|{-}|"']
@@ -1027,6 +1036,19 @@ By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a cate
 
 Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\alpha\in T^*_vV$ at $v$ corresponds to the unique morphism $v\to v+\sharp_V(\alpha)$ in the codiscrete category on $V$. The identity at $v$ corresponds to the zero covector $0\in T^*_vV$, since $v+\sharp_V(0)=v$. Composition of $\alpha$ at $v$ with $\alpha'$ at $v+\sharp_V(\alpha)$ corresponds to $\alpha+\alpha'$ at $v$, since both produce the morphism with codomain $v+\sharp_V(\alpha)+\sharp_V(\alpha')=v+\sharp_V(\alpha+\alpha')$. Thus the pairing $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(v,\alpha)\mapsto v+\sharp_V(\alpha)$ and composition by fiberwise addition of covectors.\qedhere
 \end{remark}
+
+For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(u,\pi)$ for a \emph{position} $u\in V$ and \emph{momentum} $\pi\in V^*$. The cotangent space decomposes as
+\[
+T^*_{(u,\pi)}(T^*V)\cong T^*_uV\oplus T^*_\pi(V^*)\cong V^*\oplus V,
+\]
+again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
+
+\begin{definition}[Pairing projection]\label{def.pairing_proj}
+The \emph{pairing projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
+\[
+T^*_uV\cong V^*\To{\sigma\mapsto(\sigma,\,\sharp_V(\pi))}V^*\oplus V\cong T^*_{(u,\pi)}(T^*V).
+\]
+\end{definition}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
 
@@ -1204,64 +1226,41 @@ in $\cat{D}$. The identity on $x$ has parameter $I$ and the action unitor $I\cdo
 
 The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $\alpha\colon a\to a'$ in $\cat A$ such that $f'\circ(\alpha\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
 
+\begin{proposition}[Para by strong monoidal functors]\label{prop.para_strong_induced}
+A strong monoidal functor $J\colon\cat{A}\to\cat{D}$ induces an action of $\cat{A}$ on $\cat{D}$ by left multiplication, and a monoidal natural transformation $\theta\colon J'F\Rightarrow GJ$ as on the left, with $F,J,J'$ strong monoidal and $G$ lax (resp.\ strong) monoidal, induces a lax (resp.\ strong) monoidal action square as on the right:
+\[
+\begin{tikzcd}[ampersand replacement=\&]
+\cat A\ar[r,"J"]\ar[d,"F"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
+\cat A'\ar[r,"J'"']\& \cat D'
+\arrow[Rightarrow, from=left, to=right, shorten <=3mm, shorten >=3mm, "\theta"]
+\end{tikzcd}
+\quad\leadsto\quad
+\begin{tikzcd}[ampersand replacement=\&]
+\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
+\cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
+\arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm]
+\end{tikzcd}
+\]
+\end{proposition}
+
 \begin{proposition}[Para functoriality from action squares {\cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}}]\label{prop.para_square}
 Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot G(x)\to G(a\cdot x)$ is a natural transformation compatible with the action unitors and associators:
 \begin{equation}\label{eqn.para_square}
 \begin{tikzcd}[ampersand replacement=\&]
-\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"']\ar[dr,phantom,"\theta"description]\& \cat D\ar[d,"G"]\\
+\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
 \cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
+\arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm, "\theta"]
 \end{tikzcd}
 \end{equation}
 Then there is an induced functor
 \[
-\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'},
+\para{F}{G}\colon\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'}.
 \]
-strong (resp.\ lax) symmetric monoidal whenever $F,G$ are and $\theta$ is monoidal.
+When $\cat D,\cat D'$ are symmetric monoidal, the actions are monoidal, $G$ is strong (resp.\ lax) symmetric monoidal, and $\theta$ is monoidal, then $\para{F}{G}$ extends to a strong (resp.\ lax) monoidal functor.
 \end{proposition}
 
 \begin{proof}
 The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\Cat{Para}$ on it.\qedhere
-\end{proof}
-
-\begin{corollary}[Parameter refinement]\label{cor.parameter_refinement}
-Let $K,K'\colon\cat A\to\cat C$ be strong symmetric monoidal functors and let $\rho\colon K'\to K$ be a monoidal natural transformation. Writing $\para{\cat A,K}{\cat C}$ for the Para construction using the action $a\cdot x\coloneqq K(a)\otimes x$, there is a strong symmetric monoidal functor
-\[
-\rho^*\colon\para{\cat A,K}{\cat C}\to\para{\cat A,K'}{\cat C}
-\]
-which sends $(a,f\colon K(a)\otimes x\to y)$ to
-\[
-K'(a)\otimes x\To{\rho_a\otimes\id}K(a)\otimes x\To{f}y.
-\]
-\end{corollary}
-
-\begin{proof}
-The maps $\rho_a\otimes\id_x$ form an action square from the $K$-action to the $K'$-action. Applying \cref{prop.para_square} gives the functor, and monoidality of $\rho$ gives its strong symmetric monoidal structure.
-\end{proof}
-
-A common source of action-squares is a weakly commuting square of strong monoidal functors, as in \cref{eqn.pnla_polynomial_square}.
-
-\begin{lemma}[Action squares from functor squares]\label{lem.functor_square_action}
-Given strong monoidal functors $L,M,N,L'$ between symmetric monoidal categories and a monoidal natural transformation $\theta$ as on the left, one obtains an action square as on the right
-\[
-\begin{tikzcd}[ampersand replacement=\&]
-\cat A\ar[r,"L"]\ar[d,"M"']\ar[dr,phantom,"\theta"description]\& \cat B\ar[d,"N"]\\
-\cat A'\ar[r,"L'"']\& \cat B'
-\end{tikzcd}
-\quad\leadsto\quad
-\begin{tikzcd}[ampersand replacement=\&]
-\cat A\times\cat B\ar[r,"(\cdot)"]\ar[d,"M\times N"']\& \cat B\ar[d,"N"]\\
-\cat A'\times\cat B'\ar[r,"(\cdot')"']\& \cat B'
-\end{tikzcd}
-\]
-by $a\cdot b\coloneqq L(a)\otimes_{\cat B} b$ and similar for $(\cdot')$.
-\end{lemma}
-
-\begin{proof}
-The natural transformation is given by
-\[
-L'(M(a))\otimes N(b)\To{\theta_a\otimes\id}N(L(a))\otimes N(b)\To{\cong}N(L(a)\otimes b).
-\]
-The first factor is the input $\theta$ tensored with identity; the second is the strong monoidal comparison of $N$ (an iso). Compatibility with action unitors and associators reduces to that of $\theta$ and the strong-monoidal data of $L,L',M,N$.\qedhere
 \end{proof}
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
@@ -1293,20 +1292,22 @@ There is a strong symmetric monoidal functor
 \begin{equation}\label{eqn.cotangent_learners}
 \Psi\colon\para{\pvect}{\mfd}\to\org.
 \end{equation}
-On objects, $M\mapsto\cot M$. On a morphism $(V,f\colon V\times M\to N)$, $\Psi(V,f)$ is the $\ihom{\cot M,\cot N}$-coalgebra with state set $V$ whose action at $v\in V$ is $\cot f_v\colon\cot M\to\cot N$ (with $f_v(m)\coloneqq f(v,m)$) and whose update on a direction $(m,\nu)$ with $\nu\in T^*_{f(v,m)}N$ is
+It sends $M\mapsto\cot{M}$ and a morphism $(V, \sharp,f\colon V\times M\to N)$ to a coalgebra
+\[
+V\To{\Psi(V,f)}[\cot{M},\cot{N}]\tri V
+\]
+which at $v\in V$ sends a point $m\in M$ to  $n\coloneqq f(v,m)\in N$ and for a covector $\beta\in T^*_nN$ if we let $(\xi,\alpha)\coloneqq(Df)_{(v,m)}^\top(\beta)\in T_v^*V\times T_m^*M$, returns $\alpha\in T^*_mM$ and updates to
 \begin{equation}\label{eqn.cotangent_learner_update}
-\upd_v(m,\nu)=v+\sharp_V\bigl((\partial_Vf)_{(v,m)}^\top\nu\bigr).
+\upd_v(m,\beta)\coloneqq v+\sharp_V(\xi).
 \end{equation}
 \end{corollary}
 
 \begin{proof}
-\Cref{prop.para_square,lem.functor_square_action} applied to \cref{prop.pnla_polynomial} give a strong symmetric monoidal functor $\para{\pvect}{\mfd}\to\para{\smset_\cong}{\poly}$ sending $M\mapsto\cot M$ and $f\colon V\times M\to N$ to the morphism with parameter $|V|$ and map
+By \cref{prop.pnla_polynomial,prop.para_square,prop.para_strong_induced,prop.org_as_para} we obtain a functor $\para{\pvect}{\mfd}\to\org$. On a map $f\colon V\times M\to N$, one obtains a polynomial map
 \[
-V\yon^V\otimes\cot M\;\To{\theta_V\otimes\id}\;\cot V\otimes\cot M\;\To{\cong}\;\cot(V\times M)\;\To{\cot f}\;\cot N,
+V\yon^V\otimes\cot{M}\;\To{\theta_V\otimes\id}\;\cot{V}\otimes\cot{M}\;\To{\cong}\;\cot{V\times M}\;\To{\cot{f}}\;\cot{N},
 \]
-where the second arrow is the strong monoidal comparison of $\cot$ (\cref{prop.cot_monoidal}). Composing with the equivalence $\para{\smset_\cong}{\poly}\cong\org_\cong$ of \cref{prop.org_as_para} gives $\Psi$.
-
-The update formula unwinds $\cot f$'s backward part: $(Df)_{(v,m)}^\top\nu=((\partial_Vf)_{(v,m)}^\top\nu,\,(\partial_Mf)_{(v,m)}^\top\nu)\in T_v^*V\oplus T_m^*M$; the $V$-component $\alpha\coloneqq(\partial_Vf)_{(v,m)}^\top\nu$ is identified with the new state $v+\sharp_V(\alpha)$ via $\cot V\cong V\yon^V$ (\cref{prop.pnla_polynomial}).
+and the rest of the statement is proved simply by tracing through the above propositions. In particular, \eqref{eqn.cotangent_learner_update} comes from \eqref{eqn.directions_sharp}.
 \end{proof}
 
 \subsection{Example: deep learning as a dynamic monoidal category}\label{sec.deep_learning}
@@ -1337,7 +1338,7 @@ Since $\Psi$ is a functor, composition in $\org$ reproduces backpropagation. Sin
 
 \chapter{Potentialized lenses}\label{ch.potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors and their parameter refinements. \Cref{sec.potlens_manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potlens_manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
 
 \section{The abstract construction}\label{sec.lenses_general}
 
@@ -1471,14 +1472,14 @@ In other words, the wiring itself can be smoothly varied. And finally by adding 
 We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
 
 Recall that a monad $\Fun{T}$ on a monoidal category is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. If moreover $X$ carries a counit $\varepsilon_X\colon X\to I$, then naturality of $\sigma$ in its first argument together with the unit-coherence axiom of strength gives a \emph{counital projection} $\sigma_{X,Y}\then\Fun{T}(\varepsilon_X\otimes\id_Y)=\varepsilon_X\otimes\id_{\Fun{T}Y}$:
-\[
+\begin{equation}\label{eqn.counital_projection}
 \begin{tikzcd}
 X\otimes\Fun{T}Y\ar[r, "\sigma"]\ar[d, "\varepsilon_X\otimes\id"']&
 \Fun{T}(X\otimes Y)\ar[d, "\Fun{T}(\varepsilon_X\otimes\id)"]\\
 \Fun{T}Y\ar[r, equal]&
 \Fun{T}Y
 \end{tikzcd}
-\]
+\end{equation}
 When $\cat{C}$ is cartesian, this specializes to the familiar projection formula $\sigma\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$.
 
 
@@ -1529,24 +1530,89 @@ We include only the least trivial here: preservation of composition. Writing $f_
 The first two squares are naturality of $\sigma$ in its first argument; the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, which merges the nested $\sigma$'s; the last square is naturality of $\sigma$ in its second argument.
 \end{proof}
 
-We denote the coKleisli category of $\Lens{\Fun{T}}$ by $\Lens{\cat{C}}^{\Fun{T}}$. A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}{\outp c}\to\lensob{d}$ in $\Lens{\cat{C}}$, i.e.
+\begin{definition}\label{def.lens_cokleisli}
+For any strong monad $\Fun T$ on a symmetric monoidal category $\cat{C}$, we denote the coKleisli category of $\Lens{\Fun{T}}$ by $\Lens{\cat{C}}^{\Fun{T}}\coloneqq\left(\Lens{\cat{C}}\right)_{\Lens{\Fun T}}$. 
+\end{definition}
+
+A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}{\outp c}\to\lensob{d}$ in $\Lens{\cat{C}}$, i.e.
 \[
 \outp f\colon \outp c\to\outp d
 \qqand
 \inpt f\colon \inpt d\otimes\outp c\to\Fun{T}\inpt c.
 \]
 
-\section{The abstract representation}\label{sec.abstract_representation}
+\begin{lemma}\label{lem.parameter_lens_action}
+Let $\cat M$ be symmetric monoidal, let $\cat C$ be symmetric monoidal with a homomorphic supply of commutative comonoids, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat M\to\cat C$ be strong monoidal. Then we have an action of $\cat M$ on $\Lens{\cat C}^{\Fun T}$ given by
+\[
+m\cdot\lensob c\coloneqq\binom{\inpt c}{J(m)\otimes\outp c}
+\]
+\end{lemma}
 
-The previous section gives the category of lenses, and discusses the comonad and coKleisli category associated to a monad on the base category. 
+\begin{proof}
+Use the supplied commutative comonoid on $J(m)\in\cat C$; by homomorphicity, $J(u)$ is a comonoid homomorphism for any $u\colon m\to n$ in $\cat M$. Given $f\colon\lensob c\coto\lensob d$ in $\Lens{\cat C}^{\Fun T}$ and $u$ as above, set
+\[
+u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(m)}}{J(u)\otimes\outp f}\colon
+\binom{\inpt c}{J(m)\otimes\outp c}
+\coto
+\binom{\inpt d}{J(n)\otimes\outp d}.
+\]
+Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the homomorphic supply assumption: $J(m)\To{J(u)}J(n)\To{\epsilon_{J(n)}} I$ equals $\epsilon_{J(m)}$.
+\end{proof}
+
+\section{Internal representation of lenses}\label{sec.abstract_representation}
+
+The previous section gives the category of lenses, and discusses the comonad and coKleisli category associated to a monad on the base category. The following proposition says that we can interpret the category of lenses inside the base category.
 
 \begin{proposition}\label{prop.Theta}
 For any symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, there is a normal lax monoidal functor
 \[\Theta\colon\Lens{\cat{C}}\to\cat{C},\qquad
 \lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.\]
 \end{proposition}
+\begin{proof}
+We need to prove the equality $\Theta(g\circ f)=\Theta(g)\circ\Theta(f)\colon\outp c\,H_c\to\outp e\,H_e$ for $f\colon\lensob c\coto\lensob d$ and $g\colon\lensob d\coto\lensob e$. It amounts to the commutativity of the outer square below, where we write $H_x\coloneqq[\inpt x,I]$, and for space reasons write $c,d,e$ for $\inpt c,\inpt d,\inpt e$ and elide the $\otimes$-symbol, so e.g.\ $\outp d\outp d[d,c H_c]$ means $\outp d\otimes\outp d\otimes[\inpt d,\inpt c\otimes [c,I]]$. 
+\[
+\begin{tikzcd}[column sep=1em, row sep=1.4em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
+\outp c H_c
+  \ar[r, "{\boldsymbol\delta}"]
+  \ar[d, "{\boldsymbol\delta}"']
+\& \outp c\outp c H_c \ar[r, "{\boldsymbol{\outp f}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d\outp c H_c \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,d\outp c H_c] \ar[r, "{\boldsymbol{f}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,c H_c] \ar[r, "{\boldsymbol{\ev}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d H_d \ar[d, "{\boldsymbol\delta}"] \\
+\outp c\outp c H_c \ar[d, "{\boldsymbol{\outp f}}"'] \ar[r, "{\boldsymbol\delta}"]
+\& \outp c\outp c\outp c H_c \ar[r, "{\boldsymbol{\outp f\outp f}}"] \ar[d, "{\boldsymbol{\outp f}}"']
+\& \outp d\outp d\outp c H_c \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,d\outp c H_c] \ar[r, "{\boldsymbol{f}}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,c H_c] \ar[r, "{\boldsymbol{\ev}}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d H_d \ar[d, "{\boldsymbol{\outp g}}"] \\
+\outp d\outp c H_c \ar[d, "{\boldsymbol{\outp g}}"'] \ar[r, "{\boldsymbol\delta}"]
+\& \outp d\outp c\outp c H_c \ar[r, "{\boldsymbol{\outp g\outp f}}"]
+\& \outp e\outp d\outp c H_c \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,d\outp c H_c] \ar[r, "{\boldsymbol{f}}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,c H_c] \ar[r, "{\boldsymbol{\ev}}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d H_d \ar[d, "{\boldsymbol{\coev_e}}"] \\
+\outp e\outp c H_c \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp d[e,e\outp cH_c]\ar[from=ul, "{\boldsymbol{\coev_e}}"]\ar[dl, "\boldsymbol{\outp g}"]\ar[d,"\boldsymbol{\delta}"]
+\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol{g}}"'] \ar[dd, equal, bend right=60pt]
+\& \outp e[e,e\outp d[d,d\outp c H_c]] \ar[r, "{\boldsymbol{f}}"] \ar[d, "{\boldsymbol{g}}"']
+\& \outp e[e,e\outp d[d,c H_c]] \ar[r, "{\boldsymbol{\ev}}"] \ar[d, "{\boldsymbol{g}}"']
+\& \outp e[e,e\outp d H_d] \ar[d, "{\boldsymbol{g}}"] \\
+\outp e[e,e\outp c H_c] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[e,e\outp c\outp cH_c]\ar[ld, "{\boldsymbol{\outp g}}"]\ar[ur, "\boldsymbol{\outp g\outp f}"', pos=.3]\ar[from=uu, , bend left=60pt, "{\boldsymbol{\coev_e}}", pos=.3]
+\& \outp e[e,d\outp c H_c] \ar[r, "{\boldsymbol{\coev_d}}"] \ar[dr, equal]
+\& \outp e[e,d[d,d\outp c H_c]] \ar[r, "{\boldsymbol{f}}"] \ar[d, "{\boldsymbol{\ev}}"']
+\& \outp e[e,d[d,c H_c]] \ar[r, "{\boldsymbol{\ev}}"] \ar[d, "{\boldsymbol{\ev}}"']
+\& \outp e[e,d H_d] \ar[d, "{\boldsymbol{\ev}}"] \\
+\outp e[e,e\outp c\outp c H_c] \ar[rr, "{\boldsymbol{\outp f}}"]
+\&\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\boldsymbol{g}}"]
+\& \outp e[e,d\outp c H_c] \ar[r, "{\boldsymbol{f}}"]
+\& \outp e[e,c H_c] \ar[r, "{\boldsymbol{\ev}}"]
+\& \outp e H_e
+\end{tikzcd}
+\]
+\end{proof}
 
-This will be proved in \cref{prop.Theta_T_alpha}; indeed it corresponds to the case where $\Fun{T}=\id$ is the identity monad. We keep this basic case visible because it is more readable and interpretable. It says that we can interpret lens objects $\lensob{c}$as objects $\outp c\otimes\ihom{\inpt c,I}$ inside the base category.
 
 Recall that monoidal (equivalently, commutative) monads $(\Fun{T},\tau)$ have a natural strength
 \[
@@ -1554,102 +1620,465 @@ Recall that monoidal (equivalently, commutative) monads $(\Fun{T},\tau)$ have a 
 \]
 and that monoidal monads $\Fun{T}$ preserve monoids.
 
-\begin{proposition}\label{prop.Theta_T_alpha}
-Suppose $(\Fun{T},\tau)$ is a monoidal monad on a symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$. Suppose further that the unit carries an algebra structure $\alpha\colon\Fun{T}I\to I$,
+\begin{definition}\label{def.T_monoid}
+Let $(\Fun{T},\eta,\mu,\tau)$ be a monoidal monad on a symmetric monoidal category $\cat{C}$. A \emph{$\Fun{T}$-monoid in $\cat{C}$} is a $\otimes$-monoid $(z,e_z,m_z)$ in $\cat{C}$
 \[
 \begin{tikzcd}[ampersand replacement=\&]
-I\ar[r,"\eta_I"]\ar[dr,equal]\& \Fun{T}I\ar[d,"\alpha"]\\
-\& I
+z\ar[r,"\eta_z"]\ar[dr,equal]\& \Fun{T}z\ar[d,"\alpha"]\\
+\& z
 \end{tikzcd}
-\qquad
+\hspace{1in}
 \begin{tikzcd}[ampersand replacement=\&]
-\Fun{T}\Fun{T}I\ar[r,"\mu_I"]\ar[d,"\Fun{T}\alpha"']\& \Fun{T}I\ar[d,"\alpha"]\\
-\Fun{T}I\ar[r,"\alpha"']\& I
+\Fun{T}\Fun{T}z\ar[r,"\mu_z"]\ar[d,"\Fun{T}\alpha"']\& \Fun{T}z\ar[d,"\alpha"]\\
+\Fun{T}z\ar[r,"\alpha"']\& z
 \end{tikzcd}
 \]
-such that $\alpha$ is also a monoid homomorphism:
+together with a $\Fun{T}$-algebra structure $\alpha\colon\Fun{T}z\to z$ such that $\alpha$ is a monoid homomorphism
 \[
 \begin{tikzcd}[ampersand replacement=\&]
-I\ar[r,"\tau_0"]\ar[dr, equal]\& \Fun{T}I\ar[d,"\alpha"]\\
-\& I
+I\ar[r,"\tau_0"]\ar[d,"e_z"']\& \Fun{T}I\ar[r,"\Fun{T}e_z"]\& \Fun{T}z\ar[d,"\alpha"]\\
+z\ar[r,"\eta_z"']\& \Fun{T}z\ar[r,"\alpha"']\& z
 \end{tikzcd}
-\qquad
+\hspace{1in}
 \begin{tikzcd}[ampersand replacement=\&]
-\Fun{T}I\otimes\Fun{T}I\ar[r,"\tau_{I,I}"]\ar[d,"\alpha\otimes\alpha"']\& \Fun{T}(I\otimes I)\ar[r, equal]\& \Fun{T}I\ar[d,"\alpha"]\\
-I\otimes I\ar[rr, equal]\&\& I
+\Fun{T}z\otimes\Fun{T}z\ar[r,"\tau_{z,z}"]\ar[d,"\alpha\otimes\alpha"']\& \Fun{T}(z\otimes z)\ar[r,"\Fun{T}m_z"]\& \Fun{T}z\ar[d,"\alpha"]\\
+z\otimes z\ar[rr,"m_z"']\&\& z
 \end{tikzcd}
 \]
-Then $\Theta$ from \cref{prop.Theta} extends to a lax monoidal functor
-\[
-\Theta^{\Fun{T},\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
-\lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.
-\]
-\end{proposition}
-\begin{proof}
-Given a coKleisli morphism $f\colon\lensob{c}\coto\lensob{d}$, define $\Theta^{\Fun{T},\alpha}(f)$ as the composite
-\[
-\begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
-\outp c\otimes[\inpt c,I]\ar[r,"{\delta_{\outp c}\otimes\id}"]\ar[dd, dashed, "\Theta^{\Fun{T},\alpha}(f)"']
-\& \outp c\otimes\outp c\otimes[\inpt c,I]\ar[r,"\outp f\otimes\coev"]
-\& \outp d\otimes[\inpt d,\inpt d\otimes\outp c\otimes[\inpt c,I]]\ar[d,"{\id\otimes[\inpt d,\inpt f\otimes\id]}"]
-\\
-\&
-\& \outp d\otimes[\inpt d,\Fun{T}\inpt c\otimes[\inpt c,I]]\ar[d,"{\id\otimes[\inpt d,\sigma]}"]
-\\
-\outp d\otimes[\inpt d,I]
-\& \outp d\otimes[\inpt d,\Fun{T}I]\ar[l,"{\id\otimes[\inpt d,\alpha]}"]
-\& \outp d\otimes[\inpt d,\Fun{T}(\inpt c\otimes[\inpt c,I])]\ar[l,"{\id\otimes[\inpt d,\Fun{T}\ev]}"]
-\end{tikzcd}
-\]
-For identities, the lens identity contributes the output counit, while the strength unit law, the algebra equation $\alpha\circ\eta_I=\id_I$, and the closure triangle identity reduce the display to the identity on $\outp c\otimes[\inpt c,I]$. For composition, expand the coKleisli composite. The two resulting composites agree by coassociativity and naturality of the output comonoids, the associativity and naturality axioms for the strength, functoriality of $\Fun T$, the closure triangle identity, and the algebra equation $\alpha\circ\mu_I=\alpha\circ\Fun T\alpha$.
+We call $z$ the \emph{value object}.
+\end{definition}
 
-The normal lax structure is $I\otimes I\cong I$ together with the canonical map
-\[
-(\outp c\otimes[\inpt c,I])\otimes(\outp d\otimes[\inpt d,I])
-\to
-\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,I].
-\]
-Its compatibility with morphisms is exactly the monoidality of the monad and the assumption that $\alpha$ is a monoid homomorphism; normality uses $\alpha\circ\tau_0=\id_I$.
-\end{proof}
-
-
-\begin{remark}\label{rmk.general_z}
-The construction above uses the monoidal unit $z\coloneqq I$ as the target of evaluation. More generally, for any $\otimes$-monoid $(z,e_z,m_z)$ equipped with a $\Fun{T}$-algebra $\alpha\colon\Fun{T}z\to z$ which is also a monoid homomorphism, the above generalizes to a lax monoidal functor  
-\[
-\Theta^{\Fun{T},z,\alpha}\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
-\lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,z}.
-\qedhere
-\]
+\begin{remark}\label{rmk.T_monoid_EM}
+A $\Fun{T}$-monoid in $\cat{C}$ is the same data as a monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the underlying-functor of $\Fun{T}$ lifts to a monad on $\Cat{Mon}(\cat{C})$; see \cite{kock1972strong}.
 \end{remark}
 
-\begin{proposition}[Parameterized representation]\label{prop.parameterized_representation}
-Suppose $\cat A$ is symmetric monoidal, $\cat C$ is symmetric monoidal closed, $(\Fun T,\tau)$ is a monoidal monad on $\cat C$, and $\alpha\colon\Fun T I\to I$ is as in \cref{prop.Theta_T_alpha}. If $J\colon\cat A\to\cat C$ is strong monoidal and lands in commutative comonoids, then the $\cat A$-action
+\begin{proposition}\label{prop.Theta_T_alpha}
+Let $(\Fun{T},\tau)$ be a monoidal monad on a symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, and let $(z,e_z,m_z,\alpha)$ be a $\Fun{T}$-monoid in $\cat{C}$ (\cref{def.T_monoid}). Then there is a lax monoidal functor that acts on objects as follows:
 \[
-a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}
-\]
-on $\Lens{\cat C}^{\Fun T}$ and the action $a\cdot x\coloneqq J(a)\otimes x$ on $\cat C$ induce a lax symmetric monoidal functor
-\[
-\para{\cat A}{\Lens{\cat C}^{\Fun T}}\to\para{\cat A}{\cat C}.
-\]
-It sends a parameterized coKleisli lens $(a,f\colon a\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism
-\[
-J(a)\otimes\Theta^{\Fun T,\alpha}\lensob c\to\Theta^{\Fun T,\alpha}\lensob d.
+\Theta\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
+\lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,z}.
 \]
 \end{proposition}
+\begin{proof}
+Given a coKleisli morphism $f\colon\lensob{c}\coto\lensob{d}$, define $\Theta(f)$ as the composite
+\[
+\begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
+\outp c\otimes[\inpt c,z]\ar[r,"{\delta_{\outp c}\otimes\id}"]\ar[dd, dashed, "\Theta(f)"']
+\& \outp c\otimes\outp c\otimes[\inpt c,z]\ar[r,"\outp f\otimes\coev"]
+\& \outp d\otimes[\inpt d,\inpt d\otimes\outp c\otimes[\inpt c,z]]\ar[d,"{\id\otimes[\inpt d,\inpt f\otimes\id]}"]
+\\
+\&
+\& \outp d\otimes[\inpt d,\Fun{T}\inpt c\otimes[\inpt c,z]]\ar[d,"{\id\otimes[\inpt d,\sigma]}"]
+\\
+\outp d\otimes[\inpt d,z]
+\& \outp d\otimes[\inpt d,\Fun{T}z]\ar[l,"{\id\otimes[\inpt d,\alpha]}"]
+\& \outp d\otimes[\inpt d,\Fun{T}(\inpt c\otimes[\inpt c,z])]\ar[l,"{\id\otimes[\inpt d,\Fun{T}\ev]}"]
+\end{tikzcd}
+\]
+For identities, write $H\coloneqq[\inpt c,z]$. The diagram to prove is
+
+\[
+\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
+|[alias=tl]| \outp c\otimes H
+  \ar[rr, "{\boldsymbol{\delta}}"]
+  \ar[ddd, equal]
+  \ar[drr, equal]
+\&
+\& \outp c\otimes\outp c\otimes H
+  \ar[r, "{\mathbf{coev}}", ""{description, name=A1, anchor=center, inner sep=0}]
+  \ar[d, "{\boldsymbol{\varepsilon}}" description]
+\& \outp c\otimes[\inpt c,\inpt c\otimes\outp c\otimes H]
+  \ar[d, "{\boldsymbol{\varepsilon}}"]
+\\
+\&
+\& |[alias=ce]| \outp c\otimes H
+  \ar[r, "{\mathbf{coev}}", ""{description, name=A2, anchor=center, inner sep=0}]
+  \ar[d, "{\boldsymbol{\eta}_H}"']
+  \ar[dl, "{\mathbf{coev}}"' description]
+  \ar[ddll, equal, out=180, in=60]
+\& \outp c\otimes[\inpt c,\inpt c\otimes H]
+  \ar[d, "{\boldsymbol{\eta}_{\inpt c}}"]
+  \ar[ddl, "{\boldsymbol{\eta}_H}"' description]
+\\
+\& \outp c\otimes[\inpt c,\inpt c\otimes H]
+  \ar[dl, "{\boldsymbol{\ev}}"]
+  \ar[dr, "{\boldsymbol{\eta}}"]
+  \ar[ddr, "{\boldsymbol{\eta}_{\inpt c}}"' description]
+  \ar[dddr, bend right=20, "{\boldsymbol{\eta}_{\inpt c\otimes H}}"' description]
+\& \outp c\otimes\Fun{T}H
+  \ar[d, "{\mathbf{coev}}"]
+\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes H]
+  \ar[d, "{\boldsymbol{\eta}_H}", ""{description, name=DR, anchor=center, inner sep=0}]
+\\
+\outp c\otimes[\inpt c,z]
+  \ar[ddr, "{\boldsymbol{\eta}_z}"]\ar[ddd, equal]
+\&\& \outp c\otimes[\inpt c,\inpt c\otimes\Fun{T}H]
+  \ar[r, "{\boldsymbol{\sigma^{L}}}", ""{description, name=DL, anchor=center, inner sep=0}]
+\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes\Fun{T}H]
+  \ar[ddl, "{\boldsymbol{\tau}}"]
+\\
+\&
+\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes H]
+  \ar[ur, "{\boldsymbol{\eta}_H}"]
+\&
+\\
+\& |[alias=mz]| \outp c\otimes[\inpt c,\Fun{T}z]
+  \ar[dl, "{\boldsymbol{\alpha}}"' description]
+\& \outp c\otimes[\inpt c,\Fun{T}(\inpt c\otimes H)]
+  \ar[l, "{\boldsymbol{\Fun{T}\ev}}"' description]
+\&
+\\
+\outp c\otimes H
+\&
+\&
+\&
+\end{tikzcd}
+\]
+Each square is clear.
+
+For composition, the obligation is the equality of two morphisms $\outp c\,H_c\to\outp e\,H_e$ (writing $H_X\coloneqq[\inpt X,z]$): $\Theta$ applied to the coKleisli composite $g\circ f$ vs the sequential $\Theta(g)\circ\Theta(f)$. The two atomized boundaries (each arrow performs exactly one nonidentity operation, in bold; juxtaposition denotes $\otimes$; $\sigma$ has been opened as $\eta$ then $\tau$) are:
+
+The top--right boundary unfolds $\Theta(g)\circ\Theta(f)$: the f-half (atoms $\delta,\coev_d,\outp f,\eta,\inpt f,\tau,\Fun T\ev,\delta$) produces $H_d$, the bridge $(\eta, \Fun T\alpha)$ applies $\eta$-naturality at $\alpha$ to lift the intermediate $\alpha$ inside $\Fun T$, and the g-half ($\outp g,\coev_e,\inpt g,\tau,\Fun T\ev$) produces $H_e$. The left--bottom boundary unfolds $\Theta(g\circ f)$ directly via the Kleisli formula for $\inpt{(g\circ f)}$ involving $\Fun T\inpt f,\mu$.
+
+The interior 2-cells fall into three classes: (i)~bifunctoriality of $\otimes$ on disjoint slots, which commutes any two atoms acting on different tensor factors of the source; (ii)~naturality of $\eta$, $\mu$, and $\tau$ at the various structural morphisms; and (iii)~the $\Fun T$-monoid axioms of \cref{def.T_monoid}---specifically the $\Fun T$-algebra associativity $\alpha\circ\Fun T\alpha=\alpha\circ\mu_z$ bridges the path through $H_d$ (TR) with the direct $\mu_z$-path (LB).
+\begin{landscape}
+\[
+\begin{tikzcd}[column sep=0.5em, row sep=0.6em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
+\outp c H_c
+  \ar[r, "{\boldsymbol\delta}"]
+  \ar[d, "{\boldsymbol\delta}"']
+\& \outp c\outp c H_c \ar[r, "{\boldsymbol{\outp f}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d\outp c H_c \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,d\outp c H_c] \ar[r, "{\boldsymbol{\inpt f}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,\Fun T(c)H_c] \ar[r, "{\boldsymbol\eta}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\boldsymbol\tau}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,\Fun T(cH_c)] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d[d,\Fun T(z)] \ar[r, "{\boldsymbol\alpha}"] \ar[d, "{\boldsymbol\delta}"']
+\& \outp d H_d \ar[d, "{\boldsymbol\delta}"] \\
+\outp c\outp c H_c \ar[d, "{\boldsymbol{\outp f}}"']
+\& \outp c\outp c\outp c H_c \ar[r, "{\boldsymbol{\outp f\outp f}}"] \ar[d, "{\boldsymbol{\outp f}}"']
+\& \outp d\outp d\outp c H_c \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,d\outp c H_c] \ar[r, "{\boldsymbol{\inpt f}}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,\Fun T(c)H_c] \ar[r, "{\boldsymbol\eta}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\boldsymbol\tau}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,\Fun T(cH_c)] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d[d,\Fun T(z)] \ar[r, "{\boldsymbol\alpha}"] \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp d H_d \ar[d, "{\boldsymbol{\outp g}}"] \\
+\outp d\outp c H_c \ar[d, "{\boldsymbol{\outp g}}"']
+\& \outp d\outp c\outp c H_c \ar[r, "{\boldsymbol{\outp g\outp f}}"]
+\& \outp e\outp d\outp c H_c \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,d\outp c H_c] \ar[r, "{\boldsymbol{\inpt f}}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,\Fun T(c)H_c] \ar[r, "{\boldsymbol\eta}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\boldsymbol\tau}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,\Fun T(cH_c)] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d[d,\Fun T(z)] \ar[r, "{\boldsymbol\alpha}"] \ar[d, "{\boldsymbol{\coev_e}}"']
+\& \outp e\outp d H_d \ar[d, "{\boldsymbol{\coev_e}}"] \\
+\outp e\outp c H_c \ar[dd, "{\boldsymbol{\coev_e}}"']
+\&\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol{\inpt g}}"']
+\& \outp e[e,e\outp d[d,d\outp c H_c]] \ar[r, "{\boldsymbol{\inpt f}}"] \ar[d, "{\boldsymbol{\inpt g}}"']
+\& \outp e[e,e\outp d[d,\Fun T(c)H_c]] \ar[r, "{\boldsymbol\eta}"] \ar[d, "{\boldsymbol{\inpt g}}"']
+\& \outp e[e,e\outp d[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\boldsymbol\tau}"] \ar[d, "{\boldsymbol{\inpt g}}"']
+\& \outp e[e,e\outp d[d,\Fun T(cH_c)]] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol{\inpt g}}"']
+\& \outp e[e,e\outp d[d,\Fun T(z)]] \ar[r, "{\boldsymbol\alpha}"] \ar[d, "{\boldsymbol{\inpt g}}"']
+\& \outp e[e,e\outp d H_d] \ar[d, "{\boldsymbol{\inpt g}}"] \\
+\&\& \outp e[e,\Fun T(d)\outp c H_c] \ar[r, "{\boldsymbol{\coev_d}}"] \ar[d, "{\boldsymbol\eta}"']
+\& \outp e[e,\Fun T(d)[d,d\outp c H_c]] \ar[r, "{\boldsymbol{\inpt f}}"] \ar[d, "{\boldsymbol\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(c)H_c]] \ar[r, "{\boldsymbol\eta}"] \ar[d, "{\boldsymbol\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\boldsymbol\tau}"] \ar[d, "{\boldsymbol\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(cH_c)]] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(z)]] \ar[r, "{\boldsymbol\alpha}"] \ar[d, "{\boldsymbol\eta}"']
+\& \outp e[e,\Fun T(d)H_d] \ar[d, "{\boldsymbol\eta}"] \\
+\outp e[e,e\outp c H_c] \ar[d, "{\boldsymbol\delta}"']
+\&\& \outp e[e,\Fun T(d)\Fun T(\outp c H_c)] \ar[r, "{\boldsymbol{\Fun T(\coev_d)}}"] \ar[d, "{\boldsymbol\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,d\outp c H_c])] \ar[r, "{\boldsymbol{\Fun T(\inpt f)}}"] \ar[d, "{\boldsymbol\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(c)H_c])] \ar[r, "{\boldsymbol{\Fun T(\eta)}}"] \ar[d, "{\boldsymbol\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(c)\Fun T(H_c)])] \ar[r, "{\boldsymbol{\Fun T(\tau)}}"] \ar[d, "{\boldsymbol\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(cH_c)])] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(z)])] \ar[r, "{\boldsymbol{\Fun T(\alpha)}}"] \ar[d, "{\boldsymbol\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T(H_d)] \ar[d, "{\boldsymbol\tau}"] \\
+\outp e[e,e\outp c\outp c H_c] \ar[d, "{\boldsymbol{\outp f}}"']
+\&\& \outp e[e,\Fun T(d\outp c H_c)] \ar[r, "{\boldsymbol{\Fun T(\coev_d)}}"]
+\& \outp e[e,\Fun T(d[d,d\outp c H_c])] \ar[r, "{\boldsymbol{\Fun T(\inpt f)}}"] \ar[d, "{\boldsymbol{\Fun T(\ev)}}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(c)H_c])] \ar[r, "{\boldsymbol{\Fun T(\eta)}}"] \ar[d, "{\boldsymbol{\Fun T(\ev)}}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(c)\Fun T(H_c)])] \ar[r, "{\boldsymbol{\Fun T(\tau)}}"] \ar[d, "{\boldsymbol{\Fun T(\ev)}}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(cH_c)])] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol{\Fun T(\ev)}}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(z)])] \ar[r, "{\boldsymbol{\Fun T(\alpha)}}"] \ar[d, "{\boldsymbol{\Fun T(\ev)}}"']
+\& \outp e[e,\Fun T(dH_d)] \ar[d, "{\boldsymbol{\Fun T(\ev)}}"] \\
+\outp e[e,e\outp d\outp c H_c] \ar[d, "{\boldsymbol{\inpt g}}"']
+\&\&
+\& \outp e[e,\Fun T(d\outp c H_c)] \ar[r, "{\boldsymbol{\Fun T(\inpt f)}}"]
+\& \outp e[e,\Fun T(\Fun T(c)H_c)] \ar[r, "{\boldsymbol{\Fun T(\eta)}}"]
+\& \outp e[e,\Fun T(\Fun T(c)\Fun T(H_c))] \ar[r, "{\boldsymbol{\Fun T(\tau)}}"]
+\& \outp e[e,\Fun T(\Fun T(cH_c))] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"] \ar[d, "{\boldsymbol\mu}"']
+\& \outp e[e,\Fun T(\Fun T(z))] \ar[r, "{\boldsymbol{\Fun T(\alpha)}}"] \ar[d, "{\boldsymbol\mu}"']
+\& \outp e[e,\Fun T(z)] \ar[d, "{\boldsymbol\alpha}"] \\
+\outp e[e,\Fun T(d)\outp c H_c] \ar[r, "{\boldsymbol\eta}"]
+\& \outp e[e,\Fun T(d)\Fun T(\outp c)H_c] \ar[r, "{\boldsymbol\tau}"]
+\& \outp e[e,\Fun T(d\outp c)H_c] \ar[r, "{\boldsymbol{\Fun T(\inpt f)}}"]
+\& \outp e[e,\Fun T(\Fun T(c))H_c] \ar[r, "{\boldsymbol\mu}"]
+\& \outp e[e,\Fun T(c)H_c] \ar[r, "{\boldsymbol\eta}"]
+\& \outp e[e,\Fun T(c)\Fun T(H_c)] \ar[r, "{\boldsymbol\tau}"]
+\& \outp e[e,\Fun T(cH_c)] \ar[r, "{\boldsymbol{\Fun T(\ev)}}"]
+\& \outp e[e,\Fun T(z)] \ar[r, "{\boldsymbol\alpha}"]
+\& \outp e H_e
+\end{tikzcd}
+\]
+\end{landscape}
+
+
+The lax unit comparison is $e_z\colon I\to z=\Theta\binom{I}{I}$, and the lax laxator is the canonical map
+\[
+(\outp c\otimes[\inpt c,z])\otimes(\outp d\otimes[\inpt d,z])
+\to
+\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z\otimes z]\To{\id\otimes[\id,m_z]}
+\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
+\]
+combining closedness with the monoid multiplication on $z$. Compatibility with morphisms is exactly monoidality of $\Fun{T}$ together with the assumption that $\alpha$ is a monoid homomorphism; the unit law uses $\alpha\circ\Fun{T}e_z\circ\tau_0=e_z$.
+\end{proof}
+
+\begin{proposition}[Parameterized representation]\label{prop.parameterized_representation}
+Let $(\Fun T,\tau)$, $\cat C$, and $(z,e_z,m_z,\alpha)$ be as in \cref{prop.Theta_T_alpha}, with $\cat C$ carrying a homomorphic supply of commutative comonoids. Suppose $\cat M$ is symmetric monoidal and $J\colon\cat M\to\cat C$ is strong monoidal. Then with the $\cat M$-actions
+\[
+m\cdot\lensob c\coloneqq\binom{\inpt c}{J(m)\otimes\outp c}
+\qqand
+m\cdot x\coloneqq J(m)\otimes x
+\]
+on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$  extends to a lax symmetric monoidal functor
+\[
+\para{\cat M}{\Theta}\colon\para{\cat M}{\Lens{\cat C}^{\Fun T}}\to\para{\cat M}{\cat C}.
+\]
+\end{proposition}
+%It sends a parameterized coKleisli lens $(m,f\colon m\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism
+%\[
+%J(m)\otimes\outp{c}\otimes[\inpt{c},z]\to\outp{d}\otimes[\inpt{d},z].
+%\]
 
 \begin{proof}
-The assumption on $J$ gives the action on lenses: the tensor comonoid supplies the output comonoid of $a\cdot\lensob c$, and the extra $J(a)$ in the output slot is killed in the backward leg by its counit. The natural comparison
+Use the action on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $m\cdot x\coloneqq J(m)\otimes x$ on $\cat C$. The functor $\Theta$ is $\cat M$-equivariant:
 \[
-J(a)\otimes\Theta^{\Fun T,\alpha}\lensob c
-\cong (J(a)\otimes\outp c)\otimes\ihom{\inpt c,I}
-=\Theta^{\Fun T,\alpha}(a\cdot\lensob c)
+\begin{tikzcd}[ampersand replacement=\&]
+\cat M\times\Lens{\cat C}^{\Fun T}
+  \ar[r,"(\cdot)"]
+  \ar[d,"\id_{\cat M}\times\Theta"']
+  \ar[dr,phantom,"\theta"description]
+\& \Lens{\cat C}^{\Fun T}\ar[d,"\Theta"]\\
+\cat M\times\cat C
+  \ar[r,"(\cdot)"']
+\& \cat C,
+\end{tikzcd}
 \]
-is compatible with action unitors and associators by coherence for the strong monoidal structure of $J$. Thus $\Theta^{\Fun T,\alpha}$ and the identity on $\cat A$ form an action square, and \cref{prop.para_square} gives the displayed functor. Its lax monoidal structure is inherited from \cref{prop.Theta_T_alpha}.
+where
+\[
+\theta_{m,\lensob c}\colon
+J(m)\otimes\Theta\lensob c
+\cong J(m)\otimes\outp c\otimes\ihom{\inpt c,z}
+=\Theta(m\cdot\lensob c)
+\]
+is compatible with action unitors and associators by coherence for the strong monoidal structure of $J$. Thus \cref{prop.para_square}, with $F=\id_{\cat M}$, gives the displayed functor. Its lax monoidal structure is inherited from \cref{prop.Theta_T_alpha}.
 \end{proof}
+
+\section{}
+
+\begin{lemma}\label{lemma.monoid_to_monad}
+If $\cat{C}$ is a monoidal category and $(M,e,(*))$ is a monoid object in it, then $M\otimes-\colon\cat{C}\to\cat{C}$ carries a monad structure.
+\end{lemma}
+
+Recall from \cref{prop.cot_hopf} that since $(\rr,0,(+)$) is a Lie group, $\cot{\rr}$ is a monoid object in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monads $\rr\times-$ and $\cot{\rr}\otimes-$ on $\mfd$ and $\poly$, and by \cref{def.lens_cokleisli} there are corresponding comononads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $\Lens{\mfd}^\rr$ and $\Lens{\poly}^\rr$ denote the corresponding cokleisli categories. 
+
+Taking $\pvect\to\mfd$ from \cref{prop.pnla_smc_action} and the homomorphic supply on $\mfd$ from \cref{lem.cartesian_homomorphic_supply}, we have an action
+\[(\cdot)\colon\pvect\times\mfd\to\mfd\] 
+by \cref{lem.parameter_lens_action}. On objects it is given by $V\cdot\lensob M\coloneqq\binom{\inpt M}{V\times\outp M}$. Recall that a map in $\lmfd^\rr$ is of the form $f\coloneqq (\outp f,\inpt f,U)\colon\lensob M\to\lensob N$, where
+\[
+\outp f\colon\outp M\to\outp N,\qquad
+\inpt f\colon\outp M\times\inpt N\to\inpt M,\qquad
+U\colon\outp M\times\inpt N\to\rr.
+\]
+For $\phi\colon V\To{\cong} W$ in $\pvect$, the map $\phi\cdot f\colon V\cdot\lensob M\to W\cdot\lensob N$ is given by
+\[
+\outp{(\phi\cdot f)}(v,x)\coloneqq(\phi(v),\outp f(x)),\qquad
+\inpt{(\phi\cdot f)}(v,x,y)=\inpt f(x,y),\qquad
+U_{\phi\cdot f}(v,x,y)=U(x,y).
+\]
+
+\begin{lemma}\label{lem.potlens_to_para_poly}
+There is a lax symmetric monoidal functor
+\[
+\para{\pvect}{\Lens{\mfd}^{\rr}}\to\para{\pvect}{\poly},
+\]
+where $\pvect$ acts on $\poly$ by $V\cdot p\coloneqq\cot{V}\otimes p$.
+\end{lemma}
+
+\begin{proof}
+\cref{prop.cot_monoidal,lem.cot_comonoid} give $\cot\colon\pvect\to\poly$; \cref{lem.Theta_poly_potential} gives the lax monoidal $\Theta$; and \cref{prop.parameterized_representation} gives the induced functor.
+\end{proof}
+
+\begin{lemma}\label{lem.Theta_poly_potential}
+There is a lax monoidal functor
+\[
+\Theta\colon\Lens{\poly}^\rr\to\poly,\qquad
+\Theta\lensob p=\outp p\otimes\ihom{\inpt p,\yon}.
+\]
+\end{lemma}
+
+\begin{proof}
+\Cref{prop.cot_hopf,prop.Theta_T_alpha}.
+\end{proof}
+
+\begin{lemma}\label{lem.para_potential_lens_maps}
+A morphism $\lensob L\to\lensob M$ in $\para{\pvect}{\Lens{\mfd}^{\Fun T_\rr}}$ is a tuple $(V,\outp f,\inpt f,U)$ with
+\[
+\outp f\colon V\times\outp L\to\outp M,\qquad
+\inpt f\colon V\times\outp L\times\inpt M\to\inpt L,\qquad
+U\colon V\times\outp L\times\inpt M\to\rr.
+\]
+\end{lemma}
+
+\begin{proof}
+\Cref{eqn.lens_def,subsec.backwards,prop.pnla_smc_action}.
+\end{proof}
+
+\begin{theorem}\label{thm.functor}
+$\Phi\colon\para{\pvect}{\Lens{\mfd}^{\Fun T_\rr}}\to\org$ is a lax symmetric monoidal functor.
+\end{theorem}
+
+\begin{proof}
+\Cref{lem.potlens_to_para_poly,def.pairing_proj,prop.TT_monoidal,prop.para_square,prop.org_as_para,prop.coalg_as_poly_map,prop.pnla_polynomial,prop.cot_monoidal}.
+\end{proof}
+
+On objects,
+\[
+\Phi\lensob L=\cot{\outp L}\otimes\ihom{\cot{\inpt L},\yon}.
+\]
+\Cref{lem.Theta_poly_potential,prop.cot_monoidal}.
+On morphisms,
+\[
+\left(V,\;f\colon V\cdot\lensob L\to\lensob M\right)
+\longmapsto
+X\To{\Phi(f)}
+\bigl[
+\cot{\outp L}\otimes\ihom{\cot{\inpt L},\yon},
+\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}
+\bigr]\tri X,
+\]
+where
+\[
+X\coloneqq T^*V\cong V\oplus V^*.
+\]
+\Cref{lem.para_potential_lens_maps,prop.TT_endofunctors,prop.canonical_symplectic_pairing,prop.org_as_para,prop.coalg_as_poly_map,prop.pnla_polynomial}.
+The coalgebra is induced by
+\[
+\tilde f\colon
+\cot{T^*V}\otimes\Phi\lensob L
+\To{\rho_V\otimes\id}
+\cot{V}\otimes\Phi\lensob L
+\To{\bar f}
+\Phi\lensob M,
+\]
+where $\bar f\colon\cot{V}\otimes\Phi\lensob L\to\Phi\lensob M$ is the image of $f$ under \cref{lem.potlens_to_para_poly}.
+\Cref{lem.potlens_to_para_poly,def.pairing_proj}.
+At $x=(u,\pi)\in X$, the map $\rho_V\colon\cot{T^*V}\to\cot{V}$ sends the position $(u,\pi)\in T^*V$ to $u\in V$ and sends a covector $\sigma\in T_u^*V$ to
+\[
+\bk{\rho_V}_{(u,\pi)}(\sigma)=(\sigma,\sharp_V(\pi))\in T_x^*X.
+\]
+\Cref{def.pairing_proj}.
+At $x\in X$, for a position $a\in(\Phi\lensob L)(1)$, let $b\coloneqq(\tilde f)_1(x,a)$. For a direction $\beta\in\Phi\lensob M[b]$, if
+\[
+(\xi,\alpha)\coloneqq\bk{\tilde f}_{(x,a)}(\beta)\in T_x^*X\times\Phi\lensob L[a],
+\]
+then at $(x,a)$ the coalgebra $\Phi(f)$ returns the direction $\alpha\in\Phi\lensob L[a]$ and updates $x$ to $x+\sharp_X(\xi)$.
+\Cref{prop.coalg_as_poly_map,prop.pnla_polynomial}.
+
+\begin{lemma}\label{lem.Phi_coordinate_update}
+Let $f=(V,\outp f,\inpt f,U)$ be as in \cref{lem.para_potential_lens_maps}, and let $X=T^*V$. At $x=(u,\pi)\in X$, if
+\[
+(\sigma,\alpha)\coloneqq\bk{\bar f}_{(u,a)}(\beta)\in T_u^*V\times\Phi\lensob L[a],
+\]
+then
+\[
+\bk{\tilde f}_{(x,a)}(\beta)=\bigl((\sigma,\sharp_V(\pi)),\,\alpha\bigr)
+\qqand
+x+\sharp_X(\sigma,\sharp_V(\pi))=(u+\sharp_V(\pi),\,\pi-\sigma).
+\]
+\end{lemma}
+
+\begin{proof}
+\Cref{lem.para_potential_lens_maps,lem.potlens_to_para_poly,def.pairing_proj,prop.canonical_symplectic_pairing,prop.pnla_polynomial}.
+\end{proof}
+
+\clearpage
+\clearpage
+
+\appendix
 
 \section{Potentialized manifold lenses}\label{sec.potlens_manifolds}
 
-We specialize the abstract construction of \cref{sec.lenses_general} to $\cat C=\mfd$ (cartesian monoidal). The resulting category $\lmfd\coloneqq\Lens\mfd$ of \emph{manifold lenses} has pairs of manifolds $\lensob M$ as objects and pairs $f=(\outp f,\inpt f)$ of smooth maps as morphisms (\eqref{eqn.lens_def}).
+We now specialize the above constructions to the category of manifolds, acted on by paired vector spaces.%
+\footnote{As mentioned in \cref{***}, everything about paired vector spaces generalizes to paired nilpotent Lie algebras.}
+
+\begin{proposition}\label{prop.lie_monoid_strong_monad}
+For any Lie monoid $G$, there is a strong monad
+\[
+\Fun T_G\colon\mfd\to\mfd,\qquad \Fun T_G(X)\coloneqq X\times G.
+\]
+\end{proposition}
+
+\begin{corollary}\label{cor.lmfd_G}
+For any Lie monoid $G$, there is a coKleisli category
+\[
+\Lens{\mfd}^{\Fun T_G}.
+\]
+\end{corollary}
+
+\begin{corollary}\label{cor.lmfd_potential}
+For $G=(\rr,0,+)$, there is a coKleisli category
+\[
+\lmfd^\rr\coloneqq\Lens{\mfd}^{\Fun T_\rr}.
+\]
+\end{corollary}
+
+\begin{proposition}\label{prop.pvect_action_lmfd_potential}
+There is a symmetric monoidal action
+\[
+\pvect\times\lmfd^\rr\to\lmfd^\rr,\qquad V\cdot\lensob M\coloneqq\binom{\inpt M}{V\times\outp M}.
+\]
+\end{proposition}
+
+\begin{definition}\label{def.potlens}
+\[
+\potlens\coloneqq\para{\pvect}{\lmfd^\rr}.
+\]
+\end{definition}
+
+\begin{proposition}\label{prop.potlens_maps}
+A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ is a tuple $(V,\outp f,\inpt f,U)$ with
+\[
+\outp f\colon V\times\outp L\to\outp M,\qquad
+\inpt f\colon V\times\outp L\times\inpt M\to\inpt L,\qquad
+U\colon V\times\outp L\times\inpt M\to\rr.
+\]
+\end{proposition}
+
+\begin{corollary}\label{cor.potlens_parameterized_representation}
+Let $\cat C,\Fun T,z$, and $J\colon\pvect\to\cat C$ be as in \cref{prop.parameterized_representation}, with $\cat M=\pvect$. Suppose a lax symmetric monoidal functor
+\[
+\widehat F\colon\lmfd^\rr\to\Lens{\cat C}^{\Fun T}
+\]
+is equipped with coherent monoidal isomorphisms
+\[
+\widehat F(V\cdot\lensob M)\cong J(V)\cdot\widehat F(\lensob M).
+\]
+Then there is a lax symmetric monoidal functor
+\[
+\potlens=\para{\pvect}{\lmfd^\rr}\to\para{\pvect}{\cat C}.
+\]
+It sends a morphism $f\colon\lensob L\to\lensob M$ with parameter $V$ to a map
+\[
+J(V)\otimes\Theta\widehat F(\lensob L)\to\Theta\widehat F(\lensob M).
+\]
+\end{corollary}
+
+\iffalse
+Applying the abstract construction of \cref{sec.lenses_general} to $\cat C=\mfd$ (cartesian monoidal), the resulting category $\lmfd\coloneqq\Lens\mfd$ of \emph{manifold lenses} has pairs of manifolds $\lensob M$ as objects and pairs $f=(\outp f,\inpt f)$ of smooth maps as morphisms (\eqref{eqn.lens_def}).
 
 Any Lie monoid $(G,\cdot,e)$ gives a strong monad on $\mfd$:
 \[
@@ -1785,6 +2214,7 @@ The monoidal product is inherited from $\lmfd$. The following depicts compositio
   \draw[ar] (plus_in1) to (R);
 \end{tikzpicture}
 \]
+\fi
 
 
 \chapter{From lenses to dynamics}\label{ch.potlens_to_org}
@@ -1793,11 +2223,20 @@ This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abs
 
 \section{Specialization to polynomial functors}\label{sec.specialize_source}
 
-Take $\cat C=\poly$, with the strong monad
+\begin{proposition}\label{prop.poly_potential_monad}
+There is a monoidal monad on $\poly$
 \[
 \Fun T(p)\coloneqq p\otimes\cot\rr,
 \]
-whose unit and multiplication are $\cot 0\colon\yon\to\cot\rr$ and $\cot{+}\colon\cot\rr\otimes\cot\rr\to\cot\rr$ from \cref{prop.cot_hopf}. The algebra $\alpha\colon\cot\rr\to\yon$ required by \cref{prop.Theta_T_alpha} must be a monoid homomorphism from $\cot\rr$ (a Hopf monoid by \cref{prop.cot_hopf}) to the trivial monoid on $\yon$.
+whose unit and multiplication are $\cot 0\colon\yon\to\cot\rr$ and $\cot{+}\colon\cot\rr\otimes\cot\rr\to\cot\rr$.
+\end{proposition}
+
+\begin{proposition}\label{prop.cot_potential_lift}
+The cotangent functor induces a strong symmetric monoidal functor
+\[
+\widehat\cot\colon\lmfd^\rr\to\Lens{\poly}^{\Fun T}.
+\]
+\end{proposition}
 
 \begin{lemma}\label{lem.alpha_constant}
 The $\Fun T$-algebra structures on $\yon$ that preserve the trivial monoid are in bijection with $\rr$: each such $\alpha\colon\cot\rr\to\yon$ has direction-action at each $x\in\rr$ given by a constant $c\in\rr$ independent of $x$, and every constant $c$ arises this way.
@@ -1815,13 +2254,22 @@ We choose
 \[
 \dec\colon\cot\rr\to\yon,\qquad\bk\dec_x(*)\coloneqq -1.
 \]
-The sign fixes the sign of Hamilton's equations below; $c=0$ gives the trivial algebra (no potential), $c=+1$ the opposite-sign physics. \Cref{rmk.general_z} allows algebras valued in monoids $z\neq\yon$; we do not pursue them.
+The sign fixes the sign of Hamilton's equations below; $c=0$ gives the trivial algebra (no potential), $c=+1$ the opposite-sign physics. Other choices of value object $z\neq\yon$ are permitted by \cref{def.T_monoid}; we do not pursue them.
 
-The lensification of $\cot\colon\mfd\to\poly$ (\cref{prop.cot_monoidal,lem.cot_comonoid}) and $\Theta^{\Fun T,\dec}\colon\Lens\poly^{\Fun T}\to\poly$ (\cref{prop.Theta_T_alpha}) compose to
+\begin{corollary}\label{cor.Phi1}
+There is a lax symmetric monoidal functor
 \[
 \Phi_1\colon\lmfd^\rr\to\poly,\qquad
 \Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
 \]
+\end{corollary}
+
+A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ with parameter $(V,\sharp_V)$ gives the map
+\begin{equation}\label{eqn.parameter_to_action}
+\cot V\otimes\Phi_1\lensob L\to\Phi_1\lensob M.
+\end{equation}
+
+\iffalse
 The $\pvect$-action on $\lmfd^\rr$ defined above and the action $V\cdot p\coloneqq\cot V\otimes p$ on $\poly$ fit into the parameterized representation of \cref{prop.parameterized_representation}: the comparison
 \[
 \cot V\otimes\Phi_1\lensob M\cong\Phi_1(V\cdot\lensob M)
@@ -1834,6 +2282,7 @@ where $\pvect$ acts on $\poly$ by $V\cdot p\coloneqq\cot V\otimes p$. A morphism
 \begin{equation}\label{eqn.parameter_to_action}
 \cot V\otimes\Phi_1\lensob L\to\Phi_1\lensob M.
 \end{equation}
+\fi
 
 \section{The cotangent-state refinement}\label{sec.cotangent_state_refinement}
 
@@ -1845,16 +2294,17 @@ T^*_{(u,\pi)}(T^*V)\cong T^*_uV\oplus T^*_\pi(V^*)\cong V^*\oplus V,
 \]
 again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
 
-\begin{definition}[Pairing projection]\label{def.pairing_proj}
-The \emph{pairing projection} $\rho_V\colon\cot{T^*V}\to\cot V$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
-\[
-T^*_uV\cong V^*\To{\sigma\mapsto(\sigma,\,\sharp_V(\pi))}V^*\oplus V\cong T^*_{(u,\pi)}(T^*V).
-\]
-\end{definition}
-
 On positions, $\rho_V$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $V^*$-slot and injects the pairing-lifted momentum $\sharp_V(\pi)\in V$ into the $V$-slot, independently of $\sigma$. So $\rho_V$ is not of the form $\cot h$ for any smooth $h\colon T^*V\to V$, and not invertible. It is monoidal and natural in $\pvect$-isomorphisms because $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}).
 
-\Cref{cor.parameter_refinement} applied to $K=\cot\circ\Fun{inc}$, $K'=\cot\circ\Fun{inc}\circ T^*$, and $\rho$ gives a functor comparing the actions $V\cdot p=\cot V\otimes p$ and $V\cdot p=\cot{T^*V}\otimes p$ on $\poly$. Then \cref{cor.cotangent_learners}'s coalgebra interpretation, applied at $T^*V$ (using \cref{prop.pnla_polynomial}: $\cot{T^*V}\cong (T^*V)\yon^{T^*V}$ since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}), packages the result as an $\org$-morphism with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
+The maps
+\[
+\theta_{V,p}\colon\cot{T^*V}\otimes p\To{\rho_V\otimes\id_p}\cot V\otimes p
+\]
+are an action square \eqref{eqn.para_square} from the action $V\cdot p=\cot V\otimes p$ to the action $V\cdot p=\cot{T^*V}\otimes p$. Applying \cref{prop.para_square} gives a strong symmetric monoidal functor
+\[
+\rho^*\colon\para{\pvect,\,\cot\circ\Fun{inc}}{\poly}\to\para{\pvect,\,\cot\circ\Fun{inc}\circ T^*}{\poly}.
+\]
+Then \cref{cor.cotangent_learners}'s coalgebra interpretation, applied at $T^*V$ (using \cref{prop.pnla_polynomial}: $\cot{T^*V}\cong (T^*V)\yon^{T^*V}$ since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}), packages the result as an $\org$-morphism with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
 
 \begin{remark}[Tangent-state alternative]\label{rmk.tangent_state}
 Taking $T$ instead of $T^*$ (\cref{prop.TT_endofunctors}) fits the same framework. The analogous \emph{tangent projection} $\tilde\rho_V\colon\cot{TV}\to\cot V$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\flat_V(X))$, using the flat map $\flat_V\colon V\to V^*$ to place $X$ in the second summand of $T^*_{(u,X)}(TV)\cong V^*\oplus V^*$. This produces a functor $\potlens\to\org$ with state set $TV$ (Lagrangian-style, second-order), which we don't develop here; the preference for $T^*$ is physics (cotangent bundles carry the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, recovering Hamilton's equations).
@@ -1865,20 +2315,6 @@ By \cref{prop.legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural i
 \end{remark}
 
 \section{Functoriality and lax monoidality}\label{sec.functoriality}
-
-\begin{theorem}\label{thm.functor}
-$\Phi\colon\potlens\to\org$ is a lax symmetric monoidal functor.
-\end{theorem}
-
-\begin{proof}
-$\Phi$ is the composite
-\[
-\potlens=\para{\pvect}{\lmfd^\rr}\To{\para\pvect{\Phi_1}}\para{\pvect}{\poly}\To{\rho^*}\para{\pvect,\,\cot\circ T^*}{\poly}\To{(*)}\org,
-\]
-where $\Phi_1$ is from \cref{sec.specialize_source}, $\rho^*$ is the parameter refinement of \cref{cor.parameter_refinement} applied in \cref{sec.cotangent_state_refinement}, and $(*)$ is the coalgebra interpretation at state $T^*V$ (\cref{prop.coalg_as_poly_map,prop.pnla_polynomial}). Each is functorial; their composite is $\Phi$.
-
-For lax monoidality: $\Phi_1$ is lax (composing strong $\widehat\cot$ with lax $\Theta^{\Fun T,\dec}$ from \cref{prop.Theta_T_alpha}), $\para\pvect{\Phi_1}$ inherits laxness, $\rho^*$ is strong monoidal by \cref{cor.parameter_refinement}, and $(*)$ is strong by \cref{prop.pnla_polynomial,prop.cot_monoidal}. Composing yields lax. The morphism laxator is the closedness pairing $\ihom{\cot{\inpt L},\yon}\otimes\ihom{\cot{\inpt{L'}},\yon}\to\ihom{\cot{\inpt L\times\inpt{L'}},\yon}$ of \cref{prop.Theta}, which is not invertible (it misses covector fields on $\inpt L\times\inpt{L'}$ with genuine mixed dependence), so $\Phi$ is lax, not strong.\qedhere
-\end{proof}
 
 \begin{proposition}\label{prop.potlens_monoidal}
 $\potlens$ inherits from $\lmfd$ and $\pvect$ a symmetric monoidal structure with unit $\binom{\rr^0}{\rr^0}$ and tensor $\lensob L\otimes\lensob{L'}\coloneqq\lensobs{L}{L'}$. On morphisms, $f\otimes f'$ has parameter $V\oplus V'$ (with pairing $\sharp_V\oplus\sharp_{V'}$), independent forward and backward components, and potential $U^\otimes=U\circ\pr+U'\circ\pr'$.
