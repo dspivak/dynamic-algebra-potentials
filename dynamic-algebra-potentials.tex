@@ -1542,21 +1542,21 @@ A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}
 \]
 
 \begin{lemma}\label{lem.parameter_lens_action}
-Let $\cat M$ be symmetric monoidal, let $\cat C$ be symmetric monoidal with a homomorphic supply of commutative comonoids, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat M\to\cat C$ be strong monoidal. Then we have an action of $\cat M$ on $\Lens{\cat C}^{\Fun T}$ given by
+Let $\cat V$ be symmetric monoidal, let $\cat C$ be symmetric monoidal with a homomorphic supply of commutative comonoids, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be strong monoidal. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
 \[
-m\cdot\lensob c\coloneqq\binom{\inpt c}{J(m)\otimes\outp c}
+v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}
 \]
 \end{lemma}
 
 \begin{proof}
-Use the supplied commutative comonoid on $J(m)\in\cat C$; by homomorphicity, $J(u)$ is a comonoid homomorphism for any $u\colon m\to n$ in $\cat M$. Given $f\colon\lensob c\coto\lensob d$ in $\Lens{\cat C}^{\Fun T}$ and $u$ as above, set
+Use the supplied commutative comonoid on $J(v)\in\cat C$; by homomorphicity, $J(u)$ is a comonoid homomorphism for any $u\colon v\to w$ in $\cat V$. Given $f\colon\lensob c\coto\lensob d$ in $\Lens{\cat C}^{\Fun T}$ and $u$ as above, set
 \[
-u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(m)}}{J(u)\otimes\outp f}\colon
-\binom{\inpt c}{J(m)\otimes\outp c}
+u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(v)}}{J(u)\otimes\outp f}\colon
+\binom{\inpt c}{J(v)\otimes\outp c}
 \coto
-\binom{\inpt d}{J(n)\otimes\outp d}.
+\binom{\inpt d}{J(w)\otimes\outp d}.
 \]
-Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the homomorphic supply assumption: $J(m)\To{J(u)}J(n)\To{\epsilon_{J(n)}} I$ equals $\epsilon_{J(m)}$.
+Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the homomorphic supply assumption: $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
 \end{proof}
 
 \section{Internal representation of lenses}\label{sec.abstract_representation}
@@ -1675,73 +1675,73 @@ Given a coKleisli morphism $f\colon\lensob{c}\coto\lensob{d}$, define $\Theta_z(
 \& \outp d\otimes[\inpt d,\Fun{T}(\inpt c\otimes[\inpt c,z])]\ar[l,"{\id\otimes[\inpt d,\Fun{T}\ev]}"]
 \end{tikzcd}
 \]
-For identities, write $H\coloneqq[\inpt c,z]$. The diagram to prove is
+Proving that $\Theta_z$ is functorial a long calculation but routine. We leave preservation of identities to the reader and
+%IDENTITIES
+%\[
+%\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
+%|[alias=tl]| \outp c\otimes H
+%  \ar[rr, "{\delta}"]
+%  \ar[ddd, equal]
+%  \ar[drr, equal]
+%\&
+%\& \outp c\otimes\outp c\otimes H
+%  \ar[r, "{\mathbf{coev}}", ""{description, name=A1, anchor=center, inner sep=0}]
+%  \ar[d, "{\varepsilon}" description]
+%\& \outp c\otimes[\inpt c,\inpt c\otimes\outp c\otimes H]
+%  \ar[d, "{\varepsilon}"]
+%\\
+%\&
+%\& |[alias=ce]| \outp c\otimes H
+%  \ar[r, "{\mathbf{coev}}", ""{description, name=A2, anchor=center, inner sep=0}]
+%  \ar[d, "{\eta_H}"']
+%  \ar[dl, "{\mathbf{coev}}"' description]
+%  \ar[ddll, equal, out=180, in=60]
+%\& \outp c\otimes[\inpt c,\inpt c\otimes H]
+%  \ar[d, "{\eta_{\inpt c}}"]
+%  \ar[ddl, "{\eta_H}"' description]
+%\\
+%\& \outp c\otimes[\inpt c,\inpt c\otimes H]
+%  \ar[dl, "{\ev}"]
+%  \ar[dr, "{\eta}"]
+%  \ar[ddr, "{\eta_{\inpt c}}"' description]
+%  \ar[dddr, bend right=20, "{\eta_{\inpt c\otimes H}}"' description]
+%\& \outp c\otimes\Fun{T}H
+%  \ar[d, "{\mathbf{coev}}"]
+%\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes H]
+%  \ar[d, "{\eta_H}", ""{description, name=DR, anchor=center, inner sep=0}]
+%\\
+%\outp c\otimes[\inpt c,z]
+%  \ar[ddr, "{\eta_z}"]\ar[ddd, equal]
+%\&\& \outp c\otimes[\inpt c,\inpt c\otimes\Fun{T}H]
+%  \ar[r, "{\sigma^{L}}", ""{description, name=DL, anchor=center, inner sep=0}]
+%\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes\Fun{T}H]
+%  \ar[ddl, "{\tau}"]
+%\\
+%\&
+%\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes H]
+%  \ar[ur, "{\eta_H}"]
+%\&
+%\\
+%\& |[alias=mz]| \outp c\otimes[\inpt c,\Fun{T}z]
+%  \ar[dl, "{\alpha}"' description]
+%\& \outp c\otimes[\inpt c,\Fun{T}(\inpt c\otimes H)]
+%  \ar[l, "{\Fun{T}\ev}"' description]
+%\&
+%\\
+%\outp c\otimes H
+%\&
+%\&
+%\&
+%\end{tikzcd}
+%\]
+%Each square is clear.
+show composition on the following page. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z$ applied to the coKleisli composite $g\circ f$ and the sequential $\Theta_z(g)\circ\Theta_z(f)$. 
 
-\[
-\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
-|[alias=tl]| \outp c\otimes H
-  \ar[rr, "{\delta}"]
-  \ar[ddd, equal]
-  \ar[drr, equal]
-\&
-\& \outp c\otimes\outp c\otimes H
-  \ar[r, "{\mathbf{coev}}", ""{description, name=A1, anchor=center, inner sep=0}]
-  \ar[d, "{\varepsilon}" description]
-\& \outp c\otimes[\inpt c,\inpt c\otimes\outp c\otimes H]
-  \ar[d, "{\varepsilon}"]
-\\
-\&
-\& |[alias=ce]| \outp c\otimes H
-  \ar[r, "{\mathbf{coev}}", ""{description, name=A2, anchor=center, inner sep=0}]
-  \ar[d, "{\eta_H}"']
-  \ar[dl, "{\mathbf{coev}}"' description]
-  \ar[ddll, equal, out=180, in=60]
-\& \outp c\otimes[\inpt c,\inpt c\otimes H]
-  \ar[d, "{\eta_{\inpt c}}"]
-  \ar[ddl, "{\eta_H}"' description]
-\\
-\& \outp c\otimes[\inpt c,\inpt c\otimes H]
-  \ar[dl, "{\ev}"]
-  \ar[dr, "{\eta}"]
-  \ar[ddr, "{\eta_{\inpt c}}"' description]
-  \ar[dddr, bend right=20, "{\eta_{\inpt c\otimes H}}"' description]
-\& \outp c\otimes\Fun{T}H
-  \ar[d, "{\mathbf{coev}}"]
-\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes H]
-  \ar[d, "{\eta_H}", ""{description, name=DR, anchor=center, inner sep=0}]
-\\
-\outp c\otimes[\inpt c,z]
-  \ar[ddr, "{\eta_z}"]\ar[ddd, equal]
-\&\& \outp c\otimes[\inpt c,\inpt c\otimes\Fun{T}H]
-  \ar[r, "{\sigma^{L}}", ""{description, name=DL, anchor=center, inner sep=0}]
-\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes\Fun{T}H]
-  \ar[ddl, "{\tau}"]
-\\
-\&
-\& \outp c\otimes[\inpt c,\Fun{T}\inpt c\otimes H]
-  \ar[ur, "{\eta_H}"]
-\&
-\\
-\& |[alias=mz]| \outp c\otimes[\inpt c,\Fun{T}z]
-  \ar[dl, "{\alpha}"' description]
-\& \outp c\otimes[\inpt c,\Fun{T}(\inpt c\otimes H)]
-  \ar[l, "{\Fun{T}\ev}"' description]
-\&
-\\
-\outp c\otimes H
-\&
-\&
-\&
-\end{tikzcd}
-\]
-Each square is clear.
+Each ``tile'' is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}. 
 
-For composition, the obligation is the equality of two morphisms $\outp c\,H_c\to\outp e\,H_e$ (writing $H_X\coloneqq[\inpt X,z]$): $\Theta_z$ applied to the coKleisli composite $g\circ f$ vs the sequential $\Theta_z(g)\circ\Theta_z(f)$. The two atomized boundaries (each arrow performs exactly one nonidentity operation, in bold; juxtaposition denotes $\otimes$; $\sigma$ has been opened as $\eta$ then $\tau$) are:
-
-The top--right boundary unfolds $\Theta_z(g)\circ\Theta_z(f)$: the f-half (atoms $\delta,\coev_d,\outp f,\eta,\inpt f,\tau,\Fun T\ev,\delta$) produces $H_d$, the bridge $(\eta, \Fun T\alpha)$ applies $\eta$-naturality at $\alpha$ to lift the intermediate $\alpha$ inside $\Fun T$, and the g-half ($\outp g,\coev_e,\inpt g,\tau,\Fun T\ev$) produces $H_e$. The left--bottom boundary unfolds $\Theta_z(g\circ f)$ directly via the Kleisli formula for $\inpt{(g\circ f)}$ involving $\Fun T\inpt f,\mu$.
-
-The interior 2-cells fall into three classes: (i)~bifunctoriality of $\otimes$ on disjoint slots, which commutes any two atoms acting on different tensor factors of the source; (ii)~naturality of $\eta$, $\mu$, and $\tau$ at the various structural morphisms; and (iii)~the $\Fun T$-monoid axioms of \cref{def.T_monoid}---specifically the $\Fun T$-algebra associativity $\alpha\circ\Fun T\alpha=\alpha\circ\mu_z$ bridges the path through $H_d$ (TR) with the direct $\mu_z$-path (LB).
 \begin{landscape}
+For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[\inpt X,z]$, and write $x$ for $\inpt{x}$. So for example, $\outp d[d,\Fun T(c)H_c]$ means $\outp d\otimes [\inpt d,\Fun T(c)\otimes H_c]$. The strength $\sigma$ has been opened as $\eta$ then $\tau$.
+\bigskip
 \thispagestyle{empty}
 \[\hspace{-.5in}
 \begin{tikzcd}[column sep=0.5em, row sep=0.6em, every label/.append style={font=\tiny}, font=\tiny, ampersand replacement=\&]
@@ -1829,7 +1829,7 @@ The interior 2-cells fall into three classes: (i)~bifunctoriality of $\otimes$ o
 
 \medskip
 
-The open hole splits into two rectangular regions along the equal arrow. \emph{Upper region} ($4\!\times\!4$, closes via comonoid-hom for $\outp f$); \emph{Lower region} ($5\!\times\!4$, with $[dd]$ and $[rr]$ on LB to absorb the atom-count gap):
+The open hole splits into two regions, which commute as shown below.
 
 \noindent\begin{minipage}{0.48\linewidth}
 \[
@@ -1882,55 +1882,55 @@ The open hole splits into two rectangular regions along the equal arrow. \emph{U
 \end{landscape}
 
 
-The lax unit comparison is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the lax laxator is the canonical map
+The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the canonical map
 \[
 (\outp c\otimes[\inpt c,z])\otimes(\outp d\otimes[\inpt d,z])
 \to
 \outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z\otimes z]\To{\id\otimes[\id,m_z]}
 \outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
 \]
-combining closedness with the monoid multiplication on $z$. Compatibility with morphisms is exactly monoidality of $\Fun{T}$ together with the assumption that $\alpha$ is a monoid homomorphism; the unit law uses $\alpha\circ\Fun{T}e_z\circ\tau_0=e_z$.
+Its naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
 \end{proof}
 
-\begin{proposition}[Parameterized representation]\label{prop.parameterized_representation}
-Let $(\Fun T,\tau)$, $\cat C$, and $(z,e_z,m_z,\alpha)$ be as in \cref{prop.Theta_T_alpha}, with $\cat C$ carrying a homomorphic supply of commutative comonoids. Suppose $\cat M$ is symmetric monoidal and $J\colon\cat M\to\cat C$ is strong monoidal. Then with the $\cat M$-actions
+\begin{corollary}\label{cor.parameterized_representation}
+Let $(\Fun T,\tau)$, $\cat C$, $(z,e,m,\alpha)$, and the resulting $\Theta_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$ be as in \cref{prop.Theta_T_alpha}, with $\cat C$ carrying a homomorphic supply of commutative comonoids. Suppose $\cat V$ is symmetric monoidal and $J\colon\cat V\to\cat C$ is strong monoidal. Then with the $\cat V$-actions
 \[
-m\cdot\lensob c\coloneqq\binom{\inpt c}{J(m)\otimes\outp c}
+v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}
 \qqand
-m\cdot x\coloneqq J(m)\otimes x
+v\cdot x\coloneqq J(v)\otimes x
 \]
-on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$  extends to a lax symmetric monoidal functor
-\[
-\para{\cat M}{\Theta_z}\colon\para{\cat M}{\Lens{\cat C}^{\Fun T}}\to\para{\cat M}{\cat C}.
-\]
-\end{proposition}
-%It sends a parameterized coKleisli lens $(m,f\colon m\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism
+on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to a lax symmetric monoidal functor
+\begin{equation}\label{eqn.para_theta_z}
+\para{\cat V}{\Theta_z}\colon\para{\cat V}{\Lens{\cat C}^{\Fun T}}\to\para{\cat V}{\cat C}.
+\end{equation}
+\end{corollary}
+%It sends a parameterized coKleisli lens $(v,f\colon v\cdot\lensob c\coto\lensob d)$ to the parameterized $\cat C$-morphism
 %\[
-%J(m)\otimes\outp{c}\otimes[\inpt{c},z]\to\outp{d}\otimes[\inpt{d},z].
+%J(v)\otimes\outp{c}\otimes[\inpt{c},z]\to\outp{d}\otimes[\inpt{d},z].
 %\]
 
 \begin{proof}
-Use the action on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $m\cdot x\coloneqq J(m)\otimes x$ on $\cat C$. The functor $\Theta_z$ is $\cat M$-equivariant:
+Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $v\cdot x\coloneqq J(v)\otimes x$ on $\cat C$. The functor $\Theta_z$ is $\cat V$-equivariant:
 \[
 \begin{tikzcd}[ampersand replacement=\&]
-\cat M\times\Lens{\cat C}^{\Fun T}
+\cat V\times\Lens{\cat C}^{\Fun T}
   \ar[r,"(\cdot)"]
-  \ar[d,"\id_{\cat M}\times\Theta_z"']
-  \ar[dr,phantom,"\theta"description]
+  \ar[d,"\id_{\cat V}\times\Theta_z"']
+  \ar[dr,phantom,"\cong"]
 \& \Lens{\cat C}^{\Fun T}\ar[d,"\Theta_z"]\\
-\cat M\times\cat C
+\cat V\times\cat C
   \ar[r,"(\cdot)"']
 \& \cat C,
 \end{tikzcd}
 \]
-where
+where the isomorphism is
 \[
-\theta_{m,\lensob c}\colon
-J(m)\otimes\Theta_z\lensob c
-\cong J(m)\otimes\outp c\otimes\ihom{\inpt c,z}
-=\Theta_z(m\cdot\lensob c)
+\theta_{v,\lensob c}\colon
+J(v)\otimes\Theta_z\lensob c
+\cong J(v)\otimes\outp c\otimes\ihom{\inpt c,z}
+=\Theta_z\left(v\cdot\lensob c\right).
 \]
-is compatible with action unitors and associators by coherence for the strong monoidal structure of $J$. Thus \cref{prop.para_square}, with $F=\id_{\cat M}$, gives the displayed functor. Its lax monoidal structure is inherited from \cref{prop.Theta_T_alpha}.
+We can thus apply \cref{prop.para_square,prop.Theta_T_alpha} to obtain \eqref{eqn.para_theta_z} as desired.
 \end{proof}
 
 \section{}
@@ -1993,7 +1993,7 @@ There is a lax monoidal functor
 \end{lemma}
 
 \begin{proof}
-This is \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
+Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
 \end{proof}
 
 Taking $\pvect\to\mfd$ from \cref{prop.pnla_smc_action} and the homomorphic supply on $\mfd$ from \cref{lem.cartesian_homomorphic_supply}, we have an action
@@ -2022,7 +2022,7 @@ where $\pvect$ acts on $\poly$ by $V\cdot p\coloneqq\cot{V}\otimes p$.
 \end{lemma}
 
 \begin{proof}
-\cref{prop.cot_monoidal,lem.cot_comonoid} give $\cot\colon\pvect\to\poly$; \cref{lem.Theta_poly_potential} gives the lax monoidal $\Theta_\dec$; and \cref{prop.parameterized_representation} gives the induced functor.
+\cref{prop.cot_monoidal,lem.cot_comonoid} give $\cot\colon\pvect\to\poly$; \cref{lem.Theta_poly_potential} gives the lax monoidal $\Theta_\dec$; and \cref{cor.parameterized_representation} gives the induced functor.
 \end{proof}
 
 \begin{lemma}\label{lem.para_potential_lens_maps}
@@ -2114,7 +2114,7 @@ x+\sharp_X(\sigma,\sharp_V(\pi))=(u+\sharp_V(\pi),\,\pi-\sigma).
 \section{Potentialized manifold lenses}\label{sec.potlens_manifolds}
 
 We now specialize the above constructions to the category of manifolds, acted on by paired vector spaces.%
-\footnote{As mentioned in \cref{***}, everything about paired vector spaces generalizes to paired nilpotent Lie algebras.}
+\footnote{As mentioned in \cref{rmk.pnla_generalization}, everything about paired vector spaces generalizes to paired nilpotent Lie algebras.}
 
 \begin{proposition}\label{prop.lie_monoid_strong_monad}
 For any Lie monoid $G$, there is a strong monad
@@ -2160,7 +2160,7 @@ U\colon V\times\outp L\times\inpt M\to\rr.
 \end{proposition}
 
 \begin{corollary}\label{cor.potlens_parameterized_representation}
-Let $\cat C,\Fun T,z$, and $J\colon\pvect\to\cat C$ be as in \cref{prop.parameterized_representation}, with $\cat M=\pvect$. Suppose a lax symmetric monoidal functor
+Let $\cat C,\Fun T,z$, and $J\colon\pvect\to\cat C$ be as in \cref{cor.parameterized_representation}, with $\cat V=\pvect$. Suppose a lax symmetric monoidal functor
 \[
 \widehat F\colon\lmfd^\rr\to\Lens{\cat C}^{\Fun T}
 \]
@@ -2355,7 +2355,7 @@ A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ with parameter $(V,\shar
 \end{equation}
 
 \iffalse
-The $\pvect$-action on $\lmfd^\rr$ defined above and the action $V\cdot p\coloneqq\cot V\otimes p$ on $\poly$ fit into the parameterized representation of \cref{prop.parameterized_representation}: the comparison
+The $\pvect$-action on $\lmfd^\rr$ defined above and the action $V\cdot p\coloneqq\cot V\otimes p$ on $\poly$ fit into the parameterized representation of \cref{cor.parameterized_representation}: the comparison
 \[
 \cot V\otimes\Phi_1\lensob M\cong\Phi_1(V\cdot\lensob M)
 \]
