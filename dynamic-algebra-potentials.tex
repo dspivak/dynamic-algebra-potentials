@@ -460,10 +460,14 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\lensobs}[2]{\binom{\inpt{#1}\times\inpt{#2}}{\outp{#1}\times\outp{#2}}}% monoidal product of two lens objects
 
 \newcommand{\dec}{\fun{dec}}
+\font\MnSyCfont=MnSymbolC10
+\newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
+\newcommand{\smallbullet}{\mbox{\MnSyCfont\symbol{"59}}}
+\newcommand{\blank}{\mathord{\smallsquare}}
 
 % ---- Changeable document parameters ---- %
 
-\linespread{1.1}
+\linespread{1.15}
 %\allowdisplaybreaks
 \setsecnumdepth{subsection}
 \settocdepth{subsection}
@@ -539,8 +543,8 @@ at every point $p\in V$; we use these identifications throughout, often without 
 We also use the canonical finite-dimensional dual-sum identification
 \begin{equation}\label{eqn.canonical_dual_sum}
 (V\oplus V^*)^*\cong V^*\oplus V,\qquad
-\lambda\leftrightarrow(\alpha,v)\quad\text{where}\quad
-\lambda(v',\alpha')=\alpha(v')+\alpha'(v).
+\lambda\leftrightarrow(\xi,v)\quad\text{where}\quad
+\lambda(v',\xi')=\xi(v')+\xi'(v).
 \end{equation}
 
 \subsection{Paired vector spaces}\label{sec.pnla}
@@ -585,25 +589,25 @@ The forgetful $\pvect\to\vect$ preserves direct sums and identities; the inclusi
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
 For any finite-dimensional vector space $V$, the direct sum $V\oplus V^*$ is a paired vector space under the \emph{canonical symplectic pairing}
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(v,\alpha),(v',\alpha')}_{V\oplus V^*} \;=\; \alpha'(v)-\alpha(v').
+\pairing{(v,\xi),(v',\xi')}_{V\oplus V^*} \;=\; \xi'(v)-\xi(v').
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(v,\alpha)$ pairs to $0$ with every $(v',\alpha')$. Taking $v'=0$ gives $\alpha'(v)=0$ for all $\alpha'\in V^*$, hence $v=0$; taking $\alpha'=0$ gives $\alpha(v')=0$ for all $v'\in V$, hence $\alpha=0$.\qedhere
+The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(v,\xi)$ pairs to $0$ with every $(v',\xi')$. Taking $v'=0$ gives $\xi'(v)=0$ for all $\xi'\in V^*$, hence $v=0$; taking $\xi'=0$ gives $\xi(v')=0$ for all $v'\in V$, hence $\xi=0$.\qedhere
 \end{proof}
 
 For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is
 \begin{equation}\label{eqn.canonical_sharp}
-\sharp_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\alpha,v)\mapsto(v,-\alpha).
+\sharp_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,v)\mapsto(v,-\xi).
 \end{equation}
 
 \begin{remark}[Sign convention]\label{rmk.swap_pairing}
 The bilinear form
 \[
-\pairing{(v,\alpha),(v',\alpha')}=\alpha'(v)+\alpha(v')
+\pairing{(v,\xi),(v',\xi')}=\xi'(v)+\xi(v')
 \]
-also makes $V\oplus V^*$ a paired vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\alpha,v)\mapsto(v,\alpha)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for Hamiltonian dynamics (\cref{prop.hamilton,rmk.antisymmetry_substantive}).\qedhere
+also makes $V\oplus V^*$ a paired vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\xi,v)\mapsto(v,\xi)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for Hamiltonian dynamics (\cref{prop.hamilton,rmk.antisymmetry_substantive}).\qedhere
 \end{remark}
 
 \subsection{Tangent and cotangent endofunctors}\label{sec.TT}
@@ -636,16 +640,16 @@ If $\phi\colon V\to W$ is a linear isomorphism so are $T\phi$ and $T^*\phi$. Fun
 &= \pairing{(v_1,v_1'),(v_2,v_2')}_{TV}.
 \end{align*}
 
-Next we check that $T^*\phi$ preserves pairings. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\beta)(v) = \beta(\phi v)$ for all $\beta\in W^*\text{ and }v\in V.$ Setting $\beta\coloneqq\psi\alpha$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
+Next we check that $T^*\phi$ preserves pairings. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in V.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
 \begin{equation}\label{eqn.dualeval}
-(\psi\alpha)(\phi v) = (\phi^*(\psi\alpha))(v) = \alpha(v),
+(\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v),
 \end{equation}
 and we can conclude that $T^*\phi$ preserves pairings by calculating
 \begin{align*}
-\pairing{T^*\phi(v_1,\alpha_1),T^*\phi(v_2,\alpha_2)}_{T^*W}
-&= (\psi\alpha_2)(\phi v_1)-(\psi\alpha_1)(\phi v_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
-&= \alpha_2(v_1)-\alpha_1(v_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(v_1,\alpha_1),(v_2,\alpha_2)}_{T^*V} && \text{[\eqref{eqn.canonical_form}]}.
+\pairing{T^*\phi(v_1,\xi_1),T^*\phi(v_2,\xi_2)}_{T^*W}
+&= (\psi\xi_2)(\phi v_1)-(\psi\xi_1)(\phi v_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
+&= \xi_2(v_1)-\xi_1(v_2) && \text{[\eqref{eqn.dualeval}]}\\
+&= \pairing{(v_1,\xi_1),(v_2,\xi_2)}_{T^*V} && \text{[\eqref{eqn.canonical_form}]}.
 \end{align*}
 \end{proof}
 
@@ -657,15 +661,15 @@ The endofunctors $T,T^*\colon\pvect\to\pvect$ are strong symmetric monoidal with
 The unit comparisons are identities since $T0=0\oplus 0=0$ and $T^*0=0\oplus 0^*=0$. The product comparisons are given by interchange:
 \begin{align}
 \sigma\colon T(V_1\oplus V_2)&\To{\cong}TV_1\oplus TV_2,\quad ((v_1,v_2),(v_1',v_2'))\mapsto((v_1,v_1'),(v_2,v_2')),\label{eqn.T_swap}\\
-\sigma^*\colon T^*(V_1\oplus V_2)&\To{\cong}T^*V_1\oplus T^*V_2,\quad ((v_1,v_2),(\alpha_1,\alpha_2))\mapsto((v_1,\alpha_1),(v_2,\alpha_2))\label{eqn.Tstar_swap}
+\sigma^*\colon T^*(V_1\oplus V_2)&\To{\cong}T^*V_1\oplus T^*V_2,\quad ((v_1,v_2),(\xi_1,\xi_2))\mapsto((v_1,\xi_1),(v_2,\xi_2))\label{eqn.Tstar_swap}
 \end{align}
-(using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$ for $\sigma^*$). Both are linear isomorphisms. To check preservation of pairings, compare with a second tangent element $((w_1,w_2),(w_1',w_2'))$ and a second cotangent element $((w_1,w_2),(\beta_1,\beta_2))$. The two sides for $\sigma$ expand to
+(using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$ for $\sigma^*$). Both are linear isomorphisms. To check preservation of pairings, compare with a second tangent element $((w_1,w_2),(w_1',w_2'))$ and a second cotangent element $((w_1,w_2),(\xi'_1,\xi'_2))$. The two sides for $\sigma$ expand to
 \[
 \pairing{v_1,w_1}_{V_1}+\pairing{v_1',w_1'}_{V_1}+\pairing{v_2,w_2}_{V_2}+\pairing{v_2',w_2'}_{V_2},
 \]
 and the two sides for $\sigma^*$ expand via \eqref{eqn.canonical_form} to
 \[
-\beta_1(v_1)+\beta_2(v_2)-\alpha_1(w_1)-\alpha_2(w_2).
+\xi'_1(v_1)+\xi'_2(v_2)-\xi_1(w_1)-\xi_2(w_2).
 \]
 \qedhere
 \end{proof}
@@ -673,7 +677,7 @@ and the two sides for $\sigma^*$ expand via \eqref{eqn.canonical_form} to
 \begin{proposition}\label{prop.legendre}
 There is a monoidal natural isomorphism $\sharp\colon T^*\;\xRightarrow{\cong}\;T$ whose components are given by
 \[
-\id_V\oplus\sharp_V\colon T^*V\to TV,\qquad (v,\alpha)\mapsto(v,\sharp_V(\alpha)).
+\id_V\oplus\sharp_V\colon T^*V\to TV,\qquad (v,\xi)\mapsto(v,\sharp_V(\xi)).
 \]
 \end{proposition}
 
@@ -685,9 +689,9 @@ Each component is a linear isomorphism by \cref{def.pnla}; naturality is the pai
 \Cref{prop.legendre} is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\flat_V$ sends a velocity to its conjugate momentum, and $\sharp_V$ sends a momentum to the corresponding velocity.\qedhere
 \end{remark}
 
-The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flow of the constant left-invariant vector field $\sharp_V(\alpha)$ from base point $v$:
+The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flow of the constant left-invariant vector field $\sharp_V(\xi)$ from base point $v$:
 \begin{equation}\label{eqn.flow_cot}
-\exp_V\colon T^*V\to V,\qquad (v,\alpha)\longmapsto v+\sharp_V(\alpha).
+\exp_V\colon T^*V\to V,\qquad (v,\xi)\longmapsto v+\sharp_V(\xi).
 \end{equation}
 It is natural in $\pvect$-isomorphisms by linearity and the pairing-preservation equation \eqref{eqn.pairing_triangle}. We use \eqref{eqn.flow_cot} pointwise as the on-directions bijection of $V\yon^V\cong\cot{V}$ in \cref{prop.pnla_polynomial}.
 
@@ -696,7 +700,7 @@ It is natural in $\pvect$-isomorphisms by linearity and the pairing-preservation
 \begin{itemize}
 \item \Cref{prop.pnla_smc_action}: the action becomes $((\lie g,\sharp),M)\mapsto\Int\lie g\times M$, where $\Int\lie g$ is the simply-connected Lie group integrating $\lie g$ (Lie's third theorem~\cite[App.~B]{knapp2002lie}; $\Int V\cong V$ for vector spaces).
 \item \Cref{prop.TT_endofunctors}: $TV=V\oplus V$ and $T^*V=V\oplus V^*$ in \eqref{eqn.TT_def} are unchanged as vector spaces but now carry brackets mixing $\ad$ and $\ad^*$ (nilpotent of class $\le 2n-1$ when $\lie g$ has class $n$). Morphism formulas \eqref{eqn.TT_phi} are unchanged; bracket-preservation needs $(\phi^*)\inv\circ\ad^*_X=\ad^*_{\phi X}\circ(\phi^*)\inv$, a transpose of $\phi$'s Lie-algebra-homomorphism property.
-\item Exponential \eqref{eqn.flow_cot}: extends to $T^*G\to G$, $(g,\alpha)\mapsto g\cdot\exp_G(\sharp_G\alpha)$ for $G\coloneqq\Int\lie g$, via Malcev's diffeomorphism $\exp_G\colon\lie g\To{\cong}\Int\lie g$~\cite[Thm.~1.127]{knapp2002lie}. The vector-space case is abelian: $\Int\lie g=\lie g$, $\exp_G=\id$, multiplication is addition.\qedhere
+\item Exponential \eqref{eqn.flow_cot}: extends to $T^*G\to G$, $(g,\xi)\mapsto g\cdot\exp_G(\sharp_G\xi)$ for $G\coloneqq\Int\lie g$, via Malcev's diffeomorphism $\exp_G\colon\lie g\To{\cong}\Int\lie g$~\cite[Thm.~1.127]{knapp2002lie}. The vector-space case is abelian: $\Int\lie g=\lie g$, $\exp_G=\id$, multiplication is addition.\qedhere
 \end{itemize}
 \end{remark}
 
@@ -722,34 +726,34 @@ T(T^*V)
   \ar[ll, equal, "{\eqref{eqn.TT_def}^{-1}}"]
 \end{tikzcd}
 \]
-The first arrow sends $(v,\alpha)$ to $((v,\alpha),dH|_{(v,\alpha)})$. The arrow labeled $\id\oplus\sharp_{V\oplus V^*}$ is the component at $T^*V$ of the Legendre transform $\sharp\colon T^*\Rightarrow T$ (\cref{prop.legendre}); explicitly, it leaves the basepoint fixed and applies the canonical symplectic sharp map $\sharp_{V\oplus V^*}=\sharp_{T^*V}$ of \eqref{eqn.canonical_sharp} to the cotangent-fiber component:
+The first arrow sends $(v,\xi)$ to $((v,\xi),dH|_{(v,\xi)})$. The arrow labeled $\id\oplus\sharp_{V\oplus V^*}$ is the component at $T^*V$ of the Legendre transform $\sharp\colon T^*\Rightarrow T$ (\cref{prop.legendre}); explicitly, it leaves the basepoint fixed and applies the canonical symplectic sharp map $\sharp_{V\oplus V^*}=\sharp_{T^*V}$ of \eqref{eqn.canonical_sharp} to the cotangent-fiber component:
 \[
-((v,\alpha),(\beta,w))\longmapsto((v,\alpha),(w,-\beta)).
+((v,\xi),(\xi',w))\longmapsto((v,\xi),(w,-\xi')).
 \]
 The bottom $\eqref{eqn.TT_def}^{-1}$ arrow repackages the explicit direct sum as $T(T^*V)$. Under \eqref{eqn.canonical_dual_sum}, we write
 \begin{equation}\label{eqn.hamilton_differential}
-dH|_{(v,\alpha)}=(\partial_v H,\partial_\alpha H)\in V^*\oplus V,
+dH|_{(v,\xi)}=(\partial_v H,\partial_\xi H)\in V^*\oplus V,
 \qquad
-dH|_{(v,\alpha)}(v',\alpha')=(\partial_v H)(v')+\alpha'(\partial_\alpha H).
+dH|_{(v,\xi)}(v',\xi')=(\partial_v H)(v')+\xi'(\partial_\xi H).
 \end{equation}
 Thus the composite is
 \[
-X_H(v,\alpha)=((v,\alpha),(\partial_\alpha H,-\partial_v H))\in T(T^*V).\qedhere
+X_H(v,\xi)=((v,\xi),(\partial_\xi H,-\partial_v H))\in T(T^*V).\qedhere
 \]
 \end{definition}
 
 \begin{proposition}[Hamilton's equations]\label{prop.hamilton}
-The integral curves $(v(t),\alpha(t))$ of the Hamiltonian vector field of \cref{def.hamiltonian_vector_field} — those whose velocity is the fiber component of $X_H(v,\alpha)$ — satisfy \emph{Hamilton's equations}
+The integral curves $(v(t),\xi(t))$ of the Hamiltonian vector field of \cref{def.hamiltonian_vector_field} — those whose velocity is the fiber component of $X_H(v,\xi)$ — satisfy \emph{Hamilton's equations}
 \[
-\dot v=\partial_\alpha H,\qquad \dot\alpha=-\partial_v H,
+\dot v=\partial_\xi H,\qquad \dot\xi=-\partial_v H,
 \]
 and $H$ is conserved along them: $dH/dt=0$.
 \end{proposition}
 
 \begin{proof}
-By \cref{def.hamiltonian_vector_field}, the fiber component of $X_H(v,\alpha)$ is $(\partial_\alpha H,-\partial_v H)$. Thus the integral-curve condition is
+By \cref{def.hamiltonian_vector_field}, the fiber component of $X_H(v,\xi)$ is $(\partial_\xi H,-\partial_v H)$. Thus the integral-curve condition is
 \begin{equation}\label{eqn.hamilton_integral_curve}
-(\dot v,\dot\alpha)=(\partial_\alpha H,-\partial_v H),
+(\dot v,\dot\xi)=(\partial_\xi H,-\partial_v H),
 \end{equation}
 which is Hamilton's equations.
 
@@ -757,15 +761,15 @@ For conservation, the chain rule together with \eqref{eqn.hamilton_differential}
 \[
 \begin{aligned}
 \frac{dH}{dt}
-&= dH|_{(v,\alpha)}(\dot v,\dot\alpha) \\
-&= (\partial_v H)(\dot v)+\dot\alpha(\partial_\alpha H) \\
-&= (\partial_v H)(\partial_\alpha H)+(-\partial_v H)(\partial_\alpha H)=0.
+&= dH|_{(v,\xi)}(\dot v,\dot\xi) \\
+&= (\partial_v H)(\dot v)+\dot\xi(\partial_\xi H) \\
+&= (\partial_v H)(\partial_\xi H)+(-\partial_v H)(\partial_\xi H)=0.
 \end{aligned}
 \]
 \end{proof}
 
 \begin{remark}[Antisymmetry is substantive]\label{rmk.antisymmetry_substantive}
-Had we used the swap pairing of \cref{rmk.swap_pairing} in place of \eqref{eqn.canonical_form}, the vertical map $\id\oplus\sharp_{V\oplus V^*}$ in \cref{def.hamiltonian_vector_field} would use the swap sharp $(\alpha,v)\mapsto(v,\alpha)$ instead of \eqref{eqn.canonical_sharp}. This would give $\dot\alpha=+\partial_v H$ and $dH/dt=2(\partial_v H)(\partial_\alpha H)$, which is generically nonzero: it represents a gradient flow rather than a Hamiltonian flow. Conservation is precisely what the antisymmetry of \eqref{eqn.canonical_form} buys.\qedhere
+Had we used the swap pairing of \cref{rmk.swap_pairing} in place of \eqref{eqn.canonical_form}, the vertical map $\id\oplus\sharp_{V\oplus V^*}$ in \cref{def.hamiltonian_vector_field} would use the swap sharp $(\xi,v)\mapsto(v,\xi)$ instead of \eqref{eqn.canonical_sharp}. This would give $\dot\xi=+\partial_v H$ and $dH/dt=2(\partial_v H)(\partial_\xi H)$, which is generically nonzero: it represents a gradient flow rather than a Hamiltonian flow. Conservation is precisely what the antisymmetry of \eqref{eqn.canonical_form} buys.\qedhere
 \end{remark}
 
 \begin{remark}[Coordinate invariance of $X_H$]\label{rmk.XH_natural}
@@ -779,11 +783,11 @@ so $T^*\phi$ takes integral curves of $X_{H\circ T^*\phi}$ on $T^*V$ to those of
 \begin{remark}[Decoupling of separable Hamiltonians]\label{rmk.XH_separable}
 For Hamiltonians $H_i\colon T^*V_i\to\rr$, the separable Hamiltonian on $T^*(V_1\oplus V_2)$ defined in coordinates by
 \[
-H((v_1,v_2),(\alpha_1,\alpha_2))\coloneqq H_1(v_1,\alpha_1)+H_2(v_2,\alpha_2)
+H((v_1,v_2),(\xi_1,\xi_2))\coloneqq H_1(v_1,\xi_1)+H_2(v_2,\xi_2)
 \]
-satisfies $\partial_{v_i}H=\partial_{v_i}H_i$ and $\partial_{\alpha_i}H=\partial_{\alpha_i}H_i$, so by \cref{prop.hamilton} the dynamics decouple:
+satisfies $\partial_{v_i}H=\partial_{v_i}H_i$ and $\partial_{\xi_i}H=\partial_{\xi_i}H_i$, so by \cref{prop.hamilton} the dynamics decouple:
 \[
-\dot v_i=\partial_{\alpha_i}H_i,\qquad \dot\alpha_i=-\partial_{v_i}H_i\qquad(i=1,2).
+\dot v_i=\partial_{\xi_i}H_i,\qquad \dot\xi_i=-\partial_{v_i}H_i\qquad(i=1,2).
 \]
 At the level of vector fields, the swaps \eqref{eqn.T_swap}, \eqref{eqn.Tstar_swap} of \cref{prop.TT_monoidal} together with the monoidality of $\sharp$ (\cref{prop.legendre}) factor $X_H$ as $X_{H_1}\oplus X_{H_2}$; non-interacting systems evolve independently on their own factors.\qedhere
 \end{remark}
@@ -843,7 +847,7 @@ The above correspondence defines an isomorphism between polynomial comonads and 
 \end{proposition}
 
 \begin{example}[The store comonad and the pair groupoid]\label{ex.store}
-For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times-\;\dashv\;(-)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. We can also write
+For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. We can also write
 \begin{equation}\label{eqn.store_decomp}
 S\yon^S\;\cong\;\ihom{S\yon,\yon}\otimes S\yon
 \end{equation}
@@ -891,10 +895,10 @@ The first commutes iff $\beta'_1\circ f=\beta_1$ and $f\circ\beta^\sharp_s=\beta
 
 The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$, so the assignment $S\mapsto S\yon^S$ extends to a strong symmetric monoidal functor $\smset_\cong\to\poly$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$ (\cref{prop.coalg_as_poly_map}). Composing with the Dirichlet product gives a strong monoidal action of $\smset_\cong$ on $\poly$.
 
-\begin{definition}[$\Fun{smpl}$ and the store action]\label{def.store_action}
+\begin{definition}[$\Fun{Store}$ and the store action]\label{def.store_action}
 Write
 \[
-\Fun{smpl}\colon(\smset_\cong,1,\times)\to(\poly,\yon,\otimes),\qquad S\longmapsto S\yon^S
+\Fun{Store}\colon(\smset_\cong,1,\times)\to(\poly,\yon,\otimes),\qquad S\longmapsto S\yon^S
 \]
 for the above functor, and define the \emph{store action} by
 \[
@@ -966,7 +970,7 @@ For any smooth manifold $M$, the polynomial $\cot{M}$ is a cocommutative comonoi
 \]
 sends each position $m\in M$ to $(m,m)$. On directions, each cotangent fibre $T^*_mM$ carries the induced cocommutative comonoid structure
 \[
-T^*_mM\times T^*_mM\to T^*_mM,\quad (\alpha,\alpha')\mapsto\alpha+\alpha'
+T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\xi')\mapsto\xi+\xi'
 \qqand 1\to T^*_mM,\quad *\mapsto 0,
 \]
 i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cot{M}$ recovers the additive structure of each cotangent space.%
@@ -975,14 +979,14 @@ One can recover scalar structure on $T^*_mM$ as well. For any $M:\mfd$, there is
 \[
 (\cdot)\colon\cot{M}\to\yon^\rr\otimes\cot{M}
 \]
-Axioms relating the comonoid structure of $\cot{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}_x\colon (r,\alpha)\mapsto r\cdot\alpha$ encodes the following laws:
+Axioms relating the comonoid structure of $\cot{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}_x\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
 \[
-	1\cdot\alpha=\alpha,\qquad
-	(r_1r_2)\cdot\alpha=r_1\cdot(r_2\cdot\alpha),\qquad
-	0\cdot\alpha=0,\qand
-	r\cdot(\alpha_1+\alpha_2)=(r\cdot\alpha_1)+(r\cdot\alpha_2).
+	1\cdot\xi=\xi,\qquad
+	(r_1r_2)\cdot\xi=r_1\cdot(r_2\cdot\xi),\qquad
+	0\cdot\xi=0,\qand
+	r\cdot(\xi_1+\xi_2)=(r\cdot\xi_1)+(r\cdot\xi_2).
 \]
-Notably missing is the axiom $(r_1+r_2)\cdot\alpha=(r_1\cdot\alpha)+(r_2\cdot\alpha)$, which seemingly cannot be encoded this way because there is seemingly no way to copy a cotangent vector ($\alpha$).
+Notably missing is the axiom $(r_1+r_2)\cdot\xi=(r_1\cdot\xi)+(r_2\cdot\xi)$, which seemingly cannot be encoded this way because there is seemingly no way to copy a cotangent vector ($\xi$).
 }
 \end{lemma}
 
@@ -1003,30 +1007,30 @@ the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\c
 The Lie group axioms are equations in $\mfd$; applying the strong monoidal functor $\cot$ preserves them. In particular, the monoid axioms for $(\eta,\mu)$ become monoid axioms for $(\cot{\eta},\cot{\mu})$, the compatibility between multiplication and comultiplication (which holds because $\Delta$ is natural), and the antipode condition $\mu\circ(\iota\times\id)\circ\Delta=\eta\circ!=\mu\circ(\id\times\iota)\circ\Delta$ maps to the Hopf monoid axiom in $\poly$. See also~\cite{spivak2023hopf}.
 \end{proof}
 
-Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ (\cref{prop.pnla_smc_action}) and $\Fun{smpl}(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
+Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ (\cref{prop.pnla_smc_action}) and $\Fun{Store}(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
 
 \begin{proposition}\label{prop.pnla_polynomial}
 The following square, in which all maps are strong monoidal, commutes up to isomorphism:
 \begin{equation}\label{eqn.pnla_polynomial_square}
 \begin{tikzcd}[ampersand replacement=\&]
-\pvect\ar[r,"\Fun{inc}"]\ar[d,"|{-}|"']
+\pvect\ar[r,"\Fun{inc}"]\ar[d,"|{\blank}|"']
 \ar[dr,phantom,"\cong^\theta"description] \& \mfd\ar[d,"\cot"]\\
-\smset_\cong\ar[r,"\Fun{smpl}"'] \& \poly
+\smset_\cong\ar[r,"\Fun{Store}"'] \& \poly
 \end{tikzcd}
 \end{equation}
 The 2-cell $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ at each $V:\pvect$ is identity on positions and, on directions at $v\in V$, the cotangent flow \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
-T^*_vV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V\To{v+(-)}V,
+T^*_vV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V\To{v+\blank}V,
 \qquad
-\alpha\longmapsto v+\sharp_V(\alpha).
+\xi\longmapsto v+\sharp_V(\xi).
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-On positions, both functors send $V$ to its underlying set, so the on-positions component is the identity. At each $v\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $v$, hence a bijection. So $\Fun{smpl}(|V|)=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $v$, we must check that the two composites $T^*_{\phi(v)}W\to V$ agree:
+On positions, both functors send $V$ to its underlying set, so the on-positions component is the identity. At each $v\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $v$, hence a bijection. So $\Fun{Store}(|V|)=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $v$, we must check that the two composites $T^*_{\phi(v)}W\to V$ agree:
 \begin{align*}
-\beta\;&\Mapsto{\phi^*}\;\phi^*\beta\;\Mapsto{\sharp_V}\;\sharp_V(\phi^*\beta)\;\Mapsto{v+(-)}\;v+\sharp_V(\phi^*\beta), && \text{[$F^V_v\circ\cot{\phi}$]}\\
-\beta\;&\Mapsto{\sharp_W}\;\sharp_W(\beta)\;\Mapsto{\phi(v)+(-)}\;\phi(v)+\sharp_W(\beta)\;\Mapsto{\phi^{-1}}\;v+\phi^{-1}(\sharp_W\beta) && \text{[$\phi\yon^\phi\circ F^W_{\phi(v)}$]}.
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_V}\;\sharp_V(\phi^*\xi)\;\Mapsto{v+\blank}\;v+\sharp_V(\phi^*\xi), && \text{[$F^V_v\circ\cot{\phi}$]}\\
+\xi\;&\Mapsto{\sharp_W}\;\sharp_W(\xi)\;\Mapsto{\phi(v)+\blank}\;\phi(v)+\sharp_W(\xi)\;\Mapsto{\phi^{-1}}\;v+\phi^{-1}(\sharp_W\xi) && \text{[$\phi\yon^\phi\circ F^W_{\phi(v)}$]}.
 \end{align*}
 The two are equal iff $\sharp_V\circ\phi^*=\phi^{-1}\circ\sharp_W$, which is \eqref{eqn.pairing_triangle}.\qedhere
 \end{proof}
@@ -1034,21 +1038,36 @@ The two are equal iff $\sharp_V\circ\phi^*=\phi^{-1}\circ\sharp_W$, which is \eq
 \begin{remark}\label{rmk.pnla_fiberwise_addition}
 By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. By \cref{ex.store}, the canonical such structure is the codiscrete category on $V$: there is exactly one morphism $v\to v'$ for each pair, and the direction-set $V$ at position $v$ is interpreted as the set of codomains.
 
-Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\alpha\in T^*_vV$ at $v$ corresponds to the unique morphism $v\to v+\sharp_V(\alpha)$ in the codiscrete category on $V$. The identity at $v$ corresponds to the zero covector $0\in T^*_vV$, since $v+\sharp_V(0)=v$. Composition of $\alpha$ at $v$ with $\alpha'$ at $v+\sharp_V(\alpha)$ corresponds to $\alpha+\alpha'$ at $v$, since both produce the morphism with codomain $v+\sharp_V(\alpha)+\sharp_V(\alpha')=v+\sharp_V(\alpha+\alpha')$. Thus the pairing $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(v,\alpha)\mapsto v+\sharp_V(\alpha)$ and composition by fiberwise addition of covectors.\qedhere
+Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_vV$ at $v$ corresponds to the unique morphism $v\to v+\sharp_V(\xi)$ in the codiscrete category on $V$. The identity at $v$ corresponds to the zero covector $0\in T^*_vV$, since $v+\sharp_V(0)=v$. Composition of $\xi$ at $v$ with $\xi'$ at $v+\sharp_V(\xi)$ corresponds to $\xi+\xi'$ at $v$, since both produce the morphism with codomain $v+\sharp_V(\xi)+\sharp_V(\xi')=v+\sharp_V(\xi+\xi')$. Thus the pairing $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(v,\xi)\mapsto v+\sharp_V(\xi)$ and composition by fiberwise addition of covectors.\qedhere
 \end{remark}
 
-For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(u,\pi)$ for a \emph{position} $u\in V$ and \emph{momentum} $\pi\in V^*$. The cotangent space decomposes as
+For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(v,\pi)$ for a \emph{position} $v\in V$ and \emph{momentum} $\pi\in V^*$. The cotangent space decomposes as
 \[
-T^*_{(u,\pi)}(T^*V)\cong T^*_uV\oplus T^*_\pi(V^*)\cong V^*\oplus V,
+T^*_{(v,\pi)}(T^*V)\cong T^*_vV\oplus T^*_\pi(V^*)\cong V^*\oplus V,
 \]
 again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
 
 \begin{definition}[Pairing projection]\label{def.pairing_proj}
-The \emph{pairing projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(u,\pi)\mapsto u$ and direction-action at $(u,\pi)$
+The \emph{pairing projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(v,\pi)\mapsto v$ and direction-action at $(v,\pi)$
 \[
-T^*_uV\cong V^*\To{\sigma\mapsto(\sigma,\,\sharp_V(\pi))}V^*\oplus V\cong T^*_{(u,\pi)}(T^*V).
+T^*_vV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_V(\pi))}V^*\oplus V\cong T^*_{(v,\pi)}(T^*V).
+\qedhere
 \]
 \end{definition}
+
+\begin{lemma}\label{lem.rho_natural}
+The components $\rho_V$ assemble into a monoidal natural transformation
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=50pt]
+\pvect\ar[r,bend left=25,"\cot{T^*\blank}", ""{name=U,below}]\ar[r,bend right=25,"\cot{\blank}"', ""{name=D,above}]\& \poly.
+\arrow[Rightarrow, from=U, to=D-|U, pos=.4, "\rho"]
+\end{tikzcd}
+\]
+\end{lemma}
+
+\begin{proof}
+Naturality in $\pvect$-isomorphisms and monoidality both follow from $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}).
+\end{proof}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
 
@@ -1296,9 +1315,9 @@ It sends $M\mapsto\cot{M}$ and a morphism $(V, \sharp,f\colon V\times M\to N)$ t
 \[
 V\To{\Psi(V,f)}[\cot{M},\cot{N}]\tri V
 \]
-which at $v\in V$ sends a point $m\in M$ to  $n\coloneqq f(v,m)\in N$ and for a covector $\beta\in T^*_nN$ if we let $(\xi,\alpha)\coloneqq(Df)_{(v,m)}^\top(\beta)\in T_v^*V\times T_m^*M$, returns $\alpha\in T^*_mM$ and updates to
+which at $v\in V$ sends a point $m\in M$ to  $n\coloneqq f(v,m)\in N$ and for a covector $\xi_N\in T^*_nN$ if we let $(\xi_V,\xi_M)\coloneqq(Df)_{(v,m)}^\top(\xi_N)\in T_v^*V\times T_m^*M$, returns $\xi_M\in T^*_mM$ and updates to
 \begin{equation}\label{eqn.cotangent_learner_update}
-\upd_v(m,\beta)\coloneqq v+\sharp_V(\xi).
+\upd_v(m,\xi_N)\coloneqq v+\sharp_V(\xi_V).
 \end{equation}
 \end{corollary}
 
@@ -1327,11 +1346,11 @@ Applying $\Psi$ gives an $\ihom{\cot{\rr^m},\cot{\rr^n}}$-coalgebra with state s
 \]
 whose forward part is $x\mapsto f_v(x)$ and whose backward part is $(Df_v)_x^\top$.
 
-The update at $v$ on a direction $(x,\nu)\in\rr^m\times T^*_{f_v(x)}\rr^n$ is
+The update at $v$ on a direction $(x,\xi)\in\rr^m\times T^*_{f_v(x)}\rr^n$ is\textbf{[decide on notation: plain $\xi$ here vs $\xi_N$ for consistency with \cref{cor.cotangent_learners}]}
 \[
-\upd_v(x,\nu)=v+\sharp_V\bigl((\partial_Vf)_{(v,x)}^\top\nu\bigr)=v-\eta\cdot(\partial_Vf)_{(v,x)}^\top\nu,
+\upd_v(x,\xi)=v+\sharp_V\bigl((\partial_Vf)_{(v,x)}^\top\xi\bigr)=v-\eta\cdot(\partial_Vf)_{(v,x)}^\top\xi,
 \]
-by \eqref{eqn.cotangent_learner_update}. When $\nu=dL|_{f_v(x)}$ for a loss $L\colon\rr^n\to\rr$, the chain rule gives $(\partial_Vf)_{(v,x)}^\top\nu=d_v(L\circ f(-,x))$; under the Euclidean identification, $\upd_v$ is one step of stochastic gradient descent.
+by \eqref{eqn.cotangent_learner_update}. When $\xi=dL|_{f_v(x)}$ for a loss $L\colon\rr^n\to\rr$, the chain rule gives $(\partial_Vf)_{(v,x)}^\top\xi=d_v(L\circ f(\blank,x))$; under the Euclidean identification, $\upd_v$ is one step of stochastic gradient descent.
 
 Since $\Psi$ is a functor, composition in $\org$ reproduces backpropagation. Since $\Psi$ is strong monoidal, parallel composition of layers is transported by the comparison $\cot{\rr^m}\otimes\cot{\rr^{m'}}\cong\cot{\rr^{m+m'}}$. Thus the Euclidean restriction of $\Psi$ assembles into an operad functor
 \[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
@@ -1483,19 +1502,23 @@ X\otimes\Fun{T}Y\ar[r, "\sigma"]\ar[d, "\varepsilon_X\otimes\id"']&
 When $\cat{C}$ is cartesian, this specializes to the familiar projection formula $\sigma\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$.
 
 
-\begin{proposition}
-Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$ and sending a map $(\outp f,\inpt f)$ to $(\outp f, \sigma\then\Fun{T}\inpt f)$
-\[
-\outp c\otimes\Fun{T}\inpt d\To{\sigma}\Fun{T}(\outp c\otimes\inpt d)\To{\Fun{T}\inpt f}\Fun{T}\inpt c
-\]
+\begin{proposition}\label{prop.backward_comonad}
+Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$. We denote its coKleisli category by $\Lens{\cat{C}}^{\Fun{T}}\coloneqq(\Lens{\cat{C}})_{\Lens{\Fun T}}$. 
+
+If moreover $(\Fun{T},\tau)$ is a monoidal monad, then $\Lens{\Fun T}$ is a colax monoidal comonad, thus the coKleisli category $(\Lens{\cat{C}}^{\Fun{T}},I,\otimes)$ is naturally monoidal.
 \end{proposition}
 \begin{proof}
+On a lens map $(\outp f,\inpt f)$ with $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, define $\Lens{\Fun T}(\outp f,\inpt f)$ to be the following composite:
+\begin{equation}\label{eqn.lens_T_morphism}
+\outp c\otimes\Fun{T}\inpt d\To{\sigma}\Fun{T}(\outp c\otimes\inpt d)\To{\Fun{T}\inpt f}\Fun{T}\inpt c.
+\end{equation}
 The counit and comultiplication of $\Lens{\Fun{T}}$ are given by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp c}$:
-\[
-\outp c\otimes\inpt c\To{\varepsilon_{\outp c}\otimes\id}\inpt c\To{\eta}\Fun{T}\inpt c
-\qqand
-\outp c\otimes\Fun{T}\Fun{T}\inpt c\To{\varepsilon_{\outp c}\otimes\id}\Fun{T}\Fun{T}\inpt c\To{\mu}\Fun{T}\inpt c
-\]
+\begin{equation}\label{eqn.lens_T_counit}
+\outp c\otimes\inpt c\To{\varepsilon_{\outp c}\otimes\id}\inpt c\To{\eta}\Fun{T}\inpt c,
+\end{equation}
+\begin{equation}\label{eqn.lens_T_comult}
+\outp c\otimes\Fun{T}\Fun{T}\inpt c\To{\varepsilon_{\outp c}\otimes\id}\Fun{T}\Fun{T}\inpt c\To{\mu}\Fun{T}\inpt c.
+\end{equation}
 We need to prove that $\Lens{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond precisely to the four axioms of a monad strength.
 %The unit axiom~\cite[(1.5)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
 
@@ -1528,11 +1551,9 @@ We include only the least trivial here: preservation of composition. Writing $f_
 \end{tikzcd}
 \]
 The first two squares are naturality of $\sigma$ in its first argument; the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, which merges the nested $\sigma$'s; the last square is naturality of $\sigma$ in its second argument.
-\end{proof}
 
-\begin{definition}\label{def.lens_cokleisli}
-For any strong monad $\Fun T$ on a symmetric monoidal category $\cat{C}$, we denote the coKleisli category of $\Lens{\Fun{T}}$ by $\Lens{\cat{C}}^{\Fun{T}}\coloneqq\left(\Lens{\cat{C}}\right)_{\Lens{\Fun T}}$. 
-\end{definition}
+When $(\Fun T,\tau_0,\tau)$ is moreover a monoidal monad, we obtain an colax monoidal structure on $\Lens{\Fun{T}}$: the counitor $\binom{I}{I}\to\binom{\Fun T(I)}{I}$ amounts to $\tau_0\colon I\to\Fun T I$ and the coproductor map $\binom{\Fun{T}(\inpt c\otimes\inpt d)}{\outp c\otimes\outp d}\to\binom{\Fun{T}(\inpt c)\otimes\Fun T(\inpt d)}{\outp c\otimes\outp d}$ amounts to $\tau\colon \Fun{T}(\inpt c)\otimes\Fun T(\inpt d)\to \Fun{T}(\inpt c\otimes\inpt d)$.
+\end{proof}
 
 A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}{\outp c}\to\lensob{d}$ in $\Lens{\cat{C}}$, i.e.
 \[
@@ -1541,11 +1562,22 @@ A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}
 \inpt f\colon \inpt d\otimes\outp c\to\Fun{T}\inpt c.
 \]
 
+\begin{lemma}\label{lem.lens_T_functoriality}
+The construction of \cref{prop.backward_comonad} is functorial in $(\cat{C},\Fun{T})$: a strong symmetric monoidal $F\colon\cat C\to\cat C'$ and strong monad morphism $\theta\colon F\Fun T\Rightarrow\Fun T'F$ induce
+\[
+\Lens F\colon\Lens{\cat C}^{\Fun T}\to\Lens{\cat C'}^{\Fun T'},\qquad
+\lensob c\mapsto\binom{F(\inpt c)}{F(\outp c)},\qquad
+(\outp f,\inpt f)\mapsto(F(\outp f),\theta\circ F(\inpt f)\circ F_2),
+\]
+where $F_2$ is $F$'s productor. If $\Fun T,\Fun T'$ are monoidal monads and $\theta$ is a morphism of monoidal monads, $\Lens F$ is strong symmetric monoidal.
+\end{lemma}
+
 \begin{lemma}\label{lem.parameter_lens_action}
 Let $\cat V$ be symmetric monoidal, let $\cat C$ be symmetric monoidal with a homomorphic supply of commutative comonoids, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be strong monoidal. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
 \[
-v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}
+v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}.
 \]
+If moreover $\Fun T$ is a monoidal monad, this action is symmetric monoidal.
 \end{lemma}
 
 \begin{proof}
@@ -1557,6 +1589,8 @@ u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(v)}}{J(u)\otimes\outp f}\colon
 \binom{\inpt d}{J(w)\otimes\outp d}.
 \]
 Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the homomorphic supply assumption: $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
+
+When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cref{prop.backward_comonad}, and the comparisons $J(I)\cong I$ and $(v\otimes w)\cdot(\lensob c\otimes\lensob d)\cong(v\cdot\lensob c)\otimes(w\cdot\lensob d)$ come directly from the strong monoidality of $J$.
 \end{proof}
 
 \section{Internal representation of lenses}\label{sec.abstract_representation}
@@ -1569,48 +1603,49 @@ For any symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, there i
 \lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.\]
 \end{proposition}
 \begin{proof}
-We need to prove the equality $\Theta(g\circ f)=\Theta(g)\circ\Theta(f)\colon\outp c\,H_c\to\outp e\,H_e$ for $f\colon\lensob c\coto\lensob d$ and $g\colon\lensob d\coto\lensob e$. It amounts to the commutativity of the outer square below, where we write $H_x\coloneqq[\inpt x,I]$, and for space reasons write $c,d,e$ for $\inpt c,\inpt d,\inpt e$ and elide the $\otimes$-symbol, so e.g.\ $\outp d\outp d[d,c H_c]$ means $\outp d\otimes\outp d\otimes[\inpt d,\inpt c\otimes [c,I]]$. 
-\[
-\begin{tikzcd}[column sep=1em, row sep=1.4em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
-\outp c H_c
-  \ar[r, "{\delta}"]
-  \ar[d, "{\delta}"']
-\& \outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\delta}"']
-\& \outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\delta}"']
-\& \outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\delta}"']
-\& \outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\delta}"']
-\& \outp d H_d \ar[d, "{\delta}"] \\
-\outp c\outp c H_c \ar[d, "{\outp f}"'] \ar[r, "{\delta}"]
-\& \outp c\outp c\outp c H_c \ar[r, "{\outp f\outp f}"] \ar[d, "{\outp f}"']
-\& \outp d\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\outp g}"']
-\& \outp d\outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\outp g}"']
-\& \outp d\outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\outp g}"']
-\& \outp d\outp d H_d \ar[d, "{\outp g}"] \\
-\outp d\outp c H_c \ar[d, "{\outp g}"'] \ar[r, "{\delta}"]
-\& \outp d\outp c\outp c H_c \ar[r, "{\outp g\outp f}"]
-\& \outp e\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\coev_e}"']
-\& \outp e\outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\coev_e}"']
-\& \outp e\outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\coev_e}"']
-\& \outp e\outp d H_d \ar[d, "{\coev_e}"] \\
-\outp e\outp c H_c \ar[d, "{\coev_e}"']
-\& \outp d[e,e\outp cH_c]\ar[from=ul, "{\coev_e}"]\ar[dl, "\outp g"]\ar[d,"\delta"]
-\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{g}"'] \ar[dd, equal, bend right=60pt]
-\& \outp e[e,e\outp d[d,d\outp c H_c]] \ar[r, "{f}"] \ar[d, "{g}"']
-\& \outp e[e,e\outp d[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{g}"']
-\& \outp e[e,e\outp d H_d] \ar[d, "{g}"] \\
-\outp e[e,e\outp c H_c] \ar[d, "{\delta}"']
-\& \outp d[e,e\outp c\outp cH_c]\ar[ld, "{\outp g}"]\ar[ur, "\outp g\outp f"', pos=.3]\ar[from=uu, , bend left=60pt, "{\coev_e}", pos=.3]
-\& \outp e[e,d\outp c H_c] \ar[r, "{\coev_d}"] \ar[dr, equal]
-\& \outp e[e,d[d,d\outp c H_c]] \ar[r, "{f}"] \ar[d, "{\ev}"']
-\& \outp e[e,d[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{\ev}"']
-\& \outp e[e,d H_d] \ar[d, "{\ev}"] \\
-\outp e[e,e\outp c\outp c H_c] \ar[rr, "{\outp f}"]
-\&\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{g}"]
-\& \outp e[e,d\outp c H_c] \ar[r, "{f}"]
-\& \outp e[e,c H_c] \ar[r, "{\ev}"]
-\& \outp e H_e
-\end{tikzcd}
-\]
+This is an immediate corollary of the \cref{prop.Theta_z} with $\Fun{T}=\id$. 
+%We need to prove the equality $\Theta(g\circ f)=\Theta(g)\circ\Theta(f)\colon\outp c\,H_c\to\outp e\,H_e$ for $f\colon\lensob c\coto\lensob d$ and $g\colon\lensob d\coto\lensob e$. It amounts to the commutativity of the outer square below, where we write $H_x\coloneqq[\inpt x,I]$, and for space reasons write $c,d,e$ for $\inpt c,\inpt d,\inpt e$ and elide the $\otimes$-symbol, so e.g.\ $\outp d\outp d[d,c H_c]$ means $\outp d\otimes\outp d\otimes[\inpt d,\inpt c\otimes [c,I]]$. 
+%\[
+%\begin{tikzcd}[column sep=1em, row sep=1.4em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
+%\outp c H_c
+%  \ar[r, "{\delta}"]
+%  \ar[d, "{\delta}"']
+%\& \outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\delta}"']
+%\& \outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\delta}"']
+%\& \outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\delta}"']
+%\& \outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\delta}"']
+%\& \outp d H_d \ar[d, "{\delta}"] \\
+%\outp c\outp c H_c \ar[d, "{\outp f}"'] \ar[r, "{\delta}"]
+%\& \outp c\outp c\outp c H_c \ar[r, "{\outp f\outp f}"] \ar[d, "{\outp f}"']
+%\& \outp d\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\outp g}"']
+%\& \outp d\outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\outp g}"']
+%\& \outp d\outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\outp g}"']
+%\& \outp d\outp d H_d \ar[d, "{\outp g}"] \\
+%\outp d\outp c H_c \ar[d, "{\outp g}"'] \ar[r, "{\delta}"]
+%\& \outp d\outp c\outp c H_c \ar[r, "{\outp g\outp f}"]
+%\& \outp e\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\coev_e}"']
+%\& \outp e\outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\coev_e}"']
+%\& \outp e\outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\coev_e}"']
+%\& \outp e\outp d H_d \ar[d, "{\coev_e}"] \\
+%\outp e\outp c H_c \ar[d, "{\coev_e}"']
+%\& \outp d[e,e\outp cH_c]\ar[from=ul, "{\coev_e}"]\ar[dl, "\outp g"]\ar[d,"\delta"]
+%\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{g}"'] \ar[dd, equal, bend right=60pt]
+%\& \outp e[e,e\outp d[d,d\outp c H_c]] \ar[r, "{f}"] \ar[d, "{g}"']
+%\& \outp e[e,e\outp d[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{g}"']
+%\& \outp e[e,e\outp d H_d] \ar[d, "{g}"] \\
+%\outp e[e,e\outp c H_c] \ar[d, "{\delta}"']
+%\& \outp d[e,e\outp c\outp cH_c]\ar[ld, "{\outp g}"]\ar[ur, "\outp g\outp f"', pos=.3]\ar[from=uu, , bend left=60pt, "{\coev_e}", pos=.3]
+%\& \outp e[e,d\outp c H_c] \ar[r, "{\coev_d}"] \ar[dr, equal]
+%\& \outp e[e,d[d,d\outp c H_c]] \ar[r, "{f}"] \ar[d, "{\ev}"']
+%\& \outp e[e,d[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{\ev}"']
+%\& \outp e[e,d H_d] \ar[d, "{\ev}"] \\
+%\outp e[e,e\outp c\outp c H_c] \ar[rr, "{\outp f}"]
+%\&\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{g}"]
+%\& \outp e[e,d\outp c H_c] \ar[r, "{f}"]
+%\& \outp e[e,c H_c] \ar[r, "{\ev}"]
+%\& \outp e H_e
+%\end{tikzcd}
+%\]
 \end{proof}
 
 
@@ -1735,9 +1770,19 @@ Proving that $\Theta_z$ is functorial a long calculation but routine. We leave p
 %\end{tikzcd}
 %\]
 %Each square is clear.
-show composition on the following page. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z$ applied to the coKleisli composite $g\circ f$ and the sequential $\Theta_z(g)\circ\Theta_z(f)$. 
+show composition on the following page. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z$ of the coKleisli composite $g\circ f$ and the coKleisli composite $\Theta_z(g)\circ\Theta_z(f)$ of the $\Theta_z$'s. 
 
-Each ``tile'' is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}. 
+On the following page, each ``tile'' is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}. 
+
+The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the canonical map
+\[
+(\outp c\otimes[\inpt c,z])\otimes(\outp d\otimes[\inpt d,z])
+\to
+\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z\otimes z]\To{\id\otimes[\id,m_z]}
+\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
+\]
+Its naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
+
 
 \begin{landscape}
 For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[\inpt X,z]$, and write $x$ for $\inpt{x}$. So for example, $\outp d[d,\Fun T(c)H_c]$ means $\outp d\otimes [\inpt d,\Fun T(c)\otimes H_c]$. The strength $\sigma$ has been opened as $\eta$ then $\tau$.
@@ -1877,19 +1922,9 @@ The open hole splits into two regions, which commute as shown below.
 \& \outp e[e,\Fun T(c)\Fun T(H_c)] \ar[rr, "{\tau}"]
 \&\& \outp e[e,\Fun T(cH_c)]
 \end{tikzcd}
-\]
+\qedhere\]
 \end{minipage}
 \end{landscape}
-
-
-The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the canonical map
-\[
-(\outp c\otimes[\inpt c,z])\otimes(\outp d\otimes[\inpt d,z])
-\to
-\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z\otimes z]\To{\id\otimes[\id,m_z]}
-\outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
-\]
-Its naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
 \end{proof}
 
 \begin{corollary}\label{cor.parameterized_representation}
@@ -1935,8 +1970,9 @@ We can thus apply \cref{prop.para_square,prop.Theta_T_alpha} to obtain \eqref{eq
 
 \section{}
 
+
 \begin{lemma}\label{lemma.monoid_to_monad}
-If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative monoid object in it, then $M\otimes-\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure.
+If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative monoid object in it, then $M\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,M)$.
 \end{lemma}
 
 \begin{proof}
@@ -1944,30 +1980,53 @@ The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The mon
 \[
 (M\otimes X)\otimes(M\otimes Y)\cong M\otimes M\otimes X\otimes Y\To{(*)\otimes\id}M\otimes X\otimes Y.
 \]
-The coherence diagrams arise from the monoid laws and commutativity of $M$.
+The coherence diagrams arise from the monoid laws and commutativity of $M$. Functoriality in $(\cat C,M)$ is straightforward.
 \end{proof}
 
-Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid object $\cot{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $\rr\times-$ and $\cot{\rr}\otimes-$ on $\mfd$ and $\poly$, and by \cref{def.lens_cokleisli} there are corresponding comononads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $\Lens{\mfd}^\rr$ and $\Lens{\poly}^\rr$ denote the corresponding cokleisli categories.
+Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cot{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $\rr\times\blank$ and $\cot{\rr}\otimes\blank$ on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\Lens{\mfd}^\rr,\rr^0,\times)$ and $(\Lens{\poly}^\rr,\yon,\otimes)$ denote the corresponding cokleisli categories.
+
+A map in $\lmfd^\rr$ is a tuple $f=(\outp f,\inpt f,U)\colon\lensob M\to\lensob N$ with
+\[
+\outp f\colon\outp M\to\outp N,\qquad
+\inpt f\colon\outp M\times\inpt N\to\inpt M,\qquad
+U\colon\outp M\times\inpt N\to\rr.
+\]
+A map $\lensob p\to\lensob q$ in $\Lens{\poly}^\rr$ is a pair
+\[
+\outp f\colon\outp p\to\outp q,\qquad
+\inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p.
+\]
+
+\begin{lemma}\label{lem.cot_lifts_lens_potential}
+The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong symmetric monoidal functor
+\[
+\Lens\cot\colon\lmfd^\rr\to\Lens{\poly}^\rr.
+\]
+\end{lemma}
+
+\begin{proof}
+Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal by \cref{prop.cot_monoidal}) and the monad morphism $\cot{\rr\times\blank}\Rightarrow\cot{\rr}\otimes\cot{\blank}$ supplied by \cref{lemma.monoid_to_monad}.
+\end{proof}
 
 In \cref{lem.Theta_poly_potential} we will apply the construction of \cref{prop.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics application, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cot{\rr}\to\yon$ is extra data.
 
 \begin{lemma}\label{lem.alpha_constant}
-The $(\cot{\rr}\otimes-)$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $d:\rr$.
+The $(\cot{\rr}\otimes\blank)$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $d:\rr$.
 \end{lemma}
 
 \begin{proof}
-There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields on $\rr$, i.e.\ sections $\bk{\alpha}\colon\rr\to T^*\rr$ of the projection $T^*\rr\to\rr$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ is that the following equation holds for all $x_1,x_2\in\rr$ 
+There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, sending $\alpha$ to $\omega\coloneqq\bk{\alpha}$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ is that the following equation holds for all $x_1,x_2\in\rr$
 \[
-\left(\bk{\alpha}(x_1),\bk{\alpha}(x_2)\right)=
-\left(\bk{\alpha}(x_1+x_2),\bk{\alpha}(x_1+x_2)\right)
+\left(\omega(x_1),\omega(x_2)\right)=
+\left(\omega(x_1+x_2),\omega(x_1+x_2)\right)
 \]
-Setting $x_2\coloneqq 0$, we find $\bk{\alpha}(0)=\bk{\alpha}(x_1)$ for all $x_1$. In other words, $\bk{\alpha}=d$ is constant at some $d:\rr$. And conversely, any constant covector field satisfies the condition.
+Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In other words, $\omega=d$ is constant at some $d:\rr$. And conversely, any constant covector field satisfies the condition.
  \end{proof}
 
 The role of the Lie group $\rr$ in this section is to act as the recipient of \emph{potentials}. The semantics of the value $a\in\rr$ is what potentials ``want to do,'' namely ``potentials want to decrease''. The formal representation of this is the choice 
-\[
-\dec\colon\cot{\rr}\to\yon,\qquad\bk\dec_x(*)\coloneqq -1.
-\]
+\begin{equation}\label{eqn.dec}
+\dec\colon\cot{\rr}\to\yon,\qquad\bk\dec(x)\coloneqq -1\in T^*_x\rr
+\end{equation}
 
 \begin{lemma}\label{lem.Theta_poly_potential}
 There is a lax monoidal functor
@@ -1996,114 +2055,204 @@ There is a lax monoidal functor
 Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
 \end{proof}
 
-Taking $\pvect\to\mfd$ from \cref{prop.pnla_smc_action} and the homomorphic supply on $\mfd$ from \cref{lem.cartesian_homomorphic_supply}, we have an action
-\[(\cdot)\colon\pvect\times\mfd\to\mfd\] 
-by \cref{lem.parameter_lens_action}. On objects it is given by $V\cdot\lensob M\coloneqq\binom{\inpt M}{V\times\outp M}$. Recall that a map in $\lmfd^\rr$ is of the form $f\coloneqq (\outp f,\inpt f,U)\colon\lensob M\to\lensob N$, where
+By \cref{prop.TT_monoidal,prop.pnla_smc_action,prop.cot_monoidal}, we have two parallel strong symmetric monoidal functors $\pvect\to\poly$,%
+\footnote{The vector spaces can be replaced by paired nilpotent Lie algebras; see \cref{rmk.pnla_generalization}.}
+connected by the monoidal natural transformation $\rho\colon\cot{T^*}\Rightarrow\cot$ of \cref{lem.rho_natural}. By \cref{lem.parameter_lens_action}, we obtain an action of $\pvect$ on $\lmfd^\rr$ and two actions of $\pvect$ on $\poly$ by
+\begin{align*}
+\pvect\times\lmfd^\rr&\to\lmfd^\rr,&&V\cdot\lensob M\coloneqq\binom{\inpt M}{V\times\outp M},\\
+\pvect\times\poly&\to\poly,&&V\cdot p\coloneqq\cot{V}\otimes p,\\
+\pvect\times\poly&\to\poly,&&V\cdot p\coloneqq\cot{T^*V}\otimes p.
+\end{align*}
+We thus form $\Para$ constructions (\cref{sec.para_general}), which we denote
 \[
-\outp f\colon\outp M\to\outp N,\qquad
-\inpt f\colon\outp M\times\inpt N\to\inpt M,\qquad
-U\colon\outp M\times\inpt N\to\rr.
+\para{\pvect}{\lmfd^\rr}\qqand
+\para{\cot}{\poly}\qqand
+\para{\cot{T^*}}{\poly}.
 \]
-For $\phi\colon V\To{\cong} W$ in $\pvect$, the map $\phi\cdot f\colon V\cdot\lensob M\to W\cdot\lensob N$ is given by
-\[
-\outp{(\phi\cdot f)}(v,x)\coloneqq(\phi(v),\outp f(x)),\qquad
-\inpt{(\phi\cdot f)}(v,x,y)=\inpt f(x,y),\qquad
-U_{\phi\cdot f}(v,x,y)=U(x,y).
-\]
-
-
 
 \begin{lemma}\label{lem.potlens_to_para_poly}
 There is a lax symmetric monoidal functor
 \[
-\para{\pvect}{\Lens{\mfd}^{\rr}}\to\para{\pvect}{\poly},
+\para{\pvect}{\lmfd^\rr}\to\para{\cot}{\poly}.
 \]
-where $\pvect$ acts on $\poly$ by $V\cdot p\coloneqq\cot{V}\otimes p$.
 \end{lemma}
 
 \begin{proof}
-\cref{prop.cot_monoidal,lem.cot_comonoid} give $\cot\colon\pvect\to\poly$; \cref{lem.Theta_poly_potential} gives the lax monoidal $\Theta_\dec$; and \cref{cor.parameterized_representation} gives the induced functor.
+We apply \cref{prop.para_square} to $\Lens\cot$ from \cref{lem.cot_lifts_lens_potential} and apply \cref{cor.parameterized_representation} to $\Theta_\dec\colon\Lens{\poly}^\rr\to\poly$ from
+\cref{lem.Theta_poly_potential} to obtain the maps below; the desired functor is their composite:
+\[
+\para{\pvect}{\lmfd^\rr}\To{\para\pvect{\Lens\cot}}
+\para{\pvect}{\Lens\poly^\rr}\To{\para\pvect{\Theta_\dec}}
+\para{\cot}{\poly}.
+\qedhere
+\]
 \end{proof}
 
-\begin{lemma}\label{lem.para_potential_lens_maps}
-A morphism $\lensob L\to\lensob M$ in $\para{\pvect}{\Lens{\mfd}^{\Fun T_\rr}}$ is a tuple $(V,\outp f,\inpt f,U)$ with
+\begin{lemma}\label{lem.rho_star}
+The monoidal natural transformation $\rho\colon\cot{T^*}\Rightarrow\cot$ of \cref{lem.rho_natural} induces a strong symmetric monoidal functor
 \[
-\outp f\colon V\times\outp L\to\outp M,\qquad
-\inpt f\colon V\times\outp L\times\inpt M\to\inpt L,\qquad
-U\colon V\times\outp L\times\inpt M\to\rr.
+\rho^*\colon\para{\cot}{\poly}\to\para{\cot{T^*}}{\poly}.
 \]
 \end{lemma}
 
 \begin{proof}
-\Cref{eqn.lens_def,subsec.backwards,prop.pnla_smc_action}.
+Apply \cref{prop.para_strong_induced,prop.para_square} to $\rho$.
+\end{proof}
+
+\begin{lemma}\label{lem.poly_to_org}
+With the action $V\cdot p=\cot{T^*V}\otimes p$ of $\pvect$ on $\poly$, there is an identity-on-objects lax symmetric monoidal functor
+\[
+\para{\cot{T^*}}{\poly}\to\org.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $F\colon\pvect\to\smset_\cong$ be the strong monoidal composite $\pvect\To{T^*}\pvect\to\smset_\cong$, where the second functor forgets the paired-vector-space structure. By \cref{prop.canonical_symplectic_pairing,prop.pnla_polynomial}, the isomorphism $\cot{T^*V}\cong F(V)\yon^{F(V)}$ fills the action square
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
+\pvect\times\poly\ar[r,"\cot{T^*\!\blank}\otimes\blank"]\ar[d,"F\times\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
+\smset_\cong\times\poly\ar[r,"\Fun{Store}(\blank)\otimes\blank"']\& \poly.
+\arrow[Rightarrow, from=L, to=R, shorten <=1.5cm, shorten >=1.5cm, "\cong"]
+\end{tikzcd}
+\]
+\Cref{prop.para_square} gives $\para{\cot{T^*}}\poly\to\para{\smset_\cong}\poly$, and composing with $\para{\smset_\cong}\poly\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim.
 \end{proof}
 
 \begin{theorem}\label{thm.functor}
-$\Phi\colon\para{\pvect}{\Lens{\mfd}^{\Fun T_\rr}}\to\org$ is a lax symmetric monoidal functor.
+We have a lax symmetric monoidal functor
+\[
+\Phi\colon\para{\pvect}{\Lens{\mfd}^{\rr}}\to\org.
+\]
 \end{theorem}
 
 \begin{proof}
-\Cref{lem.potlens_to_para_poly,def.pairing_proj,prop.TT_monoidal,prop.para_square,prop.org_as_para,prop.coalg_as_poly_map,prop.pnla_polynomial,prop.cot_monoidal}.
+Define $\Phi$ to be the composite of the maps below, given by \cref{lem.potlens_to_para_poly}, \cref{lem.rho_star}, and \cref{lem.poly_to_org}:
+\[
+\para{\pvect}{\lmfd^\rr}\To{}
+\para{\cot}{\poly}\To{\rho^*}
+\para{\cot{T^*}}{\poly}\To{}
+\org.
+\qedhere
+\]
 \end{proof}
 
-On objects,
-\[
-\Phi\lensob L=\cot{\outp L}\otimes\ihom{\cot{\inpt L},\yon}.
-\]
-\Cref{lem.Theta_poly_potential,prop.cot_monoidal}.
-On morphisms,
-\[
-\left(V,\;f\colon V\cdot\lensob L\to\lensob M\right)
-\longmapsto
-X\To{\Phi(f)}
-\bigl[
-\cot{\outp L}\otimes\ihom{\cot{\inpt L},\yon},
-\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}
-\bigr]\tri X,
-\]
-where
-\[
-X\coloneqq T^*V\cong V\oplus V^*.
-\]
-\Cref{lem.para_potential_lens_maps,prop.TT_endofunctors,prop.canonical_symplectic_pairing,prop.org_as_para,prop.coalg_as_poly_map,prop.pnla_polynomial}.
-The coalgebra is induced by
-\[
-\tilde f\colon
-\cot{T^*V}\otimes\Phi\lensob L
-\To{\rho_V\otimes\id}
-\cot{V}\otimes\Phi\lensob L
-\To{\bar f}
-\Phi\lensob M,
-\]
-where $\bar f\colon\cot{V}\otimes\Phi\lensob L\to\Phi\lensob M$ is the image of $f$ under \cref{lem.potlens_to_para_poly}.
-\Cref{lem.potlens_to_para_poly,def.pairing_proj}.
-At $x=(u,\pi)\in X$, the map $\rho_V\colon\cot{T^*V}\to\cot{V}$ sends the position $(u,\pi)\in T^*V$ to $u\in V$ and sends a covector $\sigma\in T_u^*V$ to
-\[
-\bk{\rho_V}_{(u,\pi)}(\sigma)=(\sigma,\sharp_V(\pi))\in T_x^*X.
-\]
-\Cref{def.pairing_proj}.
-At $x\in X$, for a position $a\in(\Phi\lensob L)(1)$, let $b\coloneqq(\tilde f)_1(x,a)$. For a direction $\beta\in\Phi\lensob M[b]$, if
-\[
-(\xi,\alpha)\coloneqq\bk{\tilde f}_{(x,a)}(\beta)\in T_x^*X\times\Phi\lensob L[a],
-\]
-then at $(x,a)$ the coalgebra $\Phi(f)$ returns the direction $\alpha\in\Phi\lensob L[a]$ and updates $x$ to $x+\sharp_X(\xi)$.
-\Cref{prop.coalg_as_poly_map,prop.pnla_polynomial}.
+We now unpack $\Phi$. Let $\inpt M,\outp M:\mfd$ be manifolds, and write
+\[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
+for the set of (not-necessarily continuous) \emph{covector fields} on $M$. A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(Tf_m)^\top\omega(f(m))$.
 
-\begin{lemma}\label{lem.Phi_coordinate_update}
-Let $f=(V,\outp f,\inpt f,U)$ be as in \cref{lem.para_potential_lens_maps}, and let $X=T^*V$. At $x=(u,\pi)\in X$, if
+The action of $\Phi$ on objects is given as follows.
 \[
-(\sigma,\alpha)\coloneqq\bk{\bar f}_{(u,a)}(\beta)\in T_u^*V\times\Phi\lensob L[a],
+\Phi\lensob M=
+\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}\cong
+\sum_{(\outp m,\omega):\outp M\times\Omega(\inpt M)}\yon^{\left(T^*_{\outp{m}}\outp M\right)\times\inpt M}.
 \]
-then
+A position in $\Phi\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in\outp{M}$ is a point and $\omega\in\Omega(\inpt M)$ is a covector field. A direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$ where $\xi:T^*_{\outp{m}}\outp M$ is a covector and $\inpt m\in\inpt M$ is a point.
+
+For the action of $\Phi$ on morphisms, let $(V,\sharp):\pvect$ and let
+$f\colon V\cdot\lensob M\to\lensob N$
+be a morphism in $\para{\pvect}{\lmfd^\rr}$, i.e.\ a tuple $(\outp f,\inpt f,U)$:
+\begin{equation}\label{eqn.para_potential_lens_maps}
+\outp f\colon V\times\outp M\to\outp N,\qquad
+\inpt f\colon V\times\outp M\times\inpt N\to\inpt M,\qquad
+U\colon V\times\outp M\times\inpt N\to\rr.
+\end{equation}
+It is sent by $\Phi$ to a $[\Phi\lensob M,\Phi\lensob N]$-coalgebra with state set
 \[
-\bk{\tilde f}_{(x,a)}(\beta)=\bigl((\sigma,\sharp_V(\pi)),\,\alpha\bigr)
-\qqand
-x+\sharp_X(\sigma,\sharp_V(\pi))=(u+\sharp_V(\pi),\,\pi-\sigma).
+X\coloneqq T^*V\cong V\oplus V^*,
 \]
-\end{lemma}
+writing $x=(v,\pi)\in X$ for position $v\in V$ and momentum $\pi\in V^*$. 
+
+We now unpack the coalgebra function itself,
+\[
+X\To{\Phi(f)}
+\left[\Phi\lensob M,\Phi\lensob N\right]\tri X.
+\]
+Given a state $x\coloneqq(v,\pi)\in X$ and a position $a\coloneqq(\outp m,\omega):\outp M\times\Omega(\inpt M)$, the readout position is
+\[
+b\coloneqq\bigl(\outp f(v,\outp m),\,\omega'\bigr)\;\in\;\outp N\times\Omega(\inpt N),
+\]
+where the output covector field $\omega'\colon\inpt N\to T^*\inpt N$ is
+\begin{equation}\label{eqn.omegaprime}
+\omega'(\inpt n)\;=\;(\inpt f(v,\outp m,\blank))^*\omega\big|_{\inpt n}\;-\;d(U(v,\outp m,\blank))\big|_{\inpt n}.
+\end{equation}
+The first term is the pullback of $\omega$ along the partial map $\inpt f(v,\outp m,\blank)\colon\inpt N\to\inpt M$; the second is the differential of the potential $U(v,\outp m,\blank)\colon\inpt N\to\rr$ at $\inpt n$.%
+\footnote{
+The formula \eqref{eqn.omegaprime} comes from tracing through \cref{lem.cot_lifts_lens_potential,lem.Theta_poly_potential}: in $\Lens{\mfd}^\rr$, the lens backward is the augmented map
+\[(v,\outp m,\inpt n)\mapsto(U(v,\outp m,\inpt n),\,\inpt f(v,\outp m,\inpt n))\colon V\times\outp M\times\inpt N\to\rr\times\inpt M.\]
+Applying $\cot$ takes its Jacobian transpose, which sends $(r,\xi)\in T^*_{U}\rr\times T^*_{\inpt m}\inpt M$ to the covector at $(v,\outp m,\inpt n)$ whose $\inpt N$-component is
+\[r\cdot\partial_{\inpt N}U(v,\outp m,\inpt n) \;+\; \xi\circ\partial_{\inpt N}\inpt f(v,\outp m,\inpt n).\]
+We substitute $(r,\xi)\coloneqq(-1,\omega(\inpt m))$ by \eqref{eqn.dec}. Together these give $-d(U(v,\outp m,\blank))\big|_{\inpt n} + ((\inpt f(v,\outp m,\blank))^*\omega)\big|_{\inpt n}$, which is \eqref{eqn.omegaprime}.
+}
+
+Now given an input direction $(\xi_N,\inpt n)\in\Phi\lensob N[b]$, the coalgebra $\Phi(f)$ at $(x,a)$ produces a source direction by reading off components of a single 1-form on $V\times\outp M\times\inpt N$. Let $\inpt m\coloneqq\inpt f(v,\outp m,\inpt n)$ and define
+\begin{equation}\label{eqn.bigtheta}
+\Theta\coloneqq\bigl((\outp f)^*\xi_N + (\inpt f)^*\omega - dU\bigr)\big|_{(v,\outp m,\inpt n)}\;\in\; V^*\oplus T^*_{\outp m}\outp M\oplus T^*_{\inpt n}\inpt N,
+\end{equation}
+where $(\outp f)^*\xi_N$ pulls the covector $\xi_N\in T^*_{\outp f(v,\outp m)}\outp N$ back along $\outp f$ (extended trivially on the $\inpt N$-factor), $(\inpt f)^*\omega$ is the field-level pullback of $\omega$ along $\inpt f$, and $dU$ is the differential of $U$. Decompose $\Theta=(\Theta_V,\,\Theta_{\outp M},\,\Theta_{\inpt N})$. Then \eqref{eqn.omegaprime} reads $\omega'(\inpt n)=\Theta_{\inpt N}$, and the coalgebra at $(x,a)$ on $(\xi_N,\inpt n)$ returns the direction
+\[
+\xi_M\coloneqq(\Theta_{\outp M},\,\inpt m)\in\Phi\lensob M[a]
+\]
+and updates the state to
+\[
+x+\sharp_X(\Theta_V,\sharp_V(\pi))=\bigl(v+\sharp_V(\pi),\,\pi-\Theta_V\bigr),
+\]
+where the lift $(\Theta_V,\sharp_V(\pi))\in T^*_xX$ comes from \cref{def.pairing_proj}.
+\Cref{prop.coalg_as_poly_map,prop.pnla_polynomial,lem.cot_lifts_lens_potential,lem.Theta_poly_potential,def.pairing_proj}.
+
+\section{Example: the spring cell}\label{sec.spring}
+
+We illustrate $\Phi$ with a one-dimensional spring cell and recover the discrete and continuum wave equations by wiring copies of it.
+
+\begin{definition}\label{def.spring_cell}
+Fix $\kappa,\mu>0$. The \emph{spring cell} is the $\potlens$-morphism
+\[
+f_\mathrm{spring}\colon\binom{\rr^2}{\rr}\to\binom{\rr^2}{\rr}
+\]
+with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), paired vector space parameter $V\coloneqq(\rr,0,+)$ with pairing $\sharp_V(p)\coloneqq p/\mu$, and data
+\[
+\outp f(x,y)\coloneqq x,
+\quad
+\inpt f(x,y,(\ell,r))\coloneqq(\ell,r),
+\quad
+U(x,y,(\ell,r))\coloneqq\tfrac{\kappa}{2}(x-\ell)^2+\tfrac{\kappa}{2}(r-x)^2.
+\]
+\end{definition}
+
+\begin{remark}\label{rmk.spring_pairing}
+The pairing $\sharp_V(p)=p/\mu$ is chosen, not the standard Euclidean pairing $\sharp_V(p)=p$. The free parameter $\mu$ encodes inverse mass; the standard pairing corresponds to $\mu=1$.
+\end{remark}
+
+\begin{proposition}\label{prop.spring_dynamics}
+At state $(x,p): T^*V$ on input $(y,\omega)$ with vanishing received covector $\xi=0$ and input direction $(\ell,r)\in \rr^2$, the update of $\Phi(f_\mathrm{spring})$ is
+\[
+\dot x = p/\mu,
+\qquad
+\dot p = \kappa(\ell+r-2x).
+\]
+\end{proposition}
 
 \begin{proof}
-\Cref{lem.para_potential_lens_maps,lem.potlens_to_para_poly,def.pairing_proj,prop.canonical_symplectic_pairing,prop.pnla_polynomial}.
+Unwinding $\Phi(f_\mathrm{spring})$ at $(x,p)$: the $\sharp_V(p)=p/\mu$ component of $\dot x$ is the $V$-slot of the pairing projection (\cref{def.pairing_proj}). The $\dot p$ component receives contributions from $U$, $\outp f$, and $\inpt f$ along the chain induced by $\rho_V$; only the $U$-contribution is nonzero here ($\partial_V\inpt f=0$ and $\xi=0$), giving $\dot p=-\partial_xU=\kappa(\ell+r-2x)$.\qedhere
+\end{proof}
+
+\begin{remark}[Harmonic oscillator Hamiltonian]\label{rmk.spring_hamiltonian}
+The spring cell's state-update is textbook Hamilton's equations for the harmonic-oscillator Hamiltonian
+\[
+H(x,p) \;=\; \frac{p^2}{2\mu} \;+\; \tfrac{\kappa}{2}(x-\ell)^2 \;+\; \tfrac{\kappa}{2}(r-x)^2
+\]
+on $T^*\rr\cong\rr^2$: kinetic energy $p^2/(2\mu)$ (mass $\mu$) plus two Hooke potentials (one spring to the left neighbor at $\ell$, one to the right neighbor at $r$, both with spring constant $\kappa$). \Cref{prop.spring_dynamics}'s equations $\dot x=p/\mu$, $\dot p=\kappa(\ell+r-2x)$ are precisely $\dot x=\partial_p H$, $\dot p=-\partial_x H$. Differentiating once more recovers Newton's second law $\mu\ddot x=\kappa(\ell+r-2x)$.
+\end{remark}
+
+\begin{proposition}\label{prop.spring_wave}
+Wiring a $\zz$-indexed chain of spring cells with each cell's input $(\ell,r)$ identified with the outputs of its left and right neighbors yields joint dynamics
+\[
+\mu\ddot x_i = \kappa(x_{i-1}-2x_i+x_{i+1}).
+\]
+In the continuum limit $x_i\to u(i\Delta x,t)$ with density $\rho\coloneqq\mu/\Delta x$ and tension $T\coloneqq\kappa\Delta x$, the chain approaches the wave equation $\rho\, u_{tt}=T\,u_{xx}$.
+\end{proposition}
+
+\begin{proof}
+The wiring is a closed-system 1-cell in $\org$ obtained by $\otimes$-product and feedback identifying each cell's input slot with neighbors' output slots (cf.\ \cref{sec.plenspot_ops}). Apply \cref{prop.spring_dynamics} cell-wise and time-differentiate $\dot x_i=p_i/\mu$; substitute $\dot p_i=\kappa(x_{i-1}+x_{i+1}-2x_i)$ to obtain the discrete equation, and pass to the continuum limit.
 \end{proof}
 
 \clearpage
@@ -2322,81 +2471,14 @@ The monoidal product is inherited from $\lmfd$. The following depicts compositio
 
 This chapter defines the functor $\Phi\colon\potlens\to\org$ by applying the abstract representation of \cref{sec.abstract_representation} to polynomial functors. The key infrastructure --- that $\Cat{Para}$ over the store action of $\Cat{Set}_{\cong}$ on $\poly$ presents $\org$ --- was set up in \cref{sec.org_as_para,cor.cotangent_learners}. The remaining inputs are the cotangent functor, the potential monad, and the PN Lie Algebra parameterization.
 
-\section{Specialization to polynomial functors}\label{sec.specialize_source}
-
-\begin{proposition}\label{prop.poly_potential_monad}
-There is a monoidal monad on $\poly$
-\[
-\Fun T(p)\coloneqq p\otimes\cot\rr,
-\]
-whose unit and multiplication are $\cot 0\colon\yon\to\cot\rr$ and $\cot{+}\colon\cot\rr\otimes\cot\rr\to\cot\rr$.
-\end{proposition}
-
-\begin{proposition}\label{prop.cot_potential_lift}
-The cotangent functor induces a strong symmetric monoidal functor
-\[
-\widehat\cot\colon\lmfd^\rr\to\Lens{\poly}^{\Fun T}.
-\]
-\end{proposition}
-
-The choice of $\dec$ fixes the sign of Hamilton's equations below; $c=0$ gives the trivial algebra (no potential), $c=+1$ the opposite-sign physics.
-
-\begin{corollary}\label{cor.Phi1}
-There is a lax symmetric monoidal functor
-\[
-\Phi_1\colon\lmfd^\rr\to\poly,\qquad
-\Phi_1\lensob M=\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}.
-\]
-\end{corollary}
-
-A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ with parameter $(V,\sharp_V)$ gives the map
-\begin{equation}\label{eqn.parameter_to_action}
-\cot V\otimes\Phi_1\lensob L\to\Phi_1\lensob M.
-\end{equation}
-
-\iffalse
-The $\pvect$-action on $\lmfd^\rr$ defined above and the action $V\cdot p\coloneqq\cot V\otimes p$ on $\poly$ fit into the parameterized representation of \cref{cor.parameterized_representation}: the comparison
-\[
-\cot V\otimes\Phi_1\lensob M\cong\Phi_1(V\cdot\lensob M)
-\]
-comes from the strong monoidality of $\cot$ on the output slot (\cref{prop.pnla_smc_action,prop.cot_monoidal}) and the comonoid structure of \cref{lem.cot_comonoid}. It gives
-\[
-\potlens=\para{\pvect}{\lmfd^\rr}\to\para{\pvect}{\poly},
-\]
-where $\pvect$ acts on $\poly$ by $V\cdot p\coloneqq\cot V\otimes p$. A morphism $f\colon\lensob L\to\lensob M$ in $\potlens$ with parameter $(V,\sharp_V)$ gives the map
-\begin{equation}\label{eqn.parameter_to_action}
-\cot V\otimes\Phi_1\lensob L\to\Phi_1\lensob M.
-\end{equation}
-\fi
-
 \section{The cotangent-state refinement}\label{sec.cotangent_state_refinement}
 
-For the dynamics in this paper, we want $T^*V$ rather than $V$ as the state space in $\org$. This is achieved by changing the action of $\pvect$ on $\poly$ from $V\cdot p=\cot V\otimes p$ to $V\cdot p=\cot{T^*V}\otimes p$, mediated by a (non-iso) natural transformation $\rho_V\colon\cot{T^*V}\to\cot V$.
-
-For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(u,\pi)$ for a \emph{position} $u\in V$ and \emph{momentum} $\pi\in V^*$. The cotangent space decomposes as
-\[
-T^*_{(u,\pi)}(T^*V)\cong T^*_uV\oplus T^*_\pi(V^*)\cong V^*\oplus V,
-\]
-again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
-
-On positions, $\rho_V$ forgets momentum; on directions, it passes the incoming covector $\sigma$ through to the $V^*$-slot and injects the pairing-lifted momentum $\sharp_V(\pi)\in V$ into the $V$-slot, independently of $\sigma$. So $\rho_V$ is not of the form $\cot h$ for any smooth $h\colon T^*V\to V$, and not invertible. It is monoidal and natural in $\pvect$-isomorphisms because $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}).
-
-The maps
-\[
-\theta_{V,p}\colon\cot{T^*V}\otimes p\To{\rho_V\otimes\id_p}\cot V\otimes p
-\]
-are an action square \eqref{eqn.para_square} from the action $V\cdot p=\cot V\otimes p$ to the action $V\cdot p=\cot{T^*V}\otimes p$. Applying \cref{prop.para_square} gives a strong symmetric monoidal functor
-\[
-\rho^*\colon\para{\pvect,\,\cot\circ\Fun{inc}}{\poly}\to\para{\pvect,\,\cot\circ\Fun{inc}\circ T^*}{\poly}.
-\]
-Then \cref{cor.cotangent_learners}'s coalgebra interpretation, applied at $T^*V$ (using \cref{prop.pnla_polynomial}: $\cot{T^*V}\cong (T^*V)\yon^{T^*V}$ since $T^*V$ is a paired vector space by \cref{prop.canonical_symplectic_pairing}), packages the result as an $\org$-morphism with state set $T^*V$. This is the 1-cell $\Phi(f)$ in $\org$.
-
 \begin{remark}[Tangent-state alternative]\label{rmk.tangent_state}
-Taking $T$ instead of $T^*$ (\cref{prop.TT_endofunctors}) fits the same framework. The analogous \emph{tangent projection} $\tilde\rho_V\colon\cot{TV}\to\cot V$ has position-action $(u,X)\mapsto u$ and direction-action $\sigma\mapsto(\sigma,\,\flat_V(X))$, using the flat map $\flat_V\colon V\to V^*$ to place $X$ in the second summand of $T^*_{(u,X)}(TV)\cong V^*\oplus V^*$. This produces a functor $\potlens\to\org$ with state set $TV$ (Lagrangian-style, second-order), which we don't develop here; the preference for $T^*$ is physics (cotangent bundles carry the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, recovering Hamilton's equations).
+Taking $T$ instead of $T^*$ (\cref{prop.TT_endofunctors}) fits the same framework. The analogous \emph{tangent projection} $\tilde\rho_V\colon\cot{TV}\to\cot{V}$ has position-action $(v,X)\mapsto v$ and direction-action $\xi_V\mapsto(\xi_V,\,\flat_V(X))$, using the flat map $\flat_V\colon V\to V^*$ to place $X$ in the second summand of $T^*_{(v,X)}(TV)\cong V^*\oplus V^*$. This produces a functor $\potlens\to\org$ with state set $TV$ (Lagrangian-style, second-order), which we don't develop here; the preference for $T^*$ is physics (cotangent bundles carry the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, recovering Hamilton's equations).
 \end{remark}
 
 \begin{remark}[Legendre equivalence of Hamiltonian and Lagrangian $\Phi$]\label{rmk.legendre_equivalence}
-By \cref{prop.legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so $\rho$ and $\tilde\rho$ correspond via $\cot\sharp$. The two functors $\Phi^{T^*},\Phi^{T}\colon\potlens\to\org$ are naturally isomorphic: $\sharp_V\colon T^*V\to TV$ induces a 2-cell in $\org$ identifying $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting.
+By \cref{prop.legendre}, $\sharp\colon T^*\Rightarrow T$ is a monoidal natural isomorphism, so $\rho$ and $\tilde\rho$ correspond via $\cot{\sharp}$. The two functors $\Phi^{T^*},\Phi^{T}\colon\potlens\to\org$ are naturally isomorphic: $\sharp_V\colon T^*V\to TV$ induces a 2-cell in $\org$ identifying $\Phi^{T^*}(f)$ with $\Phi^{T}(f)$. This is the \emph{Legendre equivalence} of Hamiltonian and Lagrangian mechanics in our setting.
 \end{remark}
 
 \section{Functoriality and lax monoidality}\label{sec.functoriality}
@@ -2415,9 +2497,9 @@ The Lagrangian formulation is the same dynamics written on $TV$ rather than on $
 Y_H\colon
 TV\To{\flat_V}T^*V\To{X_H}T(T^*V)\To{T(\sharp_V)}T(TV).
 \]
-In coordinates $(q,w)\in TV$ with $\alpha\coloneqq\flat_V(w)$, the integral curves of $Y_H$ satisfy
+In coordinates $(q,w)\in TV$ with $\xi\coloneqq\flat_V(w)$, the integral curves of $Y_H$ satisfy
 \begin{equation}\label{eqn.lagrangian_pushforward}
-\dot q=\partial_\alpha H|_{(q,\alpha)},\qquad \dot w=-\sharp_V\partial_v H|_{(q,\alpha)}.
+\dot q=\partial_\xi H|_{(q,\xi)},\qquad \dot w=-\sharp_V\partial_v H|_{(q,\xi)}.
 \end{equation}
 For an integral curve $\gamma(t)=(q(t),w(t))$ in $TV$, its tangent is a point
 \[
@@ -2427,15 +2509,15 @@ Thus a vector field on $TV$ is a second-order equation for $q$ exactly when its 
 
 When the pairing on $V$ is symmetric and the Hamiltonian $H\colon T^*V\to\rr$ is of the form
 \[
-H(v,\alpha)=\tfrac{1}{2}\alpha(\sharp_V\alpha)+U(v),
+H(v,\xi)=\tfrac{1}{2}\xi(\sharp_V\xi)+U(v),
 \]
-where $U\colon V\to\rr$ (the \emph{potential}), then
+where $U\colon V\to\rr$ (the \emph{potential}), then\textbf{[decide on notation: $\xi'$ vs $\xi_V'$ vs $\zeta$ for the differential direction; same space as $\xi$, different role]}
 \[
-d_\alpha\left(\tfrac{1}{2}\alpha(\sharp_V\alpha)\right)(\beta)
-=\tfrac{1}{2}\bigl(\beta(\sharp_V\alpha)+\alpha(\sharp_V\beta)\bigr)
-=\beta(\sharp_V\alpha)
+d_\xi\left(\tfrac{1}{2}\xi(\sharp_V\xi)\right)(\xi')
+=\tfrac{1}{2}\bigl(\xi'(\sharp_V\xi)+\xi(\sharp_V\xi')\bigr)
+=\xi'(\sharp_V\xi)
 \]
-for every $\beta\in V^*$. Thus, under $(V^*)^*\cong V$, $\partial_\alpha H=\sharp_V\alpha$, while $\partial_v H=dU$, so \eqref{eqn.lagrangian_pushforward} becomes
+for every $\xi'\in V^*$. Thus, under $(V^*)^*\cong V$, $\partial_\xi H=\sharp_V\xi$, while $\partial_v H=dU$, so \eqref{eqn.lagrangian_pushforward} becomes
 \[
 \dot q=w,\qquad \dot w=-\sharp_V dU(q).
 \]
@@ -2451,66 +2533,9 @@ The Euler--Lagrange equation for this $L$,
 \frac{d}{dt}\partial_w L=\partial_q L,
 \]
 is exactly $\flat_V(\ddot q)=-dU(q)$, so the Lagrangian has recovered the same second-order equation without using momentum as a state variable.
-In this special case one often says ``kinetic plus potential'' for $H$ and ``kinetic minus potential'' for $L$; these names only describe this separable example. The main point is the change of state space: Hamiltonian dynamics uses $(q,\alpha)\in T^*V$, while Lagrangian dynamics uses $(q,w)\in TV$, and $\sharp_V$ identifies the two descriptions.\qedhere
+In this special case one often says ``kinetic plus potential'' for $H$ and ``kinetic minus potential'' for $L$; these names only describe this separable example. The main point is the change of state space: Hamiltonian dynamics uses $(q,\xi)\in T^*V$, while Lagrangian dynamics uses $(q,w)\in TV$, and $\sharp_V$ identifies the two descriptions.\qedhere
 \end{remark}
 
-%--------------------------------------------------------------------
-\chapter{Example: the spring cell}\label{ch.spring}
-%--------------------------------------------------------------------
-
-We illustrate $\Phi$ with a one-dimensional spring cell and recover the discrete and continuum wave equations by wiring copies of it.
-
-\begin{definition}\label{def.spring_cell}
-Fix $\kappa,\mu>0$. The \emph{spring cell} is the $\potlens$-morphism
-\[
-f_\mathrm{spring}\colon\binom{\rr^2}{\rr}\to\binom{\rr^2}{\rr}
-\]
-with input $\rr^2=\{(\ell,r)\}$ (left and right neighbor positions), output $\rr$ (cell's own position), paired vector space parameter $V\coloneqq(\rr,0,+)$ with pairing $\sharp_V(p)\coloneqq p/\mu$, and data
-\[
-\outp f(x,y)\coloneqq x,
-\quad
-\inpt f(x,y,(\ell,r))\coloneqq(\ell,r),
-\quad
-U(x,y,(\ell,r))\coloneqq\tfrac{\kappa}{2}(x-\ell)^2+\tfrac{\kappa}{2}(r-x)^2.
-\]
-\end{definition}
-
-\begin{remark}\label{rmk.spring_pairing}
-The pairing $\sharp_V(p)=p/\mu$ is chosen, not the standard Euclidean pairing $\sharp_V(p)=p$. The free parameter $\mu$ encodes inverse mass; the standard pairing corresponds to $\mu=1$.
-\end{remark}
-
-\begin{proposition}\label{prop.spring_dynamics}
-At state $(x,p): T^*V$ on input $(y,\alpha)$ with vanishing received covector $\nu=0$ and input direction $(\ell,r)\in \rr^2$, the update of $\Phi(f_\mathrm{spring})$ is
-\[
-\dot x = p/\mu,
-\qquad
-\dot p = \kappa(\ell+r-2x).
-\]
-\end{proposition}
-
-\begin{proof}
-Unwinding $\Phi(f_\mathrm{spring})$ at $(x,p)$: the $\sharp_V(p)=p/\mu$ component of $\dot x$ is the $V$-slot of the pairing projection (\cref{def.pairing_proj}). The $\dot p$ component receives contributions from $U$, $\outp f$, and $\inpt f$ along the chain induced by $\rho_V$; only the $U$-contribution is nonzero here ($\partial_V\inpt f=0$ and $\nu=0$), giving $\dot p=-\partial_xU=\kappa(\ell+r-2x)$.\qedhere
-\end{proof}
-
-\begin{remark}[Harmonic oscillator Hamiltonian]\label{rmk.spring_hamiltonian}
-The spring cell's state-update is textbook Hamilton's equations for the harmonic-oscillator Hamiltonian
-\[
-H(x,p) \;=\; \frac{p^2}{2\mu} \;+\; \tfrac{\kappa}{2}(x-\ell)^2 \;+\; \tfrac{\kappa}{2}(r-x)^2
-\]
-on $T^*\rr\cong\rr^2$: kinetic energy $p^2/(2\mu)$ (mass $\mu$) plus two Hooke potentials (one spring to the left neighbor at $\ell$, one to the right neighbor at $r$, both with spring constant $\kappa$). \Cref{prop.spring_dynamics}'s equations $\dot x=p/\mu$, $\dot p=\kappa(\ell+r-2x)$ are precisely $\dot x=\partial_p H$, $\dot p=-\partial_x H$. Differentiating once more recovers Newton's second law $\mu\ddot x=\kappa(\ell+r-2x)$.
-\end{remark}
-
-\begin{proposition}\label{prop.spring_wave}
-Wiring a $\zz$-indexed chain of spring cells with each cell's input $(\ell,r)$ identified with the outputs of its left and right neighbors yields joint dynamics
-\[
-\mu\ddot x_i = \kappa(x_{i-1}-2x_i+x_{i+1}).
-\]
-In the continuum limit $x_i\to u(i\Delta x,t)$ with density $\rho\coloneqq\mu/\Delta x$ and tension $T\coloneqq\kappa\Delta x$, the chain approaches the wave equation $\rho\, u_{tt}=T\,u_{xx}$.
-\end{proposition}
-
-\begin{proof}
-The wiring is a closed-system 1-cell in $\org$ obtained by $\otimes$-product and feedback identifying each cell's input slot with neighbors' output slots (cf.\ \cref{sec.plenspot_ops}). Apply \cref{prop.spring_dynamics} cell-wise and time-differentiate $\dot x_i=p_i/\mu$; substitute $\dot p_i=\kappa(x_{i-1}+x_{i+1}-2x_i)$ to obtain the discrete equation, and pass to the continuum limit.
-\end{proof}
 
 
 \printbibliography
