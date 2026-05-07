@@ -2324,7 +2324,9 @@ where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegap
 
 \chapter{Example: the wave equation}\label{sec.spring}
 
-We illustrate $\Phi\colon\potlens\to\org$ by deriving the wave equation. 
+\section{Introduction}\label{sec.spring_intro}
+
+We illustrate $\Phi\colon\potlens\to\org$ by deriving the wave equation.
 
 That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -2362,6 +2364,10 @@ We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_o
 \varphi\colon\potlens(\boxob\tpow{n},\boxob)
 \]
 for varying $n$. Note that $\boxob\tpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
+
+We give the derivation in two passes. In the first pass, we describe the particle and the wiring inside $\potlens$, compose them there, and apply $\Phi$ to the resulting $0$-ary $\potlens$-morphism to read off the dynamics. In the second pass, by functoriality of $\Phi$, we instead apply $\Phi$ to the particle and to the wiring separately, then compose in $\org$; the result is the same.
+
+\section{First pass: composing in $\potlens$}\label{sec.spring_first_pass}
 
 First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each little box, representing the particle of mass $m>0$. Then we give a $K$-ary morphism for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
 
@@ -2458,7 +2464,7 @@ mv_i(t+2)-mv_i(t+1)=mv_i(t+1)-mv_i(t)+\kappa(v_{i-1}(t)+v_{i+1}(t)-2v_i(t))
 \]
 Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
 
-\section{Functoriality}
+\section{Second pass: composing in $\org$}\label{sec.spring_second_pass}
 
 We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the lefthand side below, which by functoriality of $\Phi$ is equal to the righthand side:
 \[
@@ -2489,12 +2495,12 @@ In other words, starting at position $v$ and momentum $p$, it outputs $v$ to the
 
 Apply $\Phi$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phi(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phi(\boxob)^{\otimes K},\Phi(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phi(\boxob)^{\otimes K}\to\Phi(\boxob)$, i.e.\
 \[\sum_{(\vec v,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_v\rr^K\times\rr^K}\To{\Phi(\fun{wire}_K)}\sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times\rr}.\]
-To each $(\vec v,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(v_K,\omega_1)$, and to each external input $(\omega_K,v_0)$; in our concise format,
+To each $(\vec v,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(v_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,v_0)$ at the big box, we assign the internal inputs $(0,v_0)$, $\ldots$, $(0,v_{K-2})$, $(\xi_N,v_{K-1}))$---the rightmost box gets the external $\xi_N$ in its $\xi$-slot, the others get $0$---and each box receives its left neighbor's position. In our concise format, 
 \[
-(\vec v,\vec \omega)\mapsto\Big((v_K,\omega_1),\;(\omega_K,v_0)\mapsto\bigl((0,v_0),\,(0,v_1),\,\ldots,\,(0,v_{K-2}),\,(\omega_K,v_{K-1})\bigr)\Big).
+(\vec v,\vec \omega)\mapsto\Big((v_K,\omega_1),\;(\xi_N,v_0)\mapsto\bigl((0,\ldots,0,\xi_N),\,(v_0,v_1,\ldots,v_{K-1})\bigr)\Big).
 \]
-
-
+All the zeros indicate that the wiring itself is not applying any force to the little boxes, other than handing the outer $v_0$ position to the first box and the covector $\xi_N$ to the last box in \eqref{eqn.wave_wd}.
+ 
 \paragraph{Composition.}
 
 The $\org$-composite $\Phi(\fun{wire}_K)\bigl(\Phi(\Part),\ldots,\Phi(\Part)\bigr)$ stitches together the $K$ single-particle states into $T^*\rr\oplus\cdots\oplus T^*\rr=T^*\rr^K$. The wiring's static action substitutes each particle's neighbor input $y_i\mapsto v_{i-1}$ (so the $i$-th $\Phi(\Part)$ sees its left neighbor's position) and pipes $\xi_N$ into box $K$, exactly reproducing \eqref{eqn.wave_coalg}.
