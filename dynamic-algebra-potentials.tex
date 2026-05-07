@@ -441,11 +441,13 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\ev}{\fun{ev}}
 \newcommand{\coev}{\fun{coev}}
 \newcommand{\pr}{\fun{pr}}
+\newcommand{\Part}{\bullet}
+\newcommand{\boxob}{\mathrm{box}}
 \newcommand{\Ad}{\fun{Ad}}
 \newcommand{\ad}{\fun{ad}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
-\newcommand{\potlens}{\Cat{PotLens}}
+\newcommand{\potlens}{\Cat{PLens}}
 \newcommand{\Para}{\Cat{Para}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
 \newcommand{\pnla}{\Cat{PNLA}}
@@ -1180,7 +1182,7 @@ There is a potentially-confusing level-shift in that there is an operad $\cat{W}
 
 A $\cat{W}$-algebra $\cat{C}\colon\cat{W}\to\smset$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for little boxes to a filler of the big box.%
 \footnote{
-By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$.
+By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$. In general, the \emph{underlying operad} of a symmetric monoidal category $(\cat{C},I,\otimes)$ has the same objects as $\cat{C}$ and multimorphisms $\cat{C}(a_1,\ldots,a_n;b)\coloneqq\cat{C}(a_1\otimes\cdots\otimes a_n,b)$, with operadic composition by tensoring and composing in $\cat{C}$.
 }
 
 \begin{example}
@@ -1255,6 +1257,12 @@ in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The 
 \begin{equation}\label{eqn.para_map}
 (b\otimes a)\cdot x\cong b\cdot(a\cdot x)\To{b\cdot f}b\cdot y\To{g}z.
 \end{equation}
+
+When $\cat A$ and $\cat D$ are both symmetric monoidal and the action is monoidal, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $x\otimes y$ is the $\cat D$-tensor, and the tensor of $(a,f)\colon x\to y$ and $(b,g)\colon x'\to y'$ has parameter $a\otimes b$ and underlying map
+\begin{equation}\label{eqn.para_tensor}
+(a\otimes b)\cdot(x\otimes x')\To{\cong}(a\cdot x)\otimes(b\cdot x')\To{f\otimes g}y\otimes y',
+\end{equation}
+where the first isomorphism comes from the action being monoidal.
 
 The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $\alpha\colon a\to a'$ in $\cat A$ such that $f'\circ(\alpha\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
 
@@ -1452,7 +1460,7 @@ The identity on $\lensob{c}$ is $(\id_{\outp c},\id_{\inpt c}\otimes\varepsilon_
 \]
 
 Our main example will be $\cat{C}=\mfd$ with its cartesian product. But the following is simple and instructive.
-\begin{example}
+\begin{example}\label{ex.lens_finsetop}
 The category $\finset\op$, opposite to the category of finite sets, is cartesian monoidal where the product is given by the disjoint union coproduct $(0,+)$, i.e.\ the coproduct in $\smset$. A comonoid in $\smset\op$ is a monoid in $\smset$, so an object in $\Lens{\finset\op}$ is a pair of sets $\binom{\inpt A}{\outp A}$ where $\outp A$ is a monoid. 
 
 A lens $\binom{\inpt A}{\outp A}\to\binom{\inpt B}{\outp B}$ consists of two maps
@@ -2040,9 +2048,9 @@ If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative m
 
 \begin{proof}
 The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The monoidal structure has unitor $e\colon I\to M\cong M\otimes I$ and productor
-\[
+\begin{equation}\label{eqn.monoid_productor}
 (M\otimes X)\otimes(M\otimes Y)\cong M\otimes M\otimes X\otimes Y\To{(*)\otimes\id}M\otimes X\otimes Y.
-\]
+\end{equation}
 The coherence diagrams arise from the monoid laws and commutativity of $M$. Functoriality in $(\cat C,M)$ is straightforward.
 \end{proof}
 
@@ -2142,10 +2150,18 @@ We thus form $\Para$ constructions (\cref{sec.para_general}), which we denote
 \para{\cot{T^*}}{\poly}.
 \]
 
+\begin{definition}\label{def.potlens}
+The symmetric monoidal category of \emph{potentialized lenses} is denoted and defined by
+\[
+\potlens\coloneqq\para{\pvect}{\lmfd^\rr}.
+\qedhere
+\]
+\end{definition}
+
 \begin{lemma}\label{lem.potlens_to_para_poly}
 There is a lax symmetric monoidal functor
 \[
-\cint\colon\para{\pvect}{\lmfd^\rr}\to\para{\cot}{\poly}.
+\cint\colon\potlens\to\para{\cot}{\poly}.
 \]
 \end{lemma}
 
@@ -2153,7 +2169,7 @@ There is a lax symmetric monoidal functor
 We apply \cref{prop.para_square} to $\Lens\cot$ from \cref{lem.cot_lifts_lens_potential} and apply \cref{cor.parameterized_representation} to $\Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly$ from
 \cref{lem.Theta_poly_potential} to obtain the maps below; the desired functor is their composite:
 \[
-\para{\pvect}{\lmfd^\rr}\To{\para\pvect{\Lens\cot}}
+\potlens\To{\para\pvect{\Lens\cot}}
 \para{\pvect}{\Lens\poly^\rr}\To{\para\pvect{\Theta_{\potd}}}
 \para{\cot}{\poly}.
 \qedhere
@@ -2197,14 +2213,14 @@ Let $F\colon\pvect\to\smset_\cong$ be the strong monoidal composite $\pvect\To{T
 \begin{theorem}\label{thm.functor}
 We have a lax symmetric monoidal functor
 \[
-\Phi\colon\para{\pvect}{\Lens{\mfd}^{\rr}}\to\org.
+\Phi\colon\potlens\to\org.
 \]
 \end{theorem}
 
 \begin{proof}
 Define $\Phi$ to be the composite of the maps below, given by \cref{lem.potlens_to_para_poly}, \cref{lem.para_rho}, and \cref{lem.poly_to_org}:
 \[
-\para{\pvect}{\lmfd^\rr}\To{\cint}
+\potlens\To{\cint}
 \para{\cot}{\poly}\To{\leg}
 \para{\cot{T^*}}{\poly}\To{\dyn}
 \org.
@@ -2218,28 +2234,35 @@ Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
 for the set of (not-necessarily continuous) \emph{covector fields} on $M$. A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
 
-The action of $\Phi$ on objects is:
-\[
+\paragraph{The action of $\Phi$ on objects.}
+The functor $\Phi$ acts on objects as follows:
+\begin{equation}\label{eqn.Phi_on_obs}
 \Phi\lensob M=
 \cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}\cong
 \sum_{(\outp m,\omega):\outp M\times\Omega(\inpt M)}\yon^{\left(T^*_{\outp{m}}\outp M\right)\times\inpt M}.
-\]
+\end{equation}
 A position in $\Phi\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in\outp{M}$ is a point and $\omega\in\Omega(\inpt M)$ is a covector field. A direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$ where $\xi:T^*_{\outp{m}}\outp M$ is a covector and $\inpt m\in\inpt M$ is a point.
 
+\paragraph{The action of $\Phi$ on morphisms.}
 Describing the action of $\Phi$ on morphisms will extend to the end of this section, \cref{subsec.dynamics_functor}. Let $(V,\sharp_V):\pvect$ and let
 $f\colon V\cdot\lensob M\to\lensob N$
-be a morphism in $\para{\pvect}{\lmfd^\rr}$, i.e.\ a tuple $(\outp f,\inpt f,U)$ as in \eqref{eqn.para_potential_lens_maps}:
+be a morphism in $\potlens$, i.e.\ a tuple $(\outp f,\inpt f,U)$ as in \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.para_potential_lens_maps}
 \outp f\colon V\times\outp M\to\outp N,\qquad
 \inpt f\colon V\times\outp M\times\inpt N\to\inpt M,\qquad
 U\colon V\times\outp M\times\inpt N\to\rr.
 \end{equation}
 It is sent by $\Phi$ to a $[\Phi\lensob M,\Phi\lensob N]$-coalgebra with state set
-\[
+\begin{equation}\label{eqn.state_space}
 X\coloneqq T^*V\cong V\oplus V^*;
-\]
-we write $x=(v,\xi)\in X$ for position $v\in V$ and momentum $\xi\in V^*$, and equip $X$ with the canonical symplectic pairing (\cref{prop.canonical_symplectic_pairing}), whose sharp map $\sharp_X\colon X^*\to X$, $(\xi',v')\mapsto(v',-\xi')$, is \eqref{eqn.canonical_sharp}.%
-\footnote{This comes from \cref{def.legendre_projection}.}
+\end{equation}
+we write $x=(v,\xi)\in X$ for position $v\in V$ and momentum $\xi\in V^*$, and equip $X$ with the canonical symplectic pairing;%
+\footnote{This comes from \cref{def.legendre_projection,prop.canonical_symplectic_pairing}.}
+its sharp map is
+\begin{equation}\label{eqn.sharp_X}
+\sharp_X\colon X^*\to X,\qquad (\xi',v')\mapsto(v',-\xi'),
+\end{equation}
+specializing \eqref{eqn.canonical_sharp}.
 
 We now unpack the coalgebra function itself,
 \[
@@ -2270,7 +2293,7 @@ and define
 (\xi_V,\,\xi_M,\,\xi_{\inpt N})\coloneqq (T_{(v,\outp m)}\outp f)^\top\xi_N \;+\; (T_{(v,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m) \;+\; dU\big|_{(v,\outp m,\inpt n)}\;
 \end{equation}
 where $(\xi_V,\,\xi_M,\,\xi_{\inpt N}):V^*\oplus T^*_{\outp m}\outp M\oplus T^*_{\inpt n}\inpt N$.%
-\footnote{Each summand is a cotangent pullback: $\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (via $\potd$, \eqref{eqn.d_potential}); the $+$'s are the cotangent splitting of $V\times\outp M\times\inpt N$ (\cref{sec.manifolds_notation}), morally the domain of the maps in \eqref{eqn.para_potential_lens_maps}.}
+\footnote{Each summand is a cotangent pullback: $\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (via $\potd$, \eqref{eqn.d_potential}); the $+$'s are the cotangent splitting of $V\times\outp M\times\inpt N$ (\cref{sec.manifolds_notation}), morally the domain of the maps in \eqref{eqn.para_potential_lens_maps}. Throughout, we silently use the canonical chart identification \eqref{eqn.tangent_vec} to treat covectors at points of vector spaces as elements of the dual.}
 Note that the first summand naturally lands in $V^*\oplus T^*_{\outp m}\outp M$ and has been extended by $0$ in the remaining $\inpt N$-factor, so by \eqref{eqn.omegaprime} we have $\omega_N(\inpt n)=\xi_{\inpt N}$.
 
 All of the work has now been done: the coalgebra at $(x,a)$ on $(\xi_N,\inpt n)$ returns the direction
@@ -2278,9 +2301,9 @@ All of the work has now been done: the coalgebra at $(x,a)$ on $(\xi_N,\inpt n)$
 (\xi_M,\,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phi\lensob M[a]
 \]
 and updates the state (from its original $x=(v,\xi)$) to
-\[
+\begin{equation}\label{eqn.state_update}
 x+\sharp_X(\xi_V,\sharp_V(\xi))=\bigl(v+\sharp_V(\xi),\,\xi-\xi_V\bigr).
-\]
+\end{equation}
 The sum $x+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}; and the pair $(\xi_V,\sharp_V(\xi))\in T^*_xX$ comes from the Legendre projection, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_V(\xi))=(\sharp_V(\xi),-\xi_V)$, then componentwise addition with $x=(v,\xi)$ produces $(v+\sharp_V(\xi),\,\xi-\xi_V)$.
 
 All in all, one could tersely denote the coalgebra map as follows:
@@ -2299,9 +2322,196 @@ All in all, one could tersely denote the coalgebra map as follows:
 \]
 where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\xi_M$ and $\xi_V$ in \eqref{eqn.bigtheta}, and $\inpt m$ in \eqref{eqn.inptm}.
 
-\section{Example: the spring cell}\label{sec.spring}
+\chapter{Example: the wave equation}\label{sec.spring}
 
-We illustrate $\Phi$ with a one-dimensional spring cell: a mass coupled to one neighbor by a Hooke spring. The state space comes out to $T^*\rr$, and the dynamics are Hamilton's equations for the harmonic oscillator.
+We illustrate $\Phi\colon\potlens\to\org$ by deriving the wave equation. 
+
+That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
+\begin{equation}\label{eqn.wave_wd}
+\begin{tikzpicture}[oriented WD, bb port length=4pt, bb port sep=1.5, bb min width=.35cm, bbx=.4cm, bby=.8ex, baseline=(lbox1), particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
+  \def\N{7}
+  \node[bb={1}{1}, particle] (lbox1) {};
+  \foreach \i [evaluate=\i as \prev using int(\i-1)] in {2,...,\N} {
+    \node[bb={1}{1}, particle, right=.7 of lbox\prev] (lbox\i) {};
+    \draw (lbox\prev_out1) -- (lbox\i_in1);
+  }
+  \node[right=.4 of lbox\N] (dots) {$\cdots$};
+  \draw (lbox\N_out1) -- (dots.west);
+  \node[bb={1}{1}, particle, right=.4 of dots] (rbox1) {};
+  \draw (dots.east) -- (rbox1_in1);
+  \foreach \i [evaluate=\i as \prev using int(\i-1)] in {2,...,\N} {
+    \node[bb={1}{1}, particle, right=.7 of rbox\prev] (rbox\i) {};
+    \draw (rbox\prev_out1) -- (rbox\i_in1);
+  }
+  \node[bb={0}{0}, fit={(lbox1) (rbox\N)}] (Y) {};
+  \node[coordinate] at (Y.west|-lbox1_in1) (Y_in1) {};
+  \node[coordinate] at (Y.east|-rbox\N_out1) (Y_out1) {};
+  \draw (Y_in1) -- (lbox1_in1);
+  \draw (rbox\N_out1) -- (Y_out1);
+\end{tikzpicture}
+\end{equation}
+and calculate that the resulting state dynamics evolves according to the discrete wave equation:%
+\footnote{Taking the continuum limit gives the usual wave equation.}
+\begin{equation}\label{eqn.discrete_wave}
+m\ddot v_i=\kappa(v_{i-1}-2v_i+v_{i+1}),
+\end{equation}
+where $\ddot v_i(t)=v_i(t+2)-2v_i(t+1)+v_i(t).$
+
+We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider morphisms of the form
+\[
+\varphi\colon\potlens(\boxob\tpow{n},\boxob)
+\]
+for varying $n$. Note that $\boxob\tpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
+
+First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each little box, representing the particle of mass $m>0$. Then we give a $K$-ary morphism for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
+
+\paragraph{The particle.}
+
+To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a paired vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\pvect$ with sharp $\sharp_\rr(p)\coloneqq p/m$. We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be $U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2$. This is called the \emph{harmonic} potential.
+
+\paragraph{The wiring diagram.}
+For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\phi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
+\[
+K\From{\outp f}1
+\qqand
+K+1\From{\inpt f} K,
+\]
+where we identify $K+1$ with the disjoint union of the big-box input and the $K$ small-box outputs, the big-box input first. Then $\outp f$ picks out the last wire, $\outp{f}(*)=K$, and $\inpt f$ picks out the first $K$ wires, $\inpt{f}(n)=n$.
+
+Applying $\rr^-$ from \cref{lemma.lens_rr}, we obtain the lens $\binom{\rr^K}{\rr^K}\to\binom{\rr}{\rr}$ given by
+\[
+\outp f(v_1,\ldots,v_K)\coloneqq v_K
+\qqand
+\inpt f\bigl((v_1,\ldots,v_K),\,v_0\bigr)\coloneqq(v_0,\,v_1,\,\ldots,\,v_{K-1}).
+\]
+Lenses without potential and without parameterization are special cases of $\potlens$-morphisms, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a $\potlens$-morphism
+\[
+\fun{wire}_K\colon\boxob\tpow{K}\to\boxob,\qquad (\outp f,\,\inpt f,\,0)
+\]
+
+Composing, we obtain a $0$-ary map, $\fun{wire}_K(\Part,\ldots,\Part)$ in $\potlens$, with parameter $V\coloneqq V'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and sharp
+\begin{equation}\label{eqn.sharp_chain}
+\sharp_V\colon V^*\to V,\qquad p\mapsto p/m,
+\end{equation}
+acting per-particle on each $\rr$-summand (the inverse-mass pairing). The defining maps are
+\[
+\outp f(v_1,\ldots,v_K)\coloneqq v_K
+\qqand
+U\bigl((v_1,\ldots,v_K),\,v_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(v_i-v_{i-1})^2,
+\]
+with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto v_{i-1}$ via $\inpt f$ (with $v_0$ the external input).
+
+\paragraph{The discrete dynamics.}
+
+The discrete dynamics appear when we apply the functor $\Phi\colon\potlens\to\org$. The object $\boxob$ is sent to
+\[
+\Phi(\boxob)=\sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times \rr}.
+\]
+The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
+\[
+\Phi(\fun{wire}_K(\Part,\ldots,\Part))\colon X\To{}\Phi(\boxob)\tri X
+\]
+with state space $X\coloneqq T^*\rr^K$, with elements written $x=((v_1,\ldots,v_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
+\begin{equation}\label{eqn.wave_coalg}
+(\vec v,\vec p)\mapsto\Bigl(\bigl(v_K,\,\omega_\boxob\bigr),\;(\xi_N,v_0)\mapsto\bigl(\vec v+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
+\end{equation}
+where each piece is read off from the unpacking in \cref{subsec.dynamics_functor}:
+\begin{itemize}
+\item The output position $v_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
+\item The \emph{harmonic spring} covector field on the lefthand side,
+\[\omega_\boxob(v_0)=d\bigl[\tfrac{\kappa}{2}(v_1-v_0)^2\bigr]\big|_{v_0}=-\kappa(v_1-v_0),\]
+comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dv_0=+1$ via \eqref{eqn.d_potential}).
+\item The pullback covector $\xi_V\in T^*_{\vec v}V$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec v}V\cong V^*=(\rr^K)^*$) by
+\begin{align*}
+(\xi_V)_i&=
+\bigl((T_{\vec v}\outp f)^\top\xi_N\bigr)_i+\partial_{v_i}U(\vec v,v_0)\\&=
+\begin{cases}\partial_{v_i}U(\vec v,v_0)+0&1\leq i<K\\ \partial_{v_K}U(\vec v,v_0)+\xi_N&i=K\end{cases}\\&=
+\begin{cases}\kappa(2v_i-v_{i-1}-v_{i+1})&1\leq i<K\\ \kappa(v_K-v_{K-1})+\xi_N&i=K\end{cases}
+\end{align*}
+\item The state update applied to $x=(\vec v,\vec p)$ comes from \eqref{eqn.state_update}: using our sharp $\sharp_V(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharp_X\colon(\xi,v)\mapsto(v,-\xi)$ from \eqref{eqn.sharp_X}, we get
+\[
+x'\coloneqq x+\sharp_X(\xi_V,\sharp_V(\vec p))=(\vec v+\vec p/m,\,\vec p-\xi_V).
+\]
+In other words, writing $x'=(v_1',\ldots,v_K',p_1',\ldots,p_K')$, we have
+\[
+v_i'\coloneqq v_i+p_i/m
+\qqand
+p_i'\coloneqq\begin{cases}p_i+\kappa(v_{i-1}+v_{i+1}-2v_i)&1\leq i<K\\ p_i+\kappa(v_{K-1}-v_K)-\xi_N&i=K.\end{cases}
+\]
+\end{itemize}
+
+\paragraph{Recovering the wave equation.}
+To recover the discrete wave equation everywhere, we pin the chain between two walls: choose left wall $v_0\coloneqq 0$ and right wall $v_{K+1}\coloneqq L(K+1)$, where $L$ is the equilibrium spacing between adjacent particles. Supplying these via the external direction-input means setting
+\begin{equation}\label{eqn.wave_bc}
+v_0\coloneqq 0\qqand\xi_N\coloneqq \kappa\bigl(v_K-L(K+1)\bigr).
+\end{equation}
+With these choices, the boundary case at $i=K$ becomes $p_K'=p_K+\kappa\bigl(v_{K-1}+L(K+1)-2v_K\bigr)$, so the above state update formula reduces to this:
+\begin{equation}\label{eqn.state_update_explicit}
+v_i'\coloneqq v_i+p_i/m
+\qqand
+p_i'\coloneqq p_i+\kappa(v_{i-1}+v_{i+1}-2v_i).
+\end{equation}
+
+We then think of the state $x$ as a function of time: fix any initial $x(0)\coloneqq(\vec{v}(0),\vec{p}(0))$ and set $x(t+1)\coloneqq x(t)'$ as in \eqref{eqn.state_update_explicit}. We then rewrite the first equation as $p_i(t)=mv_i(t+1)-mv_i(t)$ and substitute it into the second:
+\[
+mv_i(t+2)-mv_i(t+1)=mv_i(t+1)-mv_i(t)+\kappa(v_{i-1}(t)+v_{i+1}(t)-2v_i(t))
+\]
+Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
+
+\section{Functoriality}
+
+We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the lefthand side below, which by functoriality of $\Phi$ is equal to the righthand side:
+\[
+\Phi\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phi(\fun{wire}_K)\bigl(\Phi(\Part),\ldots,\Phi(\Part)\bigr),
+\]
+which is the $K$-ary composite, taken in $\org$, of $K$ copies of the single-particle dynamical system $\Phi(\Part)$ wired together via $\Phi(\fun{wire}_K)$. We work this out as well.
+
+\paragraph{The particle dynamics.}
+
+We first apply $\Phi$ to $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$ to obtain a coalgebra on
+\[
+  \left[\Phi\binom{\rr^0}{\rr^0},\Phi(\boxob)\right]=
+  \left[\yon,\Phi(\boxob)\right]=\boxob=
+  \sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times\rr}
+\]
+We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state space of $\Phi(\Part)$ is $X\coloneqq T^*\rr$, with elements written $x=(v,p)$ for position and momentum. The map
+\[
+X\To{\Phi(\Part)}
+\sum_{(v,\omega):\rr\times\Omega(\rr)}X^{T^*_v\rr\times\rr}
+\]
+is given by
+\[
+(v,p)\mapsto\Bigl(\bigl(v,\,v_{\fun{prev}}\mapsto\kappa(v_{\fun{prev}}-v)\bigr),\;(\xi_{\fun{next}},v_{\fun{prev}})\mapsto\bigl(v+p/m,\,p-\xi_{\fun{next}}+\kappa(v_{\fun{prev}}-v)\bigr)\Bigr).
+\]
+In other words, starting at position $v$ and momentum $p$, it outputs $v$ to the right and the covector field $v_{\fun{prev}}\mapsto\kappa(v_{\fun{prev}}-v)$, which ``pulls'' $v_{\fun{prev}}$ toward $v$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $v_{\fun{prev}}$ from the left, it updates its position by adding velocity (momentum divided by mass) and updates its momentum by adding the spring force $\kappa(v_{\fun{prev}}-v)$, which ``pulls'' $v$ toward $v_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
+ 
+\paragraph{The static wiring.}
+
+Apply $\Phi$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phi(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phi(\boxob)^{\otimes K},\Phi(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phi(\boxob)^{\otimes K}\to\Phi(\boxob)$, i.e.\
+\[\sum_{(\vec v,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_v\rr^K\times\rr^K}\To{\Phi(\fun{wire}_K)}\sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times\rr}.\]
+To each $(\vec v,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(v_K,\omega_1)$, and to each external input $(\omega_K,v_0)$; in our concise format,
+\[
+(\vec v,\vec \omega)\mapsto\Big((v_K,\omega_1),\;(\omega_K,v_0)\mapsto\bigl((0,v_0),\,(0,v_1),\,\ldots,\,(0,v_{K-2}),\,(\omega_K,v_{K-1})\bigr)\Big).
+\]
+
+
+\paragraph{Composition.}
+
+The $\org$-composite $\Phi(\fun{wire}_K)\bigl(\Phi(\Part),\ldots,\Phi(\Part)\bigr)$ stitches together the $K$ single-particle states into $T^*\rr\oplus\cdots\oplus T^*\rr=T^*\rr^K$. The wiring's static action substitutes each particle's neighbor input $y_i\mapsto v_{i-1}$ (so the $i$-th $\Phi(\Part)$ sees its left neighbor's position) and pipes $\xi_N$ into box $K$, exactly reproducing \eqref{eqn.wave_coalg}.
+
+DISCARD AFTER THIS:
+
+no internal dynamics, only a $\poly$-level transformation between $\Phi(\boxob)^{\otimes K}$ and $\Phi(\boxob)$. It implements the wiring rules from \eqref{eqn.wave_wd}:
+\begin{itemize}
+\item The big-box output position is box $K$'s output position; the output covector field is $\omega^{\mathrm{out}}(v_0)\coloneqq\omega_1(v_0)$, the leftmost box's covector field at $v_0$ (\eqref{eqn.omegaprime} with $U=0$, since only box 1 sees the external input).
+\item For each box $i$, the input position $y_i\coloneqq v_{i-1}$ is the left neighbor's output (with $v_0$ the big-box input), from $\inpt f$.
+\item The external direction $\xi_N$ feeds into box $K$'s $\xi$-slot, since $\outp f(\vec v)=v_K$ (\eqref{eqn.bigtheta}); all other boxes' $\xi$-slots are zero.
+\end{itemize}
+
+
+
+The box has input and output $M$, i.e.\ it comes from the object $\binom{\rr}{\rr}$. 
+wired together  with a one-dimensional spring cell: a mass coupled to one neighbor by a Hooke spring. The state space comes out to $T^*\rr$, and the dynamics are Hamilton's equations for the harmonic oscillator.
 
 \begin{definition}\label{def.spring_cell}
 Fix $\kappa,\mu>0$. The \emph{spring cell} is the $\potlens$-morphism
