@@ -302,6 +302,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \DeclareMathOperator{\Hom}{Hom}
 \DeclareMathOperator{\Aut}{Aut}
 \DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Iso}{Iso}
 \DeclareMathOperator{\Mor}{Mor}
 \DeclareMathOperator{\dom}{dom}
 \newcommand{\Int}{\mathop{\Fun{Int}}\nolimits}
@@ -587,32 +588,32 @@ We also use the canonical finite-dimensional dual-sum identification
 \subsection{Paired vector spaces}\label{sec.pnla}
 
 \begin{definition}\label{def.pnla}
-A \emph{paired vector space} is a finite-dimensional real vector space $V$ together with a linear isomorphism $\sharp_V\colon V^*\To{\cong}V$, the \emph{sharp} map, with inverse $\flat_V\coloneqq\sharp_V\inv\colon V\to V^*$, the \emph{flat} map. The corresponding nondegenerate bilinear form on $V$, the \emph{pairing}, is
+A \emph{paired vector space} is a finite-dimensional real vector space $V$ together with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$, the \emph{sharp} map, with value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$. Its pointwise inverse $\flat_x\coloneqq\sharp_x\inv\colon V\to V^*$ is the \emph{flat} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
 \begin{equation}\label{eqn.pairing}
-\pairing{v,v'}_V\coloneqq\flat_V(v)(v')\colon V\otimes V\to\rr
+\pairing{v,v'}_x\coloneqq\flat_x(v)(v')\colon V\otimes V\to\rr.
 \end{equation}
-The three forms $\sharp_V$, $\flat_V$, and $\pairing{-,-}_V$ package the same data; we use whichever is most convenient.
+The three forms $\sharp_x$, $\flat_x$, and $\pairing{-,-}_x$ package the same data; we use whichever is most convenient. The \emph{constant} case $\sharp_x=\sharp_0$ for all $x$ is the familiar setting of a single bilinear form on $V$.
 
-We define the category $\pvect$ to have paired vector spaces as objects, and as morphisms $(V,\sharp_V)\to(W,\sharp_W)$ the linear isomorphisms $\phi\colon V\To{\cong}W$ preserving the pairing: $\pairing{\phi v,\phi v'}_W=\pairing{v,v'}_V$ for all $v,v'\in V$.%
+We define the category $\pvect$ to have paired vector spaces as objects, and as morphisms $(V,\sharp_V)\to(W,\sharp_W)$ the linear isomorphisms $\phi\colon V\To{\cong}W$ preserving the pairing pointwise: $\pairing{\phi v,\phi v'}_{\phi(x)}=\pairing{v,v'}_x$ for all $x,v,v'\in V$.%
 \footnote{
 Restricting to isomorphisms (making $\pvect$ a groupoid) is essential for our development below: each $\pvect$-morphism is used both as $\phi$ on vectors and as $(\phi^*)\inv$ on covectors, e.g.\ in $T^*\phi$ \eqref{eqn.TT_phi} below.
 }
-Equivalently, $\phi$ preserves the pairing iff the \emph{pairing-preservation equation} holds:
+Equivalently, $\phi$ preserves the pairing iff the \emph{pairing-preservation equation} holds at every $x\in V$:
 \begin{equation}\label{eqn.pairing_triangle}
-\phi\circ\sharp_V\circ\phi^*=\sharp_W\colon W^*\to W
+\phi\circ\sharp_x\circ\phi^*=\sharp_{\phi(x)}\colon W^*\to W.
 \qedhere
 \end{equation}
 \end{definition}
 
 \begin{proposition}\label{prop.pnla_monoidal}
-Direct sum gives $\pvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space (vacuous pairing) as unit and direct-sum pairing $\sharp_{V\oplus W}\coloneqq\sharp_V\oplus\sharp_W$ on $V\oplus W$, equivalently the bilinear form
+Direct sum gives $\pvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space (vacuous pairing) as unit and direct-sum pairing $\sharp_{V\oplus W}\coloneqq\sharp_V\oplus\sharp_W$ as a smooth section, equivalently the bilinear form at basepoint $(x,y)\in V\oplus W$
 \begin{equation}\label{eqn.directsum_pairing}
-\pairing{(v,w),(v',w')}_{V\oplus W} = \pairing{v,v'}_V+\pairing{w,w'}_W.
+\pairing{(v,w),(v',w')}_{(x,y)} = \pairing{v,v'}_x+\pairing{w,w'}_y.
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-A direct sum of linear isomorphisms is a linear isomorphism, and \eqref{eqn.directsum_pairing} is direct from $\flat_{V\oplus W}=\flat_V\oplus\flat_W$. Coherence is inherited from $(\vect,0,\oplus)$.\qedhere
+A pointwise direct sum of smooth sections of linear isomorphisms is again such a section, and \eqref{eqn.directsum_pairing} is direct from $\flat_{(x,y)}=\flat_x\oplus\flat_y$. Coherence is inherited from $(\vect,0,\oplus)$.\qedhere
 \end{proof}
 
 \begin{proposition}\label{prop.pnla_smc_action}
@@ -634,7 +635,7 @@ For any finite-dimensional vector space $V$, the direct sum $V\oplus V^*$ is a p
 The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in V^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in V$, hence $\xi=0$.\qedhere
 \end{proof}
 
-For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is
+For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is the constant section
 \begin{equation}\label{eqn.canonical_sharp}
 \sharp_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi).
 \end{equation}
@@ -645,6 +646,10 @@ The bilinear form
 \pairing{(x,\xi),(x',\xi')}=\xi'(x)+\xi(x')
 \]
 also makes $V\oplus V^*$ a paired vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\xi,x)\mapsto(x,\xi)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for the dynamics later in the paper.\qedhere
+\end{remark}
+
+\begin{remark}[Constancy of $\sharp_{T^*V}$]\label{rmk.constant_canonical_sharp}
+The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharp_V$, so $\sharp_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharp_V$ varies on $V$. The phase-space dynamics of \cref{sec.dynamics_functor} therefore see only this constant, regardless of any variation in $\sharp_V$.\qedhere
 \end{remark}
 
 \subsection{Cotangent endofunctor}\label{sec.TT}
@@ -695,14 +700,14 @@ It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. To
 \qedhere
 \end{proof}
 
-The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flow of the constant left-invariant vector field $\sharp_V(\xi)$ from base point $x$:
+The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the first-order Euler step of the vector field $(x,\xi)\mapsto\sharp_x(\xi)\in T_xV\cong V$ from basepoint $x$:
 \begin{equation}\label{eqn.flow_cot}
-\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharp_V(\xi).
+\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharp_x(\xi).
 \end{equation}
-It is natural in $\pvect$-isomorphisms by linearity and the pairing-preservation equation \eqref{eqn.pairing_triangle}. We use \eqref{eqn.flow_cot} pointwise as the on-directions bijection of $V\yon^V\cong\cot{V}$ in \cref{prop.pnla_polynomial}.
+In the constant case $\sharp_x=\sharp_0$, it coincides with the time-$1$ flow of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\pvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}. We use \eqref{eqn.flow_cot} pointwise as the on-directions bijection of $V\yon^V\cong\cot{V}$ in \cref{prop.pnla_polynomial}.
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.pnla_generalization}
-Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\pairing{-,-})$ of a finite-dimensional nilpotent real Lie algebra and a pairing on its underlying vector space. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting, with $T^*V$ acquiring brackets that mix $\ad$ and $\ad^*$. A careful treatment is left to future work.\qedhere
+Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.pnla}. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting, with $T^*V$ acquiring brackets that mix $\ad$ and $\ad^*$. This extension is orthogonal to the bundle generality already built into $\sharp_V$: the abelian/non-abelian axis is independent of whether $\sharp_V$ is constant or varies on $V$. A careful treatment is left to future work.\qedhere
 \end{remark}
 
 \section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
@@ -1234,27 +1239,33 @@ with $\alpha^*\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$, exactly by the s
 \begin{proposition}\label{prop.pnla_polynomial}
 There is a cotangent storage, which we call \emph{configuration storage}, given by
 \[\store{\conf}\coloneqq(\absval{\blank},\theta)\]
-where $\absval{\blank}\colon\pvect\to\smset_\cong$ sends a paired vector space to its underlying set of points $V\mapsto \absval{V}$ and $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ is the polynomial map, natural in $V:\pvect$, which is identity on positions and, given on directions at $x\in V$ by the cotangent flow \eqref{eqn.flow_cot}
+where $\absval{\blank}\colon\pvect\to\smset_\cong$ sends a paired vector space to its underlying set of points $V\mapsto \absval{V}$ and $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ is the polynomial map, natural in $V:\pvect$, which is identity on positions and, given on directions at $x\in V$ by the exponential \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
-T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V\To{x+\blank}V,
+T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_x}V\To{x+\blank}V,
 \qquad
-\xi\longmapsto x+\sharp_V(\xi).
+\xi\longmapsto x+\sharp_x(\xi).
 \end{equation}
 \end{proposition}
 
 \begin{proof}
 On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so the on-positions component of $\theta_V$ is the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $x$, hence a bijection. So $\Store(\absval{V})=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $x$, we must check that the two backward composites $T^*_{\phi(x)}W\to V$ agree:
 \begin{align*}
-\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_V}\;\sharp_V(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharp_V(\phi^*\xi), && \text{[$\theta_V\circ\cot{\phi}$]}\\
-\xi\;&\Mapsto{\sharp_W}\;\sharp_W(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharp_W(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharp_W\xi) && \text{[$\Store(\phi)\circ\theta_W$]}.
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_x}\;\sharp_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharp_x(\phi^*\xi), && \text{[$\theta_V\circ\cot{\phi}$]}\\
+\xi\;&\Mapsto{\sharp_{\phi(x)}}\;\sharp_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharp_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharp_{\phi(x)}\xi) && \text{[$\Store(\phi)\circ\theta_W$]}.
 \end{align*}
-The two are equal iff $\sharp_V\circ\phi^*=\phi^{-1}\circ\sharp_W$, which is \eqref{eqn.pairing_triangle}. Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$.\qedhere
+The two are equal iff $\sharp_x\circ\phi^*=\phi^{-1}\circ\sharp_{\phi(x)}$, which is the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}).\qedhere
 \end{proof}
 
 \begin{remark}\label{rmk.pnla_fiberwise_addition}
 By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. By \cref{ex.store}, the canonical such structure is the codiscrete category on $V$: there is exactly one morphism $x\to x'$ for each pair, and the direction-set $V$ at position $x$ is interpreted as the set of codomains.
 
-Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_xV$ at $x$ corresponds to the unique morphism $x\to x+\sharp_V(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_V(0)=x$. Composition of $\xi$ at $x$ with $\xi'$ at $x+\sharp_V(\xi)$ corresponds to $\xi+\xi'$ at $x$, since both produce the morphism with codomain $x+\sharp_V(\xi)+\sharp_V(\xi')=x+\sharp_V(\xi+\xi')$. Thus the pairing $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_V(\xi)$ and composition by fiberwise addition of covectors.\qedhere
+Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_xV$ corresponds to the unique morphism $x\to x+\sharp_x(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_x(0)=x$. Composition of $\xi\in T^*_xV$ with $\xi'\in T^*_{x+\sharp_x(\xi)}V$ corresponds to the unique covector $\xi\star\xi'\in T^*_xV$ for which
+\begin{equation}\label{eqn.twisted_composition}
+\sharp_x(\xi\star\xi')=\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi'),
+\qquad\text{i.e.}\qquad
+\xi\star\xi'=\xi+\sharp_x^{-1}\bigl(\sharp_{x+\sharp_x(\xi)}(\xi')\bigr),
+\end{equation}
+since both produce the codiscrete morphism with codomain $x+\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi')$. Thus $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_x(\xi)$ and the $\sharp_V$-twisted composition \eqref{eqn.twisted_composition}. In the constant case $\sharp_x=\sharp_0$, \eqref{eqn.twisted_composition} collapses to fiberwise addition $\xi\star\xi'=\xi+\xi'$.\qedhere
 \end{remark}
 
 For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(x,\xi)$ for a \emph{position} $x\in V$ and \emph{momentum} $\xi\in V^*$. The cotangent space decomposes as
@@ -1266,7 +1277,7 @@ again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
 \begin{definition}[Legendre projection]\label{def.legendre_projection}
 The \emph{Legendre projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(x,\xi)\mapsto x$ and direction-action at $(x,\xi)$
 \[
-T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_V(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
+T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_x(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \qedhere
 \]
 \end{definition}
@@ -1292,12 +1303,12 @@ The functor $T^*\colon\pvect\to\pvect$ is strong symmetric monoidal by \cref{pro
 \arrow[Rightarrow, from=U, to=D-|U, pos=.4, "\rho"]
 \end{tikzcd}
 \]
-Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}); naturality in $\pvect$-isomorphisms is the pairing-preservation equation \eqref{eqn.pairing_triangle}.
-Therefore $\rho\circ\theta_{T^*\blank}$ is a monoidal natural transformation $\Store\circ\absval{T^*\blank}\Rightarrow\cot\circ\inc$, i.e. a cotangent storage.
+Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}); naturality in $\pvect$-isomorphisms is the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle} at each $(x,\xi)\in T^*V$.
+Therefore $\rho\circ\theta_{T^*\blank}$ is a monoidal natural transformation $\Store\circ\absval{T^*\blank}\Rightarrow\cot\circ\inc$, i.e.\ a cotangent storage.
 \end{proof}
 
 \begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
-The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of the configuration dynamics we will develop below. Indeed, it arises via a functor $\Phi_{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_V=-\eta\,\id$ in Euclidean examples).
+The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of the configuration dynamics we will develop below. Indeed, it arises via a functor $\Phi_{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_x=-\eta\,\id$ in Euclidean examples). The bundle generality of \cref{def.pnla} additionally accommodates position-dependent preconditioning---natural gradient, Newton's method, and so on; see \cref{sec.config_learning_stub}.
 \end{remark}
 
 \chapter{Potentialized lenses}\label{ch.potentials}
@@ -2221,9 +2232,9 @@ All of the work has now been done: the coalgebra at $(s,a)$ on $(\xi_N,\inpt n)$
 \]
 and updates the state (from its original $s=(x,\xi)$) to
 \begin{equation}\label{eqn.state_update}
-s+\sharp_X(\xi_V,\sharp_V(\xi))=\bigl(x+\sharp_V(\xi),\,\xi-\xi_V\bigr).
+s+\sharp_X(\xi_V,\sharp_x(\xi))=\bigl(x+\sharp_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
-The sum $s+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}; and the pair $(\xi_V,\sharp_V(\xi))\in T^*_sX$ comes from the Legendre projection, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_V(\xi))=(\sharp_V(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_V(\xi),\,\xi-\xi_V)$.%
+The sum $s+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharp_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharp_x(\xi))\in T^*_sX$ comes from the Legendre projection at $(x,\xi)$, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_x(\xi))=(\sharp_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_x(\xi),\,\xi-\xi_V)$.%
 \footnote{
 Equation \eqref{eqn.state_update} is explicit Euler of the Hamiltonian vector field on $T^*V$: the update at $s$ is computed entirely from data at $s$. The recurrence so produced is exact as an algebraic identity---the wave-equation derivation of \cref{ch.spring} relies on this exactness---but unconditionally unstable as a time-stepper for harmonic systems. Stable numerical simulation of the underlying flow would require a sequential, symplectic update, which is incompatible with the atomic state-update of an $\org$-coalgebra.
 }
@@ -2238,7 +2249,7 @@ s=(x,\xi)\mapsto
 	(\xi_N,\inpt n)\mapsto\\
 	\big(
 		(\xi_M,\inpt m),
-		(x+\sharp_V(\xi),\,\xi-\xi_V)
+		(x+\sharp_x(\xi),\,\xi-\xi_V)
 	\big)
 \Big),
 \end{multline*}
@@ -2254,20 +2265,23 @@ X^{\conf}\coloneqq V.
 \]
 The readout is as above, with $x=v$, and the update at $v\in V$ is
 \begin{equation}\label{eqn.state_update_gradient}
-v\mapsto v+\sharp_V(\xi_V),
+v\mapsto v+\sharp_v(\xi_V),
 \end{equation}
 where $\xi_V$ is the first component of \eqref{eqn.bigtheta}. There is no momentum coordinate.%
 \footnote{
-\Cref{eqn.state_update_gradient} is explicit Euler for the vector field determined by $\sharp_V$ and the pulled-back covector $\xi_V$. For choices of $\sharp_V$ giving descent, such as $-\sharp_V$ positive-definite in a Euclidean example, the standard explicit-Euler bounds for parabolic flow apply. Contrast \cref{eqn.state_update}, which is unconditionally unstable for harmonic systems.
+\Cref{eqn.state_update_gradient} is explicit Euler for the vector field $v\mapsto\sharp_v(\xi_V)$ determined by the (now possibly position-dependent) sharp and the pulled-back covector $\xi_V$. For choices of $\sharp_v$ giving descent, such as $-\sharp_v$ pointwise positive-definite in a Euclidean example, the standard explicit-Euler bounds for parabolic flow apply. Contrast \cref{eqn.state_update}, which is unconditionally unstable for harmonic systems.
 }
 
 Restricting along the embedding $\iota\colon\para{\pvect}{\mfd}\hookrightarrow\potlens$ that takes vacuous backward map and zero potential, $\Phi_{\conf}$ recovers the cotangent-learners functor described in \cref{rmk.cotangent_learners}; we develop this in \cref{ch.deep_learning}.
+
+\paragraph{Position-dependent preconditioning (stub).}\label{sec.config_learning_stub}
+With the bundle generality of \cref{def.pnla}, the configuration update $v\mapsto v+\sharp_v(\xi_V)$ is a position-dependent preconditioned gradient step: the section $\sharp_V$ acts as a parameter-dependent learning-rate tensor on the pulled-back covector $\xi_V$. Familiar instances include natural-gradient descent (with $-\sharp_v$ the inverse Fisher information at $v$) and Newton's method (with $-\sharp_v$ the inverse loss Hessian at $v$); the constant case $\sharp_v=-\eta\,\id$ recovers vanilla gradient descent. A systematic treatment of these dynamics within the present framework is left to future work.
 
 \chapter{Example: the wave equation}\label{ch.spring}
 
 \section{Introduction}\label{sec.spring_intro}
 
-We illustrate $\Phi_{\phase}\colon\potlens\to\org$ by deriving the wave equation; \cref{ch.deep_learning} illustrates the parallel functor $\Phi_{\conf}$ via deep learning.
+We illustrate $\Phi_{\phase}\colon\potlens\to\org$ by deriving the wave equation; \cref{ch.deep_learning} illustrates the parallel functor $\Phi_{\conf}$ via deep learning. Throughout this chapter, $\sharp_V$ is constant in $v\in V$ (the per-particle inertia is a fixed scalar $\tfrac1m$); the bundle generality of \cref{def.pnla} is not exercised here.
 
 That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -2316,7 +2330,7 @@ First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{
 
 \paragraph{The particle.}
 
-To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a paired vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\pvect$ with sharp $\sharp_\rr(p)\coloneqq p/m$. We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be $U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2$. This is called the \emph{harmonic} potential.
+To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a paired vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\pvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be $U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2$. This is called the \emph{harmonic} potential.
 
 \paragraph{The wiring diagram.}
 For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\phi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
@@ -2338,11 +2352,11 @@ Lenses without potential and without parameterization are special cases of $\pot
 \fun{wire}_K\colon\boxob\tpow{K}\to\boxob,\qquad (\outp f,\,\inpt f,\,0)
 \]
 
-Composing, we obtain a $0$-ary map, $\fun{wire}_K(\Part,\ldots,\Part)$ in $\potlens$, with parameter $V\coloneqq V'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and sharp
+Composing, we obtain a $0$-ary map, $\fun{wire}_K(\Part,\ldots,\Part)$ in $\potlens$, with parameter $V\coloneqq V'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and constant sharp
 \begin{equation}\label{eqn.sharp_chain}
-\sharp_V\colon V^*\to V,\qquad p\mapsto p/m,
+\sharp_v\colon V^*\to V,\qquad p\mapsto p/m,
 \end{equation}
-acting per-particle on each $\rr$-summand (the inverse-mass pairing). The defining maps are
+acting per-particle on each $\rr$-summand (the inverse-mass pairing), independent of $v\in V$. The defining maps are
 \[
 \outp f(x_1,\ldots,x_K)\coloneqq x_K
 \qqand
@@ -2377,9 +2391,9 @@ comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $d
 \begin{cases}\partial_{x_i}U(\vec x,x_0)+0&1\leq i<K\\ \partial_{x_K}U(\vec x,x_0)+\xi_N&i=K\end{cases}\\&=
 \begin{cases}\kappa(2x_i-x_{i-1}-x_{i+1})&1\leq i<K\\ \kappa(x_K-x_{K-1})+\xi_N&i=K\end{cases}
 \end{align*}
-\item The state update applied to $s=(\vec x,\vec p)$ comes from \eqref{eqn.state_update}: using our sharp $\sharp_V(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharp_X\colon(\xi,x)\mapsto(x,-\xi)$ from \eqref{eqn.sharp_X}, we get
+\item The state update applied to $s=(\vec x,\vec p)$ comes from \eqref{eqn.state_update}: using our (constant) sharp $\sharp_{\vec x}(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharp_X\colon(\xi,x)\mapsto(x,-\xi)$ from \eqref{eqn.sharp_X}, we get
 \[
-s'\coloneqq s+\sharp_X(\xi_V,\sharp_V(\vec p))=(\vec x+\vec p/m,\,\vec p-\xi_V).
+s'\coloneqq s+\sharp_X(\xi_V,\sharp_{\vec x}(\vec p))=(\vec x+\vec p/m,\,\vec p-\xi_V).
 \]
 In other words, writing $s'=(x_1',\ldots,x_K',p_1',\ldots,p_K')$, we have
 \begin{equation}\label{eqn.potlens_composite_final}
