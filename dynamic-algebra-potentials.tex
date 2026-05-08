@@ -508,7 +508,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \emph{[Introduction to be written.]}
 
 \section*{Acknowledgments}
-Thanks to Lukas Barth, Scott Viteri, Jake Arujo-Simon. I also thank Claude and Codex for assistance in editing the document, and various helpful conversations.
+Thanks to Lukas Barth, Scott Viteri, and Jake Arujo-Simon for stimulating conversations. I also thank Claude and Codex for assistance in editing the document, and various helpful conversations.
 
 \thanksAFOSR{FA9550-23-1-0376}. 
 
@@ -523,7 +523,7 @@ We fix some typographic conventions. A generic category is written in calligraph
 
 In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$. 
 
-A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice, compatible with $\otimes$, of a cocommutative such structure on every object of $\cat{C}$. A supply is \emph{homomorphic} if every morphism of $\cat C$ is a comonoid homomorphism for the supplied structures.
+A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice of a comonoid structure on every object of $\cat{C}$, compatible with $\otimes$. A supply is \emph{homomorphic} if every morphism of $\cat C$ is a comonoid homomorphism for the supplied structures.
 
 \begin{lemma}\label{lem.cartesian_homomorphic_supply}
 Any cartesian monoidal category canonically has a homomorphic supply of commutative comonoids, given by diagonals and terminal maps.
@@ -697,21 +697,6 @@ and the two sides for $\sigma^*$ expand via \eqref{eqn.canonical_form} to
 \qedhere
 \end{proof}
 
-\begin{proposition}\label{prop.legendre}
-There is a monoidal natural isomorphism $\sharp\colon T^*\;\xRightarrow{\cong}\;T$ whose components are given by
-\[
-\id_V\oplus\sharp_V\colon T^*V\to TV,\qquad (v,\xi)\mapsto(v,\sharp_V(\xi)).
-\]
-\end{proposition}
-
-\begin{proof}
-Each component is a linear isomorphism by \cref{def.pnla}; naturality is the pairing-preservation axiom of \cref{def.pnla}; monoidality follows from the direct-sum pairing convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}).\qedhere
-\end{proof}
-
-\begin{remark}[Legendre transform]\label{rmk.legendre}
-\Cref{prop.legendre} is the (infinitesimal) \emph{Legendre transform} of classical mechanics: $\flat_V$ sends a velocity to its conjugate momentum, and $\sharp_V$ sends a momentum to the corresponding velocity.\qedhere
-\end{remark}
-
 The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flow of the constant left-invariant vector field $\sharp_V(\xi)$ from base point $v$:
 \begin{equation}\label{eqn.flow_cot}
 \exp_V\colon T^*V\to V,\qquad (v,\xi)\longmapsto v+\sharp_V(\xi).
@@ -719,12 +704,7 @@ The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flo
 It is natural in $\pvect$-isomorphisms by linearity and the pairing-preservation equation \eqref{eqn.pairing_triangle}. We use \eqref{eqn.flow_cot} pointwise as the on-directions bijection of $V\yon^V\cong\cot{V}$ in \cref{prop.pnla_polynomial}.
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.pnla_generalization}
-\Cref{sec.pnla,sec.TT} generalize from paired vector spaces (abelian $\lie g$) to \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\pairing{-,-})$ of a finite-dimensional nilpotent real Lie algebra and a pairing on its underlying vector space. Replacing $\pvect$ by $\pnla$ throughout, \cref{prop.pnla_monoidal,prop.canonical_symplectic_pairing,prop.TT_monoidal,prop.legendre} hold verbatim; the rest pick up Lie-group ingredients:
-\begin{itemize}
-\item \Cref{prop.pnla_smc_action}: the action becomes $((\lie g,\sharp),M)\mapsto\Int\lie g\times M$, where $\Int\lie g$ is the simply-connected Lie group integrating $\lie g$ (Lie's third theorem~\cite[App.~B]{knapp2002lie}; $\Int V\cong V$ for vector spaces).
-\item \Cref{prop.TT_endofunctors}: $TV=V\oplus V$ and $T^*V=V\oplus V^*$ in \eqref{eqn.TT_def} are unchanged as vector spaces but now carry brackets mixing $\ad$ and $\ad^*$ (nilpotent of class $\le 2n-1$ when $\lie g$ has class $n$). Morphism formulas \eqref{eqn.TT_phi} are unchanged; bracket-preservation needs $(\phi^*)\inv\circ\ad^*_X=\ad^*_{\phi X}\circ(\phi^*)\inv$, a transpose of $\phi$'s Lie-algebra-homomorphism property.
-\item Exponential \eqref{eqn.flow_cot}: extends to $T^*G\to G$, $(g,\xi)\mapsto g\cdot\exp_G(\sharp_G\xi)$ for $G\coloneqq\Int\lie g$, via Malcev's diffeomorphism $\exp_G\colon\lie g\To{\cong}\Int\lie g$~\cite[Thm.~1.127]{knapp2002lie}. The vector-space case is abelian: $\Int\lie g=\lie g$, $\exp_G=\id$, multiplication is addition.\qedhere
-\end{itemize}
+Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\pairing{-,-})$ of a finite-dimensional nilpotent real Lie algebra and a pairing on its underlying vector space. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting, with $TV$ and $T^*V$ acquiring brackets that mix $\ad$ and $\ad^*$. A careful treatment is left to future work.\qedhere
 \end{remark}
 
 \subsection{Hamiltonian vector fields}\label{sec.hamiltonian_vector_fields}
@@ -749,7 +729,7 @@ T(T^*V)
   \ar[ll, equal, "{\eqref{eqn.TT_def}^{-1}}"]
 \end{tikzcd}
 \]
-The first arrow sends $(v,\xi)$ to $((v,\xi),dH|_{(v,\xi)})$. The arrow labeled $\id\oplus\sharp_{V\oplus V^*}$ is the component at $T^*V$ of the Legendre transform $\sharp\colon T^*\Rightarrow T$ (\cref{prop.legendre}); explicitly, it leaves the basepoint fixed and applies the canonical symplectic sharp map $\sharp_{V\oplus V^*}=\sharp_{T^*V}$ of \eqref{eqn.canonical_sharp} to the cotangent-fiber component:
+The first arrow sends $(v,\xi)$ to $((v,\xi),dH|_{(v,\xi)})$. The arrow labeled $\id\oplus\sharp_{V\oplus V^*}$ leaves the basepoint fixed and applies the canonical symplectic sharp map $\sharp_{V\oplus V^*}=\sharp_{T^*V}$ of \eqref{eqn.canonical_sharp} to the cotangent-fiber component:
 \[
 ((v,\xi),(\xi',w))\longmapsto((v,\xi),(w,-\xi')).
 \]
@@ -796,7 +776,7 @@ Had we used the swap pairing of \cref{rmk.swap_pairing} in place of \eqref{eqn.c
 \end{remark}
 
 \begin{remark}[Coordinate invariance of $X_H$]\label{rmk.XH_natural}
-A $\pvect$-isomorphism $\phi\colon V\To{\cong}W$ induces a linear symplectomorphism $T^*\phi\colon T^*V\To{\cong}T^*W$ (\cref{prop.TT_endofunctors}). For any $H\colon T^*W\to\rr$, the chain rule for $H\circ T^*\phi$ together with naturality of the Legendre transform $\sharp$ (\cref{prop.legendre}) at the morphism $T^*\phi$ give
+A $\pvect$-isomorphism $\phi\colon V\To{\cong}W$ induces a linear symplectomorphism $T^*\phi\colon T^*V\To{\cong}T^*W$ (\cref{prop.TT_endofunctors}). For any $H\colon T^*W\to\rr$, the chain rule for $H\circ T^*\phi$ together with the fact that $T^*\phi$ preserves the canonical symplectic pairing (\cref{prop.TT_endofunctors}) give
 \[
 X_H\circ T^*\phi=T(T^*\phi)\circ X_{H\circ T^*\phi},
 \]
@@ -812,7 +792,7 @@ satisfies $\partial_{v_i}H=\partial_{v_i}H_i$ and $\partial_{\xi_i}H=\partial_{\
 \[
 \dot v_i=\partial_{\xi_i}H_i,\qquad \dot\xi_i=-\partial_{v_i}H_i\qquad(i=1,2).
 \]
-At the level of vector fields, the swaps \eqref{eqn.T_swap}, \eqref{eqn.Tstar_swap} of \cref{prop.TT_monoidal} together with the monoidality of $\sharp$ (\cref{prop.legendre}) factor $X_H$ as $X_{H_1}\oplus X_{H_2}$; non-interacting systems evolve independently on their own factors.\qedhere
+At the level of vector fields, the strong monoidality of $T^*$ via the swaps \eqref{eqn.T_swap}, \eqref{eqn.Tstar_swap} of \cref{prop.TT_monoidal} factors $X_H$ as $X_{H_1}\oplus X_{H_2}$; non-interacting systems evolve independently on their own factors.\qedhere
 \end{remark}
 
 \section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
@@ -1089,7 +1069,7 @@ The components $\rho_V$ assemble into a monoidal natural transformation
 \end{lemma}
 
 \begin{proof}
-Naturality in $\pvect$-isomorphisms and monoidality both follow from $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.TT_monoidal}).
+Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}); naturality in $\pvect$-isomorphisms is the pairing-preservation equation \eqref{eqn.pairing_triangle}.
 \end{proof}
 
 \section{Dynamic category-like structures}\label{sec.dynamic_structures}
@@ -1209,7 +1189,7 @@ A variety of examples of these ideas---wiring-diagram operads whose algebras are
 An advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
 consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine: it is the suboperad comprising the left class of a certain factorization system on $1\tn{-}\Cat{Cob}$.
 
-Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\vect$-enriched category with object set $O$ is an opeard functor $\cat{W}_{\tn{O-Cat}}\to\vect$.
+Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$. For example, a $\vect$-enriched category with object set $O$ is an operad functor $\cat{W}_{\tn{O-Cat}}\to\vect$.
 
 
 One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras.  In \cite{shapiro2022dynamic}, a dynamic category is a category enriched in $\org$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
@@ -1375,7 +1355,7 @@ Applying $\Psi$ gives an $\ihom{\cot{\rr^m},\cot{\rr^n}}$-coalgebra with state s
 \]
 whose forward part is $x\mapsto f_v(x)$ and whose backward part is $(T_x f_v)^\top$.
 
-The update at $v$ on a direction $(x,\xi)\in\rr^m\times T^*_{f_v(x)}\rr^n$ is\textbf{[decide on notation: plain $\xi$ here vs $\xi_N$ for consistency with \cref{cor.cotangent_learners}]}
+The update at $v$ on a direction $(x,\xi)\in\rr^m\times T^*_{f_v(x)}\rr^n$ is
 \[
 \upd_v(x,\xi)=v+\sharp_V\bigl((\partial_Vf)_{(v,x)}^\top\xi\bigr)=v-\eta\cdot(\partial_Vf)_{(v,x)}^\top\xi,
 \]
@@ -1386,7 +1366,7 @@ Since $\Psi$ is a functor, composition in $\org$ reproduces backpropagation. Sin
 
 \chapter{Potentialized lenses}\label{ch.potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potlens_manifolds} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
+In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potential_lenses_to_dynamics} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
 
 \section{The abstract construction}\label{sec.lenses_general}
 
@@ -1516,7 +1496,7 @@ Looking at the two inner boxes and the outer box, we see that this diagram shoul
 \[
 \varphi\colon\binom{C\otimes A}{B\otimes D}\otimes\binom{B}{C}\to\binom{A}{C\otimes D}
 \]
-where $B,D,C,E$ are comonoids. Unfolding, we need two maps in $\cat{C}$:
+where $A,B,C,D$ are comonoids. Unfolding, we need two maps in $\cat{C}$:
 \begin{equation}\label{eqn.wd_as_maps}
 B\otimes D\otimes C\to C\otimes D
 \qqand
@@ -1524,9 +1504,9 @@ B\otimes D\otimes C\to C\otimes D
 \end{equation}
 But these maps are obvious: they are just counit projections and braidings.
 
-One could take $\cat{C}\coloneqq\mfd$. Then $A,\ldots, E$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
+One could take $\cat{C}\coloneqq\mfd$. Then $A,\ldots, D$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
 
-One can also interpret \eqref{eqn.arb_wd} in $\finset\op$. Taking $A\cong B\cong C\cong D\cong E\cong 1$ for simplicity, each has a unique monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
+One can also interpret \eqref{eqn.arb_wd} in $\finset\op$. Taking $A\cong B\cong C\cong D\cong 1$ for simplicity, each has a unique monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
 \[
 \{b,d,c\}\from\{c,d\}
 \qqand
@@ -1788,7 +1768,7 @@ Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\Theta_z(f)
 \& \outp d\otimes[\inpt d,\Fun{T}(\inpt c\otimes[\inpt c,z])]\ar[l,"{\id\otimes[\inpt d,\Fun{T}\ev]}"]
 \end{tikzcd}
 \]
-Proving that $\Theta_z$ is functorial a long calculation but routine. We leave preservation of identities to the reader and
+Proving that $\Theta_z$ is functorial is a long but routine diagram chase. Each tile instantiates one of {naturality of $\sigma$, the monoid axiom for $\alpha$, the evaluation-coevaluation triangle, functoriality of $[-,-]$}, so we recommend spot-checking a few tiles rather than tracing the full path. We leave preservation of identities to the reader and
 %IDENTITIES
 %\[
 %\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
@@ -2240,7 +2220,7 @@ In words, $\Phi$ first internalizes the cotangent lenses, then adds a ``momentum
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
-for the set of (not-necessarily continuous) \emph{covector fields} on $M$. A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
+for the set of (not-necessarily continuous) \emph{covector fields} on $M$. The category $\poly$ remembers only the underlying sets of positions and directions, not their topology, so we take all set-theoretic sections. A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
 
 \paragraph{The action of $\Phi$ on objects.}
 The functor $\Phi$ acts on objects as follows:
@@ -2266,7 +2246,7 @@ X\coloneqq T^*V\cong V\oplus V^*;
 \end{equation}
 we write $x=(v,\xi)\in X$ for position $v\in V$ and momentum $\xi\in V^*$, and equip $X$ with the canonical symplectic pairing;%
 \footnote{This comes from \cref{def.legendre_projection,prop.canonical_symplectic_pairing}.}
-its sharp map is
+this coalgebra state is the physical phase state associated to the Para parameter $V$. Its sharp map is
 \begin{equation}\label{eqn.sharp_X}
 \sharp_X\colon X^*\to X,\qquad (\xi',v')\mapsto(v',-\xi'),
 \end{equation}
@@ -2434,7 +2414,7 @@ with state space $X\coloneqq T^*\rr^K$, with elements written $x=((v_1,\ldots,v_
 where each piece is read off from the unpacking in \cref{subsec.dynamics_functor}:
 \begin{itemize}
 \item The output position $v_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
-\item The \emph{harmonic spring} covector field on the lefthand side,
+\item The \emph{harmonic spring} covector field on the left-hand side,
 \[\omega_\boxob(v_0)=d\bigl[\tfrac{\kappa}{2}(v_1-v_0)^2\bigr]\big|_{v_0}=-\kappa(v_1-v_0),\]
 comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dv_0=+1$ via \eqref{eqn.d_potential}).
 \item The pullback covector $\xi_V\in T^*_{\vec v}V$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec v}V\cong V^*=(\rr^K)^*$) by
@@ -2482,7 +2462,7 @@ Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with 
 
 \section{Second pass: composing in $\org$}\label{sec.spring_second_pass}
 
-We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the lefthand side below, which by functoriality of $\Phi$ is equal to the righthand side:
+We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which by functoriality of $\Phi$ is equal to the right-hand side:
 \[
 \Phi\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phi(\fun{wire}_K)\bigl(\Phi(\Part),\ldots,\Phi(\Part)\bigr),
 \]
@@ -2533,11 +2513,41 @@ When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the
 
 Beginning with $(\vec v,\vec p):T^*\rr^K$, the coalgebras output $(\vec v,\vec\omega)\coloneqq\bigl(v_i,\,v_i'\mapsto\kappa(v_i'-v_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(v_K,\omega_1)$, and asks for $(\xi_N,v_0)$. Upon receiving it, it sends $\bigl((\omega_2(v_1),\ldots,\omega_K(v_{K-1}),\xi_N),\,(v_0,v_1,\ldots,v_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec p',\vec v')$ where $p'_i\coloneqq\omega_{i+1}(v_i)=\kappa(v_i-v_{i+1})$ for $1\leq i<K$ and $p'_K\coloneqq\xi_N$, and $v'_i=v_{i-1}$. This in turn is sent to $(\vec v+\vec p/m,\,\vec p-\vec p'+\kappa(\vec v'-\vec v))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
 
-\section{Other examples}
+\section{Other examples}\label{sec.other_examples}
 
+The wave-equation derivation illustrates a pattern: the wiring lens encodes geometry (which boxes connect to which), the potential $U$ encodes the local physics (what forces act), and the sharp $\sharp_V$ encodes the inertia (how momentum becomes velocity). Varying these three independently produces a wide range of dynamical systems. We sketch three.
 
+\subsection{Higher-dimensional wave equation}\label{sec.nd_wave}
 
+Replace the box object $\boxob=\binom\rr\rr$ by $\boxob_d\coloneqq\binom{\rr^d}{\rr^d}$. The particle becomes a $0$-ary morphism $\Part_d\colon\binom{\rr^0}{\rr^0}\to\boxob_d$ with parameter space $\rr^d$, sharp $\sharp_{\rr^d}(p)\coloneqq p/m$, identity forward map, and Euclidean harmonic potential $U(x,y)\coloneqq\tfrac\kappa2\lVert x-y\rVert^2$. For the wiring, replace the $K$-ary chain \eqref{eqn.wave_wd} by any $K$-ary diagram in the wiring operad of \cref{sec.wd_operads}; for the cubic lattice in $\rr^d$ with neighbor relation $i\sim j$, the calculation of \cref{subsec.recovering_wave} produces
+\[
+m\ddot v_i=\kappa\sum_{j\sim i}(v_j-v_i)=-\kappa\,\Delta v_i,
+\]
+where $\Delta$ is the graph Laplacian (positive-Laplacian convention). Taking the continuum limit gives the $d$-dimensional wave equation. The geometry of the medium lives entirely in the wiring; the local physics is unchanged from the $1$-dimensional case.
 
+\subsection{Klein--Gordon and $\phi^4$}\label{sec.klein_gordon}
+
+Take the wave-equation chain unchanged except for the per-particle potential
+\[
+U(x,y)\coloneqq\tfrac\kappa2(x-y)^2+\tfrac{m_0^2}{2}x^2,
+\]
+where $m_0>0$ is a rest mass, distinct from the inertial mass $m$. The differential of the on-site term contributes an extra $m_0^2 v_i$ to the momentum update, so \eqref{eqn.potlens_composite_final} becomes
+\[
+m\ddot v_i=\kappa(v_{i-1}-2v_i+v_{i+1})-m_0^2 v_i,
+\]
+the discrete Klein--Gordon equation. Replacing $\tfrac{m_0^2}{2}x^2$ by $\tfrac\lambda4 x^4$ gives discrete $\phi^4$ field theory; replacing it by $-\cos x$ gives the discrete sine-Gordon equation. In each case the interaction structure is fixed by the wiring and only the on-site potential varies.
+
+\subsection{Gravitational $N$-body system}\label{sec.nbody}
+
+Particles in $\rr^3$ with all-to-all coupling. Take $\boxob_3\coloneqq\binom{\rr^3}{\rr^3}$ and a particle morphism $\Part_3$ as in \cref{sec.nd_wave}, with per-particle sharp $\sharp(p_1,\ldots,p_K)\coloneqq(p_1/m_1,\ldots,p_K/m_K)$ accommodating unequal masses; now with $K$ copies wired by a complete-graph lens: each box outputs its position and receives the positions of all others. The configuration space is $\vec v\in(\rr^3)^K\setminus\Delta$, where $\Delta\coloneqq\{\vec v\mid v_i=v_j\text{ for some }i\neq j\}$ is the collision diagonal. Replace the harmonic potential by Newton's gravitational potential
+\[
+U(\vec v)\coloneqq -G\sum_{1\leq i<j\leq K}\frac{m_im_j}{\lVert v_i-v_j\rVert},
+\]
+distributed across boxes by the same monoid productor \eqref{eqn.monoid_productor} that summed the harmonic terms. The dynamics formula \eqref{eqn.state_update} produces
+\[
+v_i'=v_i+p_i/m_i\qqand p_i'=p_i-G\sum_{j\neq i}\frac{m_im_j(v_i-v_j)}{\lVert v_i-v_j\rVert^3},
+\]
+i.e.\ symplectic Euler integration of the $K$-body Newton equations. Replacing $-Gm_im_j$ by $q_iq_j$ gives the Coulomb $K$-body problem; replacing the potential by a Lennard--Jones term $\sum_{i<j}4\varepsilon\bigl((\sigma/r_{ij})^{12}-(\sigma/r_{ij})^6\bigr)$ gives a molecular-dynamics integrator.
 
 \printbibliography
 
