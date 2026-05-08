@@ -1403,6 +1403,17 @@ The functor $\rr^-\colon\finset\op\to\mfd$ is strong monoidal, hence induces a s
 \]
 \end{lemma}
 
+This settles the choice of $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: $\Lens{\cat{C}}$ is an algebra for the wiring-diagram operad $\cat{W}_{\tn{O-TrCat}}$ (more precisely, its without-identity suboperad, since $\Lens{\cat{C}}$ is a traced symmetric monoidal semi-category). A multimorphism $W\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob{Y}$ in $\Lens{\cat{C}}$ has the form $(\outp W,\inpt W)$ as in \eqref{eqn.lens_def}. Later in this chapter (\cref{sec.potential_lenses_to_dynamics}) we lift to $\potlens$ by allowing a parameter space $V_W:\pvect$ and a potential $U_W$; a wiring then has the form
+\[
+\outp W\colon V_W\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
+\inpt W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
+\]
+together with a potential
+\[
+U_W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
+\]
+Applying the dynamics functor (\cref{sec.dynamics_functor}) gives the wiring its own state space, $T^*V_W$ in the symplectic case and $V_W$ in the gradient case, so $V_W$ may store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters as smooth state. Discontinuous arity changes or graph rewrites fall outside the present formalism.
+
 \subsection{Backward monads on lenses}\label{sec.backwards}
 
 We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
@@ -2401,39 +2412,6 @@ Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\o
 \begin{remark}\label{rmk.wave_generalizations}
 The construction generalizes. Replacing $\rr$ by $\rr^d$ in the box object and the chain by any $K$-ary wiring---say a $d$-dimensional cubic lattice---gives the discrete wave equation $m\ddot x_i=\kappa\sum_{j\sim i}(x_j-x_i)$ on that lattice. Varying the per-particle potential or the wiring topology produces other systems by the same compositional template.\qedhere
 \end{remark}
-
-\section{Constructing examples}\label{sec.constructing_examples}
-
-The wave-equation derivation illustrates a general recipe for producing examples. Choose the interface objects first, then choose which parts of the dynamics live inside the component and which parts live in the wiring. A $\potlens$-morphism is specified by:
-\begin{itemize}
-\item a paired vector space $(V,\sharp_V)$, which becomes the phase-state space $T^*V$ after applying $\Phi$;
-\item a forward map $\outp f$, which reads the current state and the outputs of the internal boxes to produce the output of the external box;
-\item a backward map $\inpt f$, which routes the input of the external box back to the inputs of the internal boxes;
-\item a potential $U$, whose differential contributes forces;
-\item the sharp map $\sharp_V$, which turns momentum into velocity.
-\end{itemize}
-Applying $\Phi$ then gives the coalgebra update
-\[
-s=(x,\xi)\longmapsto(x+\sharp_V(\xi),\,\xi-\xi_V),
-\]
-where $\xi_V$ is the $V^*$-component of \eqref{eqn.bigtheta}. Thus the forward and backward maps determine what covectors are pulled back to $V$, the potential contributes $dU$, and $\sharp_V$ determines the inertial part of the update.
-
-This recipe applies just as well to generalized wiring diagrams. Given objects $\lensob{X_i}=\binom{\outp X_i}{\inpt X_i}$ for $1\leq i\leq N$ and $\lensob Y=\binom{\outp Y}{\inpt Y}$, a generalized wiring diagram
-\[
-W\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob Y
-\]
-in $\potlens$ has the form
-\[
-\outp W\colon V_W\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
-\inpt W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
-\]
-together with a potential
-\[
-U_W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
-\]
-The wiring in \cref{sec.spring_first_pass} is static: it has $V_W=\rr^0$ and $U_W=0$, so $\Phi(W)$ has a one-point state space and only routes signals. A dynamic wiring diagram is the same kind of map with nontrivial $V_W$. Then $\Phi(W)$ has state space $T^*V_W$, and the wiring state evolves by the same update formula as any other component. The maps $\outp W$ and $\inpt W$ may depend on the current $x_W\in V_W$, so the current state can change how outputs are read and how inputs are routed; the potential $U_W$ then determines how the wiring state itself is pushed by the surrounding system.
-
-For example, $V_W$ might store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters. The present formalism treats these as smooth state variables, so it naturally describes smooth, state-dependent wiring in a fixed hom-set. Literally changing the arity or making discontinuous graph rewrites would require additional discrete or hybrid structure.
 
 \printbibliography
 
