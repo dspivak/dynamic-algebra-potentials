@@ -519,7 +519,15 @@ Thanks to Lukas Barth, Scott Viteri, and Jake Arujo-Simon for stimulating conver
 
 \section{Notation and preliminaries}\label{sec.prelim}
 
-We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor in sans-serif, $\Fun{T},\Fun{Box}$. Lie algebras use fraktur, $\lie{g},\lie{p}$; number systems use blackboard bold, $\nn,\rr$, as does the only bicategory we work with, $\org$. 
+\begin{convention}[State and phase variables]\label{conv.state_phase_variables}
+We use $S$ for an abstract state set and $s:S$ for a state. When the state set is a phase space $X=T^*V$, we write
+\[
+s=(x,\xi)\in X=V\oplus V^*
+\]
+with $x\in V$ the position or configuration and $\xi\in V^*$ the momentum covector. In coordinates and examples, we may write $p$ for momentum, especially under an implicit Euclidean identification. Thus a particle state is written $s=(x,p)$, and a multi-particle state as $s=(\vec x,\vec p)$. We reserve $v,w$ for generic vectors in linear-algebra calculations. In categorical formulas, $p,q$ denote polynomials; in coordinate physics examples, $p$ denotes momentum and $q$ is avoided for configuration.\qedhere
+\end{convention}
+
+We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor in sans-serif, $\Fun{T},\Fun{Box}$. Lie algebras use fraktur, $\lie{g},\lie{p}$; number systems use blackboard bold, $\nn,\rr$, as does the only bicategory we work with, $\org$. We write $\blank$ for a placeholder argument in functor or polynomial expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor.
 
 In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$. 
 
@@ -560,14 +568,14 @@ That is, $dU|_m$ is the covector at $m$ whose pairing with $\dot m\in T_mM$ is $
 
 We often elide the inclusion $\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure in $\vect$ is (a coproduct and) a product, and the inclusion is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
 \begin{equation}\label{eqn.tangent_vec}
-T_vV \;\cong\; V \qqand T^*_vV \;\cong\; V^*
+T_xV \;\cong\; V \qqand T^*_xV \;\cong\; V^*
 \end{equation}
-at every point $v\in V$; we use these identifications throughout, often without comment. In particular, the differential at $v$ of a smooth function $f\colon V\to\rr$ is an element $df|_v\in V^*$, also called \emph{the differential of $f$ at $v$}.
+at every point $x\in V$; we use these identifications throughout, often without comment. In particular, the differential at $x$ of a smooth function $f\colon V\to\rr$ is an element $df|_x\in V^*$, also called \emph{the differential of $f$ at $x$}.
 We also use the canonical finite-dimensional dual-sum identification
 \begin{equation}\label{eqn.canonical_dual_sum}
 (V\oplus V^*)^*\cong V^*\oplus V,\qquad
-\lambda\leftrightarrow(\xi,v)\quad\text{where}\quad
-\lambda(v',\xi')=\xi(v')+\xi'(v).
+\lambda\leftrightarrow(\xi,x)\quad\text{where}\quad
+\lambda(x',\xi')=\xi(x')+\xi'(x).
 \end{equation}
 
 \subsection{Paired vector spaces}\label{sec.pnla}
@@ -612,187 +620,83 @@ The forgetful $\pvect\to\vect$ preserves direct sums and identities; the inclusi
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
 For any finite-dimensional vector space $V$, the direct sum $V\oplus V^*$ is a paired vector space under the \emph{canonical symplectic pairing}
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(v,\xi),(v',\xi')}_{V\oplus V^*} \;=\; \xi'(v)-\xi(v').
+\pairing{(x,\xi),(x',\xi')}_{V\oplus V^*} \;=\; \xi'(x)-\xi(x').
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(v,\xi)$ pairs to $0$ with every $(v',\xi')$. Taking $v'=0$ gives $\xi'(v)=0$ for all $\xi'\in V^*$, hence $v=0$; taking $\xi'=0$ gives $\xi(v')=0$ for all $v'\in V$, hence $\xi=0$.\qedhere
+The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in V^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in V$, hence $\xi=0$.\qedhere
 \end{proof}
 
 For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is
 \begin{equation}\label{eqn.canonical_sharp}
-\sharp_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,v)\mapsto(v,-\xi).
+\sharp_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi).
 \end{equation}
 
 \begin{remark}[Sign convention]\label{rmk.swap_pairing}
 The bilinear form
 \[
-\pairing{(v,\xi),(v',\xi')}=\xi'(v)+\xi(v')
+\pairing{(x,\xi),(x',\xi')}=\xi'(x)+\xi(x')
 \]
-also makes $V\oplus V^*$ a paired vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\xi,v)\mapsto(v,\xi)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for Hamiltonian dynamics (\cref{prop.hamilton,rmk.antisymmetry_substantive}).\qedhere
+also makes $V\oplus V^*$ a paired vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\xi,x)\mapsto(x,\xi)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for the dynamics later in the paper.\qedhere
 \end{remark}
 
-\subsection{Tangent and cotangent endofunctors}\label{sec.TT}
+\subsection{Cotangent endofunctor}\label{sec.TT}
 
 For a paired vector space $(V,\sharp_V):\pvect$, define
 \begin{equation}\label{eqn.TT_def}
-TV\coloneqq V\oplus V \qqand T^*V\coloneqq V\oplus V^*.
+T^*V\coloneqq V\oplus V^*.
 \end{equation}
-Under the inclusion functor $\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, these definitions agree with the tangent and cotangent bundles of $V$ as a manifold.
+Under the inclusion functor $\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this agrees with the cotangent bundle of $V$ as a manifold.
 
-Each is naturally a paired vector space: $TV$ via $\sharp_V\oplus\sharp_V$ (\cref{prop.pnla_monoidal}), $T^*V$ via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
+It is naturally a paired vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\pvect$-morphism $\phi\colon V\to W$, define
 \begin{equation}\label{eqn.TT_phi}
-T\phi\coloneqq\phi\oplus\phi
-\qqand
- T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
+T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
 \end{equation}
 
 \begin{proposition}\label{prop.TT_endofunctors}
-The assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define endofunctors $T,T^*\colon\pvect\to\pvect$.
+The assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\pvect\to\pvect$.
 \end{proposition}
 
 \begin{proof}
-If $\phi\colon V\to W$ is a linear isomorphism so are $T\phi$ and $T^*\phi$. Functoriality is obvious. We first check that $T\phi$ preserves pairings.
-\begin{align*}
-\pairing{T\phi(v_1,v_1'),T\phi(v_2,v_2')}_{TW}
-&= \pairing{(\phi v_1,\phi v_1'),(\phi v_2,\phi v_2')}_{TW} && \text{[\eqref{eqn.TT_phi}]}\\
-&= \pairing{\phi v_1,\phi v_2}_W+\pairing{\phi v_1',\phi v_2'}_W && \text{[\eqref{eqn.directsum_pairing}]}\\
-&= \pairing{v_1,v_2}_V+\pairing{v_1',v_2'}_V && \text{[$\phi$ preserves pairings]}\\
-&= \pairing{(v_1,v_1'),(v_2,v_2')}_{TV}.
-\end{align*}
-
-Next we check that $T^*\phi$ preserves pairings. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in V.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
+If $\phi\colon V\to W$ is a linear isomorphism so is $T^*\phi$. Functoriality is obvious. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in V.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
 \begin{equation}\label{eqn.dualeval}
 (\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v),
 \end{equation}
-and we can conclude that $T^*\phi$ preserves pairings by calculating
+and we conclude that $T^*\phi$ preserves pairings by calculating
 \begin{align*}
-\pairing{T^*\phi(v_1,\xi_1),T^*\phi(v_2,\xi_2)}_{T^*W}
-&= (\psi\xi_2)(\phi v_1)-(\psi\xi_1)(\phi v_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
-&= \xi_2(v_1)-\xi_1(v_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(v_1,\xi_1),(v_2,\xi_2)}_{T^*V} && \text{[\eqref{eqn.canonical_form}]}.
+\pairing{T^*\phi(x_1,\xi_1),T^*\phi(x_2,\xi_2)}_{T^*W}
+&= (\psi\xi_2)(\phi x_1)-(\psi\xi_1)(\phi x_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
+&= \xi_2(x_1)-\xi_1(x_2) && \text{[\eqref{eqn.dualeval}]}\\
+&= \pairing{(x_1,\xi_1),(x_2,\xi_2)}_{T^*V} && \text{[\eqref{eqn.canonical_form}]}.
 \end{align*}
 \end{proof}
 
 \begin{proposition}\label{prop.TT_monoidal}
-The endofunctors $T,T^*\colon\pvect\to\pvect$ are strong symmetric monoidal with respect to $(0,\oplus)$.
+The endofunctor $T^*\colon\pvect\to\pvect$ is strong symmetric monoidal with respect to $(0,\oplus)$.
 \end{proposition}
 
 \begin{proof}
-The unit comparisons are identities since $T0=0\oplus 0=0$ and $T^*0=0\oplus 0^*=0$. The product comparisons are given by interchange:
-\begin{align}
-\sigma\colon T(V_1\oplus V_2)&\To{\cong}TV_1\oplus TV_2,\quad ((v_1,v_2),(v_1',v_2'))\mapsto((v_1,v_1'),(v_2,v_2')),\label{eqn.T_swap}\\
-\sigma^*\colon T^*(V_1\oplus V_2)&\To{\cong}T^*V_1\oplus T^*V_2,\quad ((v_1,v_2),(\xi_1,\xi_2))\mapsto((v_1,\xi_1),(v_2,\xi_2))\label{eqn.Tstar_swap}
-\end{align}
-(using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$ for $\sigma^*$). Both are linear isomorphisms. To check preservation of pairings, compare with a second tangent element $((w_1,w_2),(w_1',w_2'))$ and a second cotangent element $((w_1,w_2),(\xi'_1,\xi'_2))$. The two sides for $\sigma$ expand to
+The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comparison is the swap
+\begin{equation}\label{eqn.Tstar_swap}
+T^*(V_1\oplus V_2)\To{\cong}T^*V_1\oplus T^*V_2,\quad ((x_1,x_2),(\xi_1,\xi_2))\mapsto((x_1,\xi_1),(x_2,\xi_2)).
+\end{equation}
+It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. To check preservation of pairings, compare with a second cotangent element $((y_1,y_2),(\xi'_1,\xi'_2))$. The two sides expand via \eqref{eqn.canonical_form} to
 \[
-\pairing{v_1,w_1}_{V_1}+\pairing{v_1',w_1'}_{V_1}+\pairing{v_2,w_2}_{V_2}+\pairing{v_2',w_2'}_{V_2},
-\]
-and the two sides for $\sigma^*$ expand via \eqref{eqn.canonical_form} to
-\[
-\xi'_1(v_1)+\xi'_2(v_2)-\xi_1(w_1)-\xi_2(w_2).
+\xi'_1(x_1)+\xi'_2(x_2)-\xi_1(y_1)-\xi_2(y_2).
 \]
 \qedhere
 \end{proof}
 
-The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flow of the constant left-invariant vector field $\sharp_V(\xi)$ from base point $v$:
+The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the time-1 flow of the constant left-invariant vector field $\sharp_V(\xi)$ from base point $x$:
 \begin{equation}\label{eqn.flow_cot}
-\exp_V\colon T^*V\to V,\qquad (v,\xi)\longmapsto v+\sharp_V(\xi).
+\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharp_V(\xi).
 \end{equation}
 It is natural in $\pvect$-isomorphisms by linearity and the pairing-preservation equation \eqref{eqn.pairing_triangle}. We use \eqref{eqn.flow_cot} pointwise as the on-directions bijection of $V\yon^V\cong\cot{V}$ in \cref{prop.pnla_polynomial}.
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.pnla_generalization}
-Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\pairing{-,-})$ of a finite-dimensional nilpotent real Lie algebra and a pairing on its underlying vector space. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting, with $TV$ and $T^*V$ acquiring brackets that mix $\ad$ and $\ad^*$. A careful treatment is left to future work.\qedhere
-\end{remark}
-
-\subsection{Hamiltonian vector fields}\label{sec.hamiltonian_vector_fields}
-
-\cref{sec.hamiltonian_vector_fields} is not necessary and can be skimmed on a first reading; it will only be used in discussing the wave equation \cref{sec.spring}. We include it because it allows physicists and category theorists to exchange basic intuitions using the basic concepts and results we've developed.
-
-\begin{definition}[Hamiltonian vector field]\label{def.hamiltonian_vector_field}
-Let $V$ be a paired vector space and $H\colon T^*V\to\rr$ a smooth function (the \emph{Hamiltonian}). The \emph{Hamiltonian vector field of $H$} is the composite $X_H$ obtained as follows:
-\[
-\begin{tikzcd}[column sep=1.8em, row sep=2.4em, ampersand replacement=\&]
-T^*V
-  \ar[d, dashed, "{X_H}"']
-  \ar[r, "{(\id,dH)}"]
-\&[15pt] T^*V\oplus(T^*V)^*
-  \ar[r, equal, "{\eqref{eqn.TT_def},\,\eqref{eqn.canonical_dual_sum}}"]
-\&[15pt] (V\oplus V^*)\oplus(V^*\oplus V)
-  \ar[d, "{\id\oplus\sharp_{V\oplus V^*}}"]
-\\
-T(T^*V)
-\& {}
-\& (V\oplus V^*)\oplus(V\oplus V^*)
-  \ar[ll, equal, "{\eqref{eqn.TT_def}^{-1}}"]
-\end{tikzcd}
-\]
-The first arrow sends $(v,\xi)$ to $((v,\xi),dH|_{(v,\xi)})$. The arrow labeled $\id\oplus\sharp_{V\oplus V^*}$ leaves the basepoint fixed and applies the canonical symplectic sharp map $\sharp_{V\oplus V^*}=\sharp_{T^*V}$ of \eqref{eqn.canonical_sharp} to the cotangent-fiber component:
-\[
-((v,\xi),(\xi',w))\longmapsto((v,\xi),(w,-\xi')).
-\]
-The bottom $\eqref{eqn.TT_def}^{-1}$ arrow repackages the explicit direct sum as $T(T^*V)$. Under \eqref{eqn.canonical_dual_sum}, we write
-\begin{equation}\label{eqn.hamilton_differential}
-dH|_{(v,\xi)}=(\partial_v H,\partial_\xi H)\in V^*\oplus V,
-\qquad
-dH|_{(v,\xi)}(v',\xi')=(\partial_v H)(v')+\xi'(\partial_\xi H).
-\end{equation}
-Thus the composite is
-\[
-X_H(v,\xi)=((v,\xi),(\partial_\xi H,-\partial_v H))\in T(T^*V).\qedhere
-\]
-\end{definition}
-
-\begin{proposition}[Hamilton's equations]\label{prop.hamilton}
-The integral curves $(v(t),\xi(t))$ of the Hamiltonian vector field of \cref{def.hamiltonian_vector_field} — those whose velocity is the fiber component of $X_H(v,\xi)$ — satisfy \emph{Hamilton's equations}
-\[
-\dot v=\partial_\xi H,\qquad \dot\xi=-\partial_v H,
-\]
-and $H$ is conserved along them: $dH/dt=0$.
-\end{proposition}
-
-\begin{proof}
-By \cref{def.hamiltonian_vector_field}, the fiber component of $X_H(v,\xi)$ is $(\partial_\xi H,-\partial_v H)$. Thus the integral-curve condition is
-\begin{equation}\label{eqn.hamilton_integral_curve}
-(\dot v,\dot\xi)=(\partial_\xi H,-\partial_v H),
-\end{equation}
-which is Hamilton's equations.
-
-For conservation, the chain rule together with \eqref{eqn.hamilton_differential} and \eqref{eqn.hamilton_integral_curve} gives
-\[
-\begin{aligned}
-\frac{dH}{dt}
-&= dH|_{(v,\xi)}(\dot v,\dot\xi) \\
-&= (\partial_v H)(\dot v)+\dot\xi(\partial_\xi H) \\
-&= (\partial_v H)(\partial_\xi H)+(-\partial_v H)(\partial_\xi H)=0.
-\end{aligned}
-\]
-\end{proof}
-
-\begin{remark}[Antisymmetry is substantive]\label{rmk.antisymmetry_substantive}
-Had we used the swap pairing of \cref{rmk.swap_pairing} in place of \eqref{eqn.canonical_form}, the vertical map $\id\oplus\sharp_{V\oplus V^*}$ in \cref{def.hamiltonian_vector_field} would use the swap sharp $(\xi,v)\mapsto(v,\xi)$ instead of \eqref{eqn.canonical_sharp}. This would give $\dot\xi=+\partial_v H$ and $dH/dt=2(\partial_v H)(\partial_\xi H)$, which is generically nonzero: it represents a gradient flow rather than a Hamiltonian flow. Conservation is precisely what the antisymmetry of \eqref{eqn.canonical_form} buys.\qedhere
-\end{remark}
-
-\begin{remark}[Coordinate invariance of $X_H$]\label{rmk.XH_natural}
-A $\pvect$-isomorphism $\phi\colon V\To{\cong}W$ induces a linear symplectomorphism $T^*\phi\colon T^*V\To{\cong}T^*W$ (\cref{prop.TT_endofunctors}). For any $H\colon T^*W\to\rr$, the chain rule for $H\circ T^*\phi$ together with the fact that $T^*\phi$ preserves the canonical symplectic pairing (\cref{prop.TT_endofunctors}) give
-\[
-X_H\circ T^*\phi=T(T^*\phi)\circ X_{H\circ T^*\phi},
-\]
-so $T^*\phi$ takes integral curves of $X_{H\circ T^*\phi}$ on $T^*V$ to those of $X_H$ on $T^*W$. Hamilton's equations transform covariantly under linear canonical transformations.\qedhere
-\end{remark}
-
-\begin{remark}[Decoupling of separable Hamiltonians]\label{rmk.XH_separable}
-For Hamiltonians $H_i\colon T^*V_i\to\rr$, the separable Hamiltonian on $T^*(V_1\oplus V_2)$ defined in coordinates by
-\[
-H((v_1,v_2),(\xi_1,\xi_2))\coloneqq H_1(v_1,\xi_1)+H_2(v_2,\xi_2)
-\]
-satisfies $\partial_{v_i}H=\partial_{v_i}H_i$ and $\partial_{\xi_i}H=\partial_{\xi_i}H_i$, so by \cref{prop.hamilton} the dynamics decouple:
-\[
-\dot v_i=\partial_{\xi_i}H_i,\qquad \dot\xi_i=-\partial_{v_i}H_i\qquad(i=1,2).
-\]
-At the level of vector fields, the strong monoidality of $T^*$ via the swaps \eqref{eqn.T_swap}, \eqref{eqn.Tstar_swap} of \cref{prop.TT_monoidal} factors $X_H$ as $X_{H_1}\oplus X_{H_2}$; non-interacting systems evolve independently on their own factors.\qedhere
+Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\pairing{-,-})$ of a finite-dimensional nilpotent real Lie algebra and a pairing on its underlying vector space. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting, with $T^*V$ acquiring brackets that mix $\ad$ and $\ad^*$. A careful treatment is left to future work.\qedhere
 \end{remark}
 
 \section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
@@ -1021,39 +925,39 @@ The following square, in which all maps are strong monoidal, commutes up to isom
 \smset_\cong\ar[r,"\Fun{Store}"'] \& \poly
 \end{tikzcd}
 \end{equation}
-The 2-cell $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ at each $V:\pvect$ is identity on positions and, on directions at $v\in V$, the cotangent flow \eqref{eqn.flow_cot}
+The 2-cell $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ at each $V:\pvect$ is identity on positions and, on directions at $x\in V$, the cotangent flow \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
-T^*_vV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V\To{v+\blank}V,
+T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V\To{x+\blank}V,
 \qquad
-\xi\longmapsto v+\sharp_V(\xi).
+\xi\longmapsto x+\sharp_V(\xi).
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-On positions, both functors send $V$ to its underlying set, so the on-positions component is the identity. At each $v\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $v$, hence a bijection. So $\Fun{Store}(|V|)=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $v$, we must check that the two composites $T^*_{\phi(v)}W\to V$ agree:
+On positions, both functors send $V$ to its underlying set, so the on-positions component is the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $x$, hence a bijection. So $\Fun{Store}(|V|)=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $x$, we must check that the two composites $T^*_{\phi(x)}W\to V$ agree:
 \begin{align*}
-\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_V}\;\sharp_V(\phi^*\xi)\;\Mapsto{v+\blank}\;v+\sharp_V(\phi^*\xi), && \text{[$F^V_v\circ\cot{\phi}$]}\\
-\xi\;&\Mapsto{\sharp_W}\;\sharp_W(\xi)\;\Mapsto{\phi(v)+\blank}\;\phi(v)+\sharp_W(\xi)\;\Mapsto{\phi^{-1}}\;v+\phi^{-1}(\sharp_W\xi) && \text{[$\phi\yon^\phi\circ F^W_{\phi(v)}$]}.
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_V}\;\sharp_V(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharp_V(\phi^*\xi), && \text{[$F^V_x\circ\cot{\phi}$]}\\
+\xi\;&\Mapsto{\sharp_W}\;\sharp_W(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharp_W(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharp_W\xi) && \text{[$\phi\yon^\phi\circ F^W_{\phi(x)}$]}.
 \end{align*}
 The two are equal iff $\sharp_V\circ\phi^*=\phi^{-1}\circ\sharp_W$, which is \eqref{eqn.pairing_triangle}.\qedhere
 \end{proof}
 
 \begin{remark}\label{rmk.pnla_fiberwise_addition}
-By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. By \cref{ex.store}, the canonical such structure is the codiscrete category on $V$: there is exactly one morphism $v\to v'$ for each pair, and the direction-set $V$ at position $v$ is interpreted as the set of codomains.
+By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. By \cref{ex.store}, the canonical such structure is the codiscrete category on $V$: there is exactly one morphism $x\to x'$ for each pair, and the direction-set $V$ at position $x$ is interpreted as the set of codomains.
 
-Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_vV$ at $v$ corresponds to the unique morphism $v\to v+\sharp_V(\xi)$ in the codiscrete category on $V$. The identity at $v$ corresponds to the zero covector $0\in T^*_vV$, since $v+\sharp_V(0)=v$. Composition of $\xi$ at $v$ with $\xi'$ at $v+\sharp_V(\xi)$ corresponds to $\xi+\xi'$ at $v$, since both produce the morphism with codomain $v+\sharp_V(\xi)+\sharp_V(\xi')=v+\sharp_V(\xi+\xi')$. Thus the pairing $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(v,\xi)\mapsto v+\sharp_V(\xi)$ and composition by fiberwise addition of covectors.\qedhere
+Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_xV$ at $x$ corresponds to the unique morphism $x\to x+\sharp_V(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_V(0)=x$. Composition of $\xi$ at $x$ with $\xi'$ at $x+\sharp_V(\xi)$ corresponds to $\xi+\xi'$ at $x$, since both produce the morphism with codomain $x+\sharp_V(\xi)+\sharp_V(\xi')=x+\sharp_V(\xi+\xi')$. Thus the pairing $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_V(\xi)$ and composition by fiberwise addition of covectors.\qedhere
 \end{remark}
 
-For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(v,\xi)$ for a \emph{position} $v\in V$ and \emph{momentum} $\xi\in V^*$. The cotangent space decomposes as
+For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(x,\xi)$ for a \emph{position} $x\in V$ and \emph{momentum} $\xi\in V^*$. The cotangent space decomposes as
 \[
-T^*_{(v,\xi)}(T^*V)\cong T^*_vV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
+T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 \]
 again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
 
 \begin{definition}[Legendre projection]\label{def.legendre_projection}
-The \emph{Legendre projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(v,\xi)\mapsto v$ and direction-action at $(v,\xi)$
+The \emph{Legendre projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(x,\xi)\mapsto x$ and direction-action at $(x,\xi)$
 \[
-T^*_vV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_V(\xi))}V^*\oplus V\cong T^*_{(v,\xi)}(T^*V).
+T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_V(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \qedhere
 \]
 \end{definition}
@@ -1324,9 +1228,9 @@ It sends $M\mapsto\cot{M}$ and a morphism $(V, \sharp,f\colon V\times M\to N)$ t
 \[
 V\To{\Psi(V,f)}[\cot{M},\cot{N}]\tri V
 \]
-which at $v\in V$ sends a point $m\in M$ to  $n\coloneqq f(v,m)\in N$ and for a covector $\xi_N\in T^*_nN$ if we let $(\xi_V,\xi_M)\coloneqq(T_{(v,m)} f)^\top(\xi_N)\in T_v^*V\times T_m^*M$, returns $\xi_M\in T^*_mM$ and updates to
+which at $s\in V$ sends a point $m\in M$ to  $n\coloneqq f(s,m)\in N$ and for a covector $\xi_N\in T^*_nN$ if we let $(\xi_V,\xi_M)\coloneqq(T_{(s,m)} f)^\top(\xi_N)\in T_s^*V\times T_m^*M$, returns $\xi_M\in T^*_mM$ and updates to
 \begin{equation}\label{eqn.cotangent_learner_update}
-\upd_v(m,\xi_N)\coloneqq v+\sharp_V(\xi_V).
+\upd_s(m,\xi_N)\coloneqq s+\sharp_V(\xi_V).
 \end{equation}
 \end{corollary}
 
@@ -1338,39 +1242,17 @@ V\yon^V\otimes\cot{M}\;\To{\theta_V\otimes\id}\;\cot{V}\otimes\cot{M}\;\To{\cong
 and the rest of the statement is proved simply by tracing through the above propositions. In particular, \eqref{eqn.cotangent_learner_update} comes from \eqref{eqn.directions_sharp}.
 \end{proof}
 
-\subsection{Example: deep learning as a dynamic monoidal category}\label{sec.deep_learning}
+\subsection{Deep learning, briefly}\label{sec.deep_learning}
 
-We recast the deep-learning example of~\cite{shapiro2022dynamic} as the restriction of $\Psi$ \eqref{eqn.cotangent_learners} to Euclidean spaces. Take the object set $O\coloneqq\nn$ and assign to each $n\in\nn$ the polynomial
-\[
-\Psi(\rr^n)=\cot{\rr^n}\cong{\cot{\rr}}\tpow n.
-\]
-A layer $m\to n$ is a morphism $\rr^m\to\rr^n$ in $\para{\pvect}{\mfd}$: a parameter space $V=\rr^k$, regarded as a paired vector space with $\sharp_V=-\eta\cdot\id$ for a learning rate $\eta>0$, together with a smooth architecture
-\[
-f\colon V\times\rr^m\to\rr^n.
-\]
-
-Applying $\Psi$ gives an $\ihom{\cot{\rr^m},\cot{\rr^n}}$-coalgebra with state set $V$. At $v\in V$, its action is
-\[
-\cot{f_v}\colon\cot{\rr^m}\to\cot{\rr^n},
-\]
-whose forward part is $x\mapsto f_v(x)$ and whose backward part is $(T_x f_v)^\top$.
-
-The update at $v$ on a direction $(x,\xi)\in\rr^m\times T^*_{f_v(x)}\rr^n$ is
-\[
-\upd_v(x,\xi)=v+\sharp_V\bigl((\partial_Vf)_{(v,x)}^\top\xi\bigr)=v-\eta\cdot(\partial_Vf)_{(v,x)}^\top\xi,
-\]
-by \eqref{eqn.cotangent_learner_update}. When $\xi=dL|_{f_v(x)}$ for a loss $L\colon\rr^n\to\rr$, the chain rule gives $(\partial_Vf)_{(v,x)}^\top\xi=d_v(L\circ f(\blank,x))$; under the Euclidean identification, $\upd_v$ is one step of stochastic gradient descent.
-
-Since $\Psi$ is a functor, composition in $\org$ reproduces backpropagation. Since $\Psi$ is strong monoidal, parallel composition of layers is transported by the comparison $\cot{\rr^m}\otimes\cot{\rr^{m'}}\cong\cot{\rr^{m+m'}}$. Thus the Euclidean restriction of $\Psi$ assembles into an operad functor
-\[\cat{L}\colon\cat{W}_{\nn\tn{-MnCat}}\to\org.\]
+The cotangent-learners construction of~\cite{shapiro2022dynamic} sits inside our framework as a strong monoidal functor $\Psi\colon\para{\pvect}{\mfd}\to\org$, sending $\rr^n\mapsto\cot{\rr^n}$ and a parameterized smooth map $f\colon V\times\rr^m\to\rr^n$ to the coalgebra whose update at $s\in V$ is one step of stochastic gradient descent. We develop deep learning fully in \cref{ch.deep_learning}, where it appears as a special case of the gradient-flow functor $\Phi^{\mathrm{grad}}$ defined in \cref{sec.gradient_dynamics}; the cotangent-learners restriction is the Euclidean, learning-rate-$\eta$ specialization. For now, take this as a forward pointer.
 
 \chapter{Potentialized lenses}\label{ch.potentials}
 
 In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potential_lenses_to_dynamics} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
 
-\section{The abstract construction}\label{sec.lenses_general}
+\section{Lenses and backward monads}\label{sec.lenses_general}
 
-\subsection{Lenses}\label{subsec.lenses}
+\subsection{Lenses}\label{sec.lenses}
 We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a commutative comonoid structure $(\delta_{\outp c},\varepsilon_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
 \begin{equation}\label{eqn.lens_def}
 \outp f\colon \outp c\to\outp d
@@ -1521,7 +1403,7 @@ The functor $\rr^-\colon\finset\op\to\mfd$ is strong monoidal, hence induces a s
 \]
 \end{lemma}
 
-\subsection{Backward monads on lenses}\label{subsec.backwards}
+\subsection{Backward monads on lenses}\label{sec.backwards}
 
 We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
 
@@ -2028,7 +1910,7 @@ We can thus apply \cref{prop.para_square,prop.Theta_T_alpha} to obtain \eqref{eq
 
 \section{The dynamics of potentialized lenses}\label{sec.potential_lenses_to_dynamics}
 
-\subsection{Potentialized lenses}\label{subsec.potentialized_lenses}
+\subsection{Potentialized lenses}\label{sec.potentialized_lenses}
 
 \begin{lemma}\label{lemma.monoid_to_monad}
 If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative monoid object in it, then $M\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,M)$.
@@ -2121,7 +2003,7 @@ There is a lax monoidal functor
 Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
 \end{proof}
 
-\subsection{The dynamics functor}\label{subsec.dynamics_functor}
+\subsection{The dynamics functor}\label{sec.dynamics_functor}
 
 By \cref{prop.TT_monoidal,prop.pnla_smc_action,prop.cot_monoidal}, we have two parallel strong symmetric monoidal functors $\pvect\to\poly$,%
 \footnote{The vector spaces can be replaced by paired nilpotent Lie algebras; see \cref{rmk.pnla_generalization}.}
@@ -2232,7 +2114,7 @@ The functor $\Phi$ acts on objects as follows:
 A position in $\Phi\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in\outp{M}$ is a point and $\omega\in\Omega(\inpt M)$ is a covector field. A direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$ where $\xi:T^*_{\outp{m}}\outp M$ is a covector and $\inpt m\in\inpt M$ is a point.
 
 \paragraph{The action of $\Phi$ on morphisms.}
-Describing the action of $\Phi$ on morphisms will extend to the end of this section, \cref{subsec.dynamics_functor}. Let $(V,\sharp_V):\pvect$ and let
+Describing the action of $\Phi$ on morphisms will extend to the end of this section, \cref{sec.dynamics_functor}. Let $(V,\sharp_V):\pvect$ and let
 $f\colon V\cdot\lensob M\to\lensob N$
 be a morphism in $\potlens$, i.e.\ a tuple $(\outp f,\inpt f,U)$ as in \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.para_potential_lens_maps}
@@ -2244,11 +2126,11 @@ It is sent by $\Phi$ to a $[\Phi\lensob M,\Phi\lensob N]$-coalgebra with state s
 \begin{equation}\label{eqn.state_space}
 X\coloneqq T^*V\cong V\oplus V^*;
 \end{equation}
-we write $x=(v,\xi)\in X$ for position $v\in V$ and momentum $\xi\in V^*$, and equip $X$ with the canonical symplectic pairing;%
+we write $s=(x,\xi)\in X$ for position $x\in V$ and momentum $\xi\in V^*$, and equip $X$ with the canonical symplectic pairing;%
 \footnote{This comes from \cref{def.legendre_projection,prop.canonical_symplectic_pairing}.}
 this coalgebra state is the physical phase state associated to the Para parameter $V$. Its sharp map is
 \begin{equation}\label{eqn.sharp_X}
-\sharp_X\colon X^*\to X,\qquad (\xi',v')\mapsto(v',-\xi'),
+\sharp_X\colon X^*\to X,\qquad (\xi',x')\mapsto(x',-\xi'),
 \end{equation}
 specializing \eqref{eqn.canonical_sharp}.
 
@@ -2257,60 +2139,63 @@ We now unpack the coalgebra function itself,
 X\To{\Phi(V,\sharp_V,f)}
 \left[\Phi\lensob M,\Phi\lensob N\right]\tri X.
 \]
-Given a state $x\coloneqq(v,\xi)\in X$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point by
+Given a state $s\coloneqq(x,\xi)\in X$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point by
 \begin{equation}\label{eqn.outpn}
-\outp n\coloneqq\outp f(v,\outp m)
+\outp n\coloneqq\outp f(x,\outp m)
 \end{equation}
 and the output covector field $\omega_N\colon\inpt N\to T^*\inpt N$ by
 \begin{equation}\label{eqn.omegaprime}
-\omega_N(\inpt n)\;=\;(\inpt f(v,\outp m,\blank))^*\omega_M\big|_{\inpt n}\;+\;d(U(v,\outp m,\blank))\big|_{\inpt n}.
+\omega_N(\inpt n)\;=\;(\inpt f(x,\outp m,\blank))^*\omega_M\big|_{\inpt n}\;+\;d(U(x,\outp m,\blank))\big|_{\inpt n}.
 \end{equation}
-The first term is the pullback of $\omega_M$ along the partial map $\inpt f(v,\outp m,\blank)\colon\inpt N\to\inpt M$; the second is the differential of the potential $U(v,\outp m,\blank)\colon\inpt N\to\rr$ at $\inpt n$, in the sense of \eqref{eqn.differential}.%
+The first term is the pullback of $\omega_M$ along the partial map $\inpt f(x,\outp m,\blank)\colon\inpt N\to\inpt M$; the second is the differential of the potential $U(x,\outp m,\blank)\colon\inpt N\to\rr$ at $\inpt n$, in the sense of \eqref{eqn.differential}.%
 \footnote{The $+1$ that turns the second summand into $dU$ comes from \eqref{eqn.d_potential}; the $+$ between summands is the cotangent splitting $T^*(\rr\times\inpt M)\cong T^*\rr\oplus T^*\inpt M$ (\cref{sec.manifolds_notation}).} Then the readout position is
 \[
 b\coloneqq\bigl(\outp n,\,\omega_N\bigr)\;\in\;\outp N\times\Omega(\inpt N).
 \]
 
 
-Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phi\lensob N[b]$, the coalgebra $\Phi(f)$ at $(x,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
+Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phi\lensob N[b]$, the coalgebra $\Phi(f)$ at $(s,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
 \begin{equation}\label{eqn.inptm}
-\inpt m\coloneqq\inpt f(v,\outp m,\inpt n)
+\inpt m\coloneqq\inpt f(x,\outp m,\inpt n)
 \end{equation}
 and define
 \begin{equation}\label{eqn.bigtheta}
-(\xi_V,\,\xi_M,\,\xi_{\inpt N})\coloneqq (T_{(v,\outp m)}\outp f)^\top\xi_N \;+\; (T_{(v,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m) \;+\; dU\big|_{(v,\outp m,\inpt n)}\;
+(\xi_V,\,\xi_M,\,\xi_{\inpt N})\coloneqq (T_{(x,\outp m)}\outp f)^\top\xi_N \;+\; (T_{(x,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m) \;+\; dU\big|_{(x,\outp m,\inpt n)}\;
 \end{equation}
 where $(\xi_V,\,\xi_M,\,\xi_{\inpt N}):V^*\oplus T^*_{\outp m}\outp M\oplus T^*_{\inpt n}\inpt N$.%
 \footnote{Each summand is a cotangent pullback: $\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (via $\potd$, \eqref{eqn.d_potential}); the $+$'s are the cotangent splitting of $V\times\outp M\times\inpt N$ (\cref{sec.manifolds_notation}), morally the domain of the maps in \eqref{eqn.para_potential_lens_maps}. Throughout, we silently use the canonical chart identification \eqref{eqn.tangent_vec} to treat covectors at points of vector spaces as elements of the dual.}
 Note that the first summand naturally lands in $V^*\oplus T^*_{\outp m}\outp M$ and has been extended by $0$ in the remaining $\inpt N$-factor, so by \eqref{eqn.omegaprime} we have $\omega_N(\inpt n)=\xi_{\inpt N}$.
 
-All of the work has now been done: the coalgebra at $(x,a)$ on $(\xi_N,\inpt n)$ returns the direction
+All of the work has now been done: the coalgebra at $(s,a)$ on $(\xi_N,\inpt n)$ returns the direction
 \[
 (\xi_M,\,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phi\lensob M[a]
 \]
-and updates the state (from its original $x=(v,\xi)$) to
+and updates the state (from its original $s=(x,\xi)$) to
 \begin{equation}\label{eqn.state_update}
-x+\sharp_X(\xi_V,\sharp_V(\xi))=\bigl(v+\sharp_V(\xi),\,\xi-\xi_V\bigr).
+s+\sharp_X(\xi_V,\sharp_V(\xi))=\bigl(x+\sharp_V(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
-The sum $x+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}; and the pair $(\xi_V,\sharp_V(\xi))\in T^*_xX$ comes from the Legendre projection, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_V(\xi))=(\sharp_V(\xi),-\xi_V)$, then componentwise addition with $x=(v,\xi)$ produces $(v+\sharp_V(\xi),\,\xi-\xi_V)$.
+The sum $s+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}; and the pair $(\xi_V,\sharp_V(\xi))\in T^*_sX$ comes from the Legendre projection, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_V(\xi))=(\sharp_V(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_V(\xi),\,\xi-\xi_V)$.%
+\footnote{
+Equation \eqref{eqn.state_update} is explicit Euler of the Hamiltonian vector field on $T^*V$: the update at $s$ is computed entirely from data at $s$. The recurrence so produced is exact as an algebraic identity---the wave-equation derivation of \cref{ch.spring} relies on this exactness---but unconditionally unstable as a time-stepper for harmonic systems. Stable numerical simulation of the underlying flow would require a sequential, symplectic update, which is incompatible with the atomic state-update of an $\org$-coalgebra.
+}
 
 All in all, one could tersely denote the coalgebra map as follows:
 \[
 \Phi(V,\sharp_V,f)\colon 
-(v,\xi)\mapsto
+s=(x,\xi)\mapsto
 (\outp m,\omega_M)\mapsto
 \Big(
 	(\outp n,\omega_N),
 	(\xi_N,\inpt n)\mapsto
 	\big(
 		(\xi_M,\inpt m),
-		(v+\sharp_V(\xi),\,\xi-\xi_V)
+		(x+\sharp_V(\xi),\,\xi-\xi_V)
 	\big)
 \Big),
 \]
 where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\xi_M$ and $\xi_V$ in \eqref{eqn.bigtheta}, and $\inpt m$ in \eqref{eqn.inptm}.
 
-\chapter{Example: the wave equation}\label{sec.spring}
+\chapter{Example: the wave equation}\label{ch.spring}
 
 \section{Introduction}\label{sec.spring_intro}
 
@@ -2343,9 +2228,9 @@ That is, we begin with a single particle with position and momentum, which we pu
 and calculate that the resulting state dynamics evolves according to the discrete wave equation:%
 \footnote{Taking the continuum limit gives the usual wave equation.}
 \begin{equation}\label{eqn.discrete_wave}
-m\ddot v_i=\kappa(v_{i-1}-2v_i+v_{i+1}),
+m\ddot x_i=\kappa(x_{i-1}-2x_i+x_{i+1}),
 \end{equation}
-where $\ddot v_i(t)=v_i(t+2)-2v_i(t+1)+v_i(t).$
+where $\ddot x_i(t)=x_i(t+2)-2x_i(t+1)+x_i(t).$
 
 We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider morphisms of the form
 \[
@@ -2376,9 +2261,9 @@ where we identify $K+1$ with the disjoint union of the big-box input and the $K$
 
 Applying $\rr^-$ from \cref{lemma.lens_rr}, we obtain the lens $\binom{\rr^K}{\rr^K}\to\binom{\rr}{\rr}$ given by
 \[
-\outp f(v_1,\ldots,v_K)\coloneqq v_K
+\outp f(x_1,\ldots,x_K)\coloneqq x_K
 \qqand
-\inpt f\bigl((v_1,\ldots,v_K),\,v_0\bigr)\coloneqq(v_0,\,v_1,\,\ldots,\,v_{K-1}).
+\inpt f\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq(x_0,\,x_1,\,\ldots,\,x_{K-1}).
 \]
 Lenses without potential and without parameterization are special cases of $\potlens$-morphisms, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a $\potlens$-morphism
 \[
@@ -2391,72 +2276,72 @@ Composing, we obtain a $0$-ary map, $\fun{wire}_K(\Part,\ldots,\Part)$ in $\potl
 \end{equation}
 acting per-particle on each $\rr$-summand (the inverse-mass pairing). The defining maps are
 \[
-\outp f(v_1,\ldots,v_K)\coloneqq v_K
+\outp f(x_1,\ldots,x_K)\coloneqq x_K
 \qqand
-U\bigl((v_1,\ldots,v_K),\,v_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(v_i-v_{i-1})^2,
+U\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(x_i-x_{i-1})^2,
 \]
-with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto v_{i-1}$ via $\inpt f$ (with $v_0$ the external input).
+with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input).
 
 \paragraph{The discrete dynamics.}
 
 The discrete dynamics appear when we apply the functor $\Phi\colon\potlens\to\org$. The object $\boxob$ is sent to
 \[
-\Phi(\boxob)=\sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times \rr}.
+\Phi(\boxob)=\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times \rr}.
 \]
 The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \[
 \Phi(\fun{wire}_K(\Part,\ldots,\Part))\colon X\To{}\Phi(\boxob)\tri X
 \]
-with state space $X\coloneqq T^*\rr^K$, with elements written $x=((v_1,\ldots,v_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
+with state space $X\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
 \begin{equation}\label{eqn.wave_coalg}
-(\vec v,\vec p)\mapsto\Bigl(\bigl(v_K,\,\omega_\boxob\bigr),\;(\xi_N,v_0)\mapsto\bigl(\vec v+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
+(\vec x,\vec p)\mapsto\Bigl(\bigl(x_K,\,\omega_\boxob\bigr),\;(\xi_N,x_0)\mapsto\bigl(\vec x+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
 \end{equation}
-where each piece is read off from the unpacking in \cref{subsec.dynamics_functor}:
+where each piece is read off from the unpacking in \cref{sec.dynamics_functor}:
 \begin{itemize}
-\item The output position $v_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
+\item The output position $x_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
 \item The \emph{harmonic spring} covector field on the left-hand side,
-\[\omega_\boxob(v_0)=d\bigl[\tfrac{\kappa}{2}(v_1-v_0)^2\bigr]\big|_{v_0}=-\kappa(v_1-v_0),\]
-comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dv_0=+1$ via \eqref{eqn.d_potential}).
-\item The pullback covector $\xi_V\in T^*_{\vec v}V$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec v}V\cong V^*=(\rr^K)^*$) by
+\[\omega_\boxob(x_0)=d\bigl[\tfrac{\kappa}{2}(x_1-x_0)^2\bigr]\big|_{x_0}=-\kappa(x_1-x_0),\]
+comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dx_0=+1$ via \eqref{eqn.d_potential}).
+\item The pullback covector $\xi_V\in T^*_{\vec x}V$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec x}V\cong V^*=(\rr^K)^*$) by
 \begin{align*}
 (\xi_V)_i&=
-\bigl((T_{\vec v}\outp f)^\top\xi_N\bigr)_i+\partial_{v_i}U(\vec v,v_0)\\&=
-\begin{cases}\partial_{v_i}U(\vec v,v_0)+0&1\leq i<K\\ \partial_{v_K}U(\vec v,v_0)+\xi_N&i=K\end{cases}\\&=
-\begin{cases}\kappa(2v_i-v_{i-1}-v_{i+1})&1\leq i<K\\ \kappa(v_K-v_{K-1})+\xi_N&i=K\end{cases}
+\bigl((T_{\vec x}\outp f)^\top\xi_N\bigr)_i+\partial_{x_i}U(\vec x,x_0)\\&=
+\begin{cases}\partial_{x_i}U(\vec x,x_0)+0&1\leq i<K\\ \partial_{x_K}U(\vec x,x_0)+\xi_N&i=K\end{cases}\\&=
+\begin{cases}\kappa(2x_i-x_{i-1}-x_{i+1})&1\leq i<K\\ \kappa(x_K-x_{K-1})+\xi_N&i=K\end{cases}
 \end{align*}
-\item The state update applied to $x=(\vec v,\vec p)$ comes from \eqref{eqn.state_update}: using our sharp $\sharp_V(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharp_X\colon(\xi,v)\mapsto(v,-\xi)$ from \eqref{eqn.sharp_X}, we get
+\item The state update applied to $s=(\vec x,\vec p)$ comes from \eqref{eqn.state_update}: using our sharp $\sharp_V(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharp_X\colon(\xi,x)\mapsto(x,-\xi)$ from \eqref{eqn.sharp_X}, we get
 \[
-x'\coloneqq x+\sharp_X(\xi_V,\sharp_V(\vec p))=(\vec v+\vec p/m,\,\vec p-\xi_V).
+s'\coloneqq s+\sharp_X(\xi_V,\sharp_V(\vec p))=(\vec x+\vec p/m,\,\vec p-\xi_V).
 \]
-In other words, writing $x'=(v_1',\ldots,v_K',p_1',\ldots,p_K')$, we have
+In other words, writing $s'=(x_1',\ldots,x_K',p_1',\ldots,p_K')$, we have
 \begin{equation}\label{eqn.potlens_composite_final}
-v_i'\coloneqq v_i+p_i/m
+x_i'\coloneqq x_i+p_i/m
 \qqand
-p_i'\coloneqq\begin{cases}p_i+\kappa(v_{i-1}+v_{i+1}-2v_i)&1\leq i<K\\ p_i+\kappa(v_{K-1}-v_K)-\xi_N&i=K.\end{cases}
+p_i'\coloneqq\begin{cases}p_i+\kappa(x_{i-1}+x_{i+1}-2x_i)&1\leq i<K\\ p_i+\kappa(x_{K-1}-x_K)-\xi_N&i=K.\end{cases}
 \end{equation}
 \end{itemize}
 
-\subsection{Recovering the wave equation}\label{subsec.recovering_wave}
+\subsection{Recovering the wave equation}\label{sec.recovering_wave}
 To recover the discrete wave equation everywhere, we pin the chain between a left and right wall:
 \begin{equation}\label{eqn.wave_pin}
-  v_0\coloneqq 0
+  x_0\coloneqq 0
   \qqand
-  v_{K+1}\coloneqq L(K+1)
+  x_{K+1}\coloneqq L(K+1)
 \end{equation}
 where $L$ is the equilibrium spacing between adjacent particles. Supplying these via the external direction-input means setting
 \begin{equation}\label{eqn.wave_bc}
-v_0\coloneqq 0\qqand\xi_N\coloneqq \kappa\bigl(v_K-L(K+1)\bigr).
+x_0\coloneqq 0\qqand\xi_N\coloneqq \kappa\bigl(x_K-L(K+1)\bigr).
 \end{equation}
-With these choices, the boundary case at $i=K$ becomes $p_K'=p_K+\kappa\bigl(v_{K-1}+L(K+1)-2v_K\bigr)$, so the above state update formula reduces to this:
+With these choices, the boundary case at $i=K$ becomes $p_K'=p_K+\kappa\bigl(x_{K-1}+L(K+1)-2x_K\bigr)$, so the above state update formula reduces to this:
 \begin{equation}\label{eqn.state_update_explicit}
-v_i'\coloneqq v_i+p_i/m
+x_i'\coloneqq x_i+p_i/m
 \qqand
-p_i'\coloneqq p_i+\kappa(v_{i-1}+v_{i+1}-2v_i).
+p_i'\coloneqq p_i+\kappa(x_{i-1}+x_{i+1}-2x_i).
 \end{equation}
 
-We then think of the state $x$ as a function of time: fix any initial $x(0)\coloneqq(\vec{v}(0),\vec{p}(0))$ and set $x(t+1)\coloneqq x(t)'$ as in \eqref{eqn.state_update_explicit}. We then rewrite the first equation as $p_i(t)=mv_i(t+1)-mv_i(t)$ and substitute it into the second:
+We then think of the state $s$ as a function of time: fix any initial $s(0)\coloneqq(\vec{x}(0),\vec{p}(0))$ and set $s(t+1)\coloneqq s(t)'$ as in \eqref{eqn.state_update_explicit}. We then rewrite the first equation as $p_i(t)=mx_i(t+1)-mx_i(t)$ and substitute it into the second:
 \[
-mv_i(t+2)-mv_i(t+1)=mv_i(t+1)-mv_i(t)+\kappa(v_{i-1}(t)+v_{i+1}(t)-2v_i(t))
+mx_i(t+2)-mx_i(t+1)=mx_i(t+1)-mx_i(t)+\kappa(x_{i-1}(t)+x_{i+1}(t)-2x_i(t))
 \]
 Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
 
@@ -2476,28 +2361,28 @@ We first apply $\Phi$ to $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$ to obtain a 
 \[
   \left[\Phi\binom{\rr^0}{\rr^0},\Phi(\boxob)\right]=
   \left[\yon,\Phi(\boxob)\right]=\boxob=
-  \sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times\rr}
+  \sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}
 \]
-We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state space of $\Phi(\Part)$ is $X\coloneqq T^*\rr$, with elements written $x=(v,p)$ for position and momentum. The map
+We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state space of $\Phi(\Part)$ is $X\coloneqq T^*\rr$, with elements written $s=(x,p)$ for position and momentum. The map
 \[
 X\To{\Phi(\Part)}
-\sum_{(v,\omega):\rr\times\Omega(\rr)}X^{T^*_v\rr\times\rr}
+\sum_{(x,\omega):\rr\times\Omega(\rr)}X^{T^*_x\rr\times\rr}
 \]
 is given by
 \[
-(v,p)\mapsto\Bigl(\bigl(v,\,v_{\fun{prev}}\mapsto\kappa(v_{\fun{prev}}-v)\bigr),\;(\xi_{\fun{next}},v_{\fun{prev}})\mapsto\bigl(v+p/m,\,p-\xi_{\fun{next}}+\kappa(v_{\fun{prev}}-v)\bigr)\Bigr).
+(x,p)\mapsto\Bigl(\bigl(x,\,x_{\fun{prev}}\mapsto\kappa(x_{\fun{prev}}-x)\bigr),\;(\xi_{\fun{next}},x_{\fun{prev}})\mapsto\bigl(x+p/m,\,p-\xi_{\fun{next}}+\kappa(x_{\fun{prev}}-x)\bigr)\Bigr).
 \]
-In other words, starting at position $v$ and momentum $p$, it outputs $v$ to the right and the covector field $v_{\fun{prev}}\mapsto\kappa(v_{\fun{prev}}-v)$, which ``pulls'' $v_{\fun{prev}}$ toward $v$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $v_{\fun{prev}}$ from the left, it updates its position by adding velocity (momentum divided by mass) and updates its momentum by adding the spring force $\kappa(v_{\fun{prev}}-v)$, which ``pulls'' $v$ toward $v_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
+In other words, starting at position $x$ and momentum $p$, it outputs $x$ to the right and the covector field $x_{\fun{prev}}\mapsto\kappa(x_{\fun{prev}}-x)$, which ``pulls'' $x_{\fun{prev}}$ toward $x$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $x_{\fun{prev}}$ from the left, it updates its position by adding velocity (momentum divided by mass) and updates its momentum by adding the spring force $\kappa(x_{\fun{prev}}-x)$, which ``pulls'' $x$ toward $x_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
  
 \paragraph{The static wiring.}
 
 Apply $\Phi$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phi(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phi(\boxob)^{\otimes K},\Phi(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phi(\boxob)^{\otimes K}\to\Phi(\boxob)$, i.e.\
-\[\sum_{(\vec v,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_v\rr^K\times\rr^K}\To{\Phi(\fun{wire}_K)}\sum_{(v,\omega):\rr\times\Omega(\rr)}\yon^{T^*_v\rr\times\rr}.\]
-To each $(\vec v,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(v_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,v_0)$ at the big box, we assign the internal inputs $(\omega_2(v_1),v_0)$, $(\omega_3(v_2),v_1)$, $\ldots$, $(\omega_K(v_{K-1}),v_{K-2})$, $(\xi_N,v_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $v_i$ in its $\xi$-slot, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
+\[\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}\To{\Phi(\fun{wire}_K)}\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}.\]
+To each $(\vec x,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(x_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,x_0)$ at the big box, we assign the internal inputs $(\omega_2(x_1),x_0)$, $(\omega_3(x_2),x_1)$, $\ldots$, $(\omega_K(x_{K-1}),x_{K-2})$, $(\xi_N,x_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $x_i$ in its $\xi$-slot, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
 \begin{equation}\label{eqn.org_wiring_concise}
-(\vec v,\vec \omega)\mapsto\Big((v_K,\omega_1),\;(\xi_N,v_0)\mapsto\bigl((\omega_2(v_1),\ldots,\omega_K(v_{K-1}),\xi_N),\,(v_0,v_1,\ldots,v_{K-1})\bigr)\Big).
+(\vec x,\vec \omega)\mapsto\Big((x_K,\omega_1),\;(\xi_N,x_0)\mapsto\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)\Big).
 \end{equation}
-The routing $\omega_{i+1}(v_i)$ into box $i$'s $\xi$-slot is how the wiring transmits the spring force from box $i+1$ to box $i$; the only external forcing is via $v_0$ (the leftmost neighbor position, fed to box $1$) and $\xi_N$ (the covector at $v_K$, fed to box $K$) in \eqref{eqn.wave_wd}.
+The routing $\omega_{i+1}(x_i)$ into box $i$'s $\xi$-slot is how the wiring transmits the spring force from box $i+1$ to box $i$; the only external forcing is via $x_0$ (the leftmost neighbor position, fed to box $1$) and $\xi_N$ (the covector at $x_K$, fed to box $K$) in \eqref{eqn.wave_wd}.
  
 \paragraph{Composition.}
 
@@ -2505,49 +2390,50 @@ The $\org$-composite $\Phi(\fun{wire}_K)\bigl(\Phi(\Part),\ldots,\Phi(\Part)\big
 \[
 T^*\rr^K\To{\Phi(\Part)^{\otimes K}}\boxob^{\otimes K}\tri T^*\rr^K\To{\Phi(\fun{wire}_K)\tri T^*\rr^K}\boxob\tri T^*\rr^K.
 \]
-Given a tuple $(\vec v,\vec p):T^*\rr^K$, the first arrow sends it to
+Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
 \begin{equation}\label{eqn.lots_coalgebras}
-\Bigl(\bigl(v_i,\,v_i'\mapsto\kappa(v_i'-v_i)\bigr)_{i=1}^K,\;(\vec p',\vec v')\mapsto\bigl(\vec v+\vec p/m,\,\vec p-\vec p'+\kappa(\vec v'-\vec v)\bigr)\Bigr).
+\Bigl(\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K,\;(\vec p',\vec x')\mapsto\bigl(\vec x+\vec p/m,\,\vec p-\vec p'+\kappa(\vec x'-\vec x)\bigr)\Bigr).
 \end{equation}
 When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the threading goes as follows. 
 
-Beginning with $(\vec v,\vec p):T^*\rr^K$, the coalgebras output $(\vec v,\vec\omega)\coloneqq\bigl(v_i,\,v_i'\mapsto\kappa(v_i'-v_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(v_K,\omega_1)$, and asks for $(\xi_N,v_0)$. Upon receiving it, it sends $\bigl((\omega_2(v_1),\ldots,\omega_K(v_{K-1}),\xi_N),\,(v_0,v_1,\ldots,v_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec p',\vec v')$ where $p'_i\coloneqq\omega_{i+1}(v_i)=\kappa(v_i-v_{i+1})$ for $1\leq i<K$ and $p'_K\coloneqq\xi_N$, and $v'_i=v_{i-1}$. This in turn is sent to $(\vec v+\vec p/m,\,\vec p-\vec p'+\kappa(\vec v'-\vec v))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
+Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec p',\vec x')$ where $p'_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $p'_K\coloneqq\xi_N$, and $x'_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec p'+\kappa(\vec x'-\vec x))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
 
-\section{Other examples}\label{sec.other_examples}
+\begin{remark}\label{rmk.wave_generalizations}
+The construction generalizes. Replacing $\rr$ by $\rr^d$ in the box object and the chain by any $K$-ary wiring---say a $d$-dimensional cubic lattice---gives the discrete wave equation $m\ddot x_i=\kappa\sum_{j\sim i}(x_j-x_i)$ on that lattice. Varying the per-particle potential or the wiring topology produces other systems by the same compositional template.\qedhere
+\end{remark}
 
-The wave-equation derivation illustrates a pattern: the wiring lens encodes geometry (which boxes connect to which), the potential $U$ encodes the local physics (what forces act), and the sharp $\sharp_V$ encodes the inertia (how momentum becomes velocity). Varying these three independently produces a wide range of dynamical systems. We sketch three.
+\section{Constructing examples}\label{sec.constructing_examples}
 
-\subsection{Higher-dimensional wave equation}\label{sec.nd_wave}
-
-Replace the box object $\boxob=\binom\rr\rr$ by $\boxob_d\coloneqq\binom{\rr^d}{\rr^d}$. The particle becomes a $0$-ary morphism $\Part_d\colon\binom{\rr^0}{\rr^0}\to\boxob_d$ with parameter space $\rr^d$, sharp $\sharp_{\rr^d}(p)\coloneqq p/m$, identity forward map, and Euclidean harmonic potential $U(x,y)\coloneqq\tfrac\kappa2\lVert x-y\rVert^2$. For the wiring, replace the $K$-ary chain \eqref{eqn.wave_wd} by any $K$-ary diagram in the wiring operad of \cref{sec.wd_operads}; for the cubic lattice in $\rr^d$ with neighbor relation $i\sim j$, the calculation of \cref{subsec.recovering_wave} produces
+The wave-equation derivation illustrates a general recipe for producing examples. Choose the interface objects first, then choose which parts of the dynamics live inside the component and which parts live in the wiring. A $\potlens$-morphism is specified by:
+\begin{itemize}
+\item a paired vector space $(V,\sharp_V)$, which becomes the phase-state space $T^*V$ after applying $\Phi$;
+\item a forward map $\outp f$, which reads the current state and the outputs of the internal boxes to produce the output of the external box;
+\item a backward map $\inpt f$, which routes the input of the external box back to the inputs of the internal boxes;
+\item a potential $U$, whose differential contributes forces;
+\item the sharp map $\sharp_V$, which turns momentum into velocity.
+\end{itemize}
+Applying $\Phi$ then gives the coalgebra update
 \[
-m\ddot v_i=\kappa\sum_{j\sim i}(v_j-v_i)=-\kappa\,\Delta v_i,
+s=(x,\xi)\longmapsto(x+\sharp_V(\xi),\,\xi-\xi_V),
 \]
-where $\Delta$ is the graph Laplacian (positive-Laplacian convention). Taking the continuum limit gives the $d$-dimensional wave equation. The geometry of the medium lives entirely in the wiring; the local physics is unchanged from the $1$-dimensional case.
+where $\xi_V$ is the $V^*$-component of \eqref{eqn.bigtheta}. Thus the forward and backward maps determine what covectors are pulled back to $V$, the potential contributes $dU$, and $\sharp_V$ determines the inertial part of the update.
 
-\subsection{Klein--Gordon and $\phi^4$}\label{sec.klein_gordon}
+This recipe applies just as well to generalized wiring diagrams. Given objects $\lensob{X_i}=\binom{\outp X_i}{\inpt X_i}$ for $1\leq i\leq N$ and $\lensob Y=\binom{\outp Y}{\inpt Y}$, a generalized wiring diagram
+\[
+W\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob Y
+\]
+in $\potlens$ has the form
+\[
+\outp W\colon V_W\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
+\inpt W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
+\]
+together with a potential
+\[
+U_W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
+\]
+The wiring in \cref{sec.spring_first_pass} is static: it has $V_W=\rr^0$ and $U_W=0$, so $\Phi(W)$ has a one-point state space and only routes signals. A dynamic wiring diagram is the same kind of map with nontrivial $V_W$. Then $\Phi(W)$ has state space $T^*V_W$, and the wiring state evolves by the same update formula as any other component. The maps $\outp W$ and $\inpt W$ may depend on the current $x_W\in V_W$, so the current state can change how outputs are read and how inputs are routed; the potential $U_W$ then determines how the wiring state itself is pushed by the surrounding system.
 
-Take the wave-equation chain unchanged except for the per-particle potential
-\[
-U(x,y)\coloneqq\tfrac\kappa2(x-y)^2+\tfrac{m_0^2}{2}x^2,
-\]
-where $m_0>0$ is a rest mass, distinct from the inertial mass $m$. The differential of the on-site term contributes an extra $m_0^2 v_i$ to the momentum update, so \eqref{eqn.potlens_composite_final} becomes
-\[
-m\ddot v_i=\kappa(v_{i-1}-2v_i+v_{i+1})-m_0^2 v_i,
-\]
-the discrete Klein--Gordon equation. Replacing $\tfrac{m_0^2}{2}x^2$ by $\tfrac\lambda4 x^4$ gives discrete $\phi^4$ field theory; replacing it by $-\cos x$ gives the discrete sine-Gordon equation. In each case the interaction structure is fixed by the wiring and only the on-site potential varies.
-
-\subsection{Gravitational $N$-body system}\label{sec.nbody}
-
-Particles in $\rr^3$ with all-to-all coupling. Take $\boxob_3\coloneqq\binom{\rr^3}{\rr^3}$ and a particle morphism $\Part_3$ as in \cref{sec.nd_wave}, with per-particle sharp $\sharp(p_1,\ldots,p_K)\coloneqq(p_1/m_1,\ldots,p_K/m_K)$ accommodating unequal masses; now with $K$ copies wired by a complete-graph lens: each box outputs its position and receives the positions of all others. The configuration space is $\vec v\in(\rr^3)^K\setminus\Delta$, where $\Delta\coloneqq\{\vec v\mid v_i=v_j\text{ for some }i\neq j\}$ is the collision diagonal. Replace the harmonic potential by Newton's gravitational potential
-\[
-U(\vec v)\coloneqq -G\sum_{1\leq i<j\leq K}\frac{m_im_j}{\lVert v_i-v_j\rVert},
-\]
-distributed across boxes by the same monoid productor \eqref{eqn.monoid_productor} that summed the harmonic terms. The dynamics formula \eqref{eqn.state_update} produces
-\[
-v_i'=v_i+p_i/m_i\qqand p_i'=p_i-G\sum_{j\neq i}\frac{m_im_j(v_i-v_j)}{\lVert v_i-v_j\rVert^3},
-\]
-i.e.\ symplectic Euler integration of the $K$-body Newton equations. Replacing $-Gm_im_j$ by $q_iq_j$ gives the Coulomb $K$-body problem; replacing the potential by a Lennard--Jones term $\sum_{i<j}4\varepsilon\bigl((\sigma/r_{ij})^{12}-(\sigma/r_{ij})^6\bigr)$ gives a molecular-dynamics integrator.
+For example, $V_W$ might store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters. The present formalism treats these as smooth state variables, so it naturally describes smooth, state-dependent wiring in a fixed hom-set. Literally changing the arity or making discontinuous graph rewrites would require additional discrete or hybrid structure.
 
 \printbibliography
 
