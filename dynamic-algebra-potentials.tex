@@ -453,7 +453,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\potlens}{\Cat{PLens}}
 \newcommand{\Para}{\Cat{Para}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
-\newcommand{\pnla}{\Cat{PNLA}}
+\newcommand{\refn}{\fun{ref}}\newcommand{\pnla}{\Cat{PNLA}}
 \newcommand{\pvect}{\Cat{PVect}}
 \newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
@@ -465,9 +465,10 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\potd}{\fun{d}}
 \newcommand{\cint}{\fun{cint}}
 \newcommand{\leg}{\fun{leg}}
-\newcommand{\refn}{\fun{ref}}
 \newcommand{\dyn}{\fun{dyn}}
 \newcommand{\store}[1]{\mathfrak{s}_{#1}}
+\newcommand{\conf}{\mathrm{conf}}
+\newcommand{\phase}{\mathrm{phase}}
 
 \font\MnSyCfont=MnSymbolC10
 \newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
@@ -936,7 +937,7 @@ A \emph{cotangent storage} is a pair $\mathfrak{s}=(F,\vartheta)$, where $F\colo
 
 \begin{proposition}\label{prop.pnla_polynomial}
 There is a cotangent storage, which we call \emph{configuration storage}, given by 
-\[\store{\mathrm{conf}}\coloneqq(\absval{\blank},\theta)\]
+\[\store{\conf}\coloneqq(\absval{\blank},\theta)\]
 where $\absval{\blank}\colon\pvect\to\smset_\cong$ sends a paired vector space to its underlying set of points and $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ is the polynomial map, natural in $V:\pvect$, which is identity on positions and, on directions at $x\in V$, given by the cotangent flow \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
 T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_V}V\To{x+\blank}V,
@@ -979,7 +980,7 @@ This gives us a second storage in the sense of \cref{def.cotangent_storage}.
 \begin{lemma}\label{lem.phase_storage}
 There is a cotangent storage, which we call \emph{phase-space storage}, given by 
 \[
-\store{\mathrm{phase}}\coloneqq\bigl(\absval{T^*\blank},\,\rho\circ\theta_{T^*\blank}\bigr).
+\store{\phase}\coloneqq\bigl(\absval{T^*\blank},\,\rho\circ\theta_{T^*\blank}\bigr).
 \]
 Its second component at $V:\pvect$ is the composite
 \[
@@ -1218,6 +1219,14 @@ When $\cat D,\cat D'$ are symmetric monoidal, the actions are monoidal, $G$ is s
 The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\Cat{Para}$ on it.\qedhere
 \end{proof}
 
+\begin{example}[The Para construction we use]\label{ex.pvect_poly_para}
+A cotangent storage $\mathfrak{s}=(F,\vartheta)$ (\cref{def.cotangent_storage}) gives a strong monoidal action of $\pvect$ on $\poly$ by precomposing $F$ with the store action of \cref{def.store_action}:
+\begin{equation}\label{eqn.storage_action}
+\pvect\times\poly\to\poly,\qquad V\cdot_{\mathfrak{s}}p\coloneqq\Store(F(V))\otimes p.
+\end{equation}
+We write $\para{\pvect}{\poly}_{\mathfrak{s}}$ for the corresponding Para construction. In \cref{ch.potentials} we use this with the configuration storage $\store{\conf}$ of \cref{prop.pnla_polynomial} and the phase-space storage $\store{\phase}$ of \cref{lem.phase_storage}.\qedhere
+\end{example}
+
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
 
 The Para construction over the store action of $\smset_\cong$ on $\poly$ (\cref{def.store_action}) repackages the truncation $\org_{\cong}$ (with only coalgebra isomorphisms as 2-cells) exactly:
@@ -1242,12 +1251,8 @@ by \cref{eqn.dirichlet_hom,prop.coalg_as_poly_map}. It remains to show that the 
 In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\phi)$, and it is easy to see too are identified as above.
 \end{proof}
 
-\begin{remark}[Cotangent learners and deep learning]\label{rmk.cotangent_learners}
-The cotangent-learners construction of~\cite{shapiro2022dynamic} is a special case of the configuration dynamics developed below. After defining potentialized lenses, we will construct a functor $\Phi^{\mathrm{conf}}\colon\potlens\to\org$; restricting it to parameterized smooth maps recovers the cotangent-learners functor $\Psi\colon\para{\pvect}{\mfd}\to\org$. On a map $f\colon V\times M\to N$, if $n\coloneqq f(s,m)$ and $(\xi_V,\xi_M)\coloneqq(T_{(s,m)}f)^\top(\xi_N)$, the update is
-\begin{equation}\label{eqn.cotangent_learner_update}
-\upd_s(m,\xi_N)\coloneqq s+\sharp_V(\xi_V).
-\end{equation}
-In Euclidean examples, with the learning rate absorbed into $\sharp_V$, this is the usual gradient-descent update. The phase-space functor $\Phi^{\mathrm{phase}}$ will give the parallel Hamiltonian examples.
+\begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
+The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of the configuration dynamics we will develop below. Indeed, it arises via a functor $\Phi^{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_V=-\eta\,\id$ in Euclidean examples).
 \end{remark}
 
 \chapter{Potentialized lenses}\label{ch.potentials}
@@ -1390,9 +1395,9 @@ B\otimes D\otimes C\to C\otimes D
 \end{equation}
 But these maps are obvious: they are just counit projections and braidings.
 
-One could take $\cat{C}\coloneqq\mfd$. Then $A,\ldots, D$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
+One could take $\cat{C}\coloneqq(\mfd,\rr^0,\times)$. Then $A,B,C, D$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
 
-One can also interpret \eqref{eqn.arb_wd} in $\finset\op$. Taking $A\cong B\cong C\cong D\cong 1$ for simplicity, each has a unique monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
+One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking $A\cong B\cong C\cong D\cong 1$ for simplicity, each has a unique monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
 \[
 \{b,d,c\}\from\{c,d\}
 \qqand
@@ -1732,7 +1737,6 @@ Its naturality, unitality, and associativity amount to the monoidality of $\Fun{
 
 \begin{landscape}
 For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[\inpt X,z]$, and write $x$ for $\inpt{x}$. So for example, $\outp d[d,\Fun T(c)H_c]$ means $\outp d\otimes [\inpt d,\Fun T(c)\otimes H_c]$. The strength $\sigma$ has been opened as $\eta$ then $\tau$.
-\bigskip
 \thispagestyle{empty}
 \[\hspace{-.5in}
 \begin{tikzcd}[column sep=0.5em, row sep=0.6em, every label/.append style={font=\tiny}, font=\tiny, ampersand replacement=\&]
@@ -1818,9 +1822,8 @@ For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[
 \end{tikzcd}
 \]
 
-\medskip
 
-The open hole splits into two regions, which commute as shown below.
+The equality on the left splits the open region into two parts, and it suffices to show each commute. The lefthand square below shows that the two maps $\outp d\otimes\outp c\otimes[\inpt c,z]\to\outp e\otimes[\inpt e,\Fun T(d)\otimes \Fun T(\outp c)\otimes[\inpt c,z]]$ agree, and the righthand square shows that the two maps $\outp e\otimes[\inpt e,\Fun T(d)\otimes\Fun T(\outp c)\otimes [\inpt c,z]]\to\outp e\otimes [\inpt e,\Fun T(\inpt c\otimes [\inpt c,z])]$ agree.
 
 \noindent\begin{minipage}{0.48\linewidth}
 \[
@@ -2009,29 +2012,9 @@ There is a lax monoidal functor
 Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
 \end{proof}
 
-\subsection{The dynamics functor}\label{sec.dynamics_functor}
-
-Recall the definition of cotangent storage from \cref{def.cotangent_storage}.
-
-\begin{lemma}\label{lem.store_refinement}
-Every cotangent storage $\mathfrak{s}=(F,\vartheta)$ induces a strong symmetric monoidal functor
-\[
-\refn^{\mathfrak{s}}\colon\para{\cot}{\poly}\to\para{\Store\circ F}{\poly}.
-\]
-\end{lemma}
-
-\begin{proof}
-Apply \cref{prop.para_strong_induced,prop.para_square} to $\vartheta$.
-\end{proof}
-
-By \cref{prop.pnla_smc_action,prop.cot_monoidal}, we have a strong symmetric monoidal functor $\pvect\to\poly$,%
+The action of $\pvect$ on $\lmfd^\rr$ from \cref{lem.parameter_lens_action} (taking $\cat V=\pvect$, $\cat C=\mfd$, $J=\inc$, $\Fun T=\rr\times\blank$)%
 \footnote{The vector spaces can be replaced by paired nilpotent Lie algebras; see \cref{rmk.pnla_generalization}.}
-and by \cref{lem.parameter_lens_action}, an action of $\pvect$ on $\lmfd^\rr$. A cotangent storage $\mathfrak{s}=(F,\vartheta)$ gives the corresponding action of $\pvect$ on $\poly$ by left multiplication. We will use
-\begin{align*}
-\pvect\times\lmfd^\rr&\to\lmfd^\rr,&&V\cdot\lensob M\coloneqq\binom{\inpt M}{V\times\outp M},\\
-\pvect\times\poly&\to\poly,&&V\cdot_{\mathfrak{s}} p\coloneqq\Store(F(V))\otimes p
-\end{align*}
-The action $V\cdot p=\cot{V}\otimes p$ is the case $\mathfrak{s}=\store{\mathrm{conf}}$ under the isomorphism $\theta$. We thus form the corresponding $\Para$ constructions (\cref{sec.para_general}).
+makes the following Para construction symmetric monoidal.
 
 \begin{definition}\label{def.potlens}
 The symmetric monoidal category of \emph{potentialized lenses} is denoted and defined by
@@ -2040,6 +2023,36 @@ The symmetric monoidal category of \emph{potentialized lenses} is denoted and de
 \qedhere
 \]
 \end{definition}
+
+\subsection{Potentialized lenses as interaction syntax}\label{sec.W_choice}
+
+We can now settle the choice of interaction syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. A multimorphism $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob{Y}$ in $\potlens$ has the form $f=(V,\outp{f},\inpt{f},U)$, namely a vector space $V$, smooth maps
+\[
+\outp f\colon V\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
+\inpt f\colon V\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
+\]
+and a potential
+\[
+U\colon V\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
+\]
+The simplest such interaction syntax is $\Lens{\finset\op}$~\cite{Spivak.Schultz.Rupel:2016a}: forward and backward functions of finite sets, encoding pure signal-routing and roughly behaving like a traced symmetric monoidal semicategory. The functor $\Lens{\rr^-}\colon\Lens{\finset\op}\to\Lens{\mfd}$ of \cref{lemma.lens_rr} lifts this to $\Lens{\mfd}$, where the forward and backward maps are arbitrary smooth functions; the outputs of the internal boxes can now mix before being read off the external box, and likewise on the input side. Adding a potential---moving to $\Lens{\mfd}^\rr$---lets the wiring contribute its own covector data to each internal box's input, on top of what the routing supplies. Finally, allowing a parameter space $V$---giving $\potlens=\para{\pvect}{\Lens{\mfd}^\rr}$---gives the wiring its own state, so the routing, mixing, and covector contributions can themselves evolve in time. The dynamics functor of \cref{sec.dynamics_functor} realizes this state as $T^*V$ in the symplectic case and $V$ in the gradient case; in practice $V$ may store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters. Discontinuous arity changes or graph rewrites fall outside the present formalism.
+
+\subsection{The dynamics functor}\label{sec.dynamics_functor}
+
+Recall the definition of cotangent storage from \cref{def.cotangent_storage}.
+
+\begin{lemma}\label{lem.store_refinement}
+Every cotangent storage $\mathfrak{s}=(F,\vartheta)$ induces a strong symmetric monoidal functor
+\[
+\para{\mathfrak{s}}\colon\para{\cot}{\poly}\to\para{\Store\circ F}{\poly}.
+\]
+\end{lemma}
+
+\begin{proof}
+Apply \cref{prop.para_strong_induced,prop.para_square} to the cotangent storage $(F,\vartheta)$: $F$ supplies the action on $\poly$ from \eqref{eqn.storage_action}, and $\vartheta$ is the natural transformation that induces the refinement.
+\end{proof}
+
+We use the action $V\cdot_{\mathfrak{s}}p=\Store(F(V))\otimes p$ of $\pvect$ on $\poly$ from \eqref{eqn.storage_action} (the case $\mathfrak{s}=\store{\conf}$ recovers $V\cdot p=\cot{V}\otimes p$ under the isomorphism $\theta$).
 
 \begin{lemma}\label{lem.potlens_to_para_poly}
 There is a lax symmetric monoidal functor
@@ -2061,7 +2074,7 @@ We apply \cref{prop.para_square} to $\Lens\cot$ from \cref{lem.cot_lifts_lens_po
 We call $\cint$ the \emph{cotangent internalization} functor: it first applies $\cot$ to a potentialized manifold lens, then uses $\Theta_{\potd}$ to internalize the resulting potentialized polynomial lens as a parameterized map in $\poly$.
 
 \begin{lemma}\label{lem.poly_to_org}
-Let $F\colon\pvect\to\smset_\cong$ be strong symmetric monoidal. With the action $V\cdot p=\Store(F(V))\otimes p$ of $\pvect$ on $\poly$, there is an identity-on-objects lax symmetric monoidal functor
+Let $F\colon\pvect\to\smset_\cong$ be strong symmetric monoidal. With the action of $\pvect$ on $\poly$ from \eqref{eqn.storage_action}, there is an identity-on-objects lax symmetric monoidal functor
 \[
 \dyn^F\colon\para{\Store\circ F}{\poly}\to\org.
 \]
@@ -2090,38 +2103,41 @@ For every cotangent storage $\mathfrak{s}=(F,\vartheta)$, there is a lax symmetr
 Define $\Phi^{\mathfrak{s}}$ to be the composite of the maps below, given by \cref{lem.potlens_to_para_poly}, \cref{lem.store_refinement}, and \cref{lem.poly_to_org}:
 \[
 \potlens\To{\cint}
-\para{\cot}{\poly}\To{\refn^{\mathfrak{s}}}
+\para{\cot}{\poly}\To{\para{\mathfrak{s}}}
 \para{\Store\circ F}{\poly}\To{\dyn^{F}}
 \org.
 \qedhere
 \]
 \end{proof}
 
-We write
+Let $\store{\conf}$ and $\store{\phase}$ be the configuration and phase-space storages of \cref{prop.pnla_polynomial,lem.phase_storage}. We write
 \[
-\Phi^{\mathrm{conf}}\coloneqq\Phi^{\store{\mathrm{conf}}}
+\Phi^{\conf}\coloneqq\Phi^{\store{\conf}}
 \qqand
-\Phi^{\mathrm{phase}}\coloneqq\Phi^{\store{\mathrm{phase}}}.
+\Phi^{\phase}\coloneqq\Phi^{\store{\phase}}.
 \]
-Under the isomorphism $\theta_{T^*\blank}$, $\refn^{\store{\mathrm{phase}}}$ is the Legendre refinement induced by $\rho$; we write $\leg$ for this phase-space case.
 
-In words, $\Phi^{\mathrm{phase}}$ first internalizes the cotangent lenses, then adds a ``momentum term'' to the state spaces using the Legendre refinement, and finally realizes the result as dynamic algebra. We now unpack $\Phi^{\mathrm{phase}}$ at the ``nuts and bolts'' level, tracing each term and sign in the resulting formulas back to the definitions that produced it.
+\subsection{The phase-space case}\label{sec.phase_dynamics}
+
+Under the isomorphism $\theta_{T^*\blank}$, $\para{\store{\phase}}$ is the Legendre refinement induced by $\rho$; we write $\leg$ for this phase-space case.
+
+In words, $\Phi^{\phase}$ first internalizes the cotangent lenses, then adds a ``momentum term'' to the state spaces using the Legendre refinement, and finally realizes the result as dynamic algebra. We now unpack $\Phi^{\phase}$ at the ``nuts and bolts'' level, tracing each term and sign in the resulting formulas back to the definitions that produced it.
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
 for the set of (not-necessarily continuous) \emph{covector fields} on $M$. The category $\poly$ remembers only the underlying sets of positions and directions, not their topology, so we take all set-theoretic sections. A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
 
-\paragraph{The action of $\Phi^{\mathrm{phase}}$ on objects.}
-The functor $\Phi^{\mathrm{phase}}$ acts on objects as follows:
+\paragraph{The action of $\Phi^{\phase}$ on objects.}
+The functor $\Phi^{\phase}$ acts on objects as follows:
 \begin{equation}\label{eqn.Phi_on_obs}
-\Phi^{\mathrm{phase}}\lensob M=
+\Phi^{\phase}\lensob M=
 \cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}\cong
 \sum_{(\outp m,\omega):\outp M\times\Omega(\inpt M)}\yon^{\left(T^*_{\outp{m}}\outp M\right)\times\inpt M}.
 \end{equation}
-A position in $\Phi^{\mathrm{phase}}\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in\outp{M}$ is a point and $\omega\in\Omega(\inpt M)$ is a covector field. A direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$ where $\xi:T^*_{\outp{m}}\outp M$ is a covector and $\inpt m\in\inpt M$ is a point.
+A position in $\Phi^{\phase}\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in\outp{M}$ is a point and $\omega\in\Omega(\inpt M)$ is a covector field. A direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$ where $\xi:T^*_{\outp{m}}\outp M$ is a covector and $\inpt m\in\inpt M$ is a point.
 
-\paragraph{The action of $\Phi^{\mathrm{phase}}$ on morphisms.}
-Describing the action of $\Phi^{\mathrm{phase}}$ on morphisms will extend to the end of this section, \cref{sec.dynamics_functor}. Let $(V,\sharp_V):\pvect$ and let
+\paragraph{The action of $\Phi^{\phase}$ on morphisms.}
+Describing the action of $\Phi^{\phase}$ on morphisms will extend to the end of this section, \cref{sec.phase_dynamics}. Let $(V,\sharp_V):\pvect$ and let
 $f\colon V\cdot\lensob M\to\lensob N$
 be a morphism in $\potlens$, i.e.\ a tuple $(\outp f,\inpt f,U)$ as in \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.para_potential_lens_maps}
@@ -2129,7 +2145,7 @@ be a morphism in $\potlens$, i.e.\ a tuple $(\outp f,\inpt f,U)$ as in \eqref{eq
 \inpt f\colon V\times\outp M\times\inpt N\to\inpt M,\qquad
 U\colon V\times\outp M\times\inpt N\to\rr.
 \end{equation}
-It is sent by $\Phi^{\mathrm{phase}}$ to a $[\Phi^{\mathrm{phase}}\lensob M,\Phi^{\mathrm{phase}}\lensob N]$-coalgebra with state set
+It is sent by $\Phi^{\phase}$ to a $[\Phi^{\phase}\lensob M,\Phi^{\phase}\lensob N]$-coalgebra with state set
 \begin{equation}\label{eqn.state_space}
 X\coloneqq T^*V\cong V\oplus V^*;
 \end{equation}
@@ -2143,8 +2159,8 @@ specializing \eqref{eqn.canonical_sharp}.
 
 We now unpack the coalgebra function itself,
 \[
-X\To{\Phi^{\mathrm{phase}}(V,\sharp_V,f)}
-\left[\Phi^{\mathrm{phase}}\lensob M,\Phi^{\mathrm{phase}}\lensob N\right]\tri X.
+X\To{\Phi^{\phase}(V,\sharp_V,f)}
+\left[\Phi^{\phase}\lensob M,\Phi^{\phase}\lensob N\right]\tri X.
 \]
 Given a state $s\coloneqq(x,\xi)\in X$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point by
 \begin{equation}\label{eqn.outpn}
@@ -2161,7 +2177,7 @@ b\coloneqq\bigl(\outp n,\,\omega_N\bigr)\;\in\;\outp N\times\Omega(\inpt N).
 \]
 
 
-Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phi^{\mathrm{phase}}\lensob N[b]$, the coalgebra $\Phi^{\mathrm{phase}}(f)$ at $(s,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
+Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phi^{\phase}\lensob N[b]$, the coalgebra $\Phi^{\phase}(f)$ at $(s,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
 \begin{equation}\label{eqn.inptm}
 \inpt m\coloneqq\inpt f(x,\outp m,\inpt n)
 \end{equation}
@@ -2175,7 +2191,7 @@ Note that the first summand naturally lands in $V^*\oplus T^*_{\outp m}\outp M$ 
 
 All of the work has now been done: the coalgebra at $(s,a)$ on $(\xi_N,\inpt n)$ returns the direction
 \[
-(\xi_M,\,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phi^{\mathrm{phase}}\lensob M[a]
+(\xi_M,\,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phi^{\phase}\lensob M[a]
 \]
 and updates the state (from its original $s=(x,\xi)$) to
 \begin{equation}\label{eqn.state_update}
@@ -2187,31 +2203,31 @@ Equation \eqref{eqn.state_update} is explicit Euler of the Hamiltonian vector fi
 }
 
 All in all, one could tersely denote the coalgebra map as follows:
-\[
-\Phi^{\mathrm{phase}}(V,\sharp_V,f)\colon 
+\begin{multline*}
+\Phi^{\phase}(V,\sharp_V,f)\colon 
 s=(x,\xi)\mapsto
 (\outp m,\omega_M)\mapsto
 \Big(
 	(\outp n,\omega_N),
-	(\xi_N,\inpt n)\mapsto
+	(\xi_N,\inpt n)\mapsto\\
 	\big(
 		(\xi_M,\inpt m),
 		(x+\sharp_V(\xi),\,\xi-\xi_V)
 	\big)
 \Big),
-\]
+\end{multline*}
 where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\xi_M$ and $\xi_V$ in \eqref{eqn.bigtheta}, and $\inpt m$ in \eqref{eqn.inptm}.
 
 \subsection{The configuration case}\label{sec.configuration_dynamics}
 
-The configuration functor $\Phi^{\mathrm{conf}}\colon\potlens\to\org$ is the case $\store{\mathrm{conf}}=(\absval{\blank},\theta)$ of \cref{thm.functor}, given by \cref{prop.pnla_polynomial}. Since $\theta\colon\Store\circ\absval{\blank}\Rightarrow\cot$ is an isomorphism, the induced $\refn^{\store{\mathrm{conf}}}$ is the identity up to this isomorphism; the composite simplifies to
+The configuration functor $\Phi^{\conf}\colon\potlens\to\org$ is the case $\store{\conf}=(\absval{\blank},\theta)$ of \cref{thm.functor}, given by \cref{prop.pnla_polynomial}. Since $\theta\colon\Store\circ\absval{\blank}\Rightarrow\cot$ is an isomorphism, the induced $\para{\store{\conf}}$ is the identity up to this isomorphism; the composite simplifies to
 \[
-\Phi^{\mathrm{conf}}=\cint\then\dyn^{\absval{\blank}}.
+\Phi^{\conf}=\cint\then\dyn^{\absval{\blank}}.
 \]
 
 On a morphism $f=(\outp f,\inpt f,U)\colon V\cdot\lensob M\to\lensob N$, the resulting coalgebra has state space
 \[
-X^{\mathrm{conf}}\coloneqq V.
+X^{\conf}\coloneqq V.
 \]
 The readout is as above, with $x=v$, and the update at $v\in V$ is
 \begin{equation}\label{eqn.state_update_gradient}
@@ -2222,26 +2238,13 @@ where $\xi_V$ is the first component of \eqref{eqn.bigtheta}. There is no moment
 \Cref{eqn.state_update_gradient} is explicit Euler for the vector field determined by $\sharp_V$ and the pulled-back covector $\xi_V$. For choices of $\sharp_V$ giving descent, such as $-\sharp_V$ positive-definite in a Euclidean example, the standard explicit-Euler bounds for parabolic flow apply. Contrast \cref{eqn.state_update}, which is unconditionally unstable for harmonic systems.
 }
 
-Restricting along the embedding $\iota\colon\para{\pvect}{\mfd}\hookrightarrow\potlens$ that takes vacuous backward map and zero potential, $\Phi^{\mathrm{conf}}$ recovers the cotangent-learners functor described in \cref{rmk.cotangent_learners}; we develop this in \cref{ch.deep_learning}.
-
-\section{Potentialized lenses as interaction syntax}\label{sec.W_choice}
-
-We can now settle the choice of interaction syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. A multimorphism $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob{Y}$ in $\potlens$ has the form $f=(V,\outp{f},\inpt{f},U)$, namely a vector space $V$, smooth maps
-\[
-\outp f\colon V\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
-\inpt f\colon V\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
-\]
-and a potential
-\[
-U\colon V\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
-\]
-The simplest such interaction syntax is $\Lens{\finset\op}$~\cite{Spivak.Schultz.Rupel:2016a}: forward and backward functions of finite sets, encoding pure signal-routing and roughly behaving like a traced symmetric monoidal semicategory. The functor $\Lens{\rr^-}\colon\Lens{\finset\op}\to\Lens{\mfd}$ of \cref{lemma.lens_rr} lifts this to $\Lens{\mfd}$, where the forward and backward maps are arbitrary smooth functions; the outputs of the internal boxes can now mix before being read off the external box, and likewise on the input side. Adding a potential---moving to $\Lens{\mfd}^\rr$---lets the wiring contribute its own covector data to each internal box's input, on top of what the routing supplies. Finally, allowing a parameter space $V$---giving $\potlens=\para{\pvect}{\Lens{\mfd}^\rr}$---gives the wiring its own state, so the routing, mixing, and covector contributions can themselves evolve in time. The dynamics functor of \cref{sec.dynamics_functor} realizes this state as $T^*V$ in the symplectic case and $V$ in the gradient case; in practice $V$ may store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters. Discontinuous arity changes or graph rewrites fall outside the present formalism.
+Restricting along the embedding $\iota\colon\para{\pvect}{\mfd}\hookrightarrow\potlens$ that takes vacuous backward map and zero potential, $\Phi^{\conf}$ recovers the cotangent-learners functor described in \cref{rmk.cotangent_learners}; we develop this in \cref{ch.deep_learning}.
 
 \chapter{Example: the wave equation}\label{ch.spring}
 
 \section{Introduction}\label{sec.spring_intro}
 
-We illustrate $\Phi^{\mathrm{phase}}\colon\potlens\to\org$ by deriving the wave equation; \cref{ch.deep_learning} illustrates the parallel functor $\Phi^{\mathrm{conf}}$ via deep learning.
+We illustrate $\Phi^{\phase}\colon\potlens\to\org$ by deriving the wave equation; \cref{ch.deep_learning} illustrates the parallel functor $\Phi^{\conf}$ via deep learning.
 
 That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -2280,7 +2283,7 @@ We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_o
 \]
 for varying $n$. Note that $\boxob\tpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
 
-We give the derivation in two passes. In the first pass, we describe the particle and the wiring inside $\potlens$, compose them there, and apply $\Phi^{\mathrm{phase}}$ to the resulting $0$-ary $\potlens$-morphism to read off the dynamics. In the second pass, by functoriality of $\Phi^{\mathrm{phase}}$, we instead apply $\Phi^{\mathrm{phase}}$ to the particle and to the wiring separately, then compose in $\org$; the result is the same.
+We give the derivation in two passes. In the first pass, we describe the particle and the wiring inside $\potlens$, compose them there, and apply $\Phi^{\phase}$ to the resulting $0$-ary $\potlens$-morphism to read off the dynamics. In the second pass, by functoriality of $\Phi^{\phase}$, we instead apply $\Phi^{\phase}$ to the particle and to the wiring separately, then compose in $\org$; the result is the same.
 
 \section{First pass: composing in $\potlens$}\label{sec.spring_first_pass}
 
@@ -2326,19 +2329,19 @@ with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoi
 
 \paragraph{The discrete dynamics.}
 
-The discrete dynamics appear when we apply the functor $\Phi^{\mathrm{phase}}\colon\potlens\to\org$. The object $\boxob$ is sent to
+The discrete dynamics appear when we apply the functor $\Phi^{\phase}\colon\potlens\to\org$. The object $\boxob$ is sent to
 \[
-\Phi^{\mathrm{phase}}(\boxob)=\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times \rr}.
+\Phi^{\phase}(\boxob)=\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times \rr}.
 \]
 The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \[
-\Phi^{\mathrm{phase}}(\fun{wire}_K(\Part,\ldots,\Part))\colon X\To{}\Phi^{\mathrm{phase}}(\boxob)\tri X
+\Phi^{\phase}(\fun{wire}_K(\Part,\ldots,\Part))\colon X\To{}\Phi^{\phase}(\boxob)\tri X
 \]
 with state space $X\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
 \begin{equation}\label{eqn.wave_coalg}
 (\vec x,\vec p)\mapsto\Bigl(\bigl(x_K,\,\omega_\boxob\bigr),\;(\xi_N,x_0)\mapsto\bigl(\vec x+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
 \end{equation}
-where each piece is read off from the unpacking in \cref{sec.dynamics_functor}:
+where each piece is read off from the unpacking in \cref{sec.phase_dynamics}:
 \begin{itemize}
 \item The output position $x_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
 \item The \emph{harmonic spring} covector field on the left-hand side,
@@ -2389,25 +2392,25 @@ Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with 
 
 \section{Second pass: composing in $\org$}\label{sec.spring_second_pass}
 
-We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which by functoriality of $\Phi^{\mathrm{phase}}$ is equal to the right-hand side:
+We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which by functoriality of $\Phi^{\phase}$ is equal to the right-hand side:
 \[
-\Phi^{\mathrm{phase}}\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phi^{\mathrm{phase}}(\fun{wire}_K)\bigl(\Phi^{\mathrm{phase}}(\Part),\ldots,\Phi^{\mathrm{phase}}(\Part)\bigr),
+\Phi^{\phase}\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phi^{\phase}(\fun{wire}_K)\bigl(\Phi^{\phase}(\Part),\ldots,\Phi^{\phase}(\Part)\bigr),
 \]
-which is the $K$-ary composite, taken in $\org$, of $K$ copies of the single-particle dynamical system $\Phi^{\mathrm{phase}}(\Part)$ wired together via $\Phi^{\mathrm{phase}}(\fun{wire}_K)$. We work this out as well.
+which is the $K$-ary composite, taken in $\org$, of $K$ copies of the single-particle dynamical system $\Phi^{\phase}(\Part)$ wired together via $\Phi^{\phase}(\fun{wire}_K)$. We work this out as well.
 
 \subsection{Setup}
 
 \paragraph{The particle dynamics.}
 
-We first apply $\Phi^{\mathrm{phase}}$ to $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$ to obtain a coalgebra on
+We first apply $\Phi^{\phase}$ to $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$ to obtain a coalgebra on
 \[
-  \left[\Phi^{\mathrm{phase}}\binom{\rr^0}{\rr^0},\Phi^{\mathrm{phase}}(\boxob)\right]=
-  \left[\yon,\Phi^{\mathrm{phase}}(\boxob)\right]=\boxob=
+  \left[\Phi^{\phase}\binom{\rr^0}{\rr^0},\Phi^{\phase}(\boxob)\right]=
+  \left[\yon,\Phi^{\phase}(\boxob)\right]=\boxob=
   \sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}
 \]
-We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state space of $\Phi^{\mathrm{phase}}(\Part)$ is $X\coloneqq T^*\rr$, with elements written $s=(x,p)$ for position and momentum. The map
+We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state space of $\Phi^{\phase}(\Part)$ is $X\coloneqq T^*\rr$, with elements written $s=(x,p)$ for position and momentum. The map
 \[
-X\To{\Phi^{\mathrm{phase}}(\Part)}
+X\To{\Phi^{\phase}(\Part)}
 \sum_{(x,\omega):\rr\times\Omega(\rr)}X^{T^*_x\rr\times\rr}
 \]
 is given by
@@ -2418,8 +2421,8 @@ In other words, starting at position $x$ and momentum $p$, it outputs $x$ to the
  
 \paragraph{The static wiring.}
 
-Apply $\Phi^{\mathrm{phase}}$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phi^{\mathrm{phase}}(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phi^{\mathrm{phase}}(\boxob)^{\otimes K},\Phi^{\mathrm{phase}}(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phi^{\mathrm{phase}}(\boxob)^{\otimes K}\to\Phi^{\mathrm{phase}}(\boxob)$, i.e.\
-\[\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}\To{\Phi^{\mathrm{phase}}(\fun{wire}_K)}\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}.\]
+Apply $\Phi^{\phase}$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phi^{\phase}(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phi^{\phase}(\boxob)^{\otimes K},\Phi^{\phase}(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phi^{\phase}(\boxob)^{\otimes K}\to\Phi^{\phase}(\boxob)$, i.e.\
+\[\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}\To{\Phi^{\phase}(\fun{wire}_K)}\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}.\]
 To each $(\vec x,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(x_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,x_0)$ at the big box, we assign the internal inputs $(\omega_2(x_1),x_0)$, $(\omega_3(x_2),x_1)$, $\ldots$, $(\omega_K(x_{K-1}),x_{K-2})$, $(\xi_N,x_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $x_i$ in its $\xi$-slot, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
 \begin{equation}\label{eqn.org_wiring_concise}
 (\vec x,\vec \omega)\mapsto\Big((x_K,\omega_1),\;(\xi_N,x_0)\mapsto\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)\Big).
@@ -2428,9 +2431,9 @@ The routing $\omega_{i+1}(x_i)$ into box $i$'s $\xi$-slot is how the wiring tran
  
 \paragraph{Composition.}
 
-The $\org$-composite $\Phi^{\mathrm{phase}}(\fun{wire}_K)\bigl(\Phi^{\mathrm{phase}}(\Part),\ldots,\Phi^{\mathrm{phase}}(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\boxob$ in $\org$, i.e.\ a $\boxob$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phi^{\mathrm{phase}}(\fun{wire}_K)$ has trivial state space and each $\Phi^{\mathrm{phase}}(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phi^{\mathrm{phase}}(\Part)\colon T^*\rr\to\boxob\tri T^*\rr$ combine via the lax monoidal structure of $\coalg$ (\cref{prop.org}) into a single $\boxob^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phi^{\mathrm{phase}}(\fun{wire}_K)\colon\boxob^{\otimes K}\to\boxob$ then post-composes:
+The $\org$-composite $\Phi^{\phase}(\fun{wire}_K)\bigl(\Phi^{\phase}(\Part),\ldots,\Phi^{\phase}(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\boxob$ in $\org$, i.e.\ a $\boxob$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phi^{\phase}(\fun{wire}_K)$ has trivial state space and each $\Phi^{\phase}(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phi^{\phase}(\Part)\colon T^*\rr\to\boxob\tri T^*\rr$ combine via the lax monoidal structure of $\coalg$ (\cref{prop.org}) into a single $\boxob^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phi^{\phase}(\fun{wire}_K)\colon\boxob^{\otimes K}\to\boxob$ then post-composes:
 \[
-T^*\rr^K\To{\Phi^{\mathrm{phase}}(\Part)^{\otimes K}}\boxob^{\otimes K}\tri T^*\rr^K\To{\Phi^{\mathrm{phase}}(\fun{wire}_K)\tri T^*\rr^K}\boxob\tri T^*\rr^K.
+T^*\rr^K\To{\Phi^{\phase}(\Part)^{\otimes K}}\boxob^{\otimes K}\tri T^*\rr^K\To{\Phi^{\phase}(\fun{wire}_K)\tri T^*\rr^K}\boxob\tri T^*\rr^K.
 \]
 Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
 \begin{equation}\label{eqn.lots_coalgebras}
