@@ -1111,7 +1111,7 @@ For a set $O$, let $\ob\cat{W}_{\tn{O-Cat}}\coloneqq O\times O$ and
 Thus the first diagram shown in \eqref{eqn.wd_examples} represents a map $\phi\colon (A,B),(B,C)\to(A,C)$ in $\cat{W}_{\tn{O-Cat}}$ for some $O$ with $A,B,C:O$. If $\cat{C}\colon\cat{W}_{\tn{O-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1:\cat{C}(A,B)$, $f_2:\cat{C}(B,C)$ and $\phi(f_1,f_2):\cat{C}(A,C)$. In other words the diagram $\phi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{\tn{O-Cat}}$-algebras.
 \end{example}
 
-A variety of examples of these ideas---wiring-diagram operads whose algebras are structured categories---can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
+Each such $\cat{W}$ is an \emph{interaction syntax}: its multimorphisms specify legal arrangements of boxes---how systems interact---with no commitment about what fills them. An algebra is a semantics. A variety of examples of these wiring-diagram operads, whose algebras are structured categories, can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
 
 An advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
 consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine: it is the suboperad comprising the left class of a certain factorization system on $1\tn{-}\Cat{Cob}$.
@@ -1127,7 +1127,7 @@ One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_example
 \qquad
 \cat{W}_{\tn{O-Opd}}\to\org
 \] 
-for any $O:\smset$. Our next goal then is to recall $\org$; in \cref{ch.potentials} we will talk about our choice of $\cat{W}$.
+for any $O:\smset$. Our next goal then is to recall $\org$; in \cref{sec.W_choice} we will talk about our choice of $\cat{W}$.
 
 \subsection{The monoidal bicategory $\org$}\label{sec.org}
 
@@ -1400,23 +1400,14 @@ One can also interpret \eqref{eqn.arb_wd} in $\finset\op$. Taking $A\cong B\cong
 \]
 These two functions entirely determine the wiring diagram, saying how each outer outgoing port $c,d$ is ``fed by'' some inner outgoing port (in $\{b,d,c\}$), and how each inner ingoing port $c,a,b$ is ``fed by'' either an inner outgoing port (in $\{b,d,c\}$) or the outer ingoing port, $a$. 
 
+Since $\finset\op$ is the free cartesian category on one object, for any cartesian category $\cat{M}$ and object $R$, there is a strong monoidal functor $R^-\colon\finset\op\to\cat{M}$. We record a special case.
+
 \begin{lemma}\label{lemma.lens_rr}
 The functor $\rr^-\colon\finset\op\to\mfd$ is strong monoidal, hence induces a strong monoidal functor
 \[
 \Lens{\rr^-}\colon\Lens{\finset\op}\to\Lens{\mfd}
 \]
 \end{lemma}
-
-This settles the choice of $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: $\Lens{\cat{C}}$ is an algebra for the wiring-diagram operad $\cat{W}_{\tn{O-TrCat}}$ (more precisely, its without-identity suboperad, since $\Lens{\cat{C}}$ is a traced symmetric monoidal semi-category). A multimorphism $W\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob{Y}$ in $\Lens{\cat{C}}$ has the form $(\outp W,\inpt W)$ as in \eqref{eqn.lens_def}. Later in this chapter (\cref{sec.potential_lenses_to_dynamics}) we lift to $\potlens$ by allowing a parameter space $V_W:\pvect$ and a potential $U_W$; a wiring then has the form
-\[
-\outp W\colon V_W\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
-\inpt W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
-\]
-together with a potential
-\[
-U_W\colon V_W\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
-\]
-Applying the dynamics functor (\cref{sec.dynamics_functor}) gives the wiring its own state space, $T^*V_W$ in the phase-space case and $V_W$ in the configuration case, so $V_W$ may store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters as smooth state. Discontinuous arity changes or graph rewrites fall outside the present formalism.
 
 \subsection{Backward monads on lenses}\label{sec.backwards}
 
@@ -2232,6 +2223,19 @@ where $\xi_V$ is the first component of \eqref{eqn.bigtheta}. There is no moment
 }
 
 Restricting along the embedding $\iota\colon\para{\pvect}{\mfd}\hookrightarrow\potlens$ that takes vacuous backward map and zero potential, $\Phi^{\mathrm{conf}}$ recovers the cotangent-learners functor described in \cref{rmk.cotangent_learners}; we develop this in \cref{ch.deep_learning}.
+
+\section{Potentialized lenses as interaction syntax}\label{sec.W_choice}
+
+We can now settle the choice of interaction syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. A multimorphism $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_N}\to\lensob{Y}$ in $\potlens$ has the form $f=(V,\outp{f},\inpt{f},U)$, namely a vector space $V$, smooth maps
+\[
+\outp f\colon V\times\prod_{i=1}^N\outp X_i\to\outp Y,\qquad
+\inpt f\colon V\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\prod_{i=1}^N\inpt X_i,
+\]
+and a potential
+\[
+U\colon V\times\prod_{i=1}^N\outp X_i\times\inpt Y\to\rr.
+\]
+The simplest such interaction syntax is $\Lens{\finset\op}$~\cite{Spivak.Schultz.Rupel:2016a}: forward and backward functions of finite sets, encoding pure signal-routing and roughly behaving like a traced symmetric monoidal semicategory. The functor $\Lens{\rr^-}\colon\Lens{\finset\op}\to\Lens{\mfd}$ of \cref{lemma.lens_rr} lifts this to $\Lens{\mfd}$, where the forward and backward maps are arbitrary smooth functions; the outputs of the internal boxes can now mix before being read off the external box, and likewise on the input side. Adding a potential---moving to $\Lens{\mfd}^\rr$---lets the wiring contribute its own covector data to each internal box's input, on top of what the routing supplies. Finally, allowing a parameter space $V$---giving $\potlens=\para{\pvect}{\Lens{\mfd}^\rr}$---gives the wiring its own state, so the routing, mixing, and covector contributions can themselves evolve in time. The dynamics functor of \cref{sec.dynamics_functor} realizes this state as $T^*V$ in the symplectic case and $V$ in the gradient case; in practice $V$ may store edge weights, rest lengths, gate variables, moving boundary positions, or routing parameters. Discontinuous arity changes or graph rewrites fall outside the present formalism.
 
 \chapter{Example: the wave equation}\label{ch.spring}
 
