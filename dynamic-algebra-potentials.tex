@@ -583,7 +583,11 @@ That is, $dU|_m$ is the covector at $m$ whose pairing with a tangent vector $\do
 \subsection{Paired vector spaces}\label{sec.pnla}
 
 \begin{definition}\label{def.pnla}
-A \emph{paired vector space} is a finite-dimensional real vector space $V$ together with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$, the \emph{sharp} map, with value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$. Its pointwise inverse $\flat_x\coloneqq\sharp_x\inv\colon V\to V^*$ is the \emph{flat} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
+A \emph{paired vector space} is a finite-dimensional real vector space $V$ together with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$, the \emph{sharp} map, with value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$.%
+\footnote{
+Equivalently, $\sharp_V$ is a smooth section of the bundle whose fiber over $x:V$ is the set $\Iso(T_x^*V,T_xV)$, under the canonical identifications $T_xV\cong V$ and $T^*_xV\cong V^*$. It will be more convenient to use the above form.
+} 
+Its pointwise inverse $\flat_x\coloneqq\sharp_x\inv\colon V\to V^*$ is the \emph{flat} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
 \begin{equation}\label{eqn.pairing}
 \pairing{v,v'}_x\coloneqq\flat_x(v)(v')\colon V\otimes V\to\rr.
 \end{equation}
@@ -601,7 +605,7 @@ Equivalently, $\phi$ preserves the pairing iff the \emph{pairing-preservation eq
 \end{definition}
 
 \begin{proposition}\label{prop.pnla_monoidal}
-Direct sum gives $\pvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space (vacuous pairing) as unit and direct-sum pairing $\sharp_{V\oplus W}\coloneqq\sharp_V\oplus\sharp_W$ as a smooth section, equivalently the bilinear form at basepoint $(x,y)\in V\oplus W$
+Direct sum gives $\pvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space as unit and direct-sum pairing $\sharp_{V\oplus W}\coloneqq\sharp_V\oplus\sharp_W$ as a smooth section, equivalently the bilinear form at basepoint $(x,y)\in V\oplus W$
 \begin{equation}\label{eqn.directsum_pairing}
 \pairing{(v,w),(v',w')}_{(x,y)} = \pairing{v,v'}_x+\pairing{w,w'}_y.
 \end{equation}
@@ -616,14 +620,15 @@ The composite $\pvect\to\vect\hookrightarrow\mfd$ is strong symmetric monoidal, 
 \end{proposition}
 
 \begin{proof}
-The forgetful $\pvect\to\vect$ preserves direct sums and identities; the inclusion $\vect\hookrightarrow\mfd$ preserves products.\qedhere
+The forgetful $\pvect\to\vect$ preserves direct sums (which are products in $\vect$); the inclusion $\vect\hookrightarrow\mfd$ preserves products.\qedhere
 \end{proof}
 
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
-For any finite-dimensional vector space $V$, the direct sum $V\oplus V^*$ is a paired vector space under the \emph{canonical symplectic pairing}
+For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ is a paired vector space under the \emph{canonical symplectic pairing}: at every basepoint $w\in V\oplus V^*$,
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(x,\xi),(x',\xi')}_{V\oplus V^*} \;=\; \xi'(x)-\xi(x').
+\pairing{(x,\xi),(x',\xi')}_{w} \;=\; \xi'(x)-\xi(x').
 \end{equation}
+The right-hand side does not depend on $w$, so the section is constant.
 \end{proposition}
 
 \begin{proof}
@@ -636,15 +641,8 @@ For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the 
 \end{equation}
 
 \begin{remark}[Sign convention]\label{rmk.swap_pairing}
-The bilinear form
-\[
-\pairing{(x,\xi),(x',\xi')}=\xi'(x)+\xi(x')
-\]
+The bilinear form $\pairing{(x,\xi),(x',\xi')}=\xi'(x)+\xi(x')$
 also makes $V\oplus V^*$ a paired vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\xi,x)\mapsto(x,\xi)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for the dynamics later in the paper.\qedhere
-\end{remark}
-
-\begin{remark}[Constancy of $\sharp_{T^*V}$]\label{rmk.constant_canonical_sharp}
-The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharp_V$, so $\sharp_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharp_V$ varies on $V$. The phase-space dynamics of \cref{sec.dynamics_functor} therefore see only this constant, regardless of any variation in $\sharp_V$.\qedhere
 \end{remark}
 
 \subsection{Cotangent endofunctor}\label{sec.TT}
@@ -656,28 +654,36 @@ T^*V\coloneqq V\oplus V^*.
 Under the inclusion functor $\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this agrees with the cotangent bundle of $V$ as a manifold.
 
 It is naturally a paired vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
-For a $\pvect$-morphism $\phi\colon V\to W$, define
+For a $\pvect$-morphism $\phi\colon V\To{\cong} W$, define
 \begin{equation}\label{eqn.TT_phi}
 T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
 \end{equation}
 
 \begin{proposition}\label{prop.TT_endofunctors}
-The assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\pvect\to\pvect$.
+Equipping $T^*V$ with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, the assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\pvect\to\pvect$.
 \end{proposition}
 
 \begin{proof}
 If $\phi\colon V\to W$ is a linear isomorphism so is $T^*\phi$. Functoriality is obvious. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in V.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
 \begin{equation}\label{eqn.dualeval}
-(\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v),
+(\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v).
 \end{equation}
-and we conclude that $T^*\phi$ preserves pairings by calculating
+To see that $T^*\phi$ preserves pairings, fix any basepoint $w\in T^*V$ and calculate
 \begin{align*}
-\pairing{T^*\phi(x_1,\xi_1),T^*\phi(x_2,\xi_2)}_{T^*W}
+\pairing{T^*\phi(x_1,\xi_1),T^*\phi(x_2,\xi_2)}_{T^*\phi(w)}
 &= (\psi\xi_2)(\phi x_1)-(\psi\xi_1)(\phi x_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
 &= \xi_2(x_1)-\xi_1(x_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(x_1,\xi_1),(x_2,\xi_2)}_{T^*V} && \text{[\eqref{eqn.canonical_form}]}.
+&= \pairing{(x_1,\xi_1),(x_2,\xi_2)}_{w} && \text{[\eqref{eqn.canonical_form}]};
 \end{align*}
+both sides are independent of $w$ by constancy of the canonical symplectic pairing.
 \end{proof}
+
+\begin{remark}[Constancy of $\sharp_{T^*V}$]\label{rmk.constant_canonical_sharp}
+The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharp_V$, so $\sharp_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharp_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharp_{V\oplus V^*}$, regardless of any variation in $\sharp_V$. However, $\sharp_V$ is not discarded by the framework: it will be used to define the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
+\qedhere
+\end{remark}
+
+
 
 \begin{proposition}\label{prop.TT_monoidal}
 The endofunctor $T^*\colon\pvect\to\pvect$ is strong symmetric monoidal with respect to $(0,\oplus)$.
@@ -688,21 +694,29 @@ The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comp
 \begin{equation}\label{eqn.Tstar_swap}
 T^*(V_1\oplus V_2)\To{\cong}T^*V_1\oplus T^*V_2,\quad ((x_1,x_2),(\xi_1,\xi_2))\mapsto((x_1,\xi_1),(x_2,\xi_2)).
 \end{equation}
-It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. To check preservation of pairings, compare with a second cotangent element $((y_1,y_2),(\xi'_1,\xi'_2))$. The two sides expand via \eqref{eqn.canonical_form} to
-\[
-\xi'_1(x_1)+\xi'_2(x_2)-\xi_1(y_1)-\xi_2(y_2).
-\]
-\qedhere
+It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. To check preservation of pairings, take a second element $((x'_1,x'_2),(\xi'_1,\xi'_2))$ in $T^*(V_1\oplus V_2)$. The canonical symplectic pairing on $T^*(V_1\oplus V_2)$ unfolds via \eqref{eqn.canonical_form} as
+\begin{align*}
+\pairing{((x_1,x_2),(\xi_1,\xi_2)),\,((x'_1,x'_2),(\xi'_1,\xi'_2))}
+&= (\xi'_1,\xi'_2)\bigl((x_1,x_2)\bigr) - (\xi_1,\xi_2)\bigl((x'_1,x'_2)\bigr)\\
+&= \xi'_1(x_1)+\xi'_2(x_2)-\xi_1(x'_1)-\xi_2(x'_2).
+\end{align*}
+The direct-sum pairing on $T^*V_1\oplus T^*V_2$ unfolds via \eqref{eqn.directsum_pairing} and \eqref{eqn.canonical_form} on each factor as
+\begin{align*}
+\pairing{((x_1,\xi_1),(x_2,\xi_2)),\,((x'_1,\xi'_1),(x'_2,\xi'_2))}
+&= \pairing{(x_1,\xi_1),(x'_1,\xi'_1)}+\pairing{(x_2,\xi_2),(x'_2,\xi'_2)}\\
+&= \bigl(\xi'_1(x_1)-\xi_1(x'_1)\bigr)+\bigl(\xi'_2(x_2)-\xi_2(x'_2)\bigr).
+\end{align*}
+The two expansions are equal, so pairings are preserved.\qedhere
 \end{proof}
 
-The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the first-order Euler step of the vector field $(x,\xi)\mapsto\sharp_x(\xi)\in T_xV\cong V$ from basepoint $x$:
+The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the bundle map
 \begin{equation}\label{eqn.flow_cot}
-\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharp_x(\xi).
+\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharp_x(\xi),
 \end{equation}
-In the constant case $\sharp_x=\sharp_0$, it coincides with the time-$1$ flow of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\pvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}. We use \eqref{eqn.flow_cot} pointwise as the on-directions bijection of $V\yon^V\cong\cot{V}$ in \cref{prop.pnla_polynomial}.
+which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharp_x(\xi)\in T_xV\cong V$. In the constant case $\sharp_x=\sharp_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\pvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}. 
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.pnla_generalization}
-Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.pnla}. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting, with $T^*V$ acquiring brackets that mix $\ad$ and $\ad^*$. This extension is orthogonal to the bundle generality already built into $\sharp_V$: the abelian/non-abelian axis is independent of whether $\sharp_V$ is constant or varies on $V$. A careful treatment is left to future work.\qedhere
+Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.pnla}. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting. A careful treatment is left to future work.\qedhere
 \end{remark}
 
 \section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
