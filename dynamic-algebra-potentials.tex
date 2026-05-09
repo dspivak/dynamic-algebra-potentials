@@ -25,6 +25,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 
 \usepackage{tikz}
 \usepackage{pdflscape}
+\usepackage{afterpage}
 
 \usepackage{amssymb}
 \usepackage{newpxtext}
@@ -528,18 +529,6 @@ Thanks to Lukas Barth, Scott Viteri, and Jake Arujo-Simon for stimulating conver
 
 We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor is written in sans-serif, $\Fun{T},\Fun{Box}$. Number systems use blackboard bold, $\nn,\rr$; the dynamic algebra bicategory is denoted $\org$. We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor.
 
-In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$.
-
-We will use the following uniform version of this structure. A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice of a comonoid structure on every object of $\cat{C}$, compatible with $\otimes$. A supply is \emph{homomorphic} if every morphism of $\cat C$ is a comonoid homomorphism for the supplied structures.
-
-\begin{lemma}\label{lem.cartesian_homomorphic_supply}
-Any cartesian monoidal category canonically has a homomorphic supply of commutative comonoids, given by diagonals and terminal maps.
-\end{lemma}
-
-\begin{proof}
-This is the standard cartesian comonoid structure of \cite{fox1976coalgebras}.
-\end{proof}
-
 \section{Manifolds and paired vector spaces}\label{sec.lie_pnla_bg}
 
 In this section we fix the differential-geometric notation used throughout and introduce paired vector spaces, the parameter objects for later Para constructions. The key point is that a pairing turns covectors into updates, and the cotangent construction supplies the phase-space version used in Hamiltonian dynamics.
@@ -725,7 +714,7 @@ Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras
 
 We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
 
-A \emph{polynomial functor} is an endofunctor $p\colon\smset\to\smset$ of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
+The category $\poly$ of \emph{polynomial functors} is the full subcategory of all endofunctors $p\colon\smset\to\smset$ spanned by those of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
 \begin{equation}\label{eqn.poly}
 p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
 \end{equation}
@@ -735,15 +724,14 @@ One can derive from the universal property of coproducts and the Yoneda lemma th
 \begin{equation}\label{eqn.poly_map}
 \poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
 \end{equation}
-The outer $\prod_i\sum_j$ yields an ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote this function
-\[\bk{\varphi}_i\colon q[\varphi_1(i)]\to p[i],\]
-writing the overline-bracket $\bk{(\,\cdot\,)}$ for the backward component throughout. We take the morphisms $p\to q$ in $\poly$ to be the natural transformations between the underlying functors.
+The outer $\prod_i\sum_j$ yields a ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote this function
+\[\bk{\varphi}_i\colon q[\varphi_1(i)]\to p[i].\]
 
-For polynomials $p,q$, their \emph{Dirichlet product} is
+For polynomials $p,q:\poly$, their \emph{Dirichlet product} is
 \begin{equation}\label{eqn.dirichlet}
 p\otimes q\coloneqq\sum_{(i,j):p(1)\times q(1)}\yon^{p[i]\times q[j]}\;.
 \end{equation}
-The unit is $\yon=\yon^1$. The Dirichlet product is symmetric monoidal and closed: the \emph{internal hom} is
+Together with unit $\yon=\yon^1$, the Dirichlet product forms a symmetric monoidal structure, which is also closed: the \emph{internal hom} is
 \begin{equation}\label{eqn.dirichlet_hom}
 \ihom{p,q}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
 \end{equation}
@@ -751,19 +739,20 @@ satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. 
 \[
 \ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
 \]
-A direction at $\varphi:\ihom{p,q}(1)$ consists of a pair $(i,e)$, where $i:p(1)$ is a $p$-position and $e:q[\varphi_1(i)]$ is a $q$-direction.
 
 \subsection{Polynomial comonads as categories}\label{sec.comonads}
 
-The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$, with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
-\begin{equation}\label{eqn.substitution}
-p\tri q=\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon.
-\end{equation}
+The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$; it is a (nonsymmetric) monoidal structure with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
+\begin{align}\label{eqn.substitution}
+p\tri q&=
+\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
+\sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
+\end{align}
 A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, substitution recovers evaluation: $p\tri S=p(S)$.
 
 A \emph{$\tri$-comonoid} in $\poly$ is a comonoid for the substitution product: a polynomial $c$ equipped with a counit $\epsilon\colon c\to\yon$ and comultiplication $\delta\colon c\to c\tri c$ satisfying coassociativity and counitality. Since the substitution product is composition of endofunctors on $\smset$, a $\tri$-comonoid is equivalently a comonad on $\smset$ whose underlying endofunctor is polynomial; we call it a \emph{polynomial comonad}.
 
-Polynomial comonads are---up to isomorphism---small categories. Writing $c=\sum_{i:c(1)}\yon^{c[i]}$, the positions $c(1)$ are the objects of some category $\cat{C}$, and for each object $i:c(1)$, the directions $c[i]$ are the morphisms of $\cat{C}$ with domain $i$:
+Polynomial comonads are---up to isomorphism---the same data as small categories. Writing $c=\sum_{i:c(1)}\yon^{c[i]}$, the positions $c(1)$ are the objects of some category $\cat{C}$, and for each object $i:c(1)$, the directions $c[i]$ are the morphisms of $\cat{C}$ with domain $i$:
 \[
 c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
@@ -774,16 +763,10 @@ The above correspondence defines an isomorphism between polynomial comonads and 
 \end{proposition}
 
 \begin{example}[The store comonad and the pair groupoid]\label{ex.store}
-For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. We can also write
-\begin{equation}\label{eqn.store_decomp}
-S\yon^S\;\cong\;\ihom{S\yon,\yon}\otimes S\yon
-\end{equation}
-since $\ihom{S\yon,\yon}=\yon^S$, and $\yon^S\otimes S\yon\cong S\yon^{S\times 1}\cong S\yon^S$. The counit $\epsilon\colon S\yon^S\to\yon$ sends each position $s:S$ to the identity $\id_s\coloneqq s:S=c[s]$. The comultiplication $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$ acts as follows: on positions, $\delta$ sends $s:S$ to the pair $(s,\cod)$ where $\cod\colon S\to S$ is the identity---so $\cod(t)=t$ for all $t:S$. On directions, given $s:S$ and $t:c[s]=S$, the codomain is $\cod(t)=t$, and given a further $u:c[t]=S$, the composite is $t\then u\coloneqq u$.
+For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. 
 
-By \cref{prop.comonads_cats} this is a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. The composition $t\then u=u$ says that composites are determined by the codomain of the second factor, as expected when every hom-set is a singleton. Every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete category}) on $S$.
+By \cref{prop.comonads_cats} this can be viewed as a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. Thus every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete category}) on $S$.
 \end{example}
-
-
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec.coalgebras}
 
@@ -1591,7 +1574,7 @@ The functor $\rr^-\colon\finset\op\to\mfd$ satisfies the conditions of \cref{lem
 \end{example}
 
 \begin{lemma}\label{lem.parameter_lens_action}
-Let $\cat V$ be symmetric monoidal, let $\cat C$ be symmetric monoidal with a homomorphic supply of commutative comonoids, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be strong monoidal. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
+Let $\cat V$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be a strong monoidal functor such that each $J(v)$ carries a commutative comonoid structure $(\delta_{J(v)},\varepsilon_{J(v)})$ in $\cat C$ and each $J(u)$ is a comonoid homomorphism. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
 \[
 v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}.
 \]
@@ -1599,14 +1582,14 @@ If moreover $\Fun T$ is a monoidal monad, this action is symmetric monoidal.
 \end{lemma}
 
 \begin{proof}
-Use the supplied commutative comonoid on $J(v)\in\cat C$; by homomorphicity, $J(u)$ is a comonoid homomorphism for any $u\colon v\to w$ in $\cat V$. Given $f\colon\lensob c\to\lensob d$ in $\Lens{\cat C}^{\Fun T}$ and $u$ as above, set
+Given $f\colon\lensob c\to\lensob d$ in $\Lens{\cat C}^{\Fun T}$ and $u\colon v\to w$ in $\cat V$, set
 \[
 u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(v)}}{J(u)\otimes\outp f}\colon
 \binom{\inpt c}{J(v)\otimes\outp c}
 \to
 \binom{\inpt d}{J(w)\otimes\outp d}.
 \]
-Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the homomorphic supply assumption: $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
+Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the comonoid-homomorphism assumption on $J$: $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
 
 When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cref{prop.backward_comonad}, and the comparisons $J(I)\cong I$ and $(v\otimes w)\cdot(\lensob c\otimes\lensob d)\cong(v\cdot\lensob c)\otimes(w\cdot\lensob d)$ come directly from the strong monoidality of $J$.
 \end{proof}
@@ -1666,12 +1649,21 @@ This is an immediate corollary of \cref{prop.Theta_T_alpha} with $\Fun{T}=\id$.
 %\]
 \end{proof}
 
+\begin{example}
+For the symmetric monoidal closed category $(\poly,\yon,\otimes,[-,-])$, applying $\Theta$ to lenses of the form $\binom{A\yon}{B\yon}$ yields
+\[
+\Theta\binom{A\yon}{B\yon}=B\yon\otimes[A\yon,\yon]\cong B\yon^A.
+\]
+Restricted to this full subcategory of $\Lens(\poly)$, the functor $\Theta$ is fully faithful: a lens map $\binom{A\yon}{B\yon}\to\binom{A'\yon}{B'\yon}$ is a map $B\to B'$ and $B\times A'\to A$, which is exactly the data of a map $B\yon^A\to B'\yon^{A'}$.
+
+A $B\yon^A$-coalgebra $S\to BS^A$ is equivalently a pair functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine. Thus we think of $\Theta$ as the \emph{Moore}-internalization of lenses.
+\end{example}
 
 Recall that monoidal (equivalently, commutative) monads $(\Fun{T},\tau)$ have a natural strength
 \[
 \sigma_{X,Y}\colon X\otimes\Fun{T}Y\To{\eta_X\otimes\id}\Fun{T}X\otimes\Fun{T}Y\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
 \]
-and that monoidal monads $\Fun{T}$ preserve monoids.
+All lax monoidal functors preserve monoids, so in particular monoidal monads do.
 
 \begin{definition}\label{def.T_monoid}
 Let $(\Fun{T},\eta,\mu,\tau)$ be a monoidal monad on a symmetric monoidal category $\cat{C}$. A \emph{$\Fun{T}$-monoid in $\cat{C}$} is a $\otimes$-monoid $(z,e_z,m_z)$ in $\cat{C}$
@@ -1697,12 +1689,12 @@ z\ar[r,"\eta_z"']\& \Fun{T}z\ar[r,"\alpha"']\& z
 \Fun{T}z\otimes\Fun{T}z\ar[r,"\tau_{z,z}"]\ar[d,"\alpha\otimes\alpha"']\& \Fun{T}(z\otimes z)\ar[r,"\Fun{T}m_z"]\& \Fun{T}z\ar[d,"\alpha"]\\
 z\otimes z\ar[rr,"m_z"']\&\& z
 \end{tikzcd}
+\qedhere
 \end{equation}
-We call $z$ the \emph{value object}.
 \end{definition}
 
 \begin{remark}\label{rmk.T_monoid_EM}
-A $\Fun{T}$-monoid in $\cat{C}$ is the same data as a monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the underlying-functor of $\Fun{T}$ lifts to a monad on $\Cat{Mon}(\cat{C})$; see \cite{kock1972strong}.
+A $\Fun{T}$-monoid in $\cat{C}$ is the same data as a $\otimes$-monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}_\otimes(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the underlying-functor of $\Fun{T}$ lifts to a monad on $\Cat{Mon}_\otimes(\cat{C})$; see \cite{kock1972strong}.
 \end{remark}
 
 \begin{proposition}\label{prop.Theta_T_alpha}
@@ -1728,7 +1720,7 @@ Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\Theta_z(f)
 \& \outp d\otimes[\inpt d,\Fun{T}(\inpt c\otimes[\inpt c,z])]\ar[l,"{\id\otimes[\inpt d,\Fun{T}\ev]}"]
 \end{tikzcd}
 \]
-Proving that $\Theta_z$ is functorial is a long but routine diagram chase. Each tile instantiates one of {naturality of $\sigma$, the monoid axiom for $\alpha$, the evaluation-coevaluation triangle, functoriality of $[-,-]$}, so we recommend spot-checking a few tiles rather than tracing the full path. We leave preservation of identities to the reader and
+Proving that $\Theta_z$ is functorial can be achieved by long but routine diagram chases. We leave preservation of identities to the reader.
 %IDENTITIES
 %\[
 %\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
@@ -1788,9 +1780,7 @@ Proving that $\Theta_z$ is functorial is a long but routine diagram chase. Each 
 %\end{tikzcd}
 %\]
 %Each square is clear.
-show composition on the following page. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z$ of the coKleisli composite $g\circ f$ and the coKleisli composite $\Theta_z(g)\circ\Theta_z(f)$ of the $\Theta_z$'s. 
-
-On the following page, each ``tile'' is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}. 
+We prove preservation of composition in the diagram on page~\pageref{page.theta_diagram}. Of course, such a diagram is difficult to audit, so we recommend spot-checking a few ``tiles'', each of which is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}.. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z$ of the coKleisli composite $g\circ f$ and the coKleisli composite $\Theta_z(g)\circ\Theta_z(f)$ of the $\Theta_z$'s. 
 
 The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the canonical map
 \[
@@ -1800,10 +1790,11 @@ The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the 
 \outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
 \]
 Its naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
-
-
-\begin{landscape}
-For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[\inpt X,z]$, and write $x$ for $\inpt{x}$. So for example, $\outp d[d,\Fun T(c)H_c]$ means $\outp d\otimes [\inpt d,\Fun T(c)\otimes H_c]$. The strength $\sigma$ has been opened as $\eta$ then $\tau$.
+%
+%
+\afterpage{\clearpage
+\begin{landscape}\label{page.theta_diagram}
+For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[\inpt X,z]$, and write $X$ for $\inpt{X}$. So for example, $\outp d[d,\Fun T(c)H_c]$ means $\outp d\otimes [\inpt d,\Fun T(c)\otimes H_c]$. The strength $\sigma$ has been opened as $\eta$ then $\tau$.
 \thispagestyle{empty}
 \[\hspace{-.5in}
 \begin{tikzcd}[column sep=0.5em, row sep=0.6em, every label/.append style={font=\tiny}, font=\tiny, ampersand replacement=\&]
@@ -1941,14 +1932,15 @@ The equality on the left splits the open region into two parts, and it suffices 
 \qedhere\]
 \end{minipage}
 \end{landscape}
+\clearpage}
 \end{proof}
 
 \begin{corollary}\label{cor.parameterized_representation}
-Let $(\Fun T,\tau)$, $\cat C$, $(z,e,m,\alpha)$, and the resulting $\Theta_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$ be as in \cref{prop.Theta_T_alpha}, with $\cat C$ carrying a homomorphic supply of commutative comonoids. Suppose $\cat V$ is symmetric monoidal and $J\colon\cat V\to\cat C$ is strong monoidal. Then with the $\cat V$-actions
+Let $\cat C$, $(\Fun T,\tau)$, $(z,e,m,\alpha)$, and the resulting $\Theta_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C}$ be as in \cref{prop.Theta_T_alpha}. Suppose $\cat V$ is symmetric monoidal and $J\colon\cat V\to\cat C$ is a strong monoidal functor such that each $J(v)$ carries a commutative comonoid structure in $\cat C$ and each $J(u)$ is a comonoid homomorphism. Then with the $\cat V$-actions
 \[
 v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}
 \qqand
-v\cdot x\coloneqq J(v)\otimes x
+v\cdot c\coloneqq J(v)\otimes c
 \]
 on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to a lax symmetric monoidal functor
 \begin{equation}\label{eqn.para_theta_z}
@@ -1961,7 +1953,7 @@ on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to 
 %\]
 
 \begin{proof}
-Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $v\cdot x\coloneqq J(v)\otimes x$ on $\cat C$. The functor $\Theta_z$ is $\cat V$-equivariant:
+Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $v\cdot x\coloneqq J(v)\otimes x$ on $\cat C$, as shown. The functor $\Theta_z$ is $\cat V$-equivariant:
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 \cat V\times\Lens{\cat C}^{\Fun T}
@@ -1974,9 +1966,8 @@ Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter
 \& \cat C,
 \end{tikzcd}
 \]
-where the isomorphism is
+where the $(v,\binom{\inpt c}{\outp c}$ component of the natural isomorphism is
 \[
-\theta_{v,\lensob c}\colon
 J(v)\otimes\Theta_z\lensob c
 \cong J(v)\otimes\outp c\otimes\ihom{\inpt c,z}
 =\Theta_z\left(v\cdot\lensob c\right).
