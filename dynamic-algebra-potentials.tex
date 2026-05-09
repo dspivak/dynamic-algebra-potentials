@@ -452,7 +452,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
 \newcommand{\potlens}{\Cat{PLens}}
-\newcommand{\Para}{\Cat{Para}}
+\newcommand{\Para}{\mathbb{P}\Cat{ara}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
 \newcommand{\refn}{\fun{ref}}\newcommand{\pnla}{\Cat{PNLA}}
 \newcommand{\pvect}{\Cat{PVect}}
@@ -515,7 +515,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \emph{[Introduction to be written.]}
 
 \section*{Acknowledgments}
-Thanks to Lukas Barth, Scott Viteri, and Jake Arujo-Simon for stimulating conversations. I also thank Claude and Codex for assistance in editing the document, and various helpful conversations.
+Thanks to Lukas Barth, Scott Viteri, and Jake Arujo-Simon for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
 
 \thanksAFOSR{FA9550-23-1-0376}. 
 
@@ -526,19 +526,11 @@ Thanks to Lukas Barth, Scott Viteri, and Jake Arujo-Simon for stimulating conver
 
 \section{Notation and preliminaries}\label{sec.prelim}
 
-\begin{convention}[State and phase variables]\label{conv.state_phase_variables}
-We use $S$ for an abstract state set and $s:S$ for a state. When the state set is a phase space $X=T^*V$, we write
-\[
-s=(x,\xi)\in X=V\oplus V^*
-\]
-with $x\in V$ the position or configuration and $\xi\in V^*$ the momentum covector. In coordinates and examples, we may write $p$ for momentum, especially under an implicit Euclidean identification. Thus a particle state is written $s=(x,p)$, and a multi-particle state as $s=(\vec x,\vec p)$. We reserve $v,w$ for generic vectors in linear-algebra calculations. In categorical formulas, $p,q$ denote polynomials; in coordinate physics examples, $p$ denotes momentum and $q$ is avoided for configuration.\qedhere
-\end{convention}
+We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor is written in sans-serif, $\Fun{T},\Fun{Box}$. Number systems use blackboard bold, $\nn,\rr$; the dynamic algebra bicategory is denoted $\org$. We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor.
 
-We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor in sans-serif, $\Fun{T},\Fun{Box}$. Lie algebras use fraktur, $\lie{g},\lie{p}$; number systems use blackboard bold, $\nn,\rr$, as does the only bicategory we work with, $\org$. We write $\blank$ for a placeholder argument in functor or polynomial expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor.
+In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$.
 
-In a symmetric monoidal category $(\cat{C},I,\otimes)$, a \emph{$(\otimes)$-comonoid} is an object $c$ equipped with a coassociative comultiplication $\delta_c\colon c\to c\otimes c$ and a counit $\varepsilon_c\colon c\to I$ satisfying the counit law; a \emph{$(\otimes)$-monoid} is the dual. A \emph{comonoid homomorphism} $f\colon c\to c'$ satisfies $f\then\varepsilon_{c'}=\varepsilon_c$ and $f\then\delta_{c'}=\delta_c\then(f\otimes f)$. 
-
-A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice of a comonoid structure on every object of $\cat{C}$, compatible with $\otimes$. A supply is \emph{homomorphic} if every morphism of $\cat C$ is a comonoid homomorphism for the supplied structures.
+We will use the following uniform version of this structure. A \emph{supply of comonoids}~\cite{fong2019supplying} is a choice of a comonoid structure on every object of $\cat{C}$, compatible with $\otimes$. A supply is \emph{homomorphic} if every morphism of $\cat C$ is a comonoid homomorphism for the supplied structures.
 
 \begin{lemma}\label{lem.cartesian_homomorphic_supply}
 Any cartesian monoidal category canonically has a homomorphic supply of commutative comonoids, given by diagonals and terminal maps.
@@ -550,9 +542,13 @@ This is the standard cartesian comonoid structure of \cite{fox1976coalgebras}.
 
 \section{Manifolds and paired vector spaces}\label{sec.lie_pnla_bg}
 
+In this section we fix the differential-geometric notation used throughout and introduce paired vector spaces, the parameter objects for later Para constructions. The key point is that a pairing turns covectors into updates, and the cotangent construction supplies the phase-space version used in Hamiltonian dynamics.
+
 \subsection{Manifolds and notation}\label{sec.manifolds_notation}
 
-We work in the cartesian category $(\mfd,\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, write $T_mM$ for the tangent space at $m$ and $TM$ for the tangent bundle; $T^*_mM$ and $T^*M$ for the cotangent space and bundle. The tangent functor preserves products, so $T(M\times N)\cong TM\times TN$; in particular $T_{(m,n)}(M\times N)\cong T_mM\oplus T_nN$ and dually $T^*_{(m,n)}(M\times N)\cong T^*_mM\oplus T^*_nN$.
+We work in the cartesian category $(\mfd,\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, write $T_mM$ for the tangent space at $m$ and $TM$ for the tangent bundle; write $T^*_mM$ and $T^*M$ for the cotangent space at $m$ and the cotangent bundle.
+
+The tangent functor $T\colon\mfd\to\mfd$ preserves products, so $T(M\times N)\cong TM\times TN$; in particular $T_{(m,n)}(M\times N)\cong T_mM\oplus T_nN$ and dually $T^*_{(m,n)}(M\times N)\cong T^*_mM\oplus T^*_nN$.
 
 For a smooth map $f\colon M\to N$, write
 \[
@@ -564,26 +560,25 @@ T_m f\colon T_mM\to T_{f(m)}N
 \qqand
 (T_m f)^\top\colon T^*_{f(m)}N\to T^*_mM
 \]
-for the \emph{differential at $m$}---the restriction of $Tf$ to the fiber over $m\in M$--- and its transpose.%
-\footnote{What we call $T_m f$ is often denoted $Df_m$.}
-
-When the codomain is $\rr$, the tangent map of $U\colon M\to\rr$ can be combined with the standard constant covector field $r\mapsto +1$ on $\rr$ to give a covector field on $M$, also called the \emph{differential} of $U$:
-\begin{equation}\label{eqn.differential}
-dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
-\end{equation}
-That is, $dU|_m$ is the covector at $m$ whose pairing with $\dot m\in T_mM$ is $+1(T_m U(\dot m))$, identified with a real number using $T_{U(m)}\rr\cong\rr$. We generally write $\xi$ for a covector, and use dotted point notation such as $\dot m$ for a tangent vector based at $m$.
+for the \emph{differential at $m$}---the restriction of $Tf$ to the fiber over $m\in M$---and its transpose.%
+\footnote{In the literature, what we denote $T_m f$ is often denoted $Df_m$.}
 
 We often elide the inclusion $\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure in $\vect$ is (a coproduct and) a product, and the inclusion is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
 \begin{equation}\label{eqn.tangent_vec}
 T_xV \;\cong\; V \qqand T^*_xV \;\cong\; V^*
 \end{equation}
-at every point $x\in V$; we use these identifications throughout, often without comment. In particular, the differential at $x$ of a smooth function $f\colon V\to\rr$ is an element $df|_x\in V^*$, also called \emph{the differential of $f$ at $x$}.
-We also use the canonical finite-dimensional dual-sum identification
+at every point $x\in V$; we use these identifications throughout, often without comment. We also will make frequent use of the canonical identification
 \begin{equation}\label{eqn.canonical_dual_sum}
 (V\oplus V^*)^*\cong V^*\oplus V,\qquad
 \lambda\leftrightarrow(\xi,x)\quad\text{where}\quad
 \lambda(x',\xi')=\xi(x')+\xi'(x).
 \end{equation}
+
+When the codomain is $\rr$, the tangent map of $U\colon M\to\rr$ can be combined with the standard constant covector field $r\mapsto +1$ on $\rr$ to give a covector field on $M$, also called the \emph{differential} of $U$:
+\begin{equation}\label{eqn.differential}
+dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
+\end{equation}
+That is, $dU|_m$ is the covector at $m$ whose pairing with a tangent vector $\dot m\in T_mM$ is $+1((T_m U)(\dot m))\in\rr$. We may regard $dU|_x$ as an element of $V^*$ under \eqref{eqn.tangent_vec}.
 
 \subsection{Paired vector spaces}\label{sec.pnla}
 
@@ -1053,7 +1048,7 @@ One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_example
 \qquad
 \cat{W}_{\tn{O-Opd}}\to\org
 \] 
-for any $O:\smset$. Our next goal then is to recall $\org$; in \cref{sec.W_choice} we will talk about our choice of $\cat{W}$.
+for any $O:\smset$. We therefore recall $\org$ next; in \cref{sec.W_choice} we will choose the particular $\cat{W}$ used in this paper.
 
 \subsection{The monoidal bicategory $\org$}\label{sec.org}
 
@@ -1166,7 +1161,7 @@ For each category---$\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$---the obj
 \end{align*}
 by \cref{eqn.dirichlet_hom,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
 
-In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\phi)$, and it is easy to see too are identified as above.
+In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\phi)$, and the same identifications match these composites.
 \end{proof}
 
 \begin{lemma}\label{lem.poly_to_org}
@@ -1189,7 +1184,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 
 \subsection{Cotangent storages}\label{sec.cotangent_storages}
 
-Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ from \cref{prop.pnla_smc_action} and $\Store(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
+The Para description of $\org_\cong$ lets us compare cotangent parameterizations with ordinary store parameterizations. Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ from \cref{prop.pnla_smc_action} and $\Store(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
 
 \begin{definition}[Cotangent storage]\label{def.cotangent_storage}
 A \emph{cotangent storage} is a pair $\mathfrak{s}=(F,\vartheta)$, where $F\colon\pvect\to\smset_\cong$ is strong symmetric monoidal and $\vartheta$ is a monoidal natural transformation filling the square
@@ -1235,6 +1230,8 @@ For $\alpha\colon\mathfrak{s}\to\mathfrak{s}'=(F',\vartheta')$, the monoidal nat
 \]
 with $\alpha^*\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$, exactly by the storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$. The components $\alpha_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\alpha^*\Rightarrow D_{F'}$; precomposing with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$.
 \end{proof}
+
+The first example stores the underlying set of configurations.
 
 \begin{proposition}\label{prop.pnla_polynomial}
 There is a cotangent storage, which we call \emph{configuration storage}, given by
@@ -1313,7 +1310,7 @@ The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of
 
 \chapter{Potentialized lenses}\label{ch.potentials}
 
-In this chapter we define a symmetric monoidal category $\potlens$ of potentialized lenses. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potential_lenses_to_dynamics} specializes the source-side constructions to manifolds: manifold lenses, the potential monad associated to any Lie monoid, and the PN Lie Algebra parameterization, synthesizing them as $\potlens$.
+In this chapter we define the symmetric monoidal category $\potlens$ of potentialized lenses and the functors from it to dynamic algebra. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potential_lenses_to_dynamics} then specializes these constructions to manifold lenses with real-valued potentials and paired-vector-space parameters.
 
 \section{Lenses and backward monads}\label{sec.lenses_general}
 
@@ -1602,7 +1599,7 @@ When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cr
 
 \section{Internal representation of lenses}\label{sec.abstract_representation}
 
-The previous section gives the category of lenses, and discusses the comonad and coKleisli category associated to a monad on the base category. The following proposition says that we can interpret the category of lenses inside the base category.
+The previous section built categories of lenses and their coKleisli variants. We next record a representation that sends a lens back into the base category; later, this is the bridge from potentialized lenses to polynomials.
 
 \begin{proposition}\label{prop.Theta}
 For any symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, there is a normal lax monoidal functor
@@ -1975,7 +1972,7 @@ We can thus apply \cref{prop.para_square,prop.Theta_T_alpha} to obtain \eqref{eq
 
 \section{The dynamics of potentialized lenses}\label{sec.potential_lenses_to_dynamics}
 
-We now turn potentialized lenses into dynamical systems: after constructing the category $\potlens$ and using it as interaction syntax, we realize its maps functorially as open systems in $\org$.
+We now assemble the source-side constructions: potentialized manifold lenses, their paired-vector-space parameterization, the interaction syntax they define, and finally the dynamics functors to $\org$.
 
 \subsection{Potentialized lenses}\label{sec.potentialized_lenses}
 
@@ -2105,11 +2102,13 @@ where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the 
 
 The simplest is static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor and all the maps factor as projections and diagonals. These maps give the syntax for something like traced symmetric monoidal semicategories, as discussed in \cref{sec.plenspot_ops}.
 
-We can realize each static wiring diagram as a lens between manifolds via $\Lens{\rr^-}$ (\cref{lemma.lens_rr}), but manifold lenses are more general. There are many more maps $M\times N\to M$ than just the projection. Even more general than that is to add potentials. There is still no parameter space $V$, but there is a notion of potential that grades the tuple consisting of what comes out of little boxes and what comes in to the big box, e.g.\ prediction error.
+We can realize each static wiring diagram as a lens between manifolds via $\Lens{\rr^-}$ (\cref{lemma.lens_rr}), but manifold lenses are more general: there are many more maps $M\times N\to M$ than just the projection. Adding potentials gives another step. There is still no parameter space $V$, but there is a function grading the tuple consisting of what comes out of little boxes and what comes in to the big box, e.g.\ prediction error.
 
-Finally, the most general is maps in $\potlens$, which also lets the interaction pattern itself vary smoothly in time, as the parameter $v:V$ is updated according to the potential, hence the name SVIP. Exactly how all these dynamics work is the subject of \cref{sec.dynamics_functor}.
+Finally, the most general SVIPs are maps in $\potlens$: the interaction pattern itself varies smoothly in time, as the parameter $v:V$ is updated according to the potential. Exactly how these dynamics work is the subject of \cref{sec.dynamics_functor}.
 
 \subsection{The dynamics functor}\label{sec.dynamics_functor}
+
+The interaction syntax becomes dynamics by first internalizing a potentialized lens as a parameterized polynomial map and then applying a cotangent storage.
 
 \begin{lemma}\label{lem.potlens_to_para_poly}
 There is a lax symmetric monoidal functor
