@@ -473,6 +473,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\store}[1]{\mathfrak{s}_{#1}}
 \newcommand{\conf}{\mathrm{conf}}
 \newcommand{\phase}{\mathrm{phase}}
+\newcommand{\lrn}{\mathrm{lrn}}
 
 \font\MnSyCfont=MnSymbolC10
 \newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
@@ -530,6 +531,8 @@ Thanks to Lukas Barth, Scott Viteri, David Jaz Myers, and Jake Arujo-Simon for s
 \section{Notation and preliminaries}\label{sec.prelim}
 
 We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor is written in sans-serif, $\Fun{T},\Fun{Box}$. Number systems use blackboard bold, $\nn,\rr$; the dynamic algebra bicategory is denoted $\org$. We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor.
+
+If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$.
 
 By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We sometimes elide the difference between monoidal categories $(\cat{C},I,\otimes)$ and their underlying operads $\cat{O}_{\cat{C}}$ with $K$-ary morphisms $c_1\otimes\cdots\otimes c_K\to c'$. Morphisms between underlying operads correspond exactly to lax morphisms between the monoidal categories.%
 \footnote{That is, the functor $\Cat{SMC}_{\tn{lax}}\to\Cat{Opd}$ is fully faithful.}
@@ -1141,6 +1144,14 @@ Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce th
 [p,q]\coalg\times[q,r]\coalg\to[p,r]\coalg.
 \]
 
+\begin{remark}[$\org$ is monoidal closed]\label{rmk.org_closed}
+The polynomial $[p,q]$ also serves as the internal hom in $\org$:
+\[
+\org(a,[p,q])\,=\,[a,[p,q]]\coalg\;\cong\;[a\otimes p,q]\coalg\,=\,\org(a\otimes p,q),
+\]
+by closedness of $\poly$ (\cref{sec.poly}). In particular, every 1-morphism $f\colon p\to q$ in $\org$ corresponds to a 0-morphism $\bar f\colon\yon\to[p,q]$.
+\end{remark}
+
 \subsection{The Para construction}\label{sec.para_general}
 
 We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\para{\cat{A}}{\cat{D}}$ has the same objects as $\cat{D}$, and a morphism $x\to y$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
@@ -1196,11 +1207,11 @@ Then there is an induced functor
 \[
 \para{F}{G}\colon\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'}.
 \]
-When $\cat D,\cat D'$ are symmetric monoidal, the actions are monoidal, $G$ is strong (resp.\ lax) symmetric monoidal, and $\theta$ is monoidal, then $\para{F}{G}$ extends to a strong (resp.\ lax) monoidal functor.
+When $\cat D,\cat D'$ are symmetric monoidal, the actions are monoidal, $G$ is strong (resp.\ normal lax, resp.\ lax) symmetric monoidal, and $\theta$ is monoidal, then $\para{F}{G}$ extends to a strong (resp.\ normal lax, resp.\ lax) monoidal functor.
 \end{proposition}
 
 \begin{proof}
-The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\mathbb{P}\Cat{ara}$ on it.\qedhere
+The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\mathbb{P}\Cat{ara}$ on it. For the normal-lax case: the unitor of $\para{F}{G}$ at the unit object $(I_{\cat A}, I_{\cat D})$ is built from $F$'s (iso) unitor and $G$'s unitor, so iso-ness of the latter is inherited.\qedhere
 \end{proof}
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
@@ -1228,7 +1239,7 @@ In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\p
 \end{proof}
 
 \begin{lemma}\label{lem.poly_to_org}
-Let $F\colon\pvect\to\smsetiso$ be strong symmetric monoidal, and let $\pvect$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\pvect\to\poly$ as in \cref{prop.para_strong_induced}. There is an identity-on-objects lax symmetric monoidal functor
+Let $F\colon\pvect\to\smsetiso$ be strong symmetric monoidal, and let $\pvect$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\pvect\to\poly$ as in \cref{prop.para_strong_induced}. There is an identity-on-objects normal lax symmetric monoidal functor
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \]
@@ -1242,7 +1253,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim.
+\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F(0)\cong 1$ so $D_F$ sends the unit $(0,\yon)$ to $\Store(F(0))\otimes\yon\cong\cong\yon$.
 \end{proof}
 
 \subsection{Cotangent storages}\label{sec.cotangent_storages}
@@ -1266,7 +1277,7 @@ Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\c
 
 \begin{proposition}\label{prop.store_refinement}
 There is a functor $\Psi_{\blank}\colon\cotstor\to\bbcat(\para{\cot}{\poly},\org_\cong)$. That is,
-Every cotangent storage $\mathfrak{s}$ induces a lax symmetric monoidal functor
+Every cotangent storage $\mathfrak{s}$ induces a normal lax symmetric monoidal functor
 \[
 \Psi_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\org_\cong
 \]
@@ -1285,7 +1296,7 @@ be the functor of \cref{lem.poly_to_org}. By \cref{prop.para_strong_induced,prop
 \[
 \Para_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\para{\Store\circ F}{\poly}.
 \]
-Define $\Psi_{\mathfrak{s}}\coloneqq D_F\circ\Para_{\mathfrak{s}}$.
+Define $\Psi_{\mathfrak{s}}\coloneqq D_F\circ\Para_{\mathfrak{s}}$, which is normal lax monoidal because $\Para_{\mathfrak s}$ is strong and $D_F$ is normal lax monoidal by \cref{lem.poly_to_org}.
 
 For $\alpha\colon\mathfrak{s}\to\mathfrak{s}'=(F',\vartheta')$, the monoidal natural transformation $\Store(\alpha)\colon\Store\circ F\Rightarrow\Store\circ F'$ gives
 \[
@@ -1660,6 +1671,15 @@ For any set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, thi
 The functor $\rr^-\colon\finset\op\to\mfd$ satisfies the conditions of \cref{lem.lens_T_functoriality}, so the functor $\Lens{\rr^-}$ from \cref{lemma.lens_rr} is strong monoidal. We will not pursue this example further in the paper.
 \end{example}
 
+The following is straightforward.
+
+\begin{proposition}\label{prop.lens_inclusion}
+Let $(\cat{C}, 1, \times)$ be a cartesian monoidal category and $\Fun{T}$ a monoidal monad on $\cat{C}$ with unit $\eta$. There is a strong symmetric monoidal functor
+\begin{equation}\label{eqn.lens_inclusion}
+\inc\colon\cat{C}\to\Lens{\cat{C}}^{\Fun{T}},\qquad X\mapsto\binom{1}{X},
+\end{equation}
+sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=!\then\eta_1\colon 1\times X\to 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
+
 \begin{lemma}\label{lem.parameter_lens_action}
 Let $\cat V$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be a strong monoidal functor such that each object $J(v)$ carries a commutative comonoid structure $(\delta_{J(v)},\varepsilon_{J(v)})$ in $\cat C$ and each morphism $J(u)$ is a comonoid homomorphism. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
 \[
@@ -1788,6 +1808,7 @@ Let $(\Fun{T},\tau)$ be a monoidal monad on a symmetric monoidal closed category
 \Theta_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
 \lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,z}.
 \]
+It is normal iff $e\colon I\to z$ is an isomorphism.
 \end{proposition}
 \begin{proof}
 Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\Theta_z(f)$ to be the composite
@@ -1875,6 +1896,8 @@ The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the 
 \outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
 \]
 Their naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
+
+Finally, $e$ is an isomorphism iff $z\cong I$ as a $\otimes$-monoid, iff $\Theta_z\binom{I}{I}=I\otimes[I,z]\cong z\cong I$ and the unitor of $\Theta_z$ realizes this isomorphism, proving the last claim.
 %
 %
 \afterpage{\clearpage
@@ -2134,7 +2157,7 @@ We call it $\potd$ because this is the choice for which potentials contribute th
 exactly as in \eqref{eqn.differential}.
 
 \begin{lemma}\label{lem.Theta_poly_potential}
-There is a lax monoidal functor
+There is a normal lax monoidal functor
 \[
 \Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly,\qquad
 \Theta_{\potd}\lensob p\coloneqq\outp p\otimes\ihom{\inpt p,\yon}.
@@ -2202,20 +2225,19 @@ Finally, the general smooth rewiring diagrams are maps in $\potlens$: the intera
 The smooth rewiring diagrams of \cref{sec.W_choice} become smooth rewiring dynamics by first internalizing them as parameterized polynomial maps and then applying a cotangent storage.
 
 \begin{lemma}\label{lem.potlens_to_para_poly}
-There is a lax symmetric monoidal functor
+There is a normal lax symmetric monoidal functor
 \[
 \Phi'\colon\potlens\to\para{\cot}{\poly}.
 \]
 \end{lemma}
 
 \begin{proof}
-By \cref{def.potlens}, $\potlens=\para{\pvect}{\lmfd^\rr}$. We have $\Lens\cot\colon\lmfd^\rr\to\Lens{\poly}^\rr$ from \cref{lem.cot_lifts_lens_potential} and $\Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly$ from
-\cref{lem.Theta_poly_potential}. The action square for $\Lens\cot$ and the action square for $\Theta_{\potd}$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two maps below; the desired functor is their composite:
+By \cref{def.potlens}, $\potlens=\para{\pvect}{\lmfd^\rr}$. We have a strong monoidal functor $\Lens\cot\colon\lmfd^\rr\to\Lens{\poly}^\rr$ from \cref{lem.cot_lifts_lens_potential} and a normal lax monoidal $\Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly$ from
+\cref{lem.Theta_poly_potential}. The action square for $\Lens\cot$ and the action square for $\Theta_{\potd}$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two normal lax monoidal maps below; the desired functor is their composite:
 \[
 \potlens\To{\para{\pvect}{\Lens\cot}}
 \para{\pvect}{\Lens{\poly}^\rr}\To{\para{\pvect}{\Theta_{\potd}}}
 \para{\cot}{\poly}.
-\qedhere
 \]
 \end{proof}
 The functor $\Phi'$ acts on objects by
@@ -2247,7 +2269,7 @@ S\to\left[
 The precise relationship between $S$ and $V$ will depend on the cotangent storage: in our two main cases of interest it is the configuration space $\absval{V}$ and the phase space $\absval{T^*V}$; see \eqref{eqn.our_phis}.
 
 \begin{theorem}\label{thm.functor}
-For every cotangent storage $\mathfrak{s}=(F,\vartheta)$, there is a lax symmetric monoidal functor
+For every cotangent storage $\mathfrak{s}=(F,\vartheta)$, there is a normal lax symmetric monoidal functor
 \[
 \Phi_{\mathfrak{s}}\colon\potlens\to\org.
 \]
@@ -2255,12 +2277,13 @@ A morphism $\alpha\colon\mathfrak{s}\to\mathfrak{s}'$ of cotangent storages indu
 \end{theorem}
 
 \begin{proof}
-Define $\Phi_{\mathfrak{s}}$ to be the composite of the maps below, given by \cref{lem.potlens_to_para_poly,prop.store_refinement}:
+Define $\Phi_{\mathfrak{s}}$ to be the composite of the normal lax monoidal functors below, given by \cref{lem.potlens_to_para_poly,prop.store_refinement}:
 \[
 \potlens\To{\Phi'}
 \para{\cot}{\poly}\To{\Psi_{\mathfrak{s}}}
 \org_\cong\hookrightarrow\org.
 \]
+
 For the second statement, \cref{prop.store_refinement} gives a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}$; whiskering with $\Phi'$ yields the desired $\Phi_\alpha\coloneqq\Psi_\alpha*\Phi'\colon\Phi_{\mathfrak{s}}\Rightarrow\Phi_{\mathfrak{s}'}$.\qedhere
 \end{proof}
 
@@ -2420,16 +2443,122 @@ x\mapsto
 \end{multline*}
 where $\outp n$, $\omega_N$, $\xi_M$, $\xi_V$, and $\inpt m$ are as in \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.bigtheta}, and \eqref{eqn.inptm}.
 
-Restricting along the embedding $\iota\colon\para{\pvect}{\mfd}\hookrightarrow\potlens$ that takes vacuous backward map and zero potential, $\Phi_{\conf}$ recovers the cotangent-learners functor described in \cref{rmk.cotangent_learners}; we develop this in \cref{ch.deep_learning}.
+We illustrate the framework with two warm-ups: Newton's method (\cref{sec.newton_warmup}), which uses the potential to drive a closed system, and deep learning (\cref{sec.dl_warmup}), where the learning signal enters as an external covector.
 
-\paragraph{Position-dependent preconditioning (stub).}\label{sec.config_learning_stub}
-With the bundle generality of \cref{def.pnla}, the configuration update $v\mapsto v+\sharp_v(\xi_V)$ is a position-dependent preconditioned gradient step: the section $\sharp_V$ acts as a parameter-dependent learning-rate tensor on the pulled-back covector $\xi_V$. Familiar instances include natural-gradient descent (with $-\sharp_v$ the inverse Fisher information at $v$) and Newton's method (with $-\sharp_v$ the inverse loss Hessian at $v$); the constant case $\sharp_v=-\eta\,\id$ recovers vanilla gradient descent. A systematic treatment of these dynamics within the present framework is left to future work.
+\section{Warm-up 1: Newton's method}\label{sec.newton_warmup}
+
+The simplest morphisms in a monoidal category are \emph{scalars}, i.e.\ endomorphisms of the monoidal unit $I$, preserved by normal lax monoidal functors like $\Phi$. In the case of $\potlens$, both interfaces are trivial, $\binom{\rr^0}{\rr^0}$, so $\outp f$ and $\inpt f$ are forced to be the unique map $!$ and the only data is a paired parameter space $(V,\sharp_V)$ and a potential $U\colon V\to\rr$. Newton's method of root-finding is such a scalar. It determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$.
+
+Let $\ell\colon V\to\rr$ be a smooth map on a finite-dimensional real vector space $V$. Its derivative $d\ell\colon V\to V^*$ sends $v\in V$ to the gradient covector $d\ell|_v\in V^*$, and the derivative of $d\ell$ at $v$ is itself a linear map
+\begin{equation}\label{eqn.hessian}
+T_v(d\ell)\colon V\to V^*,
+\end{equation}
+called the \emph{Hessian} of $\ell$ at $v$. In a basis $e_1,\ldots,e_n$ of $V$, the linear map $T_v(d\ell)$ is given by the matrix of second partial derivatives
+\[
+\bigl(T_v(d\ell)\bigr)_{ij}=\partial_i\partial_j\ell(v),
+\]
+which is symmetric by equality of mixed partials. Newton's method requires this matrix to have full rank at every $v\in V$, so that $T_v(d\ell)$ is an isomorphism, and this is the case where our framework applies (\cref{def.pnla}): put
+\[
+\sharp_v\coloneqq-\bigl(T_v(d\ell)\bigr)^{-1}\colon V^*\To{\cong}V,
+\]
+so $(V,\sharp_V)\in\pvect$. So we now have a scalar in $\potlens$
+\[
+\bigl((V,\sharp_V),\ \outp f=!,\ \inpt f=!,\ U=\ell\bigr)\colon I\to I
+\]
+with potential $\ell$. 
+
+Applying $\Phi_{\conf}$ to $(V,\sharp_V,!,!,\ell)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU=d\ell|_v$, and the state update \eqref{eqn.state_update_gradient} reads
+\[
+v\longmapsto v+\sharp_v(d\ell|_v)=v-\bigl(T_v(d\ell)\bigr)^{-1}(d\ell|_v),
+\]
+one step of \emph{Newton's method} on $\ell$. Whether or not this dynamical system $V\to V$ converges to a root is a separate question.%
+\footnote{If one wants to output the stream of $V$'s, rather than have them remain hidden as internal states, use the interface $\binom{\rr^0}{V}$, the identity as $\outp{f}$, and project out the new factor to keep the previous potential $V\times V\To{\pi} V\To{U}\rr$.}
+
+\section{Warm-up 2: deep learning}\label{sec.dl_warmup}
+
+By \emph{deep learning} we mean the training of an artificial neural network. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\lmfd^\rr$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\pvect{-}$ and composing with $\Phi_{\conf}$ yields a normal lax symmetric monoidal functor
+\[\para{\pvect}{\mfd}\To{\para{\pvect}{\inc}}\potlens\To{\Phi_{\conf}}\org,\]
+whose composite we denote $\lrn$. One could say that training a neural network is a case of our configuration dynamics construction, in the case that input manifolds and potentials are trivial: $\inpt M=\rr^0$ and $U=0$.
+
+We now unfold this construction in coordinates, taking the source and target manifolds---the input and output layers of the neural network---to be $\rr^m$ and $\rr^n$. 
+
+\paragraph{A parameterized map as a smooth rewiring diagram.}
+Let $F\colon V\times\rr^m\to\rr^n$ be a smooth parameterized map, thought of as a feedforward neural network with parameter space $V:\pvect$ --- i.e., $V$ comes equipped with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$ (\cref{def.pnla}), whose value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\pvect}{\inc}$ as a $\potlens$-morphism
+\[
+f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}
+\]
+with parameter $V$, by taking $\outp f=F\colon V\times \rr^m\to\rr^n$, taking $\inpt f\colon V\times\rr^m\times\rr^0\to\rr^0$ to be the unique map, and taking the potential to be $0$. 
+
+\paragraph{The interfaces.}
+On objects, $\lrn(\rr^m)$ is given by
+\[
+\lrn(\rr^m)=\Phi_{\conf}\binom{\rr^0}{\rr^m}
+=\cot{\rr^m}\otimes\ihom{\cot{\rr^0},\yon}
+\cong\cot{\rr^m}=\sum_{z:\rr^m}\yon^{T^*_z\rr^m},
+\]
+because $\cot{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phi_{\conf}(f)$ is a $[\cot{\rr^m},\cot{\rr^n}]$-coalgebra.
+
+\paragraph{The coalgebra.}
+Because we are using configuration storage, the state set is $\absval{V}$ by \eqref{eqn.state_space_conf}; an element is a vector of the ``weights and biases'' of the artificial neural network. We unpack the coalgebra step at fixed $x\in V$, given an input position $z\in\rr^m$ from upstream and a direction $\xi\in T^*_{F(x,z)}\rr^n$ from downstream; where these come from during the training process is taken up below.
+
+At state $x\in V$ and input data $z\in\rr^m$, the readout point is
+\begin{equation}\label{eqn.dl_readout}
+\outp n\coloneqq\outp f(x,z)=F(x,z),
+\end{equation}
+which is \eqref{eqn.outpn} in this special case.
+
+Now we feed the external interface a direction $\xi\in T^*_{F(x,z)}\rr^n$. Since $\inpt f$ is the unique map to $\rr^0$ and $U=0$, the second and third summands in \eqref{eqn.bigtheta} vanish. Thus the only nonzero contribution is the cotangent pullback along $F$:
+\begin{equation}\label{eqn.dl_pullback}
+(\xi_V,\xi_M)=(T_{(x,z)}F)^\top\xi\in V^*\oplus T^*_z\rr^m.
+\end{equation}
+Here $\xi_V$ is the parameter covector and $\xi_M$ is the covector returned to the $\binom{\rr^0}{\rr^m}$ interface. In partial-map notation,
+\[
+\xi_V=\bigl(T_x(F(\blank,z))\bigr)^\top\xi
+\qqand
+\xi_M=\bigl(T_z(F(x,\blank))\bigr)^\top\xi.
+\]
+By \eqref{eqn.state_update_gradient}, the parameter update is therefore
+\begin{equation}\label{eqn.dl_gradient_update}
+x\longmapsto x+\sharp_x(\xi_V).
+\end{equation}
+Altogether, suppressing the unique $\rr^0$-components, the coalgebra is
+\[
+\Phi_{\conf}(F)(x)(z)
+=\Bigl(F(x,z),\;\xi\mapsto\bigl(\xi_M,\,x+\sharp_x(\xi_V)\bigr)\Bigr),
+\]
+where $(\xi_V,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
+
+\paragraph{Losses and backpropagation.}
+The zero-potential condition does not mean there is no learning signal; it means the learning signal is supplied as an external cotangent direction. If $\xi=d\ell|_{F(x,z)}$ for a loss $\ell\colon\rr^n\to\rr$, then by the chain rule
+\[
+d(\ell\circ F)|_{(x,z)}=(T_{(x,z)}F)^\top d\ell|_{F(x,z)}=(\xi_V,\xi_M).
+\]
+Thus $\xi_V=d_x(\ell(F(\blank,z)))$ is the parameter-gradient covector, while $\xi_M=d_z(\ell(F(x,\blank)))$ is the covector propagated backward to the previous interface, if any. For a composite network, this repeated production of the covector $\xi_M$ is the usual backpropagated gradient signal. For a constant sharp $\sharp_x=-\eta\,\id$, \eqref{eqn.dl_gradient_update} is vanilla gradient descent with learning rate $\eta$. This presupposes a single fixed loss $\ell$ applied at every step; in actual training, $\ell$ varies per datum (typically through a label), and the source of $z$ varies too. We package both as a single coalgebra next.
+
+\paragraph{Training data as an environment.}
+The preceding discussion focuses on $\xi=d\ell|_{F(x,z)}$ for a single fixed loss function $\ell\colon\rr^n\to\rr$ and a single input $z\in\rr^m$. Genuine training involves a stream of such pairs, which we package as an $\org$-map $\delta\colon\yon\to\Phi_{\conf}\binom{\rr^n}{\rr^m}$, i.e.\ a coalgebra on
+\[
+\cot{\rr^m}\otimes\ihom{\cot{\rr^n},\yon}
+\]
+whose positions are pairs $(z,\omega)\in\rr^m\times\Omega(\rr^n)$: an input point together with a covector field on the output (typically $\omega=d\ell$ for some per-datum loss $\ell\colon\rr^n\to\rr$). Such a coalgebra is, in general, not just a stream of $(z,\omega)$'s, but can branch after each step based on a pair $(\xi_M,y)\in T^*_z\rr^m\times\rr^n$. These are exactly what the network gives back when we wire it in, below: $y=F(x,z)$ is the predicted output and $\xi_M$ is the backpropagated input-gradient. So the training-data block emits $(z,\omega)$ and may transition based on what the network replies. Open-loop transitions (ignoring $(\xi_M,y)$) recover an i.i.d.\ supervised stream; closed-loop transitions --- those that depend on the network's prediction $y$ and/or its backpropagated input-gradient $\xi_M$ --- give adaptive training harnesses, where the data presentation responds to model behavior.
+
+We can combine $\delta$ with the network $\lrn(F)\colon\cot{\rr^m}\to\cot{\rr^n}$ as follows. By closedness of $\org$ (\cref{rmk.org_closed}), $\lrn(F)$ corresponds equivalently to a map
+\[
+\overline{\lrn(F)}\colon\yon\to[\cot{\rr^m},\cot{\rr^n}]
+\]
+in $\org$. Tensoring with $\delta$ and applying the two evaluation pairings of $\poly$ closes the system:
+\[
+\yon\To{\delta\otimes\overline{\lrn(F)}}\bigl(\cot{\rr^m}\otimes\ihom{\cot{\rr^n},\yon}\bigr)\otimes[\cot{\rr^m},\cot{\rr^n}]\To{\ev_1}\cot{\rr^n}\otimes\ihom{\cot{\rr^n},\yon}\To{\ev_2}\yon.
+\]
+The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_\delta}$, i.e.\ a discrete dynamical system on $V\times V_\delta$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in V$ and dataset state $s\in V_\delta$: $\delta$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cot{\rr^m}$ (carrying $z$) with $[\cot{\rr^m},\cot{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cot{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cot{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x+\sharp_x(\xi_V)$, and advance $\delta$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
+
+
 
 \chapter{Example: the wave equation}\label{ch.spring}
 
-\section{Introduction}\label{sec.spring_intro}
+To conclude this paper, we illustrate $\Phi_{\phase}\colon\potlens\to\org$ by deriving the wave equation. In \cref{sec.spring_intro} we describe the particle (with harmonic potential) as a $0$-ary $\potlens$-morphism $\Part\colon I\to\boxob$ and the way particles are arranged as a $K$-ary wiring morphism $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$. We then illustrate functoriality by computing the wave equation in two different ways. In \cref{sec.spring_first_pass} we compose the particles and the wiring inside $\potlens$, apply $\Phi_{\phase}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we instead apply $\Phi_{\phase}$ to the particle and wiring separately and compose the resulting coalgebras in $\org$, showing that we again obtain the wave dynamics.
 
-We illustrate $\Phi_{\phase}\colon\potlens\to\org$ by deriving the wave equation; \cref{ch.deep_learning} illustrates the parallel functor $\Phi_{\conf}$ via deep learning. Throughout this chapter, $\sharp_V$ is constant in $v\in V$ (the per-particle inertia is a fixed scalar $\tfrac1m$); the bundle generality of \cref{def.pnla} is not exercised here.
+\section{Introduction}\label{sec.spring_intro}
 
 That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -2478,7 +2607,9 @@ First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{
 
 \paragraph{The particle.}
 
-To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a paired vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\pvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be $U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2$. This is called the \emph{harmonic} potential.
+To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a paired vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\pvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
+\[U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2.\] 
+This is called the \emph{harmonic} potential.
 
 \paragraph{The wiring diagram.}
 For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\phi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
@@ -2629,7 +2760,8 @@ When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the
 Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec p',\vec x')$ where $p'_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $p'_K\coloneqq\xi_N$, and $x'_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec p'+\kappa(\vec x'-\vec x))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
 
 \begin{remark}\label{rmk.wave_generalizations}
-The construction generalizes. Replacing $\rr$ by $\rr^d$ in the box object and the chain by any $K$-ary wiring---say a $d$-dimensional cubic lattice---gives the discrete wave equation $m\ddot x_i=\kappa\sum_{j\sim i}(x_j-x_i)$ on that lattice. Varying the per-particle potential or the wiring topology produces other systems by the same compositional template.\qedhere
+The construction generalizes. Replacing $\rr$ by $\rr^d$ as the box object and replacing the chain by any $K$-ary wiring---e.g.\ a $d$-dimensional cubic lattice---gives the discrete wave equation $m\ddot x_i=\kappa\sum_{j\sim i}(x_j-x_i)$ on that lattice, where $\sim$ is the neighbor relation.
+\qedhere
 \end{remark}
 
 \printbibliography
