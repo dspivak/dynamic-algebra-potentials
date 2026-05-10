@@ -506,7 +506,9 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \maketitle
 
 \begin{abstract}
+We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms, \emph{potentialized lenses}, package a smoothly-varying rewiring diagram with a parameter space and a real-valued potential. 
 
+The technical heart is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$, which is available for any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phi_{\phase},\Phi_{\conf}\colon\potlens\to\org$ into the bicategory of polynomial coalgebras, which we take as the semantics category. The biggest difference between them is about whether to store position and momentum data or just position data. When applied to a parameterized function, $\Phi_{\conf}$ recovers the gradient descent training algorithm, with backpropagation as the lens backward pass. When applied to a harmonic-oscillator particles wired together in series, $\Phi_{\phase}$ recovers the discrete wave equation. The semantics is discrete-time throughout.
 \end{abstract}
 
 \tableofcontents
@@ -515,7 +517,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \chapter{Introduction}\label{ch.intro}
 %--------------------------------------------------------------------
 
-% TODO: write introduction
+% TODO: write introduction; the wave-equation overview can cite \cref{prop.wave_equation}.
 \emph{[Introduction to be written.]}
 
 \section*{Acknowledgments}
@@ -1253,7 +1255,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F(0)\cong 1$ so $D_F$ sends the unit $(0,\yon)$ to $\Store(F(0))\otimes\yon\cong\cong\yon$.
+\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F(0)\cong 1$ so $D_F$ sends the unit $(0,\yon)$ to $\Store(F(0))\otimes\yon\cong\yon$.
 \end{proof}
 
 \subsection{Cotangent storages}\label{sec.cotangent_storages}
@@ -1342,7 +1344,7 @@ since both produce the codiscrete morphism with codomain $x+\sharp_x(\xi)+\sharp
 \end{remark}
 
 \begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
-The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of the dynamics for configuration storage, which we will develop below. Indeed, it arises via a functor $\Phi_{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate (often denoted $\eta$) is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_x=-\eta\,\id$).
+The dynamics for configuration storage recover the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}. Indeed, this behavior arises via a functor $\Phi_{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate (often denoted $\eta$) is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_x=-\eta\,\id$).
 \end{remark}
 
 We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$, as in \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$ rather than a point $x\in V$. Its cotangent space decomposes as
@@ -1403,7 +1405,7 @@ We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal 
 \begin{equation}\label{eqn.lens_def}
 \outp f\colon \outp c\to\outp d
 \qqand
-\inpt f\colon \inpt d\otimes\outp c\to\inpt c,
+\inpt f\colon \outp c\otimes\inpt d\to\inpt c,
 \end{equation}
 and $\outp f$ is a comonoid homomorphism.%
 \footnote{
@@ -1418,7 +1420,7 @@ Such a morphism can be depicted as follows:
   \coordinate (co) at ($(dot)+(-3,0)$);
   \coordinate (do) at ($(fo.east)+(1,0)$);
   \coordinate (ci) at (co |- fi_in1);
-  \coordinate (di) at (do |- fi_out1);
+  \coordinate (di) at (do |- fi_out2);
   \node[left=0 of co] {$\outp c$};
   \node[right=0 of do] {$\outp d$};
   \node[left=0 of ci] {$\inpt c$};
@@ -1427,8 +1429,8 @@ Such a morphism can be depicted as follows:
   \draw[ar] (dot) to (fo_in1);
   \draw[ar] (fo_out1) to (do);
   \draw[ar] (fi_in1) to (ci);
-  \draw[ar] (di) to (fi_out1);
-  \draw[ar] (dot) to[out=30, in=0] (fi_out2);
+  \draw[ar] (di) to (fi_out2);
+  \draw[ar] (dot) to[out=30, in=0] (fi_out1);
 \end{tikzpicture}
 \]
 Morphisms compose as follows: given also $g\colon \lensob{d}\to\lensob{e}$, the composite $f\then g$ is given by
@@ -1436,9 +1438,9 @@ Morphisms compose as follows: given also $g\colon \lensob{d}\to\lensob{e}$, the 
 \outp{(f\then g)}=\outp f\then\outp g
 \qqand
 \inpt{(f\then g)}=
-	(\inpt{e}\otimes\delta_{\outp{c}})\then
-	(\inpt{e}\otimes\outp{f}\otimes\outp{c})\then
-	(\inpt{g}\otimes\outp{c})\then
+	(\delta_{\outp{c}}\otimes\inpt{e})\then
+	(\outp{c}\otimes\outp{f}\otimes\inpt{e})\then
+	(\outp{c}\otimes\inpt{g})\then
 	\inpt{f}.
 \]
 This dense notation can be depicted in a string-diagram as follows:
@@ -1453,7 +1455,7 @@ This dense notation can be depicted in a string-diagram as follows:
   \coordinate (co) at ($(dot1)+(-3,0)$);
   \coordinate (eo) at ($(go.east)+(1,0)$);
   \coordinate (ci) at (co |- fi_in1);
-  \coordinate (ei) at (eo |- gi_out1);
+  \coordinate (ei) at (eo |- gi_out2);
   \node[left=0 of co] {$\outp c$};
   \node[right=0 of eo] {$\outp e$};
   \node[left=0 of ci] {$\inpt c$};
@@ -1464,20 +1466,20 @@ This dense notation can be depicted in a string-diagram as follows:
   \draw[ar] (dot2) to (go_in1);
   \draw[ar] (go_out1) to (eo);
   \draw[ar] (fi_in1) to (ci);
-  \draw[ar] (ei) to (gi_out1);
-  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt d$} (fi_out1);
-  \draw[ar] (dot1) to[out=30, in=0] (fi_out2);
-  \draw[ar] (dot2) to[out=30, in=0] (gi_out2);
+  \draw[ar] (ei) to (gi_out2);
+  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt d$} (fi_out2);
+  \draw[ar] (dot1) to[out=30, in=0] (fi_out1);
+  \draw[ar] (dot2) to[out=30, in=0] (gi_out1);
 \end{tikzpicture}
 \end{equation}
-The identity on $\lensob{c}$ is $\binom{\id_{\inpt c}\otimes\varepsilon_{\outp c}}{\id_{\outp c}}$, i.e.\ counit in the second argument. The category $\Lens{\cat{C}}$ inherits a monoidal structure with unit $\binom{I}{I}$ and
+The identity on $\lensob{c}$ is $\binom{\varepsilon_{\outp c}\otimes\id_{\inpt c}}{\id_{\outp c}}$, i.e.\ counit in the first argument. The category $\Lens{\cat{C}}$ inherits a monoidal structure with unit $\binom{I}{I}$ and
 \[
 \lensob{c}\otimes\lensob{d}\coloneqq\lensobs{c}{d}.
 \]
 
 Our main example will be $\cat{C}=\mfd$ with its cartesian product. But the following is simple, instructive, and will come in handy.
 \begin{example}\label{ex.lens_finsetop}
-The category $\finset\op$, opposite to the category of finite sets, is cartesian monoidal where the product is given by the disjoint union $(0,+)$, i.e.\ the coproduct in $\finset$. A comonoid in $\smset\op$ is a monoid in $\smset$, so an object in $\Lens{\finset\op}$ is a pair of sets $\binom{\inpt A}{\outp A}$ where $\outp A$ is a monoid in the usual sense. 
+The category $\finset\op$, opposite to the category of finite sets, is cartesian monoidal where the product is given by the disjoint union $(0,+)$, i.e.\ the coproduct in $\finset$. Thus every object carries its canonical cartesian comonoid structure, and every morphism preserves it automatically. An object in $\Lens{\finset\op}$ is just a pair of finite sets $\binom{\inpt A}{\outp A}$.
 
 A lens $\binom{\inpt f}{\outp f}\colon\binom{\inpt A}{\outp A}\to\binom{\inpt B}{\outp B}$ consists of two maps
 \begin{equation}\label{eqn.lens_finsetop}
@@ -1485,7 +1487,7 @@ A lens $\binom{\inpt f}{\outp f}\colon\binom{\inpt A}{\outp A}\to\binom{\inpt B}
 \qqand
 \outp A+\inpt B\From{\inpt f} \inpt A,
 \end{equation}
-where $\outp f\colon\outp B\to\outp A$ is a monoid homomorphism in $\finset$.
+with no further homomorphism condition.
 \end{example}
 
 \begin{proposition}
@@ -1542,7 +1544,7 @@ But these maps are obvious: they are just counit projections and braidings.
 
 One could take $\cat{C}\coloneqq(\mfd,\rr^0,\times)$. Then $A,B,C, D$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
 
-One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking $A\coloneqq\{a\}$, $B\coloneqq\{b\}$, $C\coloneqq\{c\}$, and $D\coloneqq\{d\}$ all to have one element for simplicity, each has a unique (co)monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
+One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking $A\coloneqq\{a\}$, $B\coloneqq\{b\}$, $C\coloneqq\{c\}$, and $D\coloneqq\{d\}$ all to have one element for simplicity, each has a unique comonoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
 \[
 \{b,d,c\}\from\{c,d\}
 \qqand
@@ -1635,7 +1637,7 @@ A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}
 \[
 \outp f\colon \outp c\to\outp d
 \qqand
-\inpt f\colon \inpt d\otimes\outp c\to\Fun{T}\inpt c
+\inpt f\colon \outp c\otimes\inpt d\to\Fun{T}\inpt c
 \]
 where $\outp f$ is a comonoid homomorphism.
 
@@ -1664,7 +1666,7 @@ where $F_2$ is $F$'s productor. If $\Fun T,\Fun T'$ are monoidal monads and $\th
 \end{lemma}
 
 \begin{example}
-For any set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, this monad distributes under any other strong monad $\Fun T$,
+For any finite set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, this monad distributes under any other strong monad $\Fun T$,
 \[
 \Fun T(M^S)\to \Fun T(M)^S.
 \]
@@ -1678,7 +1680,7 @@ Let $(\cat{C}, 1, \times)$ be a cartesian monoidal category and $\Fun{T}$ a mono
 \begin{equation}\label{eqn.lens_inclusion}
 \inc\colon\cat{C}\to\Lens{\cat{C}}^{\Fun{T}},\qquad X\mapsto\binom{1}{X},
 \end{equation}
-sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=!\then\eta_1\colon 1\times X\to 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
+sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=!\then\eta_1\colon X\times 1\to 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
 
 \begin{lemma}\label{lem.parameter_lens_action}
 Let $\cat V$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be a strong monoidal functor such that each object $J(v)$ carries a commutative comonoid structure $(\delta_{J(v)},\varepsilon_{J(v)})$ in $\cat C$ and each morphism $J(u)$ is a comonoid homomorphism. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
@@ -1691,12 +1693,12 @@ If moreover $\Fun T$ is a monoidal monad, this action is symmetric monoidal.
 \begin{proof}
 Given $f\colon\lensob c\to\lensob d$ in $\Lens{\cat C}^{\Fun T}$ and $u\colon v\to w$ in $\cat V$, set
 \[
-u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(v)}}{J(u)\otimes\outp f}\colon
+u\cdot f\coloneqq\binom{(\varepsilon_{J(v)}\otimes\outp c\otimes\inpt d)\then\inpt f}{J(u)\otimes\outp f}\colon
 \binom{\inpt c}{J(v)\otimes\outp c}
 \to
 \binom{\inpt d}{J(w)\otimes\outp d}.
 \]
-Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the comonoid-homomorphism assumption on $J$, i.e.\ that $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
+Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the comonoid-homomorphism assumption on $J$, i.e.\ that $J(v)\To{J(u)}J(w)\To{\varepsilon_{J(w)}} I$ equals $\varepsilon_{J(v)}$.
 
 When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cref{prop.backward_comonad}, and the comparisons $J(I)\cong I$ and $(v\otimes w)\cdot(\lensob c\otimes\lensob d)\cong(v\cdot\lensob c)\otimes(w\cdot\lensob d)$ come directly from the strong monoidality of $J$.
 \end{proof}
@@ -1720,36 +1722,36 @@ This is an immediate corollary of \cref{prop.Theta_T_alpha} with $\Fun{T}=\id$.
 %  \ar[d, "{\delta}"']
 %\& \outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\delta}"']
 %\& \outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\delta}"']
-%\& \outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\delta}"']
+%\& \outp d[d,\outp c d H_c] \ar[r, "{f}"] \ar[d, "{\delta}"']
 %\& \outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\delta}"']
 %\& \outp d H_d \ar[d, "{\delta}"] \\
 %\outp c\outp c H_c \ar[d, "{\outp f}"'] \ar[r, "{\delta}"]
 %\& \outp c\outp c\outp c H_c \ar[r, "{\outp f\outp f}"] \ar[d, "{\outp f}"']
 %\& \outp d\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\outp g}"']
-%\& \outp d\outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\outp g}"']
+%\& \outp d\outp d[d,\outp c d H_c] \ar[r, "{f}"] \ar[d, "{\outp g}"']
 %\& \outp d\outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\outp g}"']
 %\& \outp d\outp d H_d \ar[d, "{\outp g}"] \\
 %\outp d\outp c H_c \ar[d, "{\outp g}"'] \ar[r, "{\delta}"]
 %\& \outp d\outp c\outp c H_c \ar[r, "{\outp g\outp f}"]
 %\& \outp e\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\coev_e}"']
-%\& \outp e\outp d[d,d\outp c H_c] \ar[r, "{f}"] \ar[d, "{\coev_e}"']
+%\& \outp e\outp d[d,\outp c d H_c] \ar[r, "{f}"] \ar[d, "{\coev_e}"']
 %\& \outp e\outp d[d,c H_c] \ar[r, "{\ev}"] \ar[d, "{\coev_e}"']
 %\& \outp e\outp d H_d \ar[d, "{\coev_e}"] \\
 %\outp e\outp c H_c \ar[d, "{\coev_e}"']
-%\& \outp d[e,e\outp cH_c]\ar[from=ul, "{\coev_e}"]\ar[dl, "\outp g"]\ar[d,"\delta"]
-%\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{g}"'] \ar[dd, equal, bend right=60pt]
-%\& \outp e[e,e\outp d[d,d\outp c H_c]] \ar[r, "{f}"] \ar[d, "{g}"']
-%\& \outp e[e,e\outp d[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{g}"']
-%\& \outp e[e,e\outp d H_d] \ar[d, "{g}"] \\
-%\outp e[e,e\outp c H_c] \ar[d, "{\delta}"']
-%\& \outp d[e,e\outp c\outp cH_c]\ar[ld, "{\outp g}"]\ar[ur, "\outp g\outp f"', pos=.3]\ar[from=uu, , bend left=60pt, "{\coev_e}", pos=.3]
-%\& \outp e[e,d\outp c H_c] \ar[r, "{\coev_d}"] \ar[dr, equal]
-%\& \outp e[e,d[d,d\outp c H_c]] \ar[r, "{f}"] \ar[d, "{\ev}"']
+%\& \outp d[e,\outp c e H_c]\ar[from=ul, "{\coev_e}"]\ar[dl, "\outp g"]\ar[d,"\delta"]
+%\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{g}"'] \ar[dd, equal, bend right=60pt]
+%\& \outp e[e,\outp d e[d,\outp c d H_c]] \ar[r, "{f}"] \ar[d, "{g}"']
+%\& \outp e[e,\outp d e[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{g}"']
+%\& \outp e[e,\outp d e H_d] \ar[d, "{g}"] \\
+%\outp e[e,\outp c e H_c] \ar[d, "{\delta}"']
+%\& \outp d[e,\outp c\outp c e H_c]\ar[ld, "{\outp g}"]\ar[ur, "\outp g\outp f"', pos=.3]\ar[from=uu, , bend left=60pt, "{\coev_e}", pos=.3]
+%\& \outp e[e,\outp c d H_c] \ar[r, "{\coev_d}"] \ar[dr, equal]
+%\& \outp e[e,d[d,\outp c d H_c]] \ar[r, "{f}"] \ar[d, "{\ev}"']
 %\& \outp e[e,d[d,c H_c]] \ar[r, "{\ev}"] \ar[d, "{\ev}"']
 %\& \outp e[e,d H_d] \ar[d, "{\ev}"] \\
-%\outp e[e,e\outp c\outp c H_c] \ar[rr, "{\outp f}"]
-%\&\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{g}"]
-%\& \outp e[e,d\outp c H_c] \ar[r, "{f}"]
+%\outp e[e,\outp c\outp c e H_c] \ar[rr, "{\outp f}"]
+%\&\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{g}"]
+%\& \outp e[e,\outp c d H_c] \ar[r, "{f}"]
 %\& \outp e[e,c H_c] \ar[r, "{\ev}"]
 %\& \outp e H_e
 %\end{tikzcd}
@@ -1816,7 +1818,7 @@ Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\Theta_z(f)
 \begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
 \outp c\otimes[\inpt c,z]\ar[r,"{\delta_{\outp c}\otimes\id}"]\ar[dd, dashed, "\Theta_z(f)"']
 \& \outp c\otimes\outp c\otimes[\inpt c,z]\ar[r,"\outp f\otimes\coev"]
-\& \outp d\otimes[\inpt d,\inpt d\otimes\outp c\otimes[\inpt c,z]]\ar[d,"{\id\otimes[\inpt d,\inpt f\otimes\id]}"]
+\& \outp d\otimes[\inpt d,\outp c\otimes\inpt d\otimes[\inpt c,z]]\ar[d,"{\id\otimes[\inpt d,\inpt f\otimes\id]}"]
 \\
 \&
 \& \outp d\otimes[\inpt d,\Fun{T}\inpt c\otimes[\inpt c,z]]\ar[d,"{\id\otimes[\inpt d,\sigma]}"]
@@ -1838,7 +1840,7 @@ Proving that $\Theta_z$ is functorial can be achieved by long but routine diagra
 %\& \outp c\otimes\outp c\otimes H
 %  \ar[r, "{\mathbf{coev}}", ""{description, name=A1, anchor=center, inner sep=0}]
 %  \ar[d, "{\varepsilon}" description]
-%\& \outp c\otimes[\inpt c,\inpt c\otimes\outp c\otimes H]
+%\& \outp c\otimes[\inpt c,\outp c\otimes\inpt c\otimes H]
 %  \ar[d, "{\varepsilon}"]
 %\\
 %\&
@@ -1911,7 +1913,7 @@ For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[
   \ar[d, "{\delta}"']
 \& \outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\delta}"']
 \& \outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\delta}"']
-\& \outp d[d,d\outp c H_c] \ar[r, "{\inpt f}"] \ar[d, "{\delta}"']
+\& \outp d[d,\outp c d H_c] \ar[r, "{\inpt f}"] \ar[d, "{\delta}"']
 \& \outp d[d,\Fun T(c)H_c] \ar[r, "{\eta}"] \ar[d, "{\delta}"']
 \& \outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\delta}"']
 \& \outp d[d,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\delta}"']
@@ -1920,7 +1922,7 @@ For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[
 \outp c\outp c H_c \ar[d, "{\outp f}"'] \ar[r, "{\delta}"]
 \& \outp c\outp c\outp c H_c \ar[r, "{\outp f\outp f}"] \ar[d, "{\outp f}"']
 \& \outp d\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\outp g}"']
-\& \outp d\outp d[d,d\outp c H_c] \ar[r, "{\inpt f}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d[d,\outp c d H_c] \ar[r, "{\inpt f}"] \ar[d, "{\outp g}"']
 \& \outp d\outp d[d,\Fun T(c)H_c] \ar[r, "{\eta}"] \ar[d, "{\outp g}"']
 \& \outp d\outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\outp g}"']
 \& \outp d\outp d[d,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\outp g}"']
@@ -1929,56 +1931,56 @@ For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[
 \outp d\outp c H_c \ar[d, "{\outp g}"'] \ar[r, "{\delta}"]
 \& \outp d\outp c\outp c H_c \ar[r, "{\outp g\outp f}"]
 \& \outp e\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\coev_e}"']
-\& \outp e\outp d[d,d\outp c H_c] \ar[r, "{\inpt f}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d[d,\outp c d H_c] \ar[r, "{\inpt f}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp d[d,\Fun T(c)H_c] \ar[r, "{\eta}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp d[d,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp d[d,\Fun T(z)] \ar[r, "{\alpha}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp d H_d \ar[d, "{\coev_e}"] \\
 \outp e\outp c H_c \ar[dd, "{\coev_e}"']
-\&\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,e\outp d[d,d\outp c H_c]] \ar[r, "{\inpt f}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,e\outp d[d,\Fun T(c)H_c]] \ar[r, "{\eta}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,e\outp d[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\tau}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,e\outp d[d,\Fun T(cH_c)]] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,e\outp d[d,\Fun T(z)]] \ar[r, "{\alpha}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,e\outp d H_d] \ar[d, "{\inpt g}"] \\
-\& \outp e[e,\Fun T(d)\Fun T(\outp c)H_c] \ar[d, "{\eta}"'] \ar[dddd, out=200, in=150, equal]
-\& \outp e[e,\Fun T(d)\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{\eta}"] \ar[l, "{\eta}"]
-\& \outp e[e,\Fun T(d)[d,d\outp c H_c]] \ar[r, "{\inpt f}"] \ar[d, "{\eta}"']
+\&\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\outp c d H_c]] \ar[r, "{\inpt f}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(c)H_c]] \ar[r, "{\eta}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\tau}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(cH_c)]] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(z)]] \ar[r, "{\alpha}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e H_d] \ar[d, "{\inpt g}"] \\
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)H_c] \ar[d, "{\eta}"'] \ar[dddd, out=200, in=150, equal]
+\& \outp e[e,\outp c\Fun T(d)H_c] \ar[r, "{\coev_d}"] \ar[d, "{\eta}"] \ar[l, "{\eta}"]
+\& \outp e[e,\Fun T(d)[d,\outp c d H_c]] \ar[r, "{\inpt f}"] \ar[d, "{\eta}"']
 \& \outp e[e,\Fun T(d)[d,\Fun T(c)H_c]] \ar[r, "{\eta}"] \ar[d, "{\eta}"']
 \& \outp e[e,\Fun T(d)[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\tau}"] \ar[d, "{\eta}"']
 \& \outp e[e,\Fun T(d)[d,\Fun T(cH_c)]] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\eta}"']
 \& \outp e[e,\Fun T(d)[d,\Fun T(z)]] \ar[r, "{\alpha}"] \ar[d, "{\eta}"']
 \& \outp e[e,\Fun T(d)H_d] \ar[d, "{\eta}"] \\
-\outp e[e,e\outp c H_c] \ar[d, "{\delta}"']
-\& \outp e[e,\Fun T(d)\Fun T(\outp c)\Fun T(H_c)] \ar[r, "{\tau}"]
-\& \outp e[e,\Fun T(d)\Fun T(\outp c H_c)] \ar[r, "{\Fun T(\coev_d)}"] \ar[d, "{\tau}"']
-\& \outp e[e,\Fun T(d)\Fun T([d,d\outp c H_c])] \ar[r, "{\Fun T(\inpt f)}"] \ar[d, "{\tau}"']
+\outp e[e,\outp c e H_c] \ar[d, "{\delta}"']
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)\Fun T(H_c)] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(\outp c d)\Fun T(H_c)] \ar[r, "{\Fun T(\coev_d)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\outp c d H_c])] \ar[r, "{\Fun T(\inpt f)}"] \ar[d, "{\tau}"']
 \& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(c)H_c])] \ar[r, "{\Fun T(\eta)}"] \ar[d, "{\tau}"']
 \& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(c)\Fun T(H_c)])] \ar[r, "{\Fun T(\tau)}"] \ar[d, "{\tau}"']
 \& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(cH_c)])] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\tau}"']
 \& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(z)])] \ar[r, "{\Fun T(\alpha)}"] \ar[d, "{\tau}"']
 \& \outp e[e,\Fun T(d)\Fun T(H_d)] \ar[d, "{\tau}"] \\
-\outp e[e,e\outp c\outp c H_c] \ar[d, "{\outp f}"']
-\&\& \outp e[e,\Fun T(d\outp c H_c)] \ar[r, "{\Fun T(\coev_d)}"] \ar[dr, equal]
-\& \outp e[e,\Fun T(d[d,d\outp c H_c])] \ar[r, "{\Fun T(\inpt f)}"] \ar[d, "{\Fun T(\ev)}"']
+\outp e[e,\outp c\outp c e H_c] \ar[d, "{\outp f}"']
+\&\& \outp e[e,\Fun T(\outp c d H_c)] \ar[r, "{\Fun T(\coev_d)}"] \ar[dr, equal]
+\& \outp e[e,\Fun T(d[d,\outp c d H_c])] \ar[r, "{\Fun T(\inpt f)}"] \ar[d, "{\Fun T(\ev)}"']
 \& \outp e[e,\Fun T(d[d,\Fun T(c)H_c])] \ar[r, "{\Fun T(\eta)}"] \ar[d, "{\Fun T(\ev)}"']
 \& \outp e[e,\Fun T(d[d,\Fun T(c)\Fun T(H_c)])] \ar[r, "{\Fun T(\tau)}"] \ar[d, "{\Fun T(\ev)}"']
 \& \outp e[e,\Fun T(d[d,\Fun T(cH_c)])] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\Fun T(\ev)}"']
 \& \outp e[e,\Fun T(d[d,\Fun T(z)])] \ar[r, "{\Fun T(\alpha)}"] \ar[d, "{\Fun T(\ev)}"']
 \& \outp e[e,\Fun T(dH_d)] \ar[d, "{\Fun T(\ev)}"] \\
-\outp e[e,e\outp d\outp c H_c] \ar[d, "{\inpt g}"']
+\outp e[e,\outp d e\outp c H_c] \ar[d, "{\inpt g}"']
 \&\&
-\& \outp e[e,\Fun T(d\outp c H_c)] \ar[r, "{\Fun T(\inpt f)}"]
+\& \outp e[e,\Fun T(\outp c d H_c)] \ar[r, "{\Fun T(\inpt f)}"]
 \& \outp e[e,\Fun T(\Fun T(c)H_c)] \ar[r, "{\Fun T(\eta)}"]
 \& \outp e[e,\Fun T(\Fun T(c)\Fun T(H_c))] \ar[r, "{\Fun T(\tau)}"]
 \& \outp e[e,\Fun T(\Fun T(cH_c))] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\mu}"']
 \& \outp e[e,\Fun T(\Fun T(z))] \ar[r, "{\Fun T(\alpha)}"] \ar[d, "{\mu}"']
 \& \outp e[e,\Fun T(z)] \ar[d, "{\alpha}"] \\
-\outp e[e,\Fun T(d)\outp c H_c] \ar[r, "{\eta}"]
-\& \outp e[e,\Fun T(d)\Fun T(\outp c)H_c] \ar[r, "{\tau}"]
-\& \outp e[e,\Fun T(d\outp c)H_c] \ar[r, "{\Fun T(\inpt f)}"]
+\outp e[e,\outp c\Fun T(d)H_c] \ar[r, "{\eta}"]
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)H_c] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(\outp c d)H_c] \ar[r, "{\Fun T(\inpt f)}"]
 \& \outp e[e,\Fun T(\Fun T(c))H_c] \ar[r, "{\mu}"]
 \& \outp e[e,\Fun T(c)H_c] \ar[r, "{\eta}"]
 \& \outp e[e,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"]
@@ -1989,7 +1991,7 @@ For space reasons we use juxtaposition to denote $\otimes$, write $H_X\coloneqq[
 \]
 
 
-The equality on the left splits the open region into two parts, and it suffices to show each commutes. The left-hand square below shows that the two maps $\outp d\otimes\outp c\otimes[\inpt c,z]\to\outp e\otimes[\inpt e,\Fun T(d)\otimes \Fun T(\outp c)\otimes[\inpt c,z]]$ agree, and the right-hand square shows that the two maps $\outp e\otimes[\inpt e,\Fun T(d)\otimes\Fun T(\outp c)\otimes [\inpt c,z]]\to\outp e\otimes [\inpt e,\Fun T(\inpt c\otimes [\inpt c,z])]$ agree.
+The equality on the left splits the open region into two parts, and it suffices to show each commutes. The left-hand square below shows that the two maps $\outp d\otimes\outp c\otimes[\inpt c,z]\to\outp e\otimes[\inpt e,\Fun T(\outp c)\otimes \Fun T(d)\otimes[\inpt c,z]]$ agree, and the right-hand square shows that the two maps $\outp e\otimes[\inpt e,\Fun T(\outp c)\otimes\Fun T(d)\otimes [\inpt c,z]]\to\outp e\otimes [\inpt e,\Fun T(\inpt c\otimes [\inpt c,z])]$ agree.
 
 \noindent\begin{minipage}{0.48\linewidth}
 \[
@@ -2003,29 +2005,29 @@ The equality on the left splits the open region into two parts, and it suffices 
 \outp e\outp c H_c \ar[r, "{\delta}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\coev_e}"']
 \& \outp e\outp d\outp c H_c \ar[r, "{\coev_e}"] \ar[d, "{\coev_e}"']
-\& \outp e[e,e\outp d\outp c H_c] \ar[d, "{\inpt g}"] \\
-\outp e[e,e\outp c H_c] \ar[r, "{\delta}"] \ar[d, "{\delta}"']
-\& \outp e[e,e\outp c\outp c H_c] \ar[r, "{\outp f}"] \ar[d, "{\outp f}"']
-\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\inpt g}"] \ar[d, "{\inpt g}"']
-\& \outp e[e,\Fun T(d)\outp c H_c] \ar[d, "{\eta}"] \\
-\outp e[e,e\outp c\outp c H_c] \ar[r, "{\outp f}"]
-\& \outp e[e,e\outp d\outp c H_c] \ar[r, "{\inpt g}"]
-\& \outp e[e,\Fun T(d)\outp c H_c] \ar[r, "{\eta}"]
-\& \outp e[e,\Fun T(d)\Fun T(\outp c)H_c]
+\& \outp e[e,\outp d e\outp c H_c] \ar[d, "{\inpt g}"] \\
+\outp e[e,\outp c e H_c] \ar[r, "{\delta}"] \ar[d, "{\delta}"']
+\& \outp e[e,\outp c\outp c e H_c] \ar[r, "{\outp f}"] \ar[d, "{\outp f}"']
+\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\inpt g}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp c\Fun T(d)H_c] \ar[d, "{\eta}"] \\
+\outp e[e,\outp c\outp c e H_c] \ar[r, "{\outp f}"]
+\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\inpt g}"]
+\& \outp e[e,\outp c\Fun T(d)H_c] \ar[r, "{\eta}"]
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)H_c]
 \end{tikzcd}
 \]
 \end{minipage}\hfill
 \begin{minipage}{0.5\linewidth}
 \[
 \begin{tikzcd}[column sep=1em, row sep=0.9em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
-\outp e[e,\Fun T(d)\Fun T(\outp c)H_c]
+\outp e[e,\Fun T(\outp c)\Fun T(d)H_c]
   \ar[r, "{\eta}"]
   \ar[d, "{\tau}"']
-\& \outp e[e,\Fun T(d)\Fun T(\outp c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\tau}"']
-\& \outp e[e,\Fun T(d)\Fun T(\outp c H_c)] \ar[r, "{\tau}"]
-\& \outp e[e,\Fun T(d\outp c H_c)] \ar[d, "{\Fun T(\inpt f)}"] \\
-\outp e[e,\Fun T(d\outp c)H_c] \ar[r, "{\eta}"] \ar[dd, "{\Fun T(\inpt f)}"']
-\& \outp e[e,\Fun T(d\outp c)\Fun T(H_c)] \ar[urr, "{\tau}"] \ar[d, "{\Fun T(\inpt f)}"']
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(\outp c d)\Fun T(H_c)] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(\outp c d H_c)] \ar[d, "{\Fun T(\inpt f)}"] \\
+\outp e[e,\Fun T(\outp c d)H_c] \ar[r, "{\eta}"] \ar[dd, "{\Fun T(\inpt f)}"']
+\& \outp e[e,\Fun T(\outp c d)\Fun T(H_c)] \ar[urr, "{\tau}"] \ar[d, "{\Fun T(\inpt f)}"']
 \&\& \outp e[e,\Fun T(\Fun T(c)H_c)] \ar[d, "{\Fun T(\eta)}"] \\
 \& \outp e[e,\Fun T(\Fun T(c))\Fun T(H_c)] \ar[urr, "{\tau}"] \ar[dd, "{\mu}"'] \ar[r, "{\Fun T(\eta)}"']
 \& \outp e[e,\Fun T(\Fun T(c))\Fun T(\Fun T(H_c))] \ar[r, "{\tau}"] \ar[d, "{\mu}"']
@@ -2162,12 +2164,12 @@ There is a normal lax monoidal functor
 \Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly,\qquad
 \Theta_{\potd}\lensob p\coloneqq\outp p\otimes\ihom{\inpt p,\yon}.
 \]
-%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\inpt q\otimes\outp p\to\cot{\rr}\otimes\inpt p$, to the composite
+%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p$, to the composite
 %\[
 %\begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
 %\outp p\otimes\ihom{\inpt p,\yon}\ar[r,"{\delta_{\outp p}\otimes\id}"]\ar[dd, dashed, "\Theta_{\potd}(f)"']
 %\& \outp p\otimes\outp p\otimes\ihom{\inpt p,\yon}\ar[r,"\outp f\otimes\coev"]
-%\& \outp q\otimes\ihom{\inpt q,\inpt q\otimes\outp p\otimes\ihom{\inpt p,\yon}}\ar[d,"{\id\otimes\ihom{\inpt q,\inpt f\otimes\id}}"]
+%\& \outp q\otimes\ihom{\inpt q,\outp p\otimes\inpt q\otimes\ihom{\inpt p,\yon}}\ar[d,"{\id\otimes\ihom{\inpt q,\inpt f\otimes\id}}"]
 %\\
 %\&
 %\& \outp q\otimes\ihom{\inpt q,\Fun T\inpt p\otimes\ihom{\inpt p,\yon}}\ar[d,"{\id\otimes\ihom{\inpt q,\sigma}}"]
@@ -2195,7 +2197,7 @@ The symmetric monoidal category of \emph{smooth rewiring diagrams} is denoted an
 
 \section{Smooth rewiring diagrams}\label{sec.W_choice}
 
-We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. We call its multimorphisms \emph{smooth rewiring diagrams}. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left(V,\binom{\inpt f}{\outp f},U\right)$, namely a vector space $V$ called the \emph{parameter space}, smooth maps
+We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. We call its multimorphisms \emph{smooth rewiring diagrams}. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left((V,\sharp_V),\binom{\inpt f}{\outp f},U\right)$, namely a paired vector space $(V,\sharp_V):\pvect$ called the \emph{parameter space}, smooth maps
 \begin{equation}\label{eqn.plens_map}
 \outp f\colon V\times\prod_{i=1}^K\outp X_i\to\outp Y,\qquad
 \inpt f\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\prod_{i=1}^K\inpt X_i,
@@ -2216,7 +2218,7 @@ The simplest---those coming from the leftmost category in the chain---are static
 
 We can realize each such static wiring diagram as a lens between manifolds via $\Lens{\rr^-}$ (\cref{lemma.lens_rr}), but compositions coming from $\lmfd$ are more general: there are many more maps $M\times N\to M$ than just the projection. Moving to $\lmfd^\rr$ adds a potential but still no parameter space $V$: it assigns a real number to the interaction data consisting of the internal-box outputs together with the external-box input, e.g.\ a prediction error.
 
-Finally, the general smooth rewiring diagrams are maps in $\potlens$: the interaction pattern itself depends smoothly on a parameter in some vector space $V$, and under the dynamics functor that parameter is updated by the differential of the potential. Exactly how these smooth rewiring dynamics work is the subject of \cref{ch.potential_driven_dynamics}.
+Finally, the general smooth rewiring diagrams are maps in $\potlens$: the interaction pattern itself depends smoothly on a parameter in a paired vector space $(V,\sharp_V)$, and under the dynamics functor that parameter is updated by the differential of the potential. Exactly how these smooth rewiring dynamics work is the subject of \cref{ch.potential_driven_dynamics}.
 
 \chapter{Smooth rewiring dynamics}\label{ch.potential_driven_dynamics}
 
@@ -2421,7 +2423,7 @@ We now unpack the coalgebra function itself,
 S\To{\Phi_{\conf}(V,\sharp_V,f)}
 \left[\Phi_{\conf}\lensob M,\Phi_{\conf}\lensob N\right]\tri S.
 \]
-Given a state $x\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined exactly as in \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phi_{\conf}\lensob N[b]$, the coalgebra function $\Phi_{\conf}(V,\sharp_V,f)$ at $(s,a)$ produces the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phi_{\conf}\lensob M[a]$ via \eqref{eqn.inptm} and \eqref{eqn.bigtheta}, exactly as in the phase-space case. The only difference is in the state update: starting from $x$, the state is updated to
+Given a state $x\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined exactly as in \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phi_{\conf}\lensob N[b]$, the coalgebra function $\Phi_{\conf}(V,\sharp_V,f)$ at $(x,a)$ produces the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phi_{\conf}\lensob M[a]$ via \eqref{eqn.inptm} and \eqref{eqn.bigtheta}, exactly as in the phase-space case. The only difference is in the state update: starting from $x$, the state is updated to
 \begin{equation}\label{eqn.state_update_gradient}
 x+\sharp_x(\xi_V),
 \end{equation}
@@ -2447,7 +2449,7 @@ We illustrate the framework with two warm-ups: Newton's method (\cref{sec.newton
 
 \section{Warm-up 1: Newton's method}\label{sec.newton_warmup}
 
-The simplest morphisms in a monoidal category are \emph{scalars}, i.e.\ endomorphisms of the monoidal unit $I$, preserved by normal lax monoidal functors like $\Phi$. In the case of $\potlens$, both interfaces are trivial, $\binom{\rr^0}{\rr^0}$, so $\outp f$ and $\inpt f$ are forced to be the unique map $!$ and the only data is a paired parameter space $(V,\sharp_V)$ and a potential $U\colon V\to\rr$. Newton's method of root-finding is such a scalar. It determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$.
+The simplest morphisms in a monoidal category are \emph{scalars}, i.e.\ endomorphisms of the monoidal unit $I$, preserved by normal lax monoidal functors like $\Phi$. In the case of $\potlens$, both interfaces are trivial, $\binom{\rr^0}{\rr^0}$, so $\outp f$ and $\inpt f$ are forced to be the unique map $!$ and the only data is a paired parameter space $(V,\sharp_V)$ and a potential $U\colon V\to\rr$. Newton's method for finding critical points of a potential is such a scalar. It determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$.
 
 Let $\ell\colon V\to\rr$ be a smooth map on a finite-dimensional real vector space $V$. Its derivative $d\ell\colon V\to V^*$ sends $v\in V$ to the gradient covector $d\ell|_v\in V^*$, and the derivative of $d\ell$ at $v$ is itself a linear map
 \begin{equation}\label{eqn.hessian}
@@ -2471,7 +2473,7 @@ Applying $\Phi_{\conf}$ to $(V,\sharp_V,!,!,\ell)$ gives a coalgebra carried by 
 \[
 v\longmapsto v+\sharp_v(d\ell|_v)=v-\bigl(T_v(d\ell)\bigr)^{-1}(d\ell|_v),
 \]
-one step of \emph{Newton's method} on $\ell$. Whether or not this dynamical system $V\to V$ converges to a root is a separate question.%
+one step of \emph{Newton's method} for finding a critical point of $\ell$. Whether or not this dynamical system $V\to V$ converges to a critical point is a separate question.%
 \footnote{If one wants to output the stream of $V$'s, rather than have them remain hidden as internal states, use the interface $\binom{\rr^0}{V}$, the identity as $\outp{f}$, and project out the new factor to keep the previous potential $V\times V\To{\pi} V\To{U}\rr$.}
 
 \section{Warm-up 2: deep learning}\label{sec.dl_warmup}
@@ -2618,7 +2620,7 @@ K\From{\outp f}1
 \qqand
 K+1\From{\inpt f} K,
 \]
-where we identify $K+1$ with the disjoint union of the external-box input and the $K$ internal-box outputs, the external-box input first. Then $\outp f$ picks out the last wire, $\outp{f}(*)=K$, and $\inpt f$ picks out the first $K$ wires, $\inpt{f}(n)=n$.
+where we identify $K+1$ with the disjoint union of the $K$ internal-box outputs and the external-box input, the external-box input last. Then $\outp f$ picks out the last wire, $\outp{f}(*)=K$, and $\inpt f$ picks out the preceding wire for each internal input: the first internal input is fed by the external input, and input $n>1$ is fed by output $n-1$.
 
 Applying $\rr^-$ from \cref{lemma.lens_rr}, we obtain the lens $\binom{\rr^K}{\rr^K}\to\binom{\rr}{\rr}$ given by
 \[
@@ -2651,7 +2653,7 @@ The discrete dynamics appear when we apply the functor $\Phi_{\phase}\colon\potl
 \]
 The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \[
-\Phi_{\phase}(\fun{wire}_K(\Part,\ldots,\Part))\colon X\To{}\Phi_{\phase}(\boxob)\tri X
+\Phi_{\phase}(\fun{wire}_K(\Part,\ldots,\Part))\colon S\To{}\Phi_{\phase}(\boxob)\tri S
 \]
 with state set $S\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
 \begin{equation}\label{eqn.wave_coalg}
@@ -2706,6 +2708,17 @@ mx_i(t+2)-mx_i(t+1)=mx_i(t+1)-mx_i(t)+\kappa(x_{i-1}(t)+x_{i+1}(t)-2x_i(t))
 \]
 Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
 
+\begin{proposition}\label{prop.wave_equation}
+With $\Part$, $\fun{wire}_K$, and the boundary choices \eqref{eqn.wave_pin} and \eqref{eqn.wave_bc} as above, the $\Phi_{\phase}(\boxob)$-coalgebra
+\[
+\Phi_{\phase}\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)
+\]
+recovers the discrete wave equation \eqref{eqn.discrete_wave}.
+\end{proposition}
+\begin{proof}
+This is the calculation of \eqref{eqn.state_update_explicit}: writing the state as a function of time and eliminating the momenta gives \eqref{eqn.discrete_wave}.
+\end{proof}
+
 \section{Second pass: composing in $\org$}\label{sec.spring_second_pass}
 
 We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which by functoriality of $\Phi_{\phase}$ is equal to the right-hand side:
@@ -2721,13 +2734,13 @@ which is the $K$-ary composite, taken in $\org$, of $K$ copies of the single-par
 We first apply $\Phi_{\phase}$ to $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$ to obtain a coalgebra on
 \[
   \left[\Phi_{\phase}\binom{\rr^0}{\rr^0},\Phi_{\phase}(\boxob)\right]=
-  \left[\yon,\Phi_{\phase}(\boxob)\right]=\boxob=
+  \left[\yon,\Phi_{\phase}(\boxob)\right]\cong\Phi_{\phase}(\boxob)=
   \sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}
 \]
 We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state set of $\Phi_{\phase}(\Part)$ is $S\coloneqq T^*\rr$, with elements written $s=(x,p)$ for position and momentum. The map
 \[
-X\To{\Phi_{\phase}(\Part)}
-\sum_{(x,\omega):\rr\times\Omega(\rr)}X^{T^*_x\rr\times\rr}
+S\To{\Phi_{\phase}(\Part)}
+\sum_{(x,\omega):\rr\times\Omega(\rr)}S^{T^*_x\rr\times\rr}
 \]
 is given by
 \[
@@ -2747,9 +2760,9 @@ The routing $\omega_{i+1}(x_i)$ into box $i$'s $\xi$-slot is how the wiring tran
 
 \paragraph{Composition.}
 
-The $\org$-composite $\Phi_{\phase}(\fun{wire}_K)\bigl(\Phi_{\phase}(\Part),\ldots,\Phi_{\phase}(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\boxob$ in $\org$, i.e.\ a $\boxob$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phi_{\phase}(\fun{wire}_K)$ has trivial state space and each $\Phi_{\phase}(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phi_{\phase}(\Part)\colon T^*\rr\to\boxob\tri T^*\rr$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\boxob^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phi_{\phase}(\fun{wire}_K)\colon\boxob^{\otimes K}\to\boxob$ then post-composes:
+The $\org$-composite $\Phi_{\phase}(\fun{wire}_K)\bigl(\Phi_{\phase}(\Part),\ldots,\Phi_{\phase}(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phi_{\phase}(\boxob)$ in $\org$, i.e.\ a $\Phi_{\phase}(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phi_{\phase}(\fun{wire}_K)$ has trivial state space and each $\Phi_{\phase}(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phi_{\phase}(\Part)\colon T^*\rr\to\Phi_{\phase}(\boxob)\tri T^*\rr$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phi_{\phase}(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phi_{\phase}(\fun{wire}_K)\colon\Phi_{\phase}(\boxob)^{\otimes K}\to\Phi_{\phase}(\boxob)$ then post-composes:
 \[
-T^*\rr^K\To{\Phi_{\phase}(\Part)^{\otimes K}}\boxob^{\otimes K}\tri T^*\rr^K\To{\Phi_{\phase}(\fun{wire}_K)\tri T^*\rr^K}\boxob\tri T^*\rr^K.
+T^*\rr^K\To{\Phi_{\phase}(\Part)^{\otimes K}}\Phi_{\phase}(\boxob)^{\otimes K}\tri T^*\rr^K\To{\Phi_{\phase}(\fun{wire}_K)\tri T^*\rr^K}\Phi_{\phase}(\boxob)\tri T^*\rr^K.
 \]
 Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
 \begin{equation}\label{eqn.lots_coalgebras}
