@@ -325,7 +325,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\cat}[1]{\mathcal{#1}}%a generic category
 \newcommand{\Cat}[1]{\mathbf{#1}}%a named category
 \newcommand{\fun}[1]{\mathrm{#1}}%a function
-\newcommand{\Fun}[1]{\text{\textsf{#1}}}%a named functor
+\newcommand{\Fun}[1]{\text{\normalfont\textsf{#1}}}%a named functor
 
 
 
@@ -392,6 +392,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\smset}{\Cat{Set}}
 \newcommand{\smsetiso}{\smset_\cong}
 \newcommand{\smcat}{\Cat{Cat}}
+\newcommand{\bbcat}{\mathbb{C}\Cat{at}}
 \newcommand{\catsharp}{\Cat{Cat}^{\sharp}}
 \newcommand{\en}{\Cat{End}}
 \newcommand{\vect}{\Cat{Vect}}
@@ -455,6 +456,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
 \newcommand{\potlens}{\Cat{PLens}}
+\newcommand{\cotstor}{\Cat{CotStor}}
 \newcommand{\Para}{\mathbb{P}\Cat{ara}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
 \newcommand{\refn}{\fun{ref}}\newcommand{\pnla}{\Cat{PNLA}}
@@ -465,7 +467,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\inpt}[1]{#1^{-}}
 \newcommand{\outp}[1]{#1^{+}}
 \newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}% vertical lens-object notation; to revert, change to (\inpt{#1},\outp{#1})
-\newcommand{\lensobs}[2]{\binom{\inpt{#1}\times\inpt{#2}}{\outp{#1}\times\outp{#2}}}% monoidal product of two lens objects
+\newcommand{\lensobs}[2]{\binom{\inpt{#1}\otimes\inpt{#2}}{\outp{#1}\otimes\outp{#2}}}% monoidal product of two lens objects
 \newcommand{\potd}{\fun{d}}
 \newcommand{\cint}{\fun{cint}}
 \newcommand{\leg}{\fun{leg}}
@@ -496,7 +498,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 %--------------- Document ---------------%
 \begin{document}
 
-\title{Nested Potentials}
+\title{Compositional Dynamics for Learning and Physics}
 
 \author{David I. Spivak}
 
@@ -715,7 +717,9 @@ The \emph{exponential} of a paired vector space $(V,\sharp_V)$ is the bundle map
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharp_x(\xi)\in T_xV\cong V$. In the constant case $\sharp_x=\sharp_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\pvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}. 
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.pnla_generalization}
-Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.pnla}. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting. A careful treatment is left to future work.\qedhere
+Paired vector spaces are the abelian case of \emph{paired nilpotent Lie algebras} (PN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.pnla}. We expect that replacing $\pvect$ by $\pnla$ extends the constructions of \cref{sec.pnla,sec.TT} to the non-abelian setting. A careful treatment is left to future work.
+
+See \cref{rem.cot_as_category} for the next incarnation of this idea, as it traces through the paper.\qedhere
 \end{remark}
 
 \section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
@@ -937,6 +941,10 @@ the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\c
 It is well known that strong monoidal functors preserve monoids, comonoids, and bimonoids: they preserve both the defining maps and the axioms relating them. For the same reason they also preserve the antipode structure and axioms, hence the Hopf monoid structure. See also~\cite{spivak2023hopf}.
 \end{proof}
 
+\begin{remark}\label{rem.cot_as_category}
+It turns out that $\cot{M}$ is sometimes not only a $\otimes$-comonoid but also a $\tri$-comonoid, i.e.\ a category by \cref{prop.comonads_cats}. In these cases, the cotangent vectors $\xi\in T^*_mM$ can be thought of as maps out of $m$, in the sense that they exponentiate via \eqref{eqn.flow_cot} to give paths that land at other objects. We conjecture (see \cref{rmk.pnla_generalization}) that this works for any paired nilpotent Lie algebra: the Baker-Campbell-Hausdorff formula \cite{knapp2002lie} allows one to compose cotangent vectors like morphisms. For simplicity, we only work with paired vector spaces in this paper. This idea will be taken up in \cref{sec.cotangent_storages}.
+\end{remark}
+
 \section{Compositional dynamics}\label{sec.dynamic_structures}
 
 \subsection{Wiring-diagram operads}\label{sec.wd_operads}
@@ -1028,7 +1036,7 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
 \end{equation}
 \smallskip
 
-\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-object-labeled-ports) and whose morphisms $\phi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of boxes in a box. That is, for a set $O$ of objects, there are operads $\cat{W}_{O\tn{-Cat}}$, $\cat{W}_{O\tn{-MnCat}}$, $\cat{W}_{O\tn{-TrCat}}$, and $\cat{W}_{O\tn{-Opd}}$ each with a 2-ary morphism that can be drawn as above.%
+\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-object-labeled-ports) and whose morphisms $\phi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of internal boxes in an external box. That is, for a set $O$ of objects, there are operads $\cat{W}_{O\tn{-Cat}}$, $\cat{W}_{O\tn{-MnCat}}$, $\cat{W}_{O\tn{-TrCat}}$, and $\cat{W}_{O\tn{-Opd}}$ each with a 2-ary morphism that can be drawn as above.%
 \footnote{
 There is a potentially confusing level-shift in that there is an operad $\cat{W}_{O\tn{-Opd}}$ for which algebras are operads with object set $O$. In case it's helpful, the object set for $\cat{W}_{O\tn{-Opd}}$ would be $\List(O)\times O$, because every ``box'' has a list of inputs and an output.
 }
@@ -1037,7 +1045,7 @@ Category-like structures that can interpret the compositionality syntax from $\c
 \begin{equation}\label{eqn.W_alg}
 \cat{C}\colon\cat{W}\to\smset.
 \end{equation}
-Indeed, such a functor assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for little boxes to a filler of the big box.%
+Indeed, such a functor assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
 \footnote{
 By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$. In general, the \emph{underlying operad} of a symmetric monoidal category $(\cat{C},I,\otimes)$ has the same objects as $\cat{C}$ and multimorphisms $\cat{C}(a_1,\ldots,a_n;b)\coloneqq\cat{C}(a_1\otimes\cdots\otimes a_n,b)$, with operadic composition by tensoring and composing in $\cat{C}$.
 }
@@ -1051,7 +1059,7 @@ For a set $O$, let $\ob\cat{W}_{O\tn{-Cat}}\coloneqq O\times O$ and
 \end{cases}
 \]
 Thus the diagram
-\[
+\begin{equation}\label{eqn.cat_composite}
 \phi\coloneqq\begin{tikzpicture}[oriented WD, bb port sep=1, bb port length=0, bb min width=.2cm, bby=.2cm, inner xsep=.2cm, x=.2cm, y=.3cm, baseline=(Catf)]
 \begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
   \node[bb={1}{1}] (Catf) {$f_1$};
@@ -1072,7 +1080,7 @@ Thus the diagram
   ;
 \end{scope}
 \end{tikzpicture}
-\]
+\end{equation}
 represents a map $\phi\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_i=A'_i$ for $0\leq k\leq2$. 
 
 If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1:\cat{C}(A'_0,A_1)$, $f_2:\cat{C}(A'_1,A_2)$ and $\phi(f_1,f_2):\cat{C}(A_0,A'_2)$. In other words the diagram $\phi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.
@@ -1222,9 +1230,9 @@ In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\p
 \end{proof}
 
 \begin{lemma}\label{lem.poly_to_org}
-Let $F\colon\pvect\to\smsetiso$ be strong symmetric monoidal. With the action of $\pvect$ on $\poly$ induced by $\Store\circ F$, there is an identity-on-objects lax symmetric monoidal functor
+Let $F\colon\pvect\to\smsetiso$ be strong symmetric monoidal, and let $\pvect$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\pvect\to\poly$ as in \cref{prop.para_strong_induced}. There is an identity-on-objects lax symmetric monoidal functor
 \[
-\para{\Store\circ F}{\poly}\to\org_\cong.
+D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \]
 \end{lemma}
 
@@ -1241,7 +1249,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 
 \subsection{Cotangent storages}\label{sec.cotangent_storages}
 
-The Para description of $\org_\cong$ lets us compare cotangent parameterizations with ordinary store parameterizations. Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ from \cref{prop.pnla_smc_action} and $\Store(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
+The Para description of $\org_\cong$ lets us compare cotangent parameterizations with ordinary store parameterizations, i.e.\ coalgebras (see \cref{prop.org_as_para}). Recall the inclusion $\pvect\to\vect\hookrightarrow\mfd$ from \cref{prop.pnla_smc_action} and $\Store(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
 
 \begin{definition}[Cotangent storage]\label{def.cotangent_storage}
 A \emph{cotangent storage} is a pair $\mathfrak{s}=(F,\vartheta)$, where $F\colon\pvect\to\smsetiso$ is strong symmetric monoidal and $\vartheta$ is a monoidal natural transformation filling the square
@@ -1253,21 +1261,21 @@ A \emph{cotangent storage} is a pair $\mathfrak{s}=(F,\vartheta)$, where $F\colo
 \arrow[Rightarrow, from=left, to=right, shorten <=7mm, shorten >=7mm, "\vartheta"]
 \end{tikzcd}
 \end{equation}
-A morphism $\alpha\colon(F,\vartheta)\to(F',\vartheta')$ of cotangent storages is a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ such that $\vartheta'\circ\Store(\alpha)=\vartheta$. We denote this category by $\Cat{CotStor}$.
+A \emph{morphism} $\alpha\colon(F,\vartheta)\to(F',\vartheta')$ of cotangent storages is a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ such that $\vartheta'\circ\Store(\alpha)=\vartheta$. We denote this category by $\cotstor$.
 \end{definition}
 
 Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cot{V}\otimes p$ induced by $\cot\circ\inc$.
 
 \begin{proposition}\label{prop.store_refinement}
+There is a functor $\Psi_{\blank}\colon\cotstor\to\bbcat(\para{\cot}{\poly},\org_\cong)$. That is,
 Every cotangent storage $\mathfrak{s}$ induces a lax symmetric monoidal functor
 \[
-\Psi_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\org_\cong.
+\Psi_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\org_\cong
 \]
-A morphism $\alpha\colon\mathfrak{s}\to\mathfrak{s}'$ induces a monoidal pseudonatural transformation
+and every morphism $\alpha\colon\mathfrak{s}\to\mathfrak{s}'$ induces a monoidal pseudonatural transformation
 \[
 \Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}.
 \]
-Thus $\mathfrak{s}\mapsto\Psi_{\mathfrak{s}}$ is functorial.
 \end{proposition}
 
 \begin{proof}
@@ -1275,7 +1283,7 @@ Write $\mathfrak{s}=(F,\vartheta)$ and let
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong
 \]
-be the functor of \cref{lem.poly_to_org}. The component $\vartheta\colon\Store\circ F\Rightarrow\cot\circ\inc$ is an action square from the $\cot$-action to the action induced by $\Store\circ F$, so \cref{prop.para_strong_induced,prop.para_square} gives a strong symmetric monoidal functor
+be the functor of \cref{lem.poly_to_org}. By \cref{prop.para_strong_induced,prop.para_square}, the action square $\vartheta\colon\Store\circ F\Rightarrow\cot\circ\inc$ induces a strong symmetric monoidal functor
 \[
 \Para_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\para{\Store\circ F}{\poly}.
 \]
@@ -1283,17 +1291,17 @@ Define $\Psi_{\mathfrak{s}}\coloneqq D_F\circ\Para_{\mathfrak{s}}$.
 
 For $\alpha\colon\mathfrak{s}\to\mathfrak{s}'=(F',\vartheta')$, the monoidal natural transformation $\Store(\alpha)\colon\Store\circ F\Rightarrow\Store\circ F'$ gives
 \[
-\alpha^*\colon\para{\Store\circ F'}{\poly}\to\para{\Store\circ F}{\poly}
+\alpha^*\colon\para{\Store\circ F'}{\poly}\to\para{\Store\circ F}{\poly},
 \]
-with $\alpha^*\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$, exactly by the storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$. The components $\alpha_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\alpha^*\Rightarrow D_{F'}$; precomposing with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$.
+and the composite $\alpha^*\circ\Para_{\mathfrak{s}'}$ is the Para functor induced by the composite action square $\vartheta'\circ\Store(\alpha)\colon\Store\circ F\Rightarrow\cot\circ\inc$. The storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$ is an equality of natural transformations, so by the strict functoriality of \cref{prop.para_square} we obtain $\alpha^*\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$ as functors. The components $\alpha_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\alpha^*\Rightarrow D_{F'}$; precomposing with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$.
 \end{proof}
 
-The first example stores the underlying set of configurations.
+We now get to our bifurcation between learning and physics: which state set the cotangent parameterization presents to $\org$. In learning, we will be storing the points of $V$, whereas in physics we will be storing the phase points of $T^*V$. These are formalized in \cref{prop.pnla_polynomial} and \cref{lem.phase_storage}.
 
 \begin{proposition}\label{prop.pnla_polynomial}
 There is a cotangent storage, which we call \emph{configuration storage}, given by
 \[\store{\conf}\coloneqq(\absval{\blank},\theta)\]
-where $\absval{\blank}\colon\pvect\to\smsetiso$ sends a paired vector space to its underlying set of points $V\mapsto \absval{V}$ and $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ is the polynomial map, natural in $V:\pvect$, which is identity on positions and, given on directions at $x\in V$ by the exponential \eqref{eqn.flow_cot}
+where $\absval{\blank}\colon\pvect\to\smsetiso$ sends a paired vector space to its underlying set of points $V\mapsto \absval{V}$ and where $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ is the polynomial map, natural in $V:\pvect$, which is identity on positions and, given on directions at $x\in V$ by the exponential \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
 T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_x}V\To{x+\blank}V,
 \qquad
@@ -1302,7 +1310,9 @@ T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_x}V\To{x+\blank}V,
 \end{proposition}
 
 \begin{proof}
-On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so the on-positions component of $\theta_V$ is the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $x$, hence a bijection. So $\Store(\absval{V})=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $x$, we must check that the two backward composites $T^*_{\phi(x)}W\to V$ agree:
+On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so we can take the on-positions component of $\theta_V$ to be the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $x$, hence a bijection. So $\Store(\absval{V})=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. 
+
+For naturality at a $\pvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $x:V$, we must check that the two backward composites $T^*_{\phi(x)}W\to V$ agree:
 \begin{align*}
 \xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_x}\;\sharp_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharp_x(\phi^*\xi), && \text{[$\theta_V\circ\cot{\phi}$]}\\
 \xi\;&\Mapsto{\sharp_{\phi(x)}}\;\sharp_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharp_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharp_{\phi(x)}\xi) && \text{[$\Store(\phi)\circ\theta_W$]}.
@@ -1313,28 +1323,35 @@ The two are equal iff $\sharp_x\circ\phi^*=\phi^{-1}\circ\sharp_{\phi(x)}$, whic
 \begin{remark}\label{rmk.pnla_fiberwise_addition}
 By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. By \cref{ex.store}, the canonical such structure is the codiscrete category on $V$: there is exactly one morphism $x\to x'$ for each pair, and the direction-set $V$ at position $x$ is interpreted as the set of codomains.
 
-Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_xV$ corresponds to the unique morphism $x\to x+\sharp_x(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_x(0)=x$. Composition of $\xi\in T^*_xV$ with $\xi'\in T^*_{x+\sharp_x(\xi)}V$ corresponds to the unique covector $\xi\star\xi'\in T^*_xV$ for which
+Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.pnla_polynomial}, a covector $\xi\in T^*_xV$ corresponds to the unique morphism $x\To{\xi} x+\sharp_x(\xi)=:\cod(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_x(0)=x$. Composition of $\xi\in T^*_xV$ with $\xi'\in T^*_{x+\sharp_x(\xi)}V$ corresponds to the unique covector $\xi\star\xi'\in T^*_xV$ for which
 \begin{equation}\label{eqn.twisted_composition}
 \sharp_x(\xi\star\xi')=\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi'),
 \qquad\text{i.e.}\qquad
-\xi\star\xi'=\xi+\sharp_x^{-1}\bigl(\sharp_{x+\sharp_x(\xi)}(\xi')\bigr),
+\xi\star\xi'=\xi+\flat_x\bigl(\sharp_{\cod(\xi)}(\xi')\bigr),
 \end{equation}
-since both produce the codiscrete morphism with codomain $x+\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi')$. Thus $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_x(\xi)$ and the $\sharp_V$-twisted composition \eqref{eqn.twisted_composition}. In the constant case $\sharp_x=\sharp_0$, \eqref{eqn.twisted_composition} collapses to fiberwise addition $\xi\star\xi'=\xi+\xi'$.\qedhere
+since both produce the codiscrete morphism with codomain $x+\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi')$. Thus $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_x(\xi)$ and the $\sharp_V$-twisted composition \eqref{eqn.twisted_composition}. In the constant case $\sharp_x=\sharp_0$, \eqref{eqn.twisted_composition} collapses to fiberwise addition $\xi\star\xi'=\xi+\flat(\sharp(\xi'))=\xi+\xi'$.\qedhere
 \end{remark}
 
-For any paired vector space $(V,\sharp_V)$, $T^*V\cong V\oplus V^*$ by \eqref{eqn.tangent_vec}. We write $(x,\xi)$ for a \emph{position} $x\in V$ and \emph{momentum} $\xi\in V^*$. The cotangent space decomposes as
+\begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
+The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of the dynamics for configuration storage, which we will develop below. Indeed, it arises via a functor $\Phi_{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate (often denoted $\eta$) is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_x=-\eta\,\id$).
+\end{remark}
+
+We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$, as in \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$ rather than a point $x\in V$. Its cotangent space decomposes as
 \[
 T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 \]
-again by \eqref{eqn.tangent_vec}, using $(V^*)^*\cong V$ on the $V^*$-factor.
+using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
 
 \begin{definition}[Legendre projection]\label{def.legendre_projection}
-The \emph{Legendre projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ has position-action $(x,\xi)\mapsto x$ and direction-action at $(x,\xi)$
+Let $(V,\sharp)$ be a paired vector space. The \emph{Legendre projection} $\rho_V\colon\cot{T^*V}\to\cot{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
 \[
 T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_x(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \qedhere
 \]
 \end{definition}
+
+Thus, at a phase point $(x,\xi)$, the Legendre projection sends a covector $\xi_V\in T^*_xV$ to the covector $(\xi_V,\sharp_x(\xi))\in T^*_{(x,\xi)}(T^*V)$.
+
 
 This gives us a second storage in the sense of \cref{def.cotangent_storage}.
 
@@ -1343,36 +1360,37 @@ There is a cotangent storage, which we call \emph{phase-space storage}, given by
 \[
 \store{\phase}\coloneqq\bigl(\absval{T^*\blank},\,\rho\circ\theta_{T^*\blank}\bigr).
 \]
-Its second component at $V:\pvect$ is the composite
+The first component sends $V\mapsto\absval{T^*V}$, the underlying set of its cotangent bundle, and the second component at $V:\pvect$ composes the configuration-storage component $\theta$ at $T^*V$ (see \cref{prop.pnla_polynomial}) with the Legendre projection,
 \[
 \Store(\absval{T^*V})\To{\theta_{T^*V}}\cot{T^*V}\To{\rho_V}\cot{V}.
 \]
 \end{lemma}
 
 \begin{proof}
-The functor $T^*\colon\pvect\to\pvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}, so $\absval{T^*\blank}\colon\pvect\to\smsetiso$ is strong symmetric monoidal. The components $\rho_V$ assemble into a monoidal natural transformation
+The functor $T^*\colon\pvect\to\pvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}, so the composite $\absval{T^*\blank}\colon\pvect\to\smsetiso$ is strong symmetric monoidal. The components $\rho_V$ assemble into a monoidal natural transformation
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=50pt]
 \pvect\ar[r,bend left=25,"\cot{T^*\blank}", ""{name=U,below}]\ar[r,bend right=25,"\cot{\blank}"', ""{name=D,above}]\& \poly.
 \arrow[Rightarrow, from=U, to=D-|U, pos=.4, "\rho"]
 \end{tikzcd}
 \]
-Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}); naturality in $\pvect$-isomorphisms is the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle} at each $(x,\xi)\in T^*V$.
+Indeed, monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.pnla_monoidal}), and naturality in $\pvect$-isomorphisms follows from the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle} at each $(x,\xi)\in T^*V$.
 Therefore $\rho\circ\theta_{T^*\blank}$ is a monoidal natural transformation $\Store\circ\absval{T^*\blank}\Rightarrow\cot\circ\inc$, i.e.\ a cotangent storage.
 \end{proof}
 
-\begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
-The deep learning dynamic prop of~\cite{shapiro2022dynamic} is a special case of the configuration dynamics we will develop below. Indeed, it arises via a functor $\Phi_{\conf}\colon\potlens\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharp_V$ of the parameter space (e.g.\ $\sharp_x=-\eta\,\id$ in Euclidean examples). The bundle generality of \cref{def.pnla} additionally accommodates position-dependent preconditioning---natural gradient, Newton's method, and so on; see \cref{sec.config_learning_stub}.
-\end{remark}
+In other words, $\rho\circ\theta_{T^*\blank}\colon T^*V\yon^{T^*V}\to \cot{V}$ is given succinctly by
+\begin{equation}\label{eqn.phase_storage_update}
+(x,\xi)\mapsto\bigl(x,\xi'\mapsto (x+\sharp_x(\xi),\,\xi-\xi')\bigr)
+\end{equation}
 
-\chapter{Potentialized lenses}\label{ch.potentials}
+\chapter{Lenses as composition syntax}\label{ch.lenses_internalization}
 
-In this chapter we define the symmetric monoidal category $\potlens$ of potentialized lenses and the functors from it to dynamic algebra. \Cref{sec.lenses_general} develops lenses, their wiring-diagram operations, and the backward-monad construction. \Cref{sec.abstract_representation} packages the representation functors. \Cref{sec.potential_lenses_to_dynamics} then specializes these constructions to manifold lenses with real-valued potentials and paired-vector-space parameters.
+This chapter constructs the composition syntax used in the rest of the paper. We begin with lenses and their backward-monad variants, then use Moore internalization to turn lens interfaces into polynomial dynamical interfaces. Specializing this construction to cotangent lenses with real-valued potentials produces the category $\potlens$ of potentialized lenses. Its underlying operad is a potentialized wiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; \cref{ch.potential_driven_dynamics} then constructs the potential-driven dynamics functors from this syntax into $\org$.
 
 \section{Lenses and backward monads}\label{sec.lenses_general}
 
 \subsection{Lenses}\label{sec.lenses}
-We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a commutative comonoid structure $(\delta_{\outp c},\varepsilon_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=(\outp f,\inpt f)$ where
+We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a commutative comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
 \begin{equation}\label{eqn.lens_def}
 \outp f\colon \outp c\to\outp d
 \qqand
@@ -1382,7 +1400,7 @@ and $\outp f$ is a comonoid homomorphism.%
 \footnote{
 When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
 }
-These can be depicted as follows:
+Such a morphism can be depicted as follows:
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={1}{1}] (fo) {$\outp f$};
@@ -1443,16 +1461,16 @@ This dense notation can be depicted in a string-diagram as follows:
   \draw[ar] (dot2) to[out=30, in=0] (gi_out2);
 \end{tikzpicture}
 \end{equation}
-The identity on $\lensob{c}$ is $(\id_{\outp c},\id_{\inpt c}\otimes\varepsilon_{\outp c})$, i.e.\ counit in the second argument. The category $\Lens{\cat{C}}$ inherits a monoidal structure with unit $\binom{I}{I}$ and
+The identity on $\lensob{c}$ is $\binom{\id_{\inpt c}\otimes\varepsilon_{\outp c}}{\id_{\outp c}}$, i.e.\ counit in the second argument. The category $\Lens{\cat{C}}$ inherits a monoidal structure with unit $\binom{I}{I}$ and
 \[
 \lensob{c}\otimes\lensob{d}\coloneqq\lensobs{c}{d}.
 \]
 
-Our main example will be $\cat{C}=\mfd$ with its cartesian product. But the following is simple and instructive.
+Our main example will be $\cat{C}=\mfd$ with its cartesian product. But the following is simple, instructive, and will come in handy.
 \begin{example}\label{ex.lens_finsetop}
-The category $\finset\op$, opposite to the category of finite sets, is cartesian monoidal where the product is given by the disjoint union coproduct $(0,+)$, i.e.\ the coproduct in $\smset$. A comonoid in $\smset\op$ is a monoid in $\smset$, so an object in $\Lens{\finset\op}$ is a pair of sets $\binom{\inpt A}{\outp A}$ where $\outp A$ is a monoid. 
+The category $\finset\op$, opposite to the category of finite sets, is cartesian monoidal where the product is given by the disjoint union $(0,+)$, i.e.\ the coproduct in $\finset$. A comonoid in $\smset\op$ is a monoid in $\smset$, so an object in $\Lens{\finset\op}$ is a pair of sets $\binom{\inpt A}{\outp A}$ where $\outp A$ is a monoid in the usual sense. 
 
-A lens $\binom{\inpt A}{\outp A}\to\binom{\inpt B}{\outp B}$ consists of two maps
+A lens $\binom{\inpt f}{\outp f}\colon\binom{\inpt A}{\outp A}\to\binom{\inpt B}{\outp B}$ consists of two maps
 \begin{equation}\label{eqn.lens_finsetop}
 \outp A\From{\outp f} \outp B
 \qqand
@@ -1465,16 +1483,22 @@ where $\outp f\colon\outp B\to\outp A$ is a monoid homomorphism in $\finset$.
 The $\Lens{-}$ construction is functorial in symmetric monoidal categories and strong monoidal functors.
 \end{proposition}
 \begin{proof}
-If $F\colon\cat{C}\to\cat{D}$ is colax monoidal, it preserves comonoid structures, so we can define $\Lens F$ on objects. If $F$ is lax monoidal, it has a productor $F_2\colon F(A)\otimes F(B)\to F(A\otimes B)$ and we can define $\Lens F$ on morphisms: given a lens morphism $(\outp f,\inpt f)$ we set $\Lens F(\outp f,\inpt f)\coloneqq(F(\outp f),\,F(\inpt f)\circ F_2)$. For functoriality the lax and colax structures must cohere, i.e. the lax structure must be inverse to the colax structure; we leave the details to the reader.
+If $F\colon\cat{C}\to\cat{D}$ is colax monoidal, it preserves comonoid structures, so we can define $\Lens F$ on objects. If $F$ is lax monoidal, it has a productor $F_2\colon F(A)\otimes F(B)\to F(A\otimes B)$ and we can define $\Lens F$ on morphisms: given a lens morphism $\binom{\inpt f}{\outp f}$ we set $\Lens F\binom{\inpt f}{\outp f}\coloneqq\binom{F(\inpt f)\circ F_2}{F(\outp f)}$. For functoriality the lax and colax structures must cohere, i.e. the lax structure must be inverse to the colax structure; we leave the details to the reader.
 \qedhere
 \end{proof}
 
+\begin{example}
+The functor $\blank\yon\colon(\smset,1,\times)\to(\poly,\yon,\otimes)$ sending $A\mapsto A\yon$ is strong monoidal: $A\yon\times B\yon\cong (A\times B)\yon$. As such it induces a strong monoidal functor
+\begin{equation}\label{eqn.lens_yon}
+\Lens{\blank\yon}\colon\Lens{\smset}\to\Lens{\poly}.
+\end{equation}
+\end{example}
 
 \subsection{Lenses represent serial, parallel, feedback, and splitting}\label{sec.plenspot_ops}
 
-Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, the monoidal category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$  does just that for ``traced symmetric monoidal semi-categories'', as we now explain.
+Recall from \cref{sec.dynamic_structures} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, we can think of the monoidal category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$ as giving a syntax for something like ``traced symmetric monoidal semi-categories'', as we now explain. This section is meant for intuition and in particular does not define the previously quoted phrase. It will also not be used in any formal development.
 
-By a \emph{semi-category} we mean almost a category, except no identities (like a semigroup is a group without identities). So our goal is to show that $\Lens{\cat{C}}$ interprets diagrams that look like this:
+By a \emph{semi-category} we mean almost a category, except without the notion of  identities (like a semigroup is a group without identities). So to say that $\Lens{\cat{C}}$ is a composition syntax for something like traced symmetric monoidal semicategories, we should show that it interprets diagrams that look like this. 
 \begin{equation}\label{eqn.arb_wd}
 \varphi\coloneqq
 \begin{tikzpicture}[oriented WD, bb min width=.6cm, bb port sep=1, bbx=.6cm, bby=1ex, bb port length=2.5pt, baseline=(X2)]
@@ -1493,11 +1517,13 @@ By a \emph{semi-category} we mean almost a category, except no identities (like 
   \end{tikzpicture}
  \end{equation}
 
-Looking at the two inner boxes and the outer box, we see that this diagram should be represented in $\Lens{\cat{C}}$ by a map of the form
+We will consider boxes as lenses $\binom{\inpt c}{\outp c}$, where the ports on the left of the box are the input $\inpt c$ and the ports on the right of the box are the output $\outp c$. The wiring diagram itself is a morphism in $\Lens{\cat{C}}$ from the tensor product of the internal boxes to the external box.
+
+Since the wiring diagram \eqref{eqn.arb_wd} has three boxes, two internal boxes and the external box, so we can see that this diagram should be represented in $\Lens{\cat{C}}$ by a map of the form
 \[
 \varphi\colon\binom{C\otimes A}{B\otimes D}\otimes\binom{B}{C}\to\binom{A}{C\otimes D}
 \]
-where $A,B,C,D$ are comonoids. Unfolding, we need two maps in $\cat{C}$:
+where let us say that $B,C,D$ are comonoids. Unfolding, we need two maps in $\cat{C}$:
 \begin{equation}\label{eqn.wd_as_maps}
 B\otimes D\otimes C\to C\otimes D
 \qqand
@@ -1507,50 +1533,53 @@ But these maps are obvious: they are just counit projections and braidings.
 
 One could take $\cat{C}\coloneqq(\mfd,\rr^0,\times)$. Then $A,B,C, D$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
 
-One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking $A\cong B\cong C\cong D\cong 1$ for simplicity, each has a unique monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
+One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking $A\coloneqq\{a\}$, $B\coloneqq\{b\}$, $C\coloneqq\{c\}$, and $D\coloneqq\{d\}$ all to have one element for simplicity, each has a unique (co)monoid structure. Now \eqref{eqn.wd_as_maps} consists of two maps
 \[
 \{b,d,c\}\from\{c,d\}
 \qqand
 \{b,d,c\}+\{a\}\from\{c,a,b\}.
 \]
-These two functions entirely determine the wiring diagram, saying how each outer outgoing port $c,d$ is ``fed by'' some inner outgoing port (in $\{b,d,c\}$), and how each inner ingoing port $c,a,b$ is ``fed by'' either an inner outgoing port (in $\{b,d,c\}$) or the outer ingoing port, $a$. 
+These two functions entirely determine the wiring diagram \eqref{eqn.arb_wd} as an operad morphism, saying how each external outgoing port $c,d$ is ``fed by'' some internal outgoing port (in $\{b,d,c\}$), and how each internal ingoing port $c,a,b$ is ``fed by'' either an internal outgoing port (in $\{b,d,c\}$) or the external ingoing port, $a$. 
 
 Since $\finset\op$ is the free cartesian category on one object, for any cartesian category $\cat{M}$ and object $R$, there is a strong monoidal functor $R^-\colon\finset\op\to\cat{M}$. We record a special case.
 
 \begin{lemma}\label{lemma.lens_rr}
 The functor $\rr^-\colon\finset\op\to\mfd$ is strong monoidal, hence induces a strong monoidal functor
 \[
-\Lens{\rr^-}\colon\Lens{\finset\op}\to\Lens{\mfd}
+\Lens{\rr^-}\colon\Lens{\finset\op}\to\Lens{\mfd}.
 \]
 \end{lemma}
 
 \subsection{Backward monads on lenses}\label{sec.backwards}
 
-We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that it turns a monad into a comonad.
+We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad into a comonad.
 
 Recall that a monad $\Fun{T}$ on a monoidal category is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. If moreover $X$ carries a counit $\varepsilon_X\colon X\to I$, then naturality of $\sigma$ in its first argument together with the unit-coherence axiom of strength gives a \emph{counital projection} $\sigma_{X,Y}\then\Fun{T}(\varepsilon_X\otimes\id_Y)=\varepsilon_X\otimes\id_{\Fun{T}Y}$:
 \begin{equation}\label{eqn.counital_projection}
 \begin{tikzcd}
-X\otimes\Fun{T}Y\ar[r, "\sigma"]\ar[d, "\varepsilon_X\otimes\id"']&
+X\otimes\Fun{T}Y\ar[r, "\sigma_{X,Y}"]\ar[d, "\varepsilon_X\otimes\id"']&
 \Fun{T}(X\otimes Y)\ar[d, "\Fun{T}(\varepsilon_X\otimes\id)"]\\
 \Fun{T}Y\ar[r, equal]&
 \Fun{T}Y
 \end{tikzcd}
 \end{equation}
-When $\cat{C}$ is cartesian, this specializes to the familiar projection formula $\sigma\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$.
 
+When $\Fun{T}$ is a monoidal monad with components $\tau_0$ and $\tau_{X,Y}$, it is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
+\[
+X\otimes \Fun{T}Y\To{\eta_X}\Fun{T}(X)\otimes \Fun{T}(Y)\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
+\]
 
 \begin{proposition}\label{prop.backward_comonad}
 Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$. We denote its coKleisli category by $\Lens{\cat{C}}^{\Fun{T}}\coloneqq(\Lens{\cat{C}})_{\Lens{\Fun T}}$. 
 
-If moreover $(\Fun{T},\tau)$ is a monoidal monad, then $\Lens{\Fun T}$ is a colax monoidal comonad, thus the coKleisli category $(\Lens{\cat{C}}^{\Fun{T}},I,\otimes)$ is naturally monoidal.
+If moreover $\Fun{T}$ is a monoidal monad, then $\Lens{\Fun T}$ is a colax monoidal comonad, thus the coKleisli category $(\Lens{\cat{C}}^{\Fun{T}},I,\otimes)$ is naturally monoidal.
 \end{proposition}
 \begin{proof}
-On a lens map $(\outp f,\inpt f)$ with $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, define $\Lens{\Fun T}(\outp f,\inpt f)$ to be the following composite:
+On a lens map $\binom{\inpt f}{\outp f}$ with $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, define the backward component of $\Lens{\Fun T}\binom{\inpt f}{\outp f}$ to be the following composite:
 \begin{equation}\label{eqn.lens_T_morphism}
 \outp c\otimes\Fun{T}\inpt d\To{\sigma}\Fun{T}(\outp c\otimes\inpt d)\To{\Fun{T}\inpt f}\Fun{T}\inpt c.
 \end{equation}
-The counit and comultiplication of $\Lens{\Fun{T}}$ are given by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp c}$:
+The counit and comultiplication of $\Lens{\Fun{T}}$ are given on positions by the identity and on-directions by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp c}$:
 \begin{equation}\label{eqn.lens_T_counit}
 \outp c\otimes\inpt c\To{\varepsilon_{\outp c}\otimes\id}\inpt c\To{\eta}\Fun{T}\inpt c,
 \end{equation}
@@ -1560,37 +1589,37 @@ The counit and comultiplication of $\Lens{\Fun{T}}$ are given by the unit and mu
 We need to prove that $\Lens{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond precisely to the four axioms of a monad strength.
 %The unit axiom~\cite[(1.5)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
 
-We include only the least trivial here: preservation of composition. Writing $f_o,g_o$ for forward components and $f_i\colon\outp c\otimes\inpt d\to\inpt c$, $g_i\colon\outp d\otimes\inpt e\to\inpt d$ for backward components, we must show that the following commutes (after appending $\Fun{T}f_i\colon\Fun{T}(\outp c\otimes\inpt d)\to\Fun{T}\inpt c$ on the right):
+We include only the least trivial here: preservation of composition. For $f\colon\lensob c\to\lensob d$ and $g\colon\lensob d\to\lensob e$, we must show that the following commutes (after appending $\Fun{T}\inpt f\colon\Fun{T}(\outp c\otimes\inpt d)\to\Fun{T}\inpt c$ on the right), suppressing identity tensor factors and applications of $\Fun T$ in the labels:
 \[
 \begin{tikzcd}[column sep=1.6em, row sep=3em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
 \outp c\otimes\Fun{T}\inpt e
-  \ar[r, "\delta\otimes\id"]
+  \ar[r, "\delta"]
   \ar[d, "\sigma"']
 \& (\outp c)^{\otimes 2}\otimes\Fun{T}\inpt e
-  \ar[r, "\id\otimes f_o\otimes\id"]
+  \ar[r, "\outp f"]
   \ar[d, "\sigma"]
 \&[5pt] \outp c\otimes\outp d\otimes\Fun{T}\inpt e
-  \ar[r, "\id\otimes\sigma"]
+  \ar[r, "\sigma"]
   \ar[dr, "\sigma" description]
 \& \outp c\otimes\Fun{T}(\outp d\otimes\inpt e)
-  \ar[r, "\id\otimes\Fun{T}g_i"]
+  \ar[r, "\inpt g"]
   \ar[d, "\sigma"]
 \& \outp c\otimes\Fun{T}\inpt d
   \ar[d, "\sigma"]
 \\
 \Fun{T}(\outp c\otimes\inpt e)
-  \ar[r, "\Fun{T}(\delta\otimes\id)"']
+  \ar[r, "\delta"']
 \& \Fun{T}((\outp c)^{\otimes 2}\otimes\inpt e)
-  \ar[rr, "\Fun{T}(\id\otimes f_o\otimes\id)"']
+  \ar[rr, "\outp f"']
 \&
 \& \Fun{T}(\outp c\otimes\outp d\otimes\inpt e)
-  \ar[r, "\Fun{T}(\id\otimes g_i)"']
+  \ar[r, "\inpt g"']
 \& \Fun{T}(\outp c\otimes\inpt d)
 \end{tikzcd}
 \]
-The first two squares are naturality of $\sigma$ in its first argument; the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, which merges the nested $\sigma$'s; the last square is naturality of $\sigma$ in its second argument.
+The first two squares are naturality of $\sigma$ in its first argument, the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, and the last square is naturality of $\sigma$ in its second argument.
 
-When $(\Fun T,\tau_0,\tau)$ is moreover a monoidal monad, we obtain a colax monoidal structure on $\Lens{\Fun{T}}$: the counitor $\binom{I}{I}\to\binom{\Fun T(I)}{I}$ amounts to $\tau_0\colon I\to\Fun T I$ and the coproductor map $\binom{\Fun{T}(\inpt c\otimes\inpt d)}{\outp c\otimes\outp d}\to\binom{\Fun{T}(\inpt c)\otimes\Fun T(\inpt d)}{\outp c\otimes\outp d}$ amounts to $\tau\colon \Fun{T}(\inpt c)\otimes\Fun T(\inpt d)\to \Fun{T}(\inpt c\otimes\inpt d)$.
+When $\Fun T$ is moreover a monoidal monad, we obtain a colax monoidal structure on $\Lens{\Fun{T}}$: the counitor $\binom{\Fun T(I)}{I}\to\binom{I}{I}$ amounts to $\tau_0\colon I\to\Fun T I$ and the coproductor map $\binom{\Fun{T}(\inpt c\otimes\inpt d)}{\outp c\otimes\outp d}\to\binom{\Fun{T}(\inpt c)\otimes\Fun T(\inpt d)}{\outp c\otimes\outp d}$ amounts to $\tau_{\inpt c,\inpt d}\colon \Fun{T}(\inpt c)\otimes\Fun T(\inpt d)\to \Fun{T}(\inpt c\otimes\inpt d)$.
 \end{proof}
 
 A map in $\Lens{\cat{C}}^{\Fun{T}}$ is a map of the form $\binom{\Fun{T}\inpt c}{\outp c}\to\lensob{d}$ in $\Lens{\cat{C}}$, i.e.
@@ -1608,33 +1637,33 @@ which is strong monoidal by the usual distributive law
 \[
 S\times(B+C)\From{\cong}(S\times B)+(S\times C).
 \]
-It is a (comonad on $\finset$ and hence) a monad on $\finset\op$, easily checked to be monoidal with respect to $(0,+)$.%
+Multiplication by $S$ constitutes a (comonad on $\finset$ and hence) a monad on $\finset\op$, easily checked to be monoidal with respect to $(0,+)$.%
 \footnote{In fact the $S\times-$, for any $S:\finset$, are the only monoidal monads on $(\finset\op,0,+)$.
 }
 
-Thus it induces a comonad $\Lens{S\times-}$ on $\Lens{\finset\op}$. One may think of an element $s:S$ as a \emph{hyperparameter} that decides a sort of internal wiring. Indeed, the data of a morphism in the coKleisli category $\Lens{\finset\op}^{S\times-}$ is similar to that in \cref{eqn.lens_finsetop}, except that we have a function $\inpt f_s\colon\outp A+\inpt B\from\inpt A$ for each $s:S$.
+Thus it induces a comonad $\Lens{S\times-}$ on $\Lens{\finset\op}$. One may think of an element $s:S$ as a \emph{hyperparameter} that decides a sort of internal wiring. Indeed, the data of a morphism in the coKleisli category $\Lens{\finset\op}^{S\times-}$ is similar to that in \cref{eqn.lens_finsetop}, except that it includes a function $\inpt f_s\colon\outp A+\inpt B\from\inpt A$ for each $s:S$.
 \end{example}
 
 \begin{lemma}\label{lem.lens_T_functoriality}
-The construction of \cref{prop.backward_comonad} is functorial in $(\cat{C},\Fun{T})$: a strong symmetric monoidal $F\colon\cat C\to\cat C'$ and strong monad morphism $\theta\colon F\Fun T\Rightarrow\Fun T'F$ induce
+The construction of \cref{prop.backward_comonad} is functorial in $(\cat{C},\Fun{T})$: a strong symmetric monoidal $F\colon\cat C\to\cat C'$ and strong monad morphism $\theta\colon F\circ\Fun T\Rightarrow\Fun T'\circ F$ induce
 \[
 \Lens F\colon\Lens{\cat C}^{\Fun T}\to\Lens{\cat C'}^{\Fun T'},\qquad
 \lensob c\mapsto\binom{F(\inpt c)}{F(\outp c)},\qquad
-(\outp f,\inpt f)\mapsto(F(\outp f),\theta\circ F(\inpt f)\circ F_2),
+\binom{\inpt f}{\outp f}\mapsto\binom{\theta\circ F(\inpt f)\circ F_2}{F(\outp f)},
 \]
 where $F_2$ is $F$'s productor. If $\Fun T,\Fun T'$ are monoidal monads and $\theta$ is a morphism of monoidal monads, $\Lens F$ is strong symmetric monoidal.
 \end{lemma}
 
 \begin{example}
-For any set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, this monad distributes under any other strong monad $T$,
+For any set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, this monad distributes under any other strong monad $\Fun T$,
 \[
-T(M^S)\to T(M)^S.
+\Fun T(M^S)\to \Fun T(M)^S.
 \]
 The functor $\rr^-\colon\finset\op\to\mfd$ satisfies the conditions of \cref{lem.lens_T_functoriality}, so the functor $\Lens{\rr^-}$ from \cref{lemma.lens_rr} is strong monoidal. We will not pursue this example further in the paper.
 \end{example}
 
 \begin{lemma}\label{lem.parameter_lens_action}
-Let $\cat V$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be a strong monoidal functor such that each $J(v)$ carries a commutative comonoid structure $(\delta_{J(v)},\varepsilon_{J(v)})$ in $\cat C$ and each $J(u)$ is a comonoid homomorphism. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
+Let $\cat V$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat V\to\cat C$ be a strong monoidal functor such that each object $J(v)$ carries a commutative comonoid structure $(\delta_{J(v)},\varepsilon_{J(v)})$ in $\cat C$ and each morphism $J(u)$ is a comonoid homomorphism. Then we have an action of $\cat V$ on $\Lens{\cat C}^{\Fun T}$ given by
 \[
 v\cdot\lensob c\coloneqq\binom{\inpt c}{J(v)\otimes\outp c}.
 \]
@@ -1649,14 +1678,14 @@ u\cdot f\coloneqq\binom{\inpt f\circ\epsilon_{J(v)}}{J(u)\otimes\outp f}\colon
 \to
 \binom{\inpt d}{J(w)\otimes\outp d}.
 \]
-Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the comonoid-homomorphism assumption on $J$: $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
+Checking functoriality reduces immediately to the counital projection \eqref{eqn.counital_projection} and the comonoid-homomorphism assumption on $J$, i.e.\ that $J(v)\To{J(u)}J(w)\To{\epsilon_{J(w)}} I$ equals $\epsilon_{J(v)}$.
 
 When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cref{prop.backward_comonad}, and the comparisons $J(I)\cong I$ and $(v\otimes w)\cdot(\lensob c\otimes\lensob d)\cong(v\cdot\lensob c)\otimes(w\cdot\lensob d)$ come directly from the strong monoidality of $J$.
 \end{proof}
 
-\section{Internal representation of lenses}\label{sec.abstract_representation}
+\section{Moore internalization of lenses}\label{sec.abstract_representation}
 
-The previous section built categories of lenses and their coKleisli variants. We next record a representation that sends a lens back into the base category; later, this is the bridge from potentialized lenses to polynomials.
+The previous section built categories of lenses and their coKleisli variants. We next record a representation that sends a lens back into the base category.
 
 \begin{proposition}\label{prop.Theta}
 For any symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, there is a normal lax monoidal functor
@@ -1709,20 +1738,18 @@ This is an immediate corollary of \cref{prop.Theta_T_alpha} with $\Fun{T}=\id$.
 %\]
 \end{proof}
 
-\begin{example}
+We call $\Theta$ the \emph{Moore internalization} functor, as justified by \cref{ex.moore}.
+
+\begin{example}\label{ex.moore}
 For the symmetric monoidal closed category $(\poly,\yon,\otimes,[-,-])$, applying $\Theta$ to lenses of the form $\binom{A\yon}{B\yon}$ yields
 \[
 \Theta\binom{A\yon}{B\yon}=B\yon\otimes[A\yon,\yon]\cong B\yon^A.
 \]
-Restricted to this full subcategory of $\Lens(\poly)$, the functor $\Theta$ is fully faithful: a lens map $\binom{A\yon}{B\yon}\to\binom{A'\yon}{B'\yon}$ is a map $B\to B'$ and $B\times A'\to A$, which is exactly the data of a map $B\yon^A\to B'\yon^{A'}$.
+Restricted to this full subcategory of $\Lens{\poly}$, i.e. the image of \eqref{eqn.lens_yon}, the functor $\Theta$ is fully faithful: a lens map $\binom{A\yon}{B\yon}\to\binom{A'\yon}{B'\yon}$ is a map $B\to B'$ and $B\times A'\to A$, which is exactly the data of a polynomial map $B\yon^A\to B'\yon^{A'}$.
 
-A $B\yon^A$-coalgebra $S\to BS^A$ is equivalently a pair of functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine. Thus we think of $\Theta$ as the \emph{Moore}-internalization of lenses.
+A $B\yon^A$-coalgebra $S\to BS^A$ is equivalently a pair of functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine~\cite{moore1956gedanken,niu2025polynomial}.
 \end{example}
 
-Recall that monoidal (equivalently, commutative) monads $(\Fun{T},\tau)$ have a natural strength
-\[
-\sigma_{X,Y}\colon X\otimes\Fun{T}Y\To{\eta_X\otimes\id}\Fun{T}X\otimes\Fun{T}Y\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
-\]
 All lax monoidal functors preserve monoids, so in particular monoidal monads do.
 
 \begin{definition}\label{def.T_monoid}
@@ -1765,7 +1792,7 @@ Let $(\Fun{T},\tau)$ be a monoidal monad on a symmetric monoidal closed category
 \]
 \end{proposition}
 \begin{proof}
-Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\Theta_z(f)$ as the composite
+Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\Theta_z(f)$ to be the composite
 \[
 \begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
 \outp c\otimes[\inpt c,z]\ar[r,"{\delta_{\outp c}\otimes\id}"]\ar[dd, dashed, "\Theta_z(f)"']
@@ -1840,7 +1867,7 @@ Proving that $\Theta_z$ is functorial can be achieved by long but routine diagra
 %\end{tikzcd}
 %\]
 %Each square is clear.
-We prove preservation of composition in the diagram on page~\pageref{page.theta_diagram}. Of course, such a diagram is difficult to audit, so we recommend spot-checking a few ``tiles'', each of which is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z$ of the coKleisli composite $g\circ f$ and the coKleisli composite $\Theta_z(g)\circ\Theta_z(f)$ of the $\Theta_z$'s.
+We prove preservation of composition in the diagram on page~\pageref{page.theta_diagram}. Of course, such a diagram is difficult to audit, so we recommend spot-checking a few ``tiles'', each of which is of one of three types: functoriality of $\otimes$; naturality of $\eta$, $\mu$, and $\tau$; and the $\Fun T$-monoid axioms of \cref{def.T_monoid}. We need to prove that two morphisms $\outp c\otimes H_c\to\outp e\otimes H_e$ (writing $H_X\coloneqq[\inpt X,z]$) are equal: $\Theta_z(g\circ f)$ of the coKleisli composite of  $g$ and $f$ and the coKleisli composite $\Theta_z(g)\circ\Theta_z(f)$ of the $\Theta_z$'s.
 
 The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the canonical map
 \[
@@ -1849,7 +1876,7 @@ The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the 
 \outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z\otimes z]\To{\id\otimes[\id,m_z]}
 \outp c\otimes\outp d\otimes[\inpt c\otimes\inpt d,z]
 \]
-Its naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
+Their naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
 %
 %
 \afterpage{\clearpage
@@ -1996,9 +2023,9 @@ The equality on the left splits the open region into two parts, and it suffices 
 \end{proof}
 
 \begin{example}
-Consider the distributions monad $\Fun{D}$, which is monoidal on $(\smset,1,\times)$. A morphism $\lensob{A}\to\lensob{B}$ is a pair of maps $\outp A\to \outp B$ and $\outp A\times\inpt B\to\Fun{D}\inpt A$. One might imagine that when inputs arrive to the external interface, they are distributed as inputs to the internal interfaces.
+Consider the distributions monad $\Fun{Dist}$, which is monoidal on $(\smset,1,\times)$. A morphism $\lensob{A}\to\lensob{B}$ is a pair of maps $\outp A\to \outp B$ and $\outp A\times\inpt B\to\Fun{Dist}(\inpt A)$. One might imagine that when inputs arrive to the external interface, they are distributed as probabilistic inputs to the internal interfaces.
 
-The additive monoid $(\rr,0,+)$ is a $\Fun{D}$-monoid because the expected value of a sum is the sum of the expected values. The functor $\Theta_\rr\colon\Lens{\smset}^{\Fun{D}}\to\smset$ sending $\lensob{A}$ to $\outp A\times\rr^{\inpt A}$ internalizes lens objects as producing outputs and receiving ``rewards'' on inputs.
+The additive monoid $(\rr,0,+)$ is a $\Fun{Dist}$-monoid because the expected value of a sum is the sum of the expected values. The functor $\Theta_\rr\colon\Lens{\smset}^{\Fun{Dist}}\to\smset$ sending $\lensob{A}\mapsto\outp A\times\rr^{\inpt A}$ internalizes lens objects as producing outputs and receiving ``rewards'' on inputs.
 \end{example}
 
 \begin{corollary}\label{cor.parameterized_representation}
@@ -2019,7 +2046,7 @@ on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to 
 %\]
 
 \begin{proof}
-Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $v\cdot x\coloneqq J(v)\otimes x$ on $\cat C$, as shown. The functor $\Theta_z$ is $\cat V$-equivariant:
+Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $v\cdot x\coloneqq J(v)\otimes x$ on $\cat C$, as shown above. The functor $\Theta_z$ is $\cat V$-equivariant:
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 \cat V\times\Lens{\cat C}^{\Fun T}
@@ -2032,7 +2059,7 @@ Use the action of $\cat{V}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter
 \& \cat C,
 \end{tikzcd}
 \]
-where the $(v,\binom{\inpt c}{\outp c}$ component of the natural isomorphism is
+where the $(v,\binom{\inpt c}{\outp c})$ component of the natural isomorphism is
 \[
 J(v)\otimes\Theta_z\lensob c
 \cong J(v)\otimes\outp c\otimes\ihom{\inpt c,z}
@@ -2041,13 +2068,9 @@ J(v)\otimes\Theta_z\lensob c
 We can thus apply \cref{prop.para_square,prop.Theta_T_alpha} to obtain \eqref{eqn.para_theta_z} as desired.
 \end{proof}
 
-\section{The dynamics of potentialized lenses}\label{sec.potential_lenses_to_dynamics}
+\section{Potentialized lenses}\label{sec.potentialized_lenses}\label{sec.potential_lenses_to_dynamics}
 
-We now assemble the source-side constructions: potentialized manifold lenses, their paired-vector-space parameterization, the composition syntax they define, and finally the dynamics functors to $\org$.
-
-\subsection{Potentialized lenses}\label{sec.potentialized_lenses}
-
-Potentialized lenses are ordinary lenses whose backward pass also carries a real-valued potential; we package them as coKleisli lenses and then parameterize them by paired vector spaces.
+Potentialized lenses are ordinary manifold lenses whose backward pass also carries a real-valued potential; after cotangent internalization, its differential drives the induced dynamics. We package them as coKleisli lenses and then parameterize them by paired vector spaces.
 
 \begin{lemma}\label{lemma.monoid_to_monad}
 If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative monoid object in it, then $M\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,M)$.
@@ -2063,7 +2086,7 @@ The coherence diagrams arise from the monoid laws and commutativity of $M$. Func
 
 Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cot{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $\rr\times\blank$ and $\cot{\rr}\otimes\blank$ on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\Lens{\mfd}^\rr,\rr^0,\times)$ and $(\Lens{\poly}^\rr,\yon,\otimes)$ denote the corresponding coKleisli categories.
 
-A map in $\lmfd^\rr$ is a tuple $f=(\outp f,\inpt f,U)\colon\lensob M\to\lensob N$ with
+A map in $\lmfd^\rr$ is a tuple $f=\big(\binom{\inpt f}{\outp f},U\big)\colon\lensob M\to\lensob N$ with
 \[
 \outp f\colon\outp M\to\outp N,\qquad
 \inpt f\colon\outp M\times\inpt N\to\inpt M,\qquad
@@ -2075,7 +2098,6 @@ A map $\lensob p\to\lensob q$ in $\Lens{\poly}^\rr$ is a pair
 \outp f\colon\outp p\to\outp q,\qquad
 \inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p.
 \]
-We call such maps \emph{potentialized polynomial lenses}.
 
 \begin{lemma}\label{lem.cot_lifts_lens_potential}
 The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong symmetric monoidal functor
@@ -2091,19 +2113,19 @@ Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal b
 In \cref{lem.Theta_poly_potential} we will apply the construction of \cref{prop.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics application, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cot{\rr}\to\yon$ is extra data.
 
 \begin{lemma}\label{lem.alpha_constant}
-The $(\cot{\rr}\otimes\blank)$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
+Let $\Fun{T}\coloneqq(\cot{\rr}\otimes\blank)$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
 \end{lemma}
 
 \begin{proof}
-There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, sending $\alpha$ to $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ is that the following equation holds for all $x_1,x_2\in\rr$
+There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, sending $\alpha$ to $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ to make it a $\Fun{T}$-monoid is that the following equation holds for all $x_1,x_2\in\rr$
 \[
 \left(\omega(x_1),\omega(x_2)\right)=
 \left(\omega(x_1+x_2),\omega(x_1+x_2)\right)
 \]
-Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In other words, $\omega=r$ is constant at some $r:\rr$. And conversely, any constant covector field satisfies the condition.
+Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In other words, $\omega=r$ is constant at some $r:\rr$. And conversely, any constant covector field is a $\Fun{T}$-monoid.
  \end{proof}
 
-The role of the Lie group $\rr$ in this section is to act as the recipient of \emph{potentials}. By \cref{lem.alpha_constant}, once we set $z\coloneqq\yon$, the remaining choice of $(\cot{\rr}\otimes\blank)$-monoid structure is a real number $r:\rr$, equivalently a constant covector field on $\rr$. We choose $r\coloneqq+1$, and write the corresponding action map as
+The role of the Lie group $\rr$ in this section is to act as the recipient of \emph{potentials}. By \cref{lem.alpha_constant}, once we set $z\coloneqq\yon$, the remaining choice of $(\cot{\rr}\otimes\blank)$-monoid structure is a real number $r:\rr$, equivalently a constant covector field on $\rr$. We choose $r\coloneqq+1$, and write the corresponding algebra map as
 \begin{equation}\label{eqn.d_potential}
 \potd\colon\cot{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
 \end{equation}
@@ -2119,7 +2141,7 @@ There is a lax monoidal functor
 \Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly,\qquad
 \Theta_{\potd}\lensob p\coloneqq\outp p\otimes\ihom{\inpt p,\yon}.
 \]
-%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\inpt q\otimes\outp p\to\cot{\rr}\otimes\inpt p$, to the composite
+%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\inpt q\otimes\outp p\to\cot{\rr}\otimes\inpt p$, to the composite
 %\[
 %\begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
 %\outp p\otimes\ihom{\inpt p,\yon}\ar[r,"{\delta_{\outp p}\otimes\id}"]\ar[dd, dashed, "\Theta_{\potd}(f)"']
@@ -2140,9 +2162,7 @@ There is a lax monoidal functor
 Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
 \end{proof}
 
-The action of $\pvect$ on $\lmfd^\rr$ from \cref{lem.parameter_lens_action} (taking $\cat V=\pvect$, $\cat C=\mfd$, $J=\inc$, $\Fun T=\rr\times\blank$)%
-\footnote{The vector spaces can be replaced by paired nilpotent Lie algebras; see \cref{rmk.pnla_generalization}.}
-makes the following Para construction symmetric monoidal.
+There is an action of $\pvect$ on $\lmfd^\rr$ from \cref{lem.parameter_lens_action} (taking $\cat V=\pvect$, $\cat C=\mfd$, $J=\inc$, $\Fun T=\rr\times\blank$) and the resulting Para construction is symmetric monoidal.
 
 \begin{definition}\label{def.potlens}
 The symmetric monoidal category of \emph{potentialized lenses} is denoted and defined by
@@ -2152,34 +2172,36 @@ The symmetric monoidal category of \emph{potentialized lenses} is denoted and de
 \]
 \end{definition}
 
-\subsection{Potentialized lenses as composition syntax}\label{sec.W_choice}
+\section{Potentialized wiring diagrams}\label{sec.W_choice}
 
-We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. A multimorphism $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ in $\potlens$ has the form $f=(V,\outp{f},\inpt{f},U)$, namely a vector space $V$, smooth maps
+We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. We call its multimorphisms \emph{potentialized wiring diagrams}. Thus a potentialized wiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left(V,\binom{\inpt f}{\outp f},U\right)$, namely a vector space $V$ called the \emph{parameter space}, smooth maps
 \begin{equation}\label{eqn.plens_map}
 \outp f\colon V\times\prod_{i=1}^K\outp X_i\to\outp Y,\qquad
 \inpt f\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\prod_{i=1}^K\inpt X_i,
 \end{equation}
-and a potential
-\[
-U\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\rr.
-\]
-Such an $f$ can be called a smoothly-varying interaction pattern (SVIP).
+called the \emph{output map} and the \emph{input maps}, and a smooth function
+\begin{equation}\label{eqn.plens_potential}
+U\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\rr,
+\end{equation}
+called the \emph{potential}.
 
 There is a chain of functors
 \[
-\Lens{\finset\op}\To{\Lens{\rr^-}}\lmfd\To{\Lens{\eta}}\lmfd^\rr\To{\Para{\rr^0}}\potlens
+\Lens{\finset\op}\To{\Lens{\rr^-}}\lmfd\To{\Lens{\eta}}\lmfd^\rr\To{\Para_{\rr^0}}\potlens
 \]
-where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para{\rr^0}$ regards a potentialized lens as a parameterized one with unit parameter $\rr^0$. This chain gives rise to progressively more complicated SVIPs.
+where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized lens as a parameterized one with unit parameter $\rr^0$. This chain gives rise to progressively richer potentialized wiring diagrams.
 
-The simplest is static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor and all the maps factor as projections and diagonals. These maps give the syntax for something like traced symmetric monoidal semicategories, as discussed in \cref{sec.plenspot_ops}.
+The simplest---those coming from the leftmost category in the chain---are static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor, all the maps factor as projections and diagonals, and the potential is zero. These simplest maps give the syntax for something like traced symmetric monoidal semicategories, as discussed in \cref{sec.plenspot_ops}.
 
-We can realize each static wiring diagram as a lens between manifolds via $\Lens{\rr^-}$ (\cref{lemma.lens_rr}), but manifold lenses are more general: there are many more maps $M\times N\to M$ than just the projection. Adding potentials gives another step. There is still no parameter space $V$, but there is a function grading the tuple consisting of what comes out of little boxes and what comes in to the big box, e.g.\ prediction error.
+We can realize each such static wiring diagram as a lens between manifolds via $\Lens{\rr^-}$ (\cref{lemma.lens_rr}), but compositions coming from $\lmfd$ are more general: there are many more maps $M\times N\to M$ than just the projection. Moving to $\lmfd^\rr$ adds a potential but still no parameter space $V$: it assigns a real number to the interaction data consisting of the internal-box outputs together with the external-box input, e.g.\ a prediction error.
 
-Finally, the most general SVIPs are maps in $\potlens$: the interaction pattern itself varies smoothly in time, as the parameter $v:V$ is updated according to the potential. Exactly how these dynamics work is the subject of \cref{sec.dynamics_functor}.
+Finally, the general potentialized wiring diagrams are maps in $\potlens$: the interaction pattern itself depends smoothly on a parameter in some vector space $V$, and under the dynamics functor that parameter is updated by the differential of the potential. Exactly how these potential-driven dynamics work is the subject of \cref{ch.potential_driven_dynamics}.
 
-\subsection{The dynamics functor}\label{sec.dynamics_functor}
+\chapter{Potential-driven dynamics}\label{ch.potential_driven_dynamics}
 
-The composition syntax becomes dynamics by first internalizing a potentialized lens as a parameterized polynomial map and then applying a cotangent storage.
+\section{The dynamics functor}\label{sec.dynamics_functor}
+
+The potentialized wiring diagrams of \cref{sec.W_choice} become potential-driven dynamics by first internalizing them as parameterized polynomial maps and then applying a cotangent storage.
 
 \begin{lemma}\label{lem.potlens_to_para_poly}
 There is a lax symmetric monoidal functor
@@ -2224,7 +2246,7 @@ Let $\store{\conf}$ and $\store{\phase}$ be the configuration and phase-space st
 \Phi_{\phase}\coloneqq\Phi_{\store{\phase}}.
 \]
 
-\subsection{The phase-space case}\label{sec.phase_dynamics}
+\section{The phase-space case}\label{sec.phase_dynamics}
 
 Under the isomorphism $\theta_{T^*\blank}$, $\Para_{\store{\phase}}$ is the Legendre refinement induced by $\rho$; we write $\leg$ for this phase-space case.
 
@@ -2246,7 +2268,7 @@ A position in $\Phi_{\phase}\lensob M$ is a pair $(\outp m,\omega)$ where $\outp
 \paragraph{The action of $\Phi_{\phase}$ on morphisms.}
 Describing the action of $\Phi_{\phase}$ on morphisms will extend to the end of this section, \cref{sec.phase_dynamics}. Let $(V,\sharp_V):\pvect$ and let
 $f\colon V\cdot\lensob M\to\lensob N$
-be a morphism in $\potlens$, i.e.\ a tuple $(\outp f,\inpt f,U)$ as in \eqref{eqn.para_potential_lens_maps}:
+be a morphism in $\potlens$, i.e.\ a tuple $\left(\binom{\inpt f}{\outp f},U\right)$ as in \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.para_potential_lens_maps}
 \outp f\colon V\times\outp M\to\outp N,\qquad
 \inpt f\colon V\times\outp M\times\inpt N\to\inpt M,\qquad
@@ -2304,7 +2326,7 @@ and updates the state (from its original $s=(x,\xi)$) to
 \begin{equation}\label{eqn.state_update}
 s+\sharp_X(\xi_V,\sharp_x(\xi))=\bigl(x+\sharp_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
-The sum $s+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharp_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharp_x(\xi))\in T^*_sX$ comes from the Legendre projection at $(x,\xi)$, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_x(\xi))=(\sharp_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_x(\xi),\,\xi-\xi_V)$.%
+This is \eqref{eqn.phase_storage_update} with $\xi'=\xi_V$. The sum $s+\sharp_X(\blank)$ is the exponential of the paired vector space $X$, \eqref{eqn.flow_cot}; the use of $\sharp_X$ comes from the canonical symplectic pairing on $X$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharp_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharp_x(\xi))\in T^*_sX$ comes from the Legendre projection at $(x,\xi)$, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_X(\xi_V,\sharp_x(\xi))=(\sharp_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_x(\xi),\,\xi-\xi_V)$.%
 \footnote{
 Equation \eqref{eqn.state_update} is explicit Euler of the Hamiltonian vector field on $T^*V$: the update at $s$ is computed entirely from data at $s$. The recurrence so produced is exact as an algebraic identity---the wave-equation derivation of \cref{ch.spring} relies on this exactness---but unconditionally unstable as a time-stepper for harmonic systems. Stable numerical simulation of the underlying flow would require a sequential, symplectic update, which is incompatible with the atomic state-update of an $\org$-coalgebra.
 }
@@ -2325,11 +2347,11 @@ s=(x,\xi)\mapsto
 \end{multline*}
 where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\xi_M$ and $\xi_V$ in \eqref{eqn.bigtheta}, and $\inpt m$ in \eqref{eqn.inptm}.
 
-\subsection{The configuration case}\label{sec.configuration_dynamics}
+\section{The configuration case}\label{sec.configuration_dynamics}
 
 The configuration functor $\Phi_{\conf}\colon\potlens\to\org$ is the case $\store{\conf}=(\absval{\blank},\theta)$ of \cref{thm.functor}, given by \cref{prop.pnla_polynomial}. Since $\theta\colon\Store\circ\absval{\blank}\Rightarrow\cot$ is an isomorphism, $\Psi_{\store{\conf}}$ is obtained from the functor of \cref{lem.poly_to_org} after identifying $\cot$ with $\Store\circ\absval{\blank}$.
 
-On a morphism $f=(\outp f,\inpt f,U)\colon V\cdot\lensob M\to\lensob N$, the resulting coalgebra has state space
+On a morphism $f=\left(\binom{\inpt f}{\outp f},U\right)\colon V\cdot\lensob M\to\lensob N$, the resulting coalgebra has state space
 \[
 X^{\conf}\coloneqq V.
 \]
@@ -2394,7 +2416,7 @@ We give the derivation in two passes. In the first pass, we describe the particl
 
 \section{First pass: composing in $\potlens$}\label{sec.spring_first_pass}
 
-First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each little box, representing the particle of mass $m>0$. Then we give a $K$-ary morphism for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
+First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each internal box, representing the particle of mass $m>0$. Then we give a $K$-ary morphism for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
 
 \subsection{Setup}
 
@@ -2409,7 +2431,7 @@ K\From{\outp f}1
 \qqand
 K+1\From{\inpt f} K,
 \]
-where we identify $K+1$ with the disjoint union of the big-box input and the $K$ small-box outputs, the big-box input first. Then $\outp f$ picks out the last wire, $\outp{f}(*)=K$, and $\inpt f$ picks out the first $K$ wires, $\inpt{f}(n)=n$.
+where we identify $K+1$ with the disjoint union of the external-box input and the $K$ internal-box outputs, the external-box input first. Then $\outp f$ picks out the last wire, $\outp{f}(*)=K$, and $\inpt f$ picks out the first $K$ wires, $\inpt{f}(n)=n$.
 
 Applying $\rr^-$ from \cref{lemma.lens_rr}, we obtain the lens $\binom{\rr^K}{\rr^K}\to\binom{\rr}{\rr}$ given by
 \[
@@ -2419,7 +2441,7 @@ Applying $\rr^-$ from \cref{lemma.lens_rr}, we obtain the lens $\binom{\rr^K}{\r
 \]
 Lenses without potential and without parameterization are special cases of $\potlens$-morphisms, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a $\potlens$-morphism
 \[
-\fun{wire}_K\colon\boxob\tpow{K}\to\boxob,\qquad (\outp f,\,\inpt f,\,0)
+\fun{wire}_K\colon\boxob\tpow{K}\to\boxob,\qquad \left(\binom{\inpt f}{\outp f},0\right)
 \]
 
 Composing, we obtain a $0$-ary map, $\fun{wire}_K(\Part,\ldots,\Part)$ in $\potlens$, with parameter $V\coloneqq V'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and constant sharp
@@ -2530,7 +2552,7 @@ In other words, starting at position $x$ and momentum $p$, it outputs $x$ to the
 
 Apply $\Phi_{\phase}$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phi_{\phase}(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phi_{\phase}(\boxob)^{\otimes K},\Phi_{\phase}(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phi_{\phase}(\boxob)^{\otimes K}\to\Phi_{\phase}(\boxob)$, i.e.\
 \[\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}\To{\Phi_{\phase}(\fun{wire}_K)}\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}.\]
-To each $(\vec x,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(x_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,x_0)$ at the big box, we assign the internal inputs $(\omega_2(x_1),x_0)$, $(\omega_3(x_2),x_1)$, $\ldots$, $(\omega_K(x_{K-1}),x_{K-2})$, $(\xi_N,x_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $x_i$ in its $\xi$-slot, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
+To each $(\vec x,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(x_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,x_0)$ at the external box, we assign the internal inputs $(\omega_2(x_1),x_0)$, $(\omega_3(x_2),x_1)$, $\ldots$, $(\omega_K(x_{K-1}),x_{K-2})$, $(\xi_N,x_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $x_i$ in its $\xi$-slot, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
 \begin{equation}\label{eqn.org_wiring_concise}
 (\vec x,\vec \omega)\mapsto\Big((x_K,\omega_1),\;(\xi_N,x_0)\mapsto\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)\Big).
 \end{equation}
