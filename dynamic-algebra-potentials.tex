@@ -327,6 +327,23 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\fun}[1]{\mathrm{#1}}%a function
 \newcommand{\Fun}[1]{\text{\normalfont\textsf{#1}}}%a named functor
 
+\newcommand{\notsafe}[1]{{#1}}
+\makeatletter
+\NewDocumentCommand{\trackTermSymbol}{m m}{%
+  \expandafter\newcommand\csname termraw@#1\endcsname{\notsafe{#2}}%
+}
+\NewDocumentCommand{\termraw}{m}{\@nameuse{termraw@#1}}
+\DeclareRobustCommand{\termref}[2]{\notsafe{\hypersetup{linkcolor=black}\hyperlink{term.#1}{#2}}}
+\NewDocumentCommand{\trackTerm}{m m m}{%
+  \trackTermSymbol{#2}{#3}%
+  \newcommand{#1}{\termref{#2}{\termraw{#2}}}%
+}
+\NewDocumentCommand{\defineTerm}{m}{\notsafe{\hypertarget{term.#1}{\termraw{#1}}}}
+\NewDocumentCommand{\defineTermAs}{m m}{\notsafe{\hypertarget{term.#1}{#2}}}
+\makeatother
+% To disable semantic notation links, replace the \termref line above with:
+% \DeclareRobustCommand{\termref}[2]{\notsafe{#2}}
+
 
 
 
@@ -402,9 +419,10 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 
 
 \newcommand{\yon}{\mathcal{y}}
-\newcommand{\poly}{\Cat{Poly}}
+\trackTerm{\poly}{poly}{\Cat{Poly}}
 \newcommand{\polycart}{\poly^{\tn{cart}}}
-\newcommand{\tri}{\mathbin{\triangleleft}}
+\trackTermSymbol{tri}{\triangleleft}
+\newcommand{\tri}{\mathbin{\termref{tri}{\termraw{tri}}}}
 
 % lenses
 \newcommand{\biglens}[2]{
@@ -432,7 +450,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\coalg}{\tn{-}\Cat{Coalg}}
 
-\newcommand{\org}{{\mathbb{O}\Cat{rg}}}
+\trackTerm{\org}{org}{\mathbb{O}\Cat{rg}}
 
 \newcommand{\idcoalg}[1]{{\{\id_{#1}\}}}
 
@@ -440,12 +458,13 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 
 %--------Paper-specific macros--------%
 
-\newcommand{\mfd}{\Cat{Mfd}}
+\trackTerm{\mfd}{mfd}{\Cat{Mfd}}
 \newcommand{\plenspot}{\Cat{PLensPot}}
 \newcommand{\boxx}{\Fun{Box}}
-\newcommand{\Store}{\Fun{Store}}
+\trackTerm{\Store}{Store}{\Fun{Store}}
 \newcommand{\inc}{\Fun{inc}}
-\RenewDocumentCommand{\cot}{g}{\IfValueTF{#1}{\fun{cot}(#1)}{\fun{cot}}}
+\trackTermSymbol{cot}{\fun{cot}}
+\RenewDocumentCommand{\cot}{g}{\IfValueTF{#1}{\termref{cot}{\termraw{cot}}(#1)}{\termref{cot}{\termraw{cot}}}}
 \newcommand{\ev}{\fun{ev}}
 \newcommand{\coev}{\fun{coev}}
 \newcommand{\pr}{\fun{pr}}
@@ -455,22 +474,25 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\ad}{\fun{ad}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
-\newcommand{\potlens}{\Cat{PLens}}
-\newcommand{\cotstor}{\Cat{CotStor}}
-\newcommand{\Para}{\mathbb{P}\Cat{ara}}
+\trackTerm{\potlens}{potlens}{\Cat{PLens}}
+\trackTerm{\cotstor}{cotstor}{\Cat{CotStor}}
+\trackTerm{\Para}{Para}{\mathbb{P}\Cat{ara}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
-\newcommand{\refn}{\fun{ref}}\newcommand{\rnla}{\Cat{RNLA}}
-\newcommand{\rvect}{\Cat{RVect}}
-\newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
+\newcommand{\refn}{\fun{ref}}
+\trackTerm{\rnla}{rnla}{\Cat{RNLA}}
+\trackTerm{\rvect}{rvect}{\Cat{RVect}}
+\trackTermSymbol{Lens}{\Cat{Lens}}
+\newcommand{\Lens}[1]{\termref{Lens}{\termraw{Lens}}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
 \newcommand{\plm}{\Cat{PLM}}
 \newcommand{\inpt}[1]{#1^{-}}
 \newcommand{\outp}[1]{#1^{+}}
 \newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}% vertical lens-object notation; to revert, change to (\inpt{#1},\outp{#1})
 \newcommand{\lensobs}[2]{\binom{\inpt{#1}\otimes\inpt{#2}}{\outp{#1}\otimes\outp{#2}}}% monoidal product of two lens objects
-\newcommand{\potd}{\fun{d}}
+\trackTerm{\potd}{potd}{\fun{d}}
 \newcommand{\dyn}{\fun{dyn}}
-\newcommand{\store}[1]{\mathfrak{s}_{#1}}
+\trackTermSymbol{store}{\mathfrak{s}}
+\newcommand{\store}[1]{\termref{store}{\termraw{store}}_{#1}}
 \newcommand{\conf}{\mathrm{conf}}
 \newcommand{\phase}{\mathrm{phase}}
 \newcommand{\lrn}{\mathrm{lrn}}
@@ -478,7 +500,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \font\MnSyCfont=MnSymbolC10
 \newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
 \newcommand{\smallbullet}{\mbox{\MnSyCfont\symbol{"59}}}
-\newcommand{\blank}{\mathord{\hspace{1pt}\smallsquare\hspace{1pt}}}
+\newcommand{\blank}{\notsafe{\mathord{\hspace{1pt}\smallsquare\hspace{1pt}}}}
 
 \newcommand{\thanksAFOSR}[1]{This material is based upon work supported by the Air Force Office of Scientific Research under award number #1}
 
@@ -577,15 +599,17 @@ It remains to describe the source syntax: ordinary smooth data that will be sent
 
 The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens: a map $\outp f\colon \outp M\to\outp N$ together with a map $\inpt f\colon\outp M\times\inpt N\to\inpt M$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming and database theory, compositional game theory, and categorical accounts of backpropagation~\cite{bohannon2006relational,johnson2012lenses,hedges2017coherence,fong2019backprop}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way. 
 
-To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\lmfd^\rr$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added by the Para construction, which packages parameterized maps compositionally~\cite{capucci2024actegories}. The resulting category is
+To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\lmfd^\rr$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added by the Para construction~\cite{capucci2024actegories} (\cref{sec.para_general}): given a symmetric monoidal category $\cat V$ acting on a category $\cat M$, the category $\para{\cat V}{\cat M}$ has the same objects as $\cat M$, and a morphism $x\to y$ is a pair $(v,f)$ consisting of a parameter $v\in\cat V$ and an $\cat M$-map $f\colon v\cdot x\to y$; composites use $\cat{V}$'s monoidal structure to combine parameters. The resulting category is
 \[
 \potlens\coloneqq\para{\rvect}{\lmfd^\rr};
 \]
 we call its morphisms \emph{potentialized lenses}. Under the semantics functor $\potlens\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
 
-The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$ (\cref{prop.Theta}). In $\poly$, this sends the ordinary set-lens interface $\binom{A}{B}$, represented by $\binom{A\yon}{B\yon}$, to the monomial polynomial $B\yon^A$ (\cref{ex.moore}); coalgebras on these monomials are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
+The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$ (\cref{thm.Theta}). In $\poly$, this sends the ordinary set-lens interface $\binom{A}{B}$, represented by $\binom{A\yon}{B\yon}$, to the monomial polynomial $B\yon^A$ (\cref{ex.moore}); coalgebras on these monomials are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
 
 Together, $\cot$ and Moore internalization turn ordinary smooth data---output routing, input routing, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate, giving the two semantics functors $\Phi_{\conf},\Phi_{\phase}\colon\potlens\to\org$. In the configuration semantics $\Phi_{\conf}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phi_{\phase}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates, and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data before the choice of coalgebraic state presentation turns that data into dynamics.
+
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
 
 %--------------------------------------------------------------------
@@ -651,7 +675,7 @@ This chapter collects the background used in the construction. We first fix the 
 \section{Notational conventions}\label{sec.prelim}
 %--------------------------------------------------------------------
 
-We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor is written in sans-serif, $\Fun{T},\Fun{Box}$. Number systems use blackboard bold, $\nn,\rr$; the dynamic algebra bicategory is denoted $\org$. 
+We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor is written in sans-serif, $\Fun{T},\Fun{Box}$. Number systems use blackboard bold, $\nn,\rr$; the dynamic algebra bicategory is denoted $\org$. For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined.
 
 We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories.
 
@@ -668,7 +692,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 
 In this section we fix the differential-geometric notation used throughout.
 
-We work in the cartesian category $(\mfd,\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, write $T_mM$ for the tangent space at $m$ and $TM$ for the tangent bundle; write $T^*_mM$ and $T^*M$ for the cotangent space at $m$ and the cotangent bundle.
+We work in the cartesian category $(\defineTerm{mfd},\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, write $T_mM$ for the tangent space at $m$ and $TM$ for the tangent bundle; write $T^*_mM$ and $T^*M$ for the cotangent space at $m$ and the cotangent bundle.
 
 The tangent functor $T\colon\mfd\to\mfd$ preserves products, so $T(M\times N)\cong TM\times TN$; in particular
 \begin{equation}\label{eqn.T_products}
@@ -713,7 +737,7 @@ That is, $dU|_m$ is the covector at $m$ whose pairing with a tangent vector $\do
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\poly$}{Poly}}\label{sec.poly}
 
-We briefly review the category $\poly$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
+We briefly review the category $\defineTerm{poly}$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
 
 The category $\poly$ of \emph{polynomial functors} is the full subcategory of all endofunctors $p\colon\smset\to\smset$ spanned by those of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
 \begin{equation}\label{eqn.poly}
@@ -746,7 +770,7 @@ satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. 
 
 The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$; it is a (nonsymmetric) monoidal structure with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
 \begin{align}\label{eqn.substitution}
-p\tri q&=
+p\defineTermAs{tri}{\mathbin{\termraw{tri}}} q&=
 \sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
 \sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
 \end{align}
@@ -787,19 +811,47 @@ When $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout func
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
+For any set $S$, the adjunction $S\yon\dashv\yon^S$ in $\smset$ (i.e.\ functions $S\times A\to B$ are in bijection with functions $A\to B^S$) induces the \emph{store comonad} $\defineTerm{Store}(S)\coloneqq S\yon^S$ on $\smset$.
+
+\begin{lemma}\label{lem.store_monoidal}
+The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$, defines a strong symmetric monoidal functor
+\[
+\Store\colon(\smsetiso,1,\times)\to(\poly,\yon,\otimes).
+\]
+\end{lemma}
+\begin{proof}
+The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$. Functoriality on bijections is direct: $\Store(\id_S)=\id_S\yon^{\id_S}=\id_{\Store(S)}$ and $\Store(g\circ f)=(g\circ f)\yon^{f\inv\circ g\inv}=\Store(g)\circ\Store(f)$.
+\end{proof}
+
+\begin{lemma}[Strong monoidal functors give actions]\label{lem.smc_action}
+Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces a symmetric monoidal action of $\cat A$ on $\cat D$ by left multiplication,
+\[
+a\cdot d\coloneqq J(a)\otimes d.
+\]
+\end{lemma}
+
+\begin{definition}[Store action]\label{def.store_action}
+The \emph{store action} of $\smsetiso$ on $\poly$ is the action induced by $\Store$ via \cref{lem.smc_action}:
+\[
+(\cdot)\colon\smsetiso\times\poly\to\poly,
+\qquad
+S\cdot p\coloneqq \Store(S)\otimes p.
+\qedhere\]
+\end{definition}
+
 \begin{proposition}[Coalgebras as polynomial maps]\label{prop.coalg_as_poly_map}
 For $p:\poly$ and $S:\smsetiso$, there is a natural bijection
 \[
-\smset(S,\,p\tri S)\;\cong\;\poly(S\yon^S,\,p).
+\smset(S,\,p\tri S)\;\cong\;\poly(\Store(S),\,p).
 \]
 \end{proposition}
 
 \begin{proof}
-A coalgebra $\beta\colon S\to p\tri S$ unpacks as a pair $\beta=(\beta_1,\beta^\sharp)\colon S\to\sum_{i:p(1)}\prod_{d:p[i]}S$: for each $s:S$, a position $\beta_1(s):p(1)$ and an update $\beta^\sharp_s\colon p[\beta_1(s)]\to S$. A polynomial map $\hat\beta\colon S\yon^S\to p$ unpacks as a pair $(\hat\beta_1,\hat\beta^\sharp)$ of identical signature by \eqref{eqn.poly_map}. The bijection sets $\hat\beta_1\coloneqq\beta_1$ and $\hat\beta^\sharp\coloneqq\beta^\sharp$.\footnote{
+A coalgebra $\beta\colon S\to p\tri S$ unpacks as a pair $\beta=(\beta_1,\beta^\sharp)\colon S\to\sum_{i:p(1)}\prod_{d:p[i]}S$: for each $s:S$, a position $\beta_1(s):p(1)$ and an update $\beta^\sharp_s\colon p[\beta_1(s)]\to S$. A polynomial map $\hat\beta\colon S\yon^S\to p$ unpacks as a pair $(\hat\beta_1,\hat\beta^\sharp)$ with the same type signature by \eqref{eqn.poly_map}. The bijection sets $\hat\beta_1\coloneqq\beta_1$ and $\hat\beta^\sharp\coloneqq\beta^\sharp$.\footnote{
 Equivalently, $\poly$ has a left Kan operation $\lens{p}{q}$ with $\poly(p,q'\tri q)\cong\poly(\lens{p}{q},q')$ given by $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{S}=S\yon^S$.
 }
 
-Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection $f\colon S\To{\cong}T$ acts as $f\yon^{f\inv}\colon S\yon^S\to T\yon^T$ (positions $f$, directions $f\inv$), and we need to check
+Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection $f\colon S\To{\cong}T$ acts on the left side via post-composition with $p\tri f$ and pre-composition with $f\inv$, and on the right side via $\Store(f)=f\yon^{f\inv}$ (\cref{lem.store_monoidal}); we check
 \[
 \begin{tikzcd}
 	S\ar[r,"\beta"]\ar[d, "f"']&p\tri S\ar[d, "p\tri f"]\\
@@ -813,31 +865,15 @@ Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection 
 	p
 \end{tikzcd}
 \]
-The first commutes iff $\beta'_1\circ f=\beta_1$ and $f\circ\beta^\sharp_s=\beta'^\sharp_{f(s)}$ for all $s:S$; the second iff $\hat{\beta'}_1\circ f=\hat\beta_1$ and $\hat\beta^\sharp_s=f\inv\circ\hat{\beta'}^\sharp_{f(s)}$. Under the bijection $\hat\beta_\bullet=\beta_\bullet$, these coincide ($f$ being a bijection).\qedhere
+The first commutes iff $\beta'_1\circ f=\beta_1$ and $f\circ\beta^\sharp_s=\beta'^\sharp_{f(s)}$ for all $s:S$; the second iff $\hat{\beta'}_1\circ f=\hat\beta_1$ and $\hat\beta^\sharp_s=f\inv\circ\hat{\beta'}^\sharp_{f(s)}$. Under the identification $\hat\beta_\blank=\beta_\blank$, these coincide.\qedhere
 \end{proof}
-
-The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$, so the assignment $S\mapsto S\yon^S$ extends to a strong symmetric monoidal functor $\smsetiso\to\poly$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$ (\cref{prop.coalg_as_poly_map}). Composing with the Dirichlet product gives a strong monoidal action of $\smsetiso$ on $\poly$.
-
-\begin{definition}[$\Store$ and the store action]\label{def.store_action}
-Write
-\[
-\Store\colon(\smsetiso,1,\times)\to(\poly,\yon,\otimes),\qquad S\longmapsto S\yon^S
-\]
-for the above functor, and define the \emph{store action} by
-\[
-(\cdot)\colon\smsetiso\times\poly\to\poly
-\where
-S\cdot p\coloneqq S\yon^S\otimes p.
-\]
-\end{definition}
-
 
 \subsection{Cotangent bundles as polynomials}\label{sec.cot}
 
 The category of smooth manifolds provides the source of polynomials relevant to physics and learning. Each manifold has a cotangent bundle, and each smooth map has a transpose on cotangent fibers; combining these gives a functor into $\poly$.
 
 \begin{definition}[Cotangent functor]\label{def.cot}
-The \emph{cotangent functor} $\cot\colon\mfd\to\poly$ sends a smooth manifold $M$ to
+The \emph{cotangent functor} $\defineTerm{cot}\colon\mfd\to\poly$ sends a smooth manifold $M$ to
 \begin{equation}\label{eqn.cot_def}
 \cot{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
 \end{equation}
@@ -1100,7 +1136,7 @@ for any $O:\smset$. We continue with this approach, and as such need to recall $
 
 \subsection{The monoidal bicategory \texorpdfstring{$\org$}{Org}}\label{sec.org}
 
-We recall the monoidal bicategory $\org$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials, and for polynomials $p,q$ the hom-category is
+We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials, and for polynomials $p,q$ the hom-category is
 \[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
 Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}\tri S)$. The interpretation is interactional: $p$ is an \emph{internal} interface and $q$ is an \emph{external} one, and at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
 \[
@@ -1147,7 +1183,7 @@ by closedness of $\poly$ (\cref{sec.poly}). In particular, every 1-morphism $f\c
 
 \subsection{The Para construction}\label{sec.para_general}
 
-We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\para{\cat{A}}{\cat{D}}$ has the same objects as $\cat{D}$, and a morphism $x\to y$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
+We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\defineTerm{Para}_{\cat{A}}(\cat{D})$ has the same objects as $\cat{D}$, and a morphism $x\to y$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
 \[
 f\colon a\cdot x\to y
 \]
@@ -1167,8 +1203,8 @@ In the cases below, the parameter categories are groupoids, so these Para constr
 
 The following is straightforward.
 
-\begin{proposition}[Para by strong monoidal functors]\label{prop.para_strong_induced}
-A strong monoidal functor $J\colon\cat{A}\to\cat{D}$ induces an action of $\cat{A}$ on $\cat{D}$ by left multiplication, and a monoidal natural transformation $\theta\colon J'\circ F\Rightarrow G\circ J$ as on the left, with $F,J,J'$ strong monoidal and $G$ lax (resp.\ strong) monoidal, induces a lax (resp.\ strong) monoidal action square as on the right:
+\begin{proposition}[Action squares from monoidal natural transformations]\label{prop.para_strong_induced}
+Let $J\colon\cat A\to\cat D$ and $J'\colon\cat A'\to\cat D'$ be strong monoidal functors, inducing actions of $\cat A$ on $\cat D$ and of $\cat A'$ on $\cat D'$ by left multiplication (\cref{lem.smc_action}). A monoidal natural transformation $\theta\colon J'\circ F\Rightarrow G\circ J$ as on the left, with $F$ strong monoidal and $G$ lax (resp.\ strong) monoidal, induces a lax (resp.\ strong) monoidal action square as on the right:
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 \cat A\ar[r,"J"]\ar[d,"F"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
@@ -1215,7 +1251,7 @@ This chapter constructs the composition syntax used in the rest of the paper. We
 %--------------------------------------------------------------------
 
 \subsection{Lenses}\label{sec.lenses}
-We first recall the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a commutative comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
+We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a commutative comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
 \begin{equation}\label{eqn.lens_def}
 \outp f\colon \outp c\to\outp d
 \qqand
@@ -1556,11 +1592,11 @@ When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cr
 
 The previous section built categories of lenses and their coKleisli variants. We next record a representation that sends a lens back into the base category.
 
-\begin{proposition}\label{prop.Theta}
+\begin{theorem}[Moore internalization]\label{thm.Theta}
 For any symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, there is a normal lax monoidal functor
 \[\Theta\colon\Lens{\cat{C}}\to\cat{C},\qquad
 \lensob{c}\mapsto\outp c\otimes\ihom{\inpt c,I}.\]
-\end{proposition}
+\end{theorem}
 \begin{proof}
 This is an immediate corollary of \cref{prop.Theta_T_alpha} with $\Fun{T}=\id$. 
 %We need to prove the equality $\Theta(g\circ f)=\Theta(g)\circ\Theta(f)\colon\outp c\,H_c\to\outp e\,H_e$ for $f\colon\lensob c\to\lensob d$ and $g\colon\lensob d\to\lensob e$. It amounts to the commutativity of the outer square below, where we write $H_x\coloneqq[\inpt x,I]$, and for space reasons write $c,d,e$ for $\inpt c,\inpt d,\inpt e$ and elide the $\otimes$-symbol, so e.g.\ $\outp d\outp d[d,c H_c]$ means $\outp d\otimes\outp d\otimes[\inpt d,\inpt c\otimes [c,I]]$. 
@@ -1972,7 +2008,7 @@ Its pointwise inverse $\flat_x\coloneqq\sharp_x\inv\colon V\to V^*$ is the \emph
 \end{equation}
 The three forms $\sharp_x$, $\flat_x$, and $\pairing{-,-}_x$ package the same data; we use whichever is most convenient. The \emph{constant} case $\sharp_x=\sharp_0$ for all $x$ is the familiar setting of a single bilinear form on $V$.
 
-We define the category $\rvect$ to have reactive vector spaces as objects, and as morphisms $(V,\sharp_V)\to(W,\sharp_W)$ the linear isomorphisms $\phi\colon V\To{\cong}W$ preserving the pairing pointwise: $\pairing{\phi v,\phi v'}_{\phi(x)}=\pairing{v,v'}_x$ for all $x,v,v'\in V$.%
+We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects, and as morphisms $(V,\sharp_V)\to(W,\sharp_W)$ the linear isomorphisms $\phi\colon V\To{\cong}W$ preserving the pairing pointwise: $\pairing{\phi v,\phi v'}_{\phi(x)}=\pairing{v,v'}_x$ for all $x,v,v'\in V$.%
 \footnote{
 Restricting to isomorphisms (making $\rvect$ a groupoid) is essential for our development below: each $\rvect$-morphism is used both as $\phi$ on vectors and as $(\phi^*)\inv$ on covectors, e.g.\ in $T^*\phi$ \eqref{eqn.TT_phi} below.
 }
@@ -2093,7 +2129,7 @@ The \emph{exponential} of a reactive vector space $(V,\sharp_V)$ is the bundle m
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharp_x(\xi)\in T_xV\cong V$. In the constant case $\sharp_x=\sharp_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}.
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.rnla_generalization}
-Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie algebras} (RN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.rvect}. We expect that replacing $\rvect$ by $\rnla$ extends the constructions of this section to the non-abelian setting. A careful treatment is left to future work.
+Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie algebras} (RN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.rvect}. We expect that replacing $\rvect$ by $\defineTerm{rnla}$ extends the constructions of this section to the non-abelian setting. A careful treatment is left to future work.
 
 See \cref{rem.cot_as_category} for the next incarnation of this idea, as it traces through the paper.\qedhere
 \end{remark}
@@ -2169,7 +2205,7 @@ As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon
 
 The role of $\rr$ in this section is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cot\rr$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
 \begin{equation}\label{eqn.d_potential}
-\potd\colon\cot{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
+\defineTerm{potd}\colon\cot{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
 \end{equation}
 We call it $\potd$ because this is the choice for which potentials contribute their usual differentials. Indeed, for a smooth map $U\colon X\to\rr$, the composite $\potd\circ\cot{U}\colon\cot{X}\to\yon$ corresponds to the covector field $dU$ on $X$: tracing on directions,
 \[
@@ -2215,8 +2251,8 @@ There is an action of $\rvect$ on $\lmfd^\rr$ from \cref{lem.parameter_lens_acti
 \begin{definition}\label{def.potlens}
 The symmetric monoidal category of \emph{smooth rewiring diagrams} is denoted and defined by
 \[
-\potlens\coloneqq\para{\rvect}{\lmfd^\rr}.
-\]
+\defineTerm{potlens}\coloneqq\para{\rvect}{\lmfd^\rr}.
+\qedhere\]
 \end{definition}
 
 %--------------------------------------------------------------------
@@ -2262,17 +2298,17 @@ We first explain how cotangent parameterizations are presented to $\org$ as ordi
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
 
-The Para construction over the store action of $\smsetiso$ on $\poly$ (\cref{def.store_action}) repackages the truncation $\org_{\cong}$ (with only coalgebra isomorphisms as 2-cells) exactly:
+The Para construction over the store action of $\smsetiso$ on $\poly$ (\cref{def.store_action}) repackages the truncation $\org_{\cong}$ (with only coalgebra isomorphisms as 2-cells) exactly. Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories:
 
 \begin{proposition}\label{prop.org_as_para}
-There is an isomorphism of $(2,1)$-categories
+There is an isomorphism of categories
 \[
-\para{\Cat{Set}_{\cong}}{\poly}\To{\cong}\org_\cong
+\para{\Cat{Set}_{\cong}}{\poly}\To{\cong}\org_\cong.
 \]
 \end{proposition}
 
 \begin{proof}
-For each category---$\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$---the object set is $\ob\poly$ and the mapping groupoids $p\to q$ agree
+Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to q$ agree
 \begin{align*}
 	\para{\Cat{Set}_{\cong}}{\poly}(p,q)&=
   \sum_{S:\smsetiso}\poly(S\yon^S\otimes p, q)\\&\cong
@@ -2284,8 +2320,10 @@ by \cref{eqn.dirichlet_hom,prop.coalg_as_poly_map}. It remains to show that the 
 In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
 
+Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
+
 \begin{lemma}\label{lem.poly_to_org}
-Let $F\colon\rvect\to\smsetiso$ be strong symmetric monoidal, and let $\rvect$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\rvect\to\poly$ as in \cref{prop.para_strong_induced}. There is an identity-on-objects normal lax symmetric monoidal functor
+Let $F\colon\rvect\to\smsetiso$ be strong symmetric monoidal, and let $\rvect$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\rvect\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \]
@@ -2307,7 +2345,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 The Para description of $\org_\cong$ lets us compare cotangent parameterizations with ordinary store parameterizations, i.e.\ coalgebras (see \cref{prop.org_as_para}). Recall the inclusion $\rvect\to\vect\hookrightarrow\mfd$ from \cref{prop.rvect_smc_action} and $\Store(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
 
 \begin{definition}[Cotangent storage]\label{def.cotangent_storage}
-A \emph{cotangent storage} is a pair $\mathfrak{s}=(F,\vartheta)$, where $F\colon\rvect\to\smsetiso$ is strong symmetric monoidal and $\vartheta$ is a monoidal natural transformation filling the square
+A \emph{cotangent storage} is a pair $\defineTerm{store}=(F,\vartheta)$, where $F\colon\rvect\to\smsetiso$ is strong symmetric monoidal and $\vartheta$ is a monoidal natural transformation filling the square
 \begin{equation}\label{eqn.cotangent_storage_square}
 \begin{tikzcd}[ampersand replacement=\&]
 \rvect\ar[r,"\inc"]\ar[d,"F"', ""{name=left}]
@@ -2316,7 +2354,7 @@ A \emph{cotangent storage} is a pair $\mathfrak{s}=(F,\vartheta)$, where $F\colo
 \arrow[Rightarrow, from=left, to=right, shorten <=7mm, shorten >=7mm, "\vartheta"]
 \end{tikzcd}
 \end{equation}
-A \emph{morphism} $\alpha\colon(F,\vartheta)\to(F',\vartheta')$ of cotangent storages is a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ such that $\vartheta'\circ\Store(\alpha)=\vartheta$. We denote this category by $\cotstor$.
+A \emph{morphism} $\alpha\colon(F,\vartheta)\to(F',\vartheta')$ of cotangent storages is a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ such that $\vartheta'\circ\Store(\alpha)=\vartheta$. We denote this category by $\defineTerm{cotstor}$.
 \end{definition}
 
 Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cot{V}\otimes p$ induced by $\cot\circ\inc$.
