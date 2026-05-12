@@ -528,20 +528,20 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \maketitle
 
 \begin{abstract}
-We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are smooth rewiring diagrams: potentialized lenses consisting of a reactive parameter space, smooth forward and backward routing maps, and a real-valued potential.
+We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{potentialized lenses}, which consist of a reactive parameter space, smooth forward and backward routing maps, and a real-valued potential.
 
-The technical heart is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phi_{\phase},\Phi_{\conf}\colon\potlens\to\org$ into the bicategory $\org$ of polynomial coalgebras, which we take as the semantics category. $\Phi_{\phase}$ stores both position and momentum; $\Phi_{\conf}$ stores only position. When applied to a parameterized function, $\Phi_{\conf}$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to a collection of particles wired together in series, $\Phi_{\phase}$ recovers the discrete wave equation.
+The technical heart of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phi_{\phase},\Phi_{\conf}\colon\potlens\to\org$ into the bicategory $\org$ of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phi_{\phase}$ stores both position and momentum; $\Phi_{\conf}$ stores only position. When applied to a parameterized function, $\Phi_{\conf}$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to a collection of particles wired together in series, $\Phi_{\phase}$ recovers the discrete wave equation.
 \end{abstract}
 
-\tableofcontents
+\tableofcontents*
 
 %====================================================================
 \chapter{Introduction}\label{ch.intro}
 %====================================================================
 
-There is a commonality in Hamiltonian dynamics and gradient descent, namely an isomorphism of the form $T^*M\cong TM$ transforming covectors into vectors that change the state. In the vector-space setting below, this covector-to-update structure is what we call \emph{reactive}. In Hamiltonian dynamics, it is the \emph{symplectic sharp} map on phase space; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. And in each case, the dynamics is compositional: local subsystems---each with their own dynamics---can send each other information by which to compose into an integrated dynamical system.
+There is a commonality in Hamiltonian dynamics and gradient descent, namely an isomorphism of the form $T^*M\cong TM$, between a cotangent bundle and a tangent bundle, transforming covectors into vectors that change the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, it is the \emph{symplectic sharp} map on phase space; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. And in each case, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
 
-The goal of this paper is to build a compositional syntax for such smooth reactive, potential-driven systems, including their time-varying couplings, and a functorial semantics that turns this syntax into explicit discrete update rules.
+The goal of this paper is to build a compositional syntax for such smooth reactive, potential-driven systems, including adaptive couplings, and a functorial semantics that turns this syntax into explicit discrete update rules.
 
 %--------------------------------------------------------------------
 \section{Motivation for smooth rewiring diagrams}\label{sec.intro_smooth_rewiring}
@@ -549,7 +549,7 @@ The goal of this paper is to build a compositional syntax for such smooth reacti
 
 Operads are a natural categorical setting for establishing compositionality results. An operad $\cat{W}$ establishes a composition syntax---what sorts of diagrams can be composed---and a functor $\cat{W}\to\smset$ establishes the corresponding semantics. For example
 \[
-\begin{tikzpicture}[oriented WD, bb port length=4pt, bb port sep=1.5, bb min width=.35cm, bbx=.4cm, bby=.8ex, baseline=(box1), particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
+\varphi=\begin{tikzpicture}[oriented WD, bb port length=4pt, bb port sep=1.5, bb min width=.35cm, bbx=.4cm, bby=.8ex, baseline=(box1), particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
   \def\N{6}
   \node[bb={1}{1}, particle] (box1) {};
   \foreach \i [evaluate=\i as \prev using int(\i-1)] in {2,...,\N} {
@@ -563,27 +563,27 @@ Operads are a natural categorical setting for establishing compositionality resu
   \draw (box\N_out1) -- (Y_out1);
 \end{tikzpicture}
 \]
-For interfaces $b_1,\ldots,b_K,c$, a morphism $\phi\colon b_1,\ldots,b_K\to c$ in $\cat{W}$ represents an arrangement of $K$ internal boxes, with interfaces $b_1,\ldots,b_K$, inside an external box with interface $c$. The picture above is the case $K=6$: it places six boxes of the same type in a chain inside a box of that type. As syntax, it records the architecture of the chain---the types of each wire and how boxes are connected---it does not say what the boxes do, what signals pass along each wire, or how strongly one box affects the next.
+For interfaces $b_1,\ldots,b_K,c$, a morphism $\varphi\colon b_1,\ldots,b_K\to c$ in $\cat{W}$ represents an arrangement of $K$ internal boxes, with interfaces $b_1,\ldots,b_K$, inside an external box with interface $c$. The picture above has $K=6$: it wires up six boxes of the same type inside a box of the same type again. As syntax, it records the architecture of the chain---the types of each wire and how boxes are connected---but it does not say what the boxes do, what signals pass along each wire, or how strongly one box affects the next.
 
-In the examples below we need a richer composition syntax: one where the effective coupling is itself part of the data and may change through time, depending on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider an adaptive spring material for which each connecting edge has a variable spring constant that can be controlled from outside the system, in conjunction with internal adaptation governed by a chosen potential $U$. 
+In the examples below we need a richer composition syntax: one where the effective coupling is itself part of the data and may adapt to the signals flowing between boxes. The way it adapts is the data of a dynamical system whose behavior depends on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider an adaptive spring material for which each connecting edge has a variable spring constant that responds both to external control and to a chosen potential $U$.
 
-We call these richer composition patterns \emph{smooth rewiring diagrams}. And instead of interpreting them in $\smset$, where the semantics is static, we interpret them in $\org$, whose morphisms are polynomial coalgebras: input-output systems with state that changes in time. Thus a $0$-ary morphism can represent a component, such as a single particle, rather than only an empty box, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
+We call these richer composition patterns \emph{smooth rewiring diagrams}; formally, they will be the multimorphisms in the operad of potentialized lenses constructed in \cref{sec.W_choice}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\org$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
 
-The choice to have semantics land in $\org$, whose morphisms are polynomial coalgebras, is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are perhaps the simplest setting in which alternatives and requirements coexist: they are built from one representable $\yon$ by coproducts and products---the free distributive category on a single object---so a polynomial
+The choice to have semantics land in $\org$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one representable $\yon$ by coproducts and products---the free distributive category on a single object---so a polynomial
 \[
 p=\sum_{i:I}\yon^{p[i]}
 \]
 is just a family of \emph{directions} $p[i]$ indexed by a family of \emph{positions} $i:I$. We regard positions as the possible outputs and the directions as the inputs accepted at that output. A $p$-coalgebra $S\to p(S)$ is then a deterministic dynamical system with state: given a state $s$ it specifies an output position and, for every acceptable input direction, specifies a next state. 
 
-Just as the free coproduct completion of a single object has all limits---i.e.\ $\smset$ has a great deal of structure emerging unexpectedly when simply asking for coproducts---much of the usefulness of $\poly$ comes from structure that emerges unexpectedly from the free-distributive description. For example, as recalled in \cref{sec.poly}, polynomials can be understood as functors $\smset\to\smset$, and under this interpretation they compose by substitution, internalized as a monoidal product $\tri$ on $\poly$. This leads naturally to considering polynomial monads, polynomial comonads, and polynomial coalgebras, all of which will be relevant to us.
+Just as the free coproduct completion of a single object has all limits---i.e.\ $\smset$ has a great deal of structure emerging unexpectedly when simply asking for coproducts---much of the usefulness of $\poly$ comes from structure that emerges unexpectedly from the free-distributive description. For example, as recalled in \cref{sec.poly}, polynomials can be understood as functors $\smset\to\smset$, and under this interpretation they compose, which gives a monoidal product $\tri$ on $\poly$. This leads naturally to considering polynomial monads, polynomial comonads, and polynomial coalgebras, all of which will be relevant to us.
 
-But most relevantly for smooth rewiring, $\poly$ also carries the Dirichlet product $\otimes$, which combines interfaces in parallel, and this monoidal structure is closed. A map of polynomials $p\to q$ can be understood as a static coupling pattern: it sends each output position of the internal interface $p$ to an output position of the external interface $q$, and sends each compatible input direction of $q$ back to an input direction of $p$. Thus the $K$-many internal interfaces of a wiring diagram combine as $p_1\otimes\cdots\otimes p_K$, and a static wiring into an external interface $q$ is a map $\varphi\colon p_1\otimes\cdots\otimes p_K\to q$.
+But most relevantly for smooth rewiring, $\poly$ also carries the Dirichlet product $\otimes$, which combines interfaces in parallel, and this monoidal structure is closed. A map of polynomials $p\to q$ can be understood as a static coupling pattern: it sends each output position of the internal interface $p$ to an output position of the external interface $q$ and each compatible input direction of $q$ back to an input direction of $p$. Thus the $K$-many internal interfaces $p_1,\ldots,p_K$ of a wiring diagram combine as $p_1\otimes\cdots\otimes p_K$, and a static wiring into an external interface $q$ is a map $\varphi\colon p_1\otimes\cdots\otimes p_K\to q$.
 
 Because $\poly$ is monoidal closed, such maps are equivalently the positions of the internal hom
 \[
 w\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,q},
 \]
-so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the rewiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
+so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the rewiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $\beta\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to q$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
 
 %--------------------------------------------------------------------
 \section{From smooth data to dynamics}\label{sec.intro_smooth_to_dynamics}
@@ -593,23 +593,25 @@ The bridge from manifolds to polynomial functors is the cotangent functor $\cot\
 \[
 \cot{M}\coloneqq\sum_{m\in M}\yon^{T_m^*M},
 \]
-whose positions are points $m\in M$ and whose directions are covectors at $m$. A smooth map $f\colon M\to N$ acts forward on positions by $f$ and backward on directions by cotangent pullback $(T_mf)^\top$. Crucially, $\cot$ is strong symmetric monoidal: $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$. Thus parallel products of polynomial interfaces correspond to ordinary products of manifolds.
+whose positions are points $m\in M$ and whose directions at $m$ are the covectors $T_m^*M$. A smooth map $f\colon M\to N$ acts forward on positions by $f$ and backward on directions by cotangent pullback $(T_mf)^\top$. Crucially, $\cot$ is strong symmetric monoidal: $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$. Thus parallel products of polynomial interfaces correspond to ordinary products of manifolds.
 
-It remains to describe the source syntax: ordinary smooth data that will be sent through $\cot$ and then converted into polynomial update rules. A neural network, for example, begins as a smooth map $f\colon V\times \rr^{m}\to\rr^{n}$: a choice of parameter, input, and output manifolds, together with a model map. Smooth rewiring diagrams generalize this familiar situation in three ways. First, an ordinary manifold $M$ becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; the input side $\inpt M$ is an ordinary smooth port for information supplied by the surrounding system, distinct from any cotangent gradient signal. Thus the old manifolds $\rr^m,\rr^n$ become output sides $\outp M,\outp N$, and the old model map $f$ becomes the output map $\outp f$. Second, a morphism has both an output map $\outp f$ and an input map $\inpt f$, so the syntax can specify how external inputs are routed back to internal interfaces. Third, the parameter space $V$ is made reactive, and we add a potential $U\colon V\times\outp{M}\times\inpt{N}\to\rr$, whose differential contributes to the eventual update rule.
+It remains to describe the source syntax: ordinary smooth data that will be sent through $\cot$ and then converted into polynomial coalgebra update rules. A neural network, for example, begins as a smooth map $f\colon V\times \rr^{m}\to\rr^{n}$: a choice of parameter, input, and output manifolds, together with a model map. Smooth rewiring diagrams generalize this familiar situation in four ways. First, an ordinary manifold $M$ becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; the input side $\inpt M$ is an ordinary smooth port for information supplied by the surrounding system. 
+Second, an ordinary map $f\colon M\to N$ becomes only one component of a \emph{lens} $\binom{\inpt f}{\outp f}$, namely the output map $\outp f\colon\outp M\to\outp N$; the input map $\inpt f\colon\outp M\times\inpt N\to\inpt M$ routes external inputs back to internal interfaces. 
+Third, we add a reaction structure $\sharp_V$ to the parameter space $V$. And fourth, we add a potential $U\colon V\times\outp{M}\times\inpt{N}\to\rr$, whose differential contributes to the dynamics.
 
 The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens: a map $\outp f\colon \outp M\to\outp N$ together with a map $\inpt f\colon\outp M\times\inpt N\to\inpt M$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming and database theory, compositional game theory, and categorical accounts of backpropagation~\cite{bohannon2006relational,johnson2012lenses,hedges2017coherence,fong2019backprop}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way. 
 
-To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\lmfd^\rr$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added by the Para construction~\cite{capucci2024actegories} (\cref{sec.para_general}): given a symmetric monoidal category $\cat V$ acting on a category $\cat M$, the category $\para{\cat V}{\cat M}$ has the same objects as $\cat M$, and a morphism $x\to y$ is a pair $(v,f)$ consisting of a parameter $v\in\cat V$ and an $\cat M$-map $f\colon v\cdot x\to y$; composites use $\cat{V}$'s monoidal structure to combine parameters. The resulting category is
+To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\lmfd^\rr$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added using the Para construction~\cite{capucci2024actegories} (\cref{sec.para_general}): given a symmetric monoidal category $\cat V$ acting on a category $\cat M$, the category $\para{\cat V}{\cat M}$ has the same objects as $\cat M$, and a morphism $x\to y$ is a pair $(v,f)$ consisting of a parameter $v\in\cat V$ and an $\cat M$-map $f\colon v\cdot x\to y$; composites use $\cat{V}$'s monoidal structure to combine parameters. The resulting category is
 \[
 \potlens\coloneqq\para{\rvect}{\lmfd^\rr};
 \]
 we call its morphisms \emph{potentialized lenses}. Under the semantics functor $\potlens\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
 
-The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$ (\cref{thm.Theta}). In $\poly$, this sends the ordinary set-lens interface $\binom{A}{B}$, represented by $\binom{A\yon}{B\yon}$, to the monomial polynomial $B\yon^A$ (\cref{ex.moore}); coalgebras on these monomials are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
+The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$, and this process constitutes a lax monoidal functor (\cref{thm.Theta}). This sends the ordinary set-lens interface $\binom{A}{B}$, represented in $\poly$ by $\binom{A\yon}{B\yon}$, to the monomial $B\yon^A$ (\cref{ex.moore}), whose coalgebras are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
 
-Together, $\cot$ and Moore internalization turn ordinary smooth data---output routing, input routing, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate, giving the two semantics functors $\Phi_{\conf},\Phi_{\phase}\colon\potlens\to\org$. In the configuration semantics $\Phi_{\conf}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phi_{\phase}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates, and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data before the choice of coalgebraic state presentation turns that data into dynamics.
+Together, $\cot$ and Moore internalization turn ordinary smooth data---output routing, input routing, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. The two choices we consider---which we call configuration and phase- give rise to two semantics functors $\Phi_{\conf},\Phi_{\phase}\colon\potlens\to\org$. In the configuration semantics $\Phi_{\conf}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phi_{\phase}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates, and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data, which is then automatically transformed into coalgebraic dynamics.
 
-The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
 
 %--------------------------------------------------------------------
@@ -1066,7 +1068,7 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
 \end{equation}
 \smallskip
 
-\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-object-labeled-ports) and whose morphisms $\phi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of internal boxes in an external box. That is, for a set $O$ of objects, there are operads $\cat{W}_{O\tn{-Cat}}$, $\cat{W}_{O\tn{-MnCat}}$, $\cat{W}_{O\tn{-TrCat}}$, and $\cat{W}_{O\tn{-Opd}}$ each with a 2-ary morphism that can be drawn as above.%
+\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-object-labeled-ports) and whose morphisms $\varphi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of internal boxes in an external box. That is, for a set $O$ of objects, there are operads $\cat{W}_{O\tn{-Cat}}$, $\cat{W}_{O\tn{-MnCat}}$, $\cat{W}_{O\tn{-TrCat}}$, and $\cat{W}_{O\tn{-Opd}}$ each with a 2-ary morphism that can be drawn as above.%
 \footnote{
 There is a potentially confusing level-shift in that there is an operad $\cat{W}_{O\tn{-Opd}}$ for which algebras are operads with object set $O$. In case it's helpful, the object set for $\cat{W}_{O\tn{-Opd}}$ would be $\List(O)\times O$, because every ``box'' has a list of inputs and an output.
 }
@@ -1075,7 +1077,7 @@ Category-like structures that can interpret the compositionality syntax from $\c
 \begin{equation}\label{eqn.W_alg}
 \cat{C}\colon\cat{W}\to\smset.
 \end{equation}
-Indeed, such a functor assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\phi$ the function $\cat{C}(\phi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
+Indeed, such a functor assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\varphi$ the function $\cat{C}(\varphi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
 \footnote{
 By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$. In general, the \emph{underlying operad} of a symmetric monoidal category $(\cat{C},I,\otimes)$ has the same objects as $\cat{C}$ and multimorphisms $\cat{C}(a_1,\ldots,a_n;b)\coloneqq\cat{C}(a_1\otimes\cdots\otimes a_n,b)$, with operadic composition by tensoring and composing in $\cat{C}$.
 }
@@ -1090,7 +1092,7 @@ For a set $O$, let $\ob\cat{W}_{O\tn{-Cat}}\coloneqq O\times O$ and
 \]
 Thus the diagram
 \begin{equation}\label{eqn.cat_composite}
-\phi\coloneqq\begin{tikzpicture}[oriented WD, bb port sep=1, bb port length=0, bb min width=.2cm, bby=.2cm, inner xsep=.2cm, x=.2cm, y=.3cm, baseline=(Catf)]
+\varphi\coloneqq\begin{tikzpicture}[oriented WD, bb port sep=1, bb port length=0, bb min width=.2cm, bby=.2cm, inner xsep=.2cm, x=.2cm, y=.3cm, baseline=(Catf)]
 \begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
   \node[bb={1}{1}] (Catf) {$f_1$};
   \node[bb={1}{1}, right=1 of Catf] (Catg) {$f_2$};
@@ -1111,9 +1113,9 @@ Thus the diagram
 \end{scope}
 \end{tikzpicture}
 \end{equation}
-	represents a map $\phi\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_i=A'_i$ for $0\leq i\leq2$. 
+	represents a map $\varphi\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_i=A'_i$ for $0\leq i\leq2$. 
 
-If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1:\cat{C}(A'_0,A_1)$, $f_2:\cat{C}(A'_1,A_2)$ and $\phi(f_1,f_2):\cat{C}(A_0,A'_2)$. In other words the diagram $\phi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.
+If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1:\cat{C}(A'_0,A_1)$, $f_2:\cat{C}(A'_1,A_2)$ and $\varphi(f_1,f_2):\cat{C}(A_0,A'_2)$. In other words the diagram $\varphi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.
 \end{example}
 
 Each such $\cat{W}$ is a \emph{composition syntax}: its multimorphisms specify legal arrangements of boxes---how systems compose---with no commitment about what fills them. An algebra is a semantics. A variety of examples of these wiring-diagram operads, whose algebras are structured categories, can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
@@ -2977,7 +2979,7 @@ where $\ddot x_i(t)=x_i(t+2)-2x_i(t+1)+x_i(t).$
 
 We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider morphisms of the form
 \[
-\varphi:\potlens(\boxob\tpow{n},\boxob)
+\varphi\in\potlens(\boxob\tpow{n},\boxob)
 \]
 for varying $n$. Note that $\boxob\tpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
 
@@ -2994,7 +2996,7 @@ To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\p
 This is called the \emph{harmonic} potential.
 
 \paragraph{The wiring diagram.}
-For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\phi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
+For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\varphi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
 \[
 K\From{\outp f}1
 \qqand
