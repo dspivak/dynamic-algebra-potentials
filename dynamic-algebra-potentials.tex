@@ -752,6 +752,12 @@ p\tri q&=
 \end{align}
 A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, substitution recovers evaluation: $p\tri S=p(S)$.
 
+Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, and there is a map of the form
+\begin{equation}\label{eqn.duoidal}
+(p_1\tri p_2)\otimes(q_1\tri q_2)\too(p_1\otimes q_1)\tri(p_2\otimes q_2).
+\end{equation}
+See \cite{aguiar2010monoidal,niu2025polynomial} for details.
+
 A \emph{$\tri$-comonoid} in $\poly$ is a comonoid for the substitution product: a polynomial $c$ equipped with a counit $\varepsilon\colon c\to\yon$ and comultiplication $\delta\colon c\to c\tri c$ satisfying coassociativity and counitality. Since the substitution product is composition of endofunctors on $\smset$, a $\tri$-comonoid is equivalently a comonad on $\smset$ whose underlying endofunctor is polynomial; we call it a \emph{polynomial comonad}.
 
 Polynomial comonads are---up to isomorphism---the same data as small categories. Writing $c=\sum_{i:c(1)}\yon^{c[i]}$, the positions $c(1)$ are the objects of some category $\cat{C}$, and for each object $i:c(1)$, the directions $c[i]$ are the morphisms of $\cat{C}$ with domain $i$:
@@ -2506,6 +2512,22 @@ Let $\store{\conf}$ and $\store{\phase}$ be the configuration and phase-space st
 \Phi_{\phase}\coloneqq\Phi_{\store{\phase}}.
 \end{equation}
 
+\begin{remark}[Multi-stage variants: the bicategories $\org^{(K)}$]\label{rmk.org_N}
+The functor $\Phi_\mathfrak{s}$ produces one-step coalgebras: at each macro-tick, the system emits, receives, and updates exactly once. Many useful numerical integrators are instead \emph{multi-stage}: an explicit $K$-stage Runge--Kutta method evaluates the vector field $K$-many times per step, and velocity Verlet (leapfrog) for Hamiltonian flows \cite[Ch.~VI]{hairer2006geometric} queries the force twice, at the initial and at the post-drift positions. We sketch a target bicategory that conjecturally accommodates such schemes.
+
+For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\org$ and hom-categories
+\[
+\org^{(K)}(p,q)\coloneqq\ihom{p,q}^{\tri K}\coalg,
+\]
+where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power. The normal duoidal interchange \eqref{eqn.duoidal} gives composition
+\[
+\ihom{p,q}^{\tri K}\otimes\ihom{q,r}^{\tri K}\too\bigl(\ihom{p,q}\otimes\ihom{q,r}\bigr)^{\tri K}\too\ihom{p,r}^{\tri K},
+\]
+and equips $\org^{(K)}$ with a $\otimes$-monoidal structure.
+
+For example, a coalgebra of the form $S\to q\tri q\tri S$ takes every state, outputs a position $j_1:q(1)$ and, for every input direction $e_1:q_1[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q_2[j_2]$, updates the state. We conjecture that this is exactly the kind of process needed for multi-step integrators, though we do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+\end{remark}
+
 %--------------------------------------------------------------------
 \section{Phase-space dynamics \texorpdfstring{$\Phi_{\phase}$}{Phi phase}}\label{sec.phase_dynamics}
 %--------------------------------------------------------------------
@@ -2589,10 +2611,15 @@ and updates the state (from its original $s=(x,\xi)$) to
 \begin{equation}\label{eqn.state_update}
 s+\sharp_S(\xi_V,\sharp_x(\xi))=\bigl(x+\sharp_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
-Equation \eqref{eqn.state_update} is \eqref{eqn.phase_storage_update} with $\xi'=\xi_V$; its left-hand side records where the three pieces of this update come from. The sum $s+\sharp_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharp_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharp_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharp_x(\xi))\in T^*_sS$ comes from the Legendre projection at $(x,\xi)$, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_S(\xi_V,\sharp_x(\xi))=(\sharp_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_x(\xi),\,\xi-\xi_V)$.%
-\footnote{
-\Cref{eqn.state_update} can be read two ways. As the defining equation of a discrete dynamical system, it is exact: that's the perspective of \cref{sec.wave_equation}, where the recurrence \emph{is} the discrete wave equation we want. But as a numerical time-stepper for the continuous Hamiltonian flow on $T^*V$, it is one step of explicit Euler integration---and the explicit-Euler discretisation of a Hamiltonian flow does not preserve the energy that the underlying flow conserves: on the harmonic oscillator of \cref{sec.wave_equation}, the simulated energy grows without bound for any positive step size. The configuration analog \eqref{eqn.state_update_gradient} (\cref{sec.configuration_dynamics}) is also explicit Euler, but on a gradient flow rather than a Hamiltonian one; on Euclidean parameter spaces, the constant case $\sharp_x=-\eta_{\mathrm{LR}}\sharp_{\mathrm{Euc}}$ is vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$, which is a standard, well-behaved update for sufficiently small $\eta_{\mathrm{LR}}$. Higher-order or symplectic integrators (e.g.\ Runge-Kutta, leapfrog) can be encoded in the polynomial-coalgebra framework---see~\cite{ngotiaoco2017compositionality} for a Runge-Kutta construction---but the specific cotangent-storage functors developed in this chapter yield only the explicit-Euler form; involving better integrators with our setup is left to future work.
-}
+Equation \eqref{eqn.state_update} is \eqref{eqn.phase_storage_update} with $\xi'=\xi_V$; its left-hand side records where the three pieces of this update come from. The sum $s+\sharp_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharp_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharp_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharp_x(\xi))\in T^*_sS$ comes from the Legendre projection at $(x,\xi)$, \cref{def.legendre_projection}. The right-hand side is the computation: \eqref{eqn.canonical_sharp} gives $\sharp_S(\xi_V,\sharp_x(\xi))=(\sharp_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharp_x(\xi),\,\xi-\xi_V)$.
+
+\begin{remark}[Euler step and energy non-conservation]\label{rmk.euler_energy}
+\Cref{eqn.state_update} can be read two ways. As the defining equation of a discrete dynamical system, it is exact: that's the perspective of \cref{sec.wave_equation}, where the recurrence \eqref{eqn.recurrence} \emph{is} the discrete wave equation we want. But as a numerical time-stepper for the continuous Hamiltonian flow on $T^*V$, it is not adequate over many timesteps: explicit Euler integration is not symplectic, so the simulated trajectory accumulates energy drift and diverges from the true flow. For example, on the harmonic oscillator of \cref{sec.wave_equation}, the simulated energy grows without bound for any positive step size \cite[Ch.~I]{hairer2006geometric}.
+
+The configuration analog \eqref{eqn.state_update_gradient} (\cref{sec.configuration_dynamics}) is also explicit Euler, but on a gradient flow rather than a Hamiltonian one; on Euclidean parameter spaces the constant case $\sharp_x=-\eta_{\mathrm{LR}}\sharp_{\mathrm{Euc}}$ is vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$, which is a standard, well-behaved update for sufficiently small $\eta_{\mathrm{LR}}$. 
+
+If the conjecture of \cref{rmk.org_N} works out---that multi-stage integrators can be built into the bicategories $\org^{(K)}$---then the above energy issue would be remedied by a velocity-Verlet refinement at $K=2$.\qedhere
+\end{remark}
 
 All in all, one could tersely denote the coalgebra map as follows:
 \begin{multline*}
@@ -3020,9 +3047,9 @@ p_i'\coloneqq p_i+\kappa(x_{i-1}+x_{i+1}-2x_i).
 \end{equation}
 
 We then think of the state $s$ as a function of time: fix any initial $s(0)\coloneqq(\vec{x}(0),\vec{p}(0))$ and set $s(t+1)\coloneqq s(t)'$ as in \eqref{eqn.state_update_explicit}. We then rewrite the first equation as $p_i(t)=mx_i(t+1)-mx_i(t)$ and substitute it into the second:
-\[
+\begin{equation}\label{eqn.recurrence}
 mx_i(t+2)-mx_i(t+1)=mx_i(t+1)-mx_i(t)+\kappa(x_{i-1}(t)+x_{i+1}(t)-2x_i(t))
-\]
+\end{equation}
 Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
 
 \begin{proposition}\label{prop.wave_equation}
