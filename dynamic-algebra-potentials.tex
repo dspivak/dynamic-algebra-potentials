@@ -618,15 +618,23 @@ The paper aims to be self-contained for a reader comfortable with monoidal categ
 \section{Relation to open energy-driven systems}\label{sec.related_cls}
 %--------------------------------------------------------------------
 
-The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci2024organizing} (hereafter CLS), which identifies the shared reactive structure $T^*X\to TX$ behind Hamiltonian mechanics and gradient descent and builds a functorial semantics from open energy-driven systems to open ODEs. Whereas we construct discrete-time semantics $\Phi_{\conf},\Phi_{\phase}\colon\potlens\to\org$, they construct continuous-time semantics $\mathrm{collapse}\circ T^*\colon\mathbf{OpenErg}\to\mathbf{COrg}$, where $\mathbf{COrg}$ is their continuous-time analog of $\org$.
+The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci2024organizing} (hereafter CLS), which identifies the reactive structure $T^*X\to TX$ in both Hamiltonian mechanics and gradient descent and builds a functorial semantics
+\[
+\mathbf{OpenErg}\To{T^*}\mathbf{OpenODE}\To{\mathrm{collapse}}\mathbf{COrg}
+\]
+ from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\org$. A first difference is that our semantics $\Phi_{\conf},\Phi_{\phase}\colon\potlens\to\org$ is discrete-time, rather than continuous.
 
-Neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(V,\sharp_V,w,E)$ where
+However, neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(V,\sharp_V,w,E)$ where
 \[
 (V,\sharp_V):\rvect,\qquad
 w\colon V\times M\to N,\qquad
 E\colon V\times M\to\rr.
 \]
-There is a wide strong monoidal functor $\cat{R}\to\mathbf{OpenErg}$ and a fully faithful strong monoidal functor $\cat{R}\to\potlens$, the latter sending $M$ to $\binom{\rr^0}{M}$, output map $\outp f\coloneqq w$, unique input map $\inpt f\coloneqq !$, and potential $U\coloneqq E$. There is also a semantic comparison. 
+There is a wide strong monoidal functor $\cat{R}\to\mathbf{OpenErg}$ and a fully faithful strong monoidal functor $\cat{R}\to\potlens$, the latter sending $M$ to $\binom{\rr^0}{M}$, output map $\outp f\coloneqq w$, unique input map $\inpt f\coloneqq !$, and potential $U\coloneqq E$. 
+In other words, the two extensions of $\cat{R}$ go in orthogonal directions: $\potlens$ has richer interfaces and additional input-routing data in its morphisms, while CLS allows more general state spaces and reactions inside its open systems.
+
+There is also a semantic comparison between the two.
+
 \begin{proposition*}[Proven as \cref{prop.euler_submersion_lenses}]
 There is a category $\cat S$, whose objects are submersions, and a diagram
 \[
@@ -641,7 +649,7 @@ There is a category $\cat S$, whose objects are submersions, and a diagram
 \]
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition*}
-On morphisms of $\cat R$, the middle vertical functor uses $\sharp_V$ to turn the parameter covector in $dE+(Tw)^*(\eta)$ into the Euler update.
+The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharp_V$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\org$ on our side, where the tangent component $\dot x$ becomes the Euler step $x\mapsto x+\dot x$.
 
 
 
@@ -652,11 +660,12 @@ On morphisms of $\cat R$, the middle vertical functor uses $\sharp_V$ to turn th
 
 \Cref{ch.background} collects the background material used throughout the paper. The paper aims to be self-contained, so this chapter spans over 25\% of its length. \Cref{sec.prelim} fixes general notational conventions. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction.
 
-\Cref{ch.lenses_internalization} constructs the syntax category $\potlens$. \Cref{sec.lenses_general} reviews the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$. \Cref{sec.abstract_representation} proves the central technical result: for any symmetric monoidal closed category $\cat{C}$, there is a normal lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$ sending a lens object $\lensob c$ to $\outp c\otimes\ihom{\inpt c,I}$. \Cref{sec.rvect} introduces reactive vector spaces and their cotangent endofunctor, the parameter objects for the Para construction that follows. \Cref{sec.potentialized_lenses} specializes the discussion to manifold lenses equipped with real-valued potentials and parameterizes them by reactive vector spaces, thus defining the symmetric monoidal category (and underlying operad) $\potlens$. \Cref{sec.W_choice} shows how to interpret the multimorphisms of $\potlens$ as smooth rewiring diagrams.
+\Cref{ch.lenses_internalization} constructs our syntax category $\potlens$. \Cref{sec.lenses_general} reviews the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$. \Cref{sec.abstract_representation} proves the central technical result: for any symmetric monoidal closed category $\cat{C}$, there is a normal lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$ sending a lens object $\lensob c$ to $\outp c\otimes\ihom{\inpt c,I}$. \Cref{sec.rvect} introduces the category $\rvect$ of reactive vector spaces---which will serve as the parameter objects for the Para construction that follows---together with the cotangent endofunctor on $\rvect$. \Cref{sec.potentialized_lenses} then builds the symmetric monoidal category (and underlying operad) $\potlens$ from parameterized manifold lenses equipped with potentials. \Cref{sec.W_choice} shows how to interpret the multimorphisms of $\potlens$ as smooth rewiring diagrams.
 
-\Cref{ch.potential_driven_dynamics} constructs the dynamics functors. \Cref{sec.storage_semantics} defines a cotangent storage. \Cref{sec.dynamics_functor} proves the main theorem, \cref{thm.functor}: every cotangent storage induces a normal lax symmetric monoidal functor $\Phi\colon\potlens\to\org$. The two storages relevant to this paper, configuration and phase-space, give rise to $\Phi_{\conf}$ and $\Phi_{\phase}$, unpacked in full detail in \cref{sec.phase_dynamics,sec.configuration_dynamics}.
+\Cref{ch.potential_driven_dynamics} constructs the dynamics functors. \Cref{sec.storage_semantics} defines the notion of \emph{cotangent storage}, which lets us understand $\cot(V)$-parameterized maps as coalgebras. 
+\Cref{sec.dynamics_functor} proves the main theorem, \cref{thm.functor}: every cotangent storage induces a normal lax symmetric monoidal functor $\Phi\colon\potlens\to\org$. The two storages relevant to this paper, configuration and phase-space, give rise to $\Phi_{\conf}$ and $\Phi_{\phase}$, unpacked in full detail in \cref{sec.phase_dynamics,sec.configuration_dynamics}.
 
-\Cref{ch.applications} contains three worked examples. \Cref{sec.newton_warmup} recovers Newton's method as $\Phi_{\conf}$ applied to a $\potlens$-scalar. \Cref{sec.dl_warmup} recovers gradient descent through a parameterized neural network as $\Phi_{\conf}$ applied to a feedforward $\potlens$-morphism, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} derives the discrete wave equation as $\Phi_{\phase}$ applied to a chain of harmonic-oscillator particles, with functoriality of $\Phi_{\phase}$ checked by composing in $\potlens$ first (\cref{sec.spring_first_pass}) and then in $\org$ (\cref{sec.spring_second_pass}).
+\Cref{ch.applications} contains three worked examples. \Cref{sec.newton_warmup} recovers Newton's method as $\Phi_{\conf}$ applied to a $\potlens$-scalar. \Cref{sec.dl_warmup} recovers gradient descent through a parameterized neural network $F\colon V\times\rr^m\to\rr^n$ as $\Phi_{\conf}$ applied to the corresponding $\potlens$-morphism, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} derives the discrete wave equation as $\Phi_{\phase}$ applied to a chain of harmonic-oscillator particles, with functoriality of $\Phi_{\phase}$ checked by composing in $\potlens$ first (\cref{sec.spring_first_pass}) and then in $\org$ (\cref{sec.spring_second_pass}).
 
 
 %--------------------------------------------------------------------
@@ -671,13 +680,15 @@ Thanks to Lukas Barth, Scott Viteri, David Jaz Myers, and Jake Arujo-Simon for s
 \chapter{Background}\label{ch.background}
 %====================================================================
 
-This chapter collects the background used in the construction. We first fix the differential-geometric notation and introduce reactive vector spaces, then recall polynomial functors, polynomial comonads, and polynomial coalgebras. Finally we review wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction, which together provide the compositional setting used in the rest of the paper.
+This chapter collects the background required for this paper. We first fix the differential-geometric notation. Then we recall polynomial functors, polynomial comonads, and polynomial coalgebras. Finally we review wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction, which together provide the compositional setting used in the rest of the paper.
 
 %--------------------------------------------------------------------
 \section{Notational conventions}\label{sec.prelim}
 %--------------------------------------------------------------------
 
-We fix some typographic conventions. A generic category is written in calligraphic script, $\cat{C},\cat{M},\cat{A}$, and a specifically-named category in boldface, $\Cat{Set},\Cat{Poly},\Cat{Mfd}$. A function or operation is written in roman, $\fun{ev},\fun{pr}$, and a named functor is written in sans-serif, $\Fun{T},\Fun{Box}$. Number systems use blackboard bold, $\nn,\rr$; the dynamic algebra bicategory is denoted $\org$. For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined.
+We fix some typographic conventions. We denote generic categories using calligraphic script, $\cat{C},\cat{M},\cat{A}$, and specifically-named categories using boldface, $\smset,\poly,\mfd$. We write specifically-named functions or operations in roman, $\ev,\coev$, and named functors in sans-serif, $\Fun{T},\Fun{Dist}$. Number systems use blackboard bold, $\nn,\rr$; named bicategorical structures are written with a blackboard-bold initial, such as $\org$ and $\Para$. 
+
+For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$.
 
 We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories.
 
@@ -685,18 +696,18 @@ We reserve $\eta$ and $\mu$ for monad units and multiplications, and $\varepsilo
 
 We sometimes refer to a $(2,1)$-category simply as a category. More precisely, its homs are groupoids and composition is associative and unital up to coherent isomorphism.
 
-By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We sometimes elide the difference between monoidal categories $(\cat{C},I,\otimes)$ and their underlying operads $\cat{O}_{\cat{C}}$ with $K$-ary morphisms $c_1\otimes\cdots\otimes c_K\to c'$. Morphisms between underlying operads correspond exactly to lax morphisms between the monoidal categories.%
+By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We sometimes elide the difference between monoidal categories $(\cat{C},I,\otimes)$ and their underlying operads $\cat{O}_{\cat{C}}$, which have $K$-ary morphisms $c_1\otimes\cdots\otimes c_K\to c'$. Morphisms between underlying operads correspond exactly to lax morphisms between the monoidal categories.%
 \footnote{That is, the functor $\Cat{SMC}_{\tn{lax}}\to\Cat{Opd}$ is fully faithful.}
 
 %--------------------------------------------------------------------
 \section{Smooth manifolds}\label{sec.manifolds_notation}
 %--------------------------------------------------------------------
 
-In this section we fix the differential-geometric notation used throughout.
+In this section we fix the differential-geometric notation used throughout the paper.
 
-We work in the cartesian category $(\defineTerm{mfd},\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, write $T_mM$ for the tangent space at $m$ and $TM$ for the tangent bundle; write $T^*_mM$ and $T^*M$ for the cotangent space at $m$ and the cotangent bundle.
+We work in the cartesian category $(\defineTerm{mfd},\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, we write $TM$ and $T_mM$ for the tangent bundle and the tangent space at $m$, and we write $T^*M$ and $T^*_mM$ for the cotangent bundle and the cotangent space at $m$.
 
-The tangent functor $T\colon\mfd\to\mfd$ preserves products, so $T(M\times N)\cong TM\times TN$; in particular
+The tangent and cotangent functors $T,T^*\colon\mfd\to\mfd$ preserve products, so $T(M\times N)\cong TM\times TN$ and $T^*(M\times N)\cong T^*M\times T^*N$; in particular
 \begin{equation}\label{eqn.T_products}
 T_{(m,n)}(M\times N)\cong T_mM\oplus T_nN
 \qqand
@@ -716,7 +727,7 @@ T_m f\colon T_mM\to T_{f(m)}N
 for the \emph{differential at $m$}---the restriction of $Tf$ to the fiber over $m\in M$---and its transpose.%
 \footnote{In the literature, what we denote $T_m f$ is often denoted $Df_m$.}
 
-We often elide the inclusion $\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure in $\vect$ is (a coproduct and) a product, and the inclusion is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
+We often elide the inclusion $\inc\colon\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure on $\vect$ is (a coproduct and) a product, and $\inc$ is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
 \begin{equation}\label{eqn.tangent_vec}
 T_xV \;\cong\; V \qqand T^*_xV \;\cong\; V^*
 \end{equation}
@@ -731,7 +742,7 @@ When the codomain is $\rr$, the tangent map of $U\colon M\to\rr$ can be combined
 \begin{equation}\label{eqn.differential}
 dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
 \end{equation}
-That is, $dU|_m$ is the covector at $m$ whose pairing with a tangent vector $\dot m\in T_mM$ is $+1((T_m U)(\dot m))\in\rr$. We may regard $dU|_x$ as an element of $V^*$ under \eqref{eqn.tangent_vec}.
+Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=V$ is a vector space, we regard $dU|_x$ as an element of $V^*$ under \eqref{eqn.tangent_vec}.
 
 %--------------------------------------------------------------------
 \section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
@@ -741,17 +752,19 @@ That is, $dU|_m$ is the covector at $m$ whose pairing with a tangent vector $\do
 
 We briefly review the category $\defineTerm{poly}$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
 
-The category $\poly$ of \emph{polynomial functors} is the full subcategory of all endofunctors $p\colon\smset\to\smset$ spanned by those of the form $\sum_{i: I}\yon^{A_i}$, where $I$ is the set of \emph{positions} and $A_i$ is the set of \emph{directions} at position $i$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
+For any set $A$, let $\yon^A\colon\smset\to\smset$ denote the functor $\smset(A,-)$. A \emph{polynomial functor} is a coproduct $p\coloneqq\sum_{i: I}\yon^{A_i}$ of such functors. We refer to $I$ as the set of \emph{positions} of $p$ and $A_i$ is the set of \emph{directions} at position $i$. For example $(\yon^2+\yon)\colon\smset\to\smset$ is the polynomial that sends a set $X$ to $(X\times X)+X$; it has two positions, with two and one direction, respectively.
+
+The category $\poly$ has polynomial functors as objects and natural transformations as morphisms. It has all sums and products, and these are given by the usual sum and product of polynomials, e.g. $(\yon^2+\yon)\times\yon\cong\yon^3+\yon^2$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
 \begin{equation}\label{eqn.poly}
 p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
 \end{equation}
-We use juxtaposition for scalar multiplication: $pq\coloneqq p\times q$, and we write $1=\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m\in M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
+We use juxtaposition for multiplication: $pq\coloneqq p\times q$, and we write $\yon\coloneqq\yon^1$ and $1\coloneqq\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m\in M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
 
-One can derive from the universal property of coproducts and the Yoneda lemma that natural transformations $\varphi\colon p\to q$ are given by:
+One can derive from the universal property of coproducts and the Yoneda lemma that the maps in $\poly$, i.e.\ the natural transformations $\varphi\colon p\to q$, are given by:
 \begin{equation}\label{eqn.poly_map}
 \poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
 \end{equation}
-The outer $\prod_i\sum_j$ yields a ``forward on-positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on-directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote it as follows:%
+The outer $\prod_i\sum_j$ yields a ``forward on positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote it as follows:%
 \footnote{What we denote here by $\bk{\varphi}{i}$ is often denoted $\varphi^\sharp_i$; we use different notation because $\sharp$ is used throughout the paper.}
 \[\bk{\varphi}{i}\colon q[\varphi_1(i)]\to p[i].\]
 
@@ -759,11 +772,11 @@ For polynomials $p,q:\poly$, their \emph{Dirichlet product} is
 \begin{equation}\label{eqn.dirichlet}
 p\otimes q\coloneqq\sum_{(i,j):p(1)\times q(1)}\yon^{p[i]\times q[j]}\;.
 \end{equation}
-Together with unit $\yon=\yon^1$, the Dirichlet product forms a symmetric monoidal structure, which is also closed: the \emph{internal hom} is
+Together with unit $\yon$, the Dirichlet product forms a symmetric monoidal structure, which is also closed: the \emph{internal hom} is
 \begin{equation}\label{eqn.dirichlet_hom}
 \ihom{p,q}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
 \end{equation}
-satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it as
+satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it in standard form as
 \begin{equation}\label{eqn.ihom_pos_dir}
 \ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
 \end{equation}
@@ -776,13 +789,13 @@ p\defineTermAs{tri}{\mathbin{\termraw{tri}}} q&=
 \sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
 \sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
 \end{align}
-A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, substitution recovers evaluation: $p\tri S=p(S)$.
+A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, we recover the notion of applying $\smset\To{p}\smset$ to $S$ using substition: $p\tri S=p(S)$.
 
-Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, and there is a map of the form
+Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, $\yon$, and there is a map of the form
 \begin{equation}\label{eqn.duoidal}
-(p_1\tri p_2)\otimes(q_1\tri q_2)\too(p_1\otimes q_1)\tri(p_2\otimes q_2).
+(p_1\tri p_2)\otimes(q_1\tri q_2)\too(p_1\otimes q_1)\tri(p_2\otimes q_2)
 \end{equation}
-See \cite{aguiar2010monoidal,niu2025polynomial} for details.
+making the required diagrams commute. See \cite{aguiar2010monoidal,niu2025polynomial} for details.
 
 A \emph{$\tri$-comonoid} in $\poly$ is a comonoid for the substitution product: a polynomial $c$ equipped with a counit $\varepsilon\colon c\to\yon$ and comultiplication $\delta\colon c\to c\tri c$ satisfying coassociativity and counitality. Since the substitution product is composition of endofunctors on $\smset$, a $\tri$-comonoid is equivalently a comonad on $\smset$ whose underlying endofunctor is polynomial; we call it a \emph{polynomial comonad}.
 
@@ -790,16 +803,16 @@ Polynomial comonads are---up to isomorphism---the same data as small categories.
 \[
 c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
-The counit $\varepsilon\colon c\to\yon$ picks out an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $f\then g:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative.
+The counit $\varepsilon\colon c\to\yon$ assigns an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $f\then g:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative, i.e. that $(c,\epsilon,\delta)$ indeed can be identified with a category.
 
 \begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
 The above correspondence defines an isomorphism between polynomial comonads and small categories.
 \end{proposition}
 
-\begin{example}[The store comonad and the pair groupoid]\label{ex.store}
-For any set $S$, the monomial $S\yon^S$ arises as the store comonad from the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. 
+\begin{example}[The store comonad and the codiscrete category]\label{ex.store}
+For any set $S$, define $\defineTerm{Store}(S)\coloneqq S\yon^S$. It arises as the comonad associated to the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. That is, it comes with maps $\epsilon\colon S\yon^S\to\yon$ and $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$.
 
-By \cref{prop.comonads_cats} this can be viewed as a category: it has object set $S$ and, for each pair $(s,t):S\times S$, exactly one morphism $s\to t$. Thus every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{pair groupoid} (or \emph{codiscrete category}) on $S$.
+By \cref{prop.comonads_cats}, the comonad $(\Store(S),\epsilon,\delta)$ can be viewed as a category: it has object set $S$ and, for each $s:S$ exactly $S$-many maps out, i.e.\ a unique $s\to s'$ for every $s,s':S$. Thus every arrow $s\to t$ is an isomorphism with inverse $t\to s$, so this is the \emph{codiscrete category} on $S$.
 \end{example}
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec.coalgebras}
@@ -812,8 +825,6 @@ s\mapsto (r_s, d\mapsto s_d).
 When $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$, so \eqref{eqn.coalgebra_format} splits into two pieces, $s\mapsto r_s$, $(s,d\mapsto s_d)$. But in general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
-
-For any set $S$, the adjunction $S\yon\dashv\yon^S$ in $\smset$ (i.e.\ functions $S\times A\to B$ are in bijection with functions $A\to B^S$) induces the \emph{store comonad} $\defineTerm{Store}(S)\coloneqq S\yon^S$ on $\smset$.
 
 \begin{lemma}\label{lem.store_monoidal}
 The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$, defines a strong symmetric monoidal functor
@@ -2335,7 +2346,7 @@ D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\otimes p$. The functor $F$ fills the (commuting) action square
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
-\rvect\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
+\rvect\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
@@ -2806,13 +2817,13 @@ The functor $\cat S\to\mathbf{COrg}$ is more straightforward: an $\cat S$-morphi
 
 For $\cat{R}$ we take the category $\cat R$ from \cref{sec.related_cls}. We define $\cat R\to\cat S$ on objects by $M\mapsto T^*M\surj M$. On morphisms, send $(V,\sharp_V,w,E)\colon M\to N$ to the $\cat S$-morphism with parameter space $V$, readout $r\coloneqq w$, and for the rest of the data write
 \[
-dE|_{(x,m)}+(T_{(x,m)}w)^*(\eta)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
+dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
 \]
-and set $\alpha(x,m,\eta)\coloneqq\xi_M$ and $u(x,m,\eta)\coloneqq\sharp_x(\xi_V)$. Functoriality follows from the chain rule.
+and set $\alpha(x,m,\xi_N)\coloneqq\xi_M$ and $u(x,m,\xi_N)\coloneqq\sharp_x(\xi_V)$. Functoriality follows from the chain rule.
 
 The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\potlens$, the morphism $(V,\sharp_V,w,E)$ is sent to the potentialized lens with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
-dE|_{(x,m)}+(T_{(x,m)}w)^*(\eta)=(\xi_V,\xi_M).
+dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M).
 \]
 Thus \eqref{eqn.state_update_gradient} sends the state $x$ to $x+\sharp_x(\xi_V)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(V,\sharp_V,w,E)$ in $\cat S$. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
 \end{proof}
