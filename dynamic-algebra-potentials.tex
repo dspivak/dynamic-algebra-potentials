@@ -474,6 +474,8 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
 \trackTerm{\potlens}{potlens}{\mathbb{P}\Cat{PLens}}
+\trackTermSymbol{Stor}{\Cat{Stor}}
+\newcommand{\Stor}[1]{\termref{Stor}{\termraw{Stor}}_{#1}}
 \trackTerm{\cotstor}{cotstor}{\Cat{CotStor}}
 \trackTerm{\Para}{Para}{\mathbb{P}\Cat{ara}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
@@ -630,7 +632,8 @@ w\colon V\times M\to N,\qquad
 E\colon V\times M\to\rr.
 \]
 There is a wide strong monoidal functor $\cat{R}\to\mathbf{OpenErg}$ and a fully faithful strong monoidal functor $\cat{R}\to\potlens$, the latter sending $M$ to $\binom{\rr^0}{M}$, output map $\outp f\coloneqq w$, unique input map $\inpt f\coloneqq !$, and potential $U\coloneqq E$. 
-In other words, the two extensions of $\cat{R}$ go in orthogonal directions: $\potlens$ has richer interfaces and additional input-routing data in its morphisms, while CLS allows more general state spaces and reactions inside its open systems.
+In other words, the two extensions of $\cat{R}$ go in orthogonal directions: $\potlens$ has richer interfaces and additional input-routing data in its morphisms, while CLS allows more general state spaces and reactions inside its open systems.%
+\footnote{For example, our restrictions on the reaction structure---that it be a bundle isomorphism $T^*V\cong TV$ over a vector space rather than a bundle map $T^*M\to TM$ over a manifold---are necessary in order to prove \cref{prop.rvect_polynomial}.}
 
 There is also a semantic comparison between the two.
 
@@ -657,7 +660,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
 
-\Cref{ch.background} collects the background material used throughout the paper. The paper aims to be self-contained, so this chapter spans over 25\% of its length. \Cref{sec.prelim} fixes general notational conventions. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction.
+\Cref{ch.background} collects the background material used throughout the paper. The paper aims to be self-contained, so this chapter spans over 20\% of its length. \Cref{sec.prelim} fixes general notational conventions. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction.
 
 \Cref{ch.lenses_internalization} constructs our syntax category $\potlens$. \Cref{sec.lenses_general} reviews the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$. \Cref{sec.abstract_representation} proves the central technical result: for any symmetric monoidal closed category $\cat{C}$, there is a normal lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$ sending a lens object $\lensob c$ to $\outp c\otimes\ihom{\inpt c,I}$. \Cref{sec.rvect} introduces the category $\rvect$ of reactive vector spaces---which will serve as the parameter objects for the Para construction that follows---together with the cotangent endofunctor on $\rvect$. \Cref{sec.potentialized_lenses} then builds the symmetric monoidal category (and underlying operad) $\potlens$ from parameterized manifold lenses equipped with potentials. \Cref{sec.W_choice} shows how to interpret the multimorphisms of $\potlens$ as smooth rewiring diagrams.
 
@@ -2010,7 +2013,11 @@ We can thus apply \cref{prop.para_square,prop.Theta_T_alpha} to obtain \eqref{eq
 We now introduce the parameter objects for the Para construction of the next section. A reactive vector space is a finite-dimensional real vector space equipped with a smooth section into self-isomorphisms of its dual---equivalently, a smoothly varying nondegenerate bilinear form. The point of carrying the form is that it turns covectors into updates, and the cotangent construction of \cref{sec.TT} supplies the phase-space version used in Hamiltonian dynamics.
 
 \begin{definition}\label{def.rvect}
-A \emph{reactive vector space} is a finite-dimensional real vector space $V$ together with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$, the \emph{sharp} map, with value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the non-degenerate, vector-space case.}%
+A \emph{reactive vector space} is a finite-dimensional real vector space $V$ together with a smooth section
+\begin{equation}\label{eqn.sharp_iso}
+\sharp_V\colon V\to\Iso(V^*,V),
+\end{equation}
+the \emph{sharp} map, with value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the non-degenerate, vector-space case.}%
 \footnote{
 Equivalently, $\sharp_V$ is a smooth section of the bundle whose fiber over $x:V$ is the set $\Iso(T_x^*V,T_xV)$, under the canonical identifications $T_xV\cong V$ and $T^*_xV\cong V^*$. It will be more convenient to use the above form.
 }
@@ -2326,7 +2333,7 @@ There is an isomorphism of categories
 Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to q$ agree
 \begin{align*}
 	\para{\Cat{Set}_{\cong}}{\poly}(p,q)&=
-  \sum_{S:\smsetiso}\poly(S\yon^S\otimes p, q)\\&\cong
+  \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, q)\\&\cong
   \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
   \sum_{S:\smsetiso}\poly(S,[p,q]\tri S)=\org_\cong(p,q)
 \end{align*}
@@ -2338,7 +2345,7 @@ In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\p
 Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
 \begin{lemma}\label{lem.poly_to_org}
-Let $F\colon\rvect\to\smsetiso$ be strong symmetric monoidal, and let $\rvect$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\rvect\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
+Let $\cat P$ be a symmetric monoidal category and let $F\colon\cat P\to\smsetiso$ be strong symmetric monoidal. Let $\cat P$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat P\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \]
@@ -2348,41 +2355,29 @@ D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\otimes p$. The functor $F$ fills the (commuting) action square
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
-\rvect\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
+\cat P\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F(0)\cong 1$ so $D_F$ sends the unit $(0,\yon)$ to $\Store(F(0))\otimes\yon\cong\yon$.
+\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ strong monoidal gives $F(I_{\cat P})\cong 1$, so $D_F$ sends the unit $(I_{\cat P},\yon)$ to $\Store(F(I_{\cat P}))\otimes\yon\cong\yon$.
 \end{proof}
 
 \subsection{Cotangent storages}\label{sec.cotangent_storages}
 
-The Para description of $\org_\cong$ lets us compare cotangent parameterizations with ordinary store parameterizations, i.e.\ coalgebras (see \cref{prop.org_as_para}). Recall the inclusion $\rvect\to\vect\hookrightarrow\mfd$ from \cref{prop.rvect_smc_action} and $\Store(S)\coloneqq S\yon^S$ from \cref{def.store_action}.
+By the isomorphism $\org_\cong\cong\para{\smsetiso}{\poly}$ from \cref{prop.org_as_para}, we can package our $\org$ framework for coalgebras as $\Store$-parameterizations of sets. When $V:\rvect$ is a reactive vector space, there are multiple ways to similarly interpret $V$-parameterized smooth maps as $\Store$-parameterizations. The required data is given abstractly by the notion of \emph{storage}. 
 
-\begin{definition}[Cotangent storage]\label{def.cotangent_storage}
-A \emph{cotangent storage} is a pair $\defineTerm{store}=(F,\vartheta)$, where $F\colon\rvect\to\smsetiso$ is strong symmetric monoidal and $\vartheta$ is a monoidal natural transformation filling the square
-\begin{equation}\label{eqn.cotangent_storage_square}
-\begin{tikzcd}[ampersand replacement=\&]
-\rvect\ar[r,"\inc"]\ar[d,"F"', ""{name=left}]
-\& \mfd\ar[d,"\cot", ""' {name=right}]\\
-\smsetiso\ar[r,"\Store"'] \& \poly
-\arrow[Rightarrow, from=left, to=right, shorten <=7mm, shorten >=7mm, "\vartheta"]
-\end{tikzcd}
-\end{equation}
-A \emph{morphism} $\alpha\colon(F,\vartheta)\to(F',\vartheta')$ of cotangent storages is a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ such that $\vartheta'\circ\Store(\alpha)=\vartheta$. We denote this category by $\defineTerm{cotstor}$.
+\begin{definition}[Storage]\label{def.storage}
+Let $\cat P$ be a symmetric monoidal category and let $G\colon\cat P\to\poly$ be a strong symmetric monoidal functor. A \emph{$G$-storage} is a pair $\defineTerm{store}=(F,\vartheta)$, where $F\colon\cat P\to\smsetiso$ is strong symmetric monoidal and $\vartheta\colon \Store\circ F\to G$ is a monoidal natural transformation.
+
+A \emph{morphism} $\alpha\colon(F,\vartheta)\to(F',\vartheta')$ of $G$-storages is a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ such that $\vartheta'\circ\Store(\alpha)=\vartheta$. We denote this category by $\defineTerm{Stor}_G$.
 \end{definition}
 
-Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cot{V}\otimes p$ induced by $\cot\circ\inc$.
-
-\begin{proposition}\label{prop.store_refinement}
-There is a functor $\Psi_{\blank}\colon\cotstor\to\bbcat(\para{\cot}{\poly},\org_\cong)$. That is, every cotangent storage $\mathfrak{s}$ induces a normal lax symmetric monoidal functor
-\[
-\Psi_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\org_\cong
-\]
-and every morphism $\alpha\colon\mathfrak{s}\to\mathfrak{s}'$ induces a monoidal pseudonatural transformation
-\[
-\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}.
-\]
+\begin{proposition}\label{prop.storage_to_org}
+Let $\cat P$ be a symmetric monoidal category and $G\colon\cat P\to\poly$ a strong symmetric monoidal functor. There is a functor
+\[\Psi_{\blank}\colon\Stor{G}\to\bbcat(\para{G}{\poly},\org_\cong).\]
+That is, every $G$-storage $\mathfrak{s}=(F,\vartheta)$ induces a normal lax symmetric monoidal functor
+\[\Psi_{\mathfrak{s}}\colon\para{G}{\poly}\to\org_\cong,\]
+and every morphism $\alpha\colon\mathfrak{s}\to\mathfrak{s}'$ induces a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}$.
 \end{proposition}
 
 \begin{proof}
@@ -2390,9 +2385,9 @@ Write $\mathfrak{s}=(F,\vartheta)$ and let
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong
 \]
-be the functor of \cref{lem.poly_to_org}. By \cref{prop.para_strong_induced,prop.para_square}, the action square $\vartheta\colon\Store\circ F\Rightarrow\cot\circ\inc$ induces a strong symmetric monoidal functor
+be the functor of \cref{lem.poly_to_org}. By \cref{prop.para_strong_induced,prop.para_square}, the action map $\vartheta\colon\Store\circ F\Rightarrow G$ induces a strong symmetric monoidal functor
 \[
-\Para_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\para{\Store\circ F}{\poly}.
+\Para_{\mathfrak{s}}\colon\para{G}{\poly}\to\para{\Store\circ F}{\poly}.
 \]
 Define $\Psi_{\mathfrak{s}}\coloneqq D_F\circ\Para_{\mathfrak{s}}$, which is normal lax monoidal because $\Para_{\mathfrak s}$ is strong and $D_F$ is normal lax monoidal by \cref{lem.poly_to_org}.
 
@@ -2400,10 +2395,32 @@ For $\alpha\colon\mathfrak{s}\to\mathfrak{s}'=(F',\vartheta')$, the monoidal nat
 \[
 \alpha^*\colon\para{\Store\circ F'}{\poly}\to\para{\Store\circ F}{\poly},
 \]
-and the composite $\alpha^*\circ\Para_{\mathfrak{s}'}$ is the Para functor induced by the composite action square $\vartheta'\circ\Store(\alpha)\colon\Store\circ F\Rightarrow\cot\circ\inc$. The storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$ is an equality of natural transformations, so by the strict functoriality of \cref{prop.para_square} we obtain $\alpha^*\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$ as functors. The components $\alpha_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\alpha^*\Rightarrow D_{F'}$; precomposing with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$.
+and the composite $\alpha^*\circ\Para_{\mathfrak{s}'}$ is the Para functor induced by the composite action map $\vartheta'\circ\Store(\alpha)\colon\Store\circ F\Rightarrow G$. The storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$ is an equality of natural transformations, so by the strict functoriality of \cref{prop.para_square} we obtain $\alpha^*\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$ as functors. The components $\alpha_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\alpha^*\Rightarrow D_{F'}$; precomposing with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$.
 \end{proof}
 
+Recall the inclusion
+  $\rvect\To{\inc}\mfd\To{\cot}\poly$ from \cref{prop.rvect_smc_action,def.cot}. 
+
+
+\begin{definition}[Cotangent storage]\label{def.cotangent_storage}
+The category of \emph{cotangent storages} is $\defineTerm{cotstor}\coloneqq\Stor{\cot\circ\inc}$. Explicitly, a cotangent storage is a pair $(F,\vartheta)$ where $F\colon\rvect\to\smsetiso$ is strong symmetric monoidal and $\vartheta$ fills the square
+\[
+\begin{tikzcd}[ampersand replacement=\&]
+\rvect\ar[r,"\inc"]\ar[d,"F"', ""{name=left}]
+\& \mfd\ar[d,"\cot", ""' {name=right}]\\
+\smsetiso\ar[r,"\Store"'] \& \poly
+\arrow[Rightarrow, from=left, to=right, shorten <=7mm, shorten >=7mm, "\vartheta"]
+\end{tikzcd}
+\qedhere
+\]
+\end{definition}
+
+Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cot{V}\otimes p$ induced by $\cot\circ\inc$. Applying \cref{prop.storage_to_org} at $\cat P=\rvect$, $G=\cot\circ\inc$, every cotangent storage $\mathfrak{s}$ induces a normal lax symmetric monoidal functor
+\[\Psi_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\org_\cong.\]
+
 We now get to our bifurcation between learning and physics: which state set the cotangent parameterization presents to $\org$. In learning, we will be storing the points of $V$, whereas in physics we will be storing the phase points of $T^*V$. These are formalized in \cref{prop.rvect_polynomial} and \cref{lem.phase_storage}.
+
+The following proposition---in particular the fact that \eqref{eqn.directions_sharp} is a bijection---is the main place where we use the requirement \eqref{eqn.sharp_iso} that the reaction structure $\sharp_x\colon V^*\to V$ need be an isomorphism for each $x:V$.
 
 \begin{proposition}\label{prop.rvect_polynomial}
 There is a cotangent storage, which we call \emph{configuration storage}, given by
@@ -2548,14 +2565,14 @@ A morphism $\alpha\colon\mathfrak{s}\to\mathfrak{s}'$ of cotangent storages indu
 \end{theorem}
 
 \begin{proof}
-Define $\Phi_{\mathfrak{s}}$ to be the composite of the normal lax monoidal functors below, given by \cref{lem.potlens_to_para_poly,prop.store_refinement}:
+Define $\Phi_{\mathfrak{s}}$ to be the composite of the normal lax monoidal functors below, given by \cref{lem.potlens_to_para_poly,prop.storage_to_org}:
 \[
 \potlens\To{\Phi'}
 \para{\cot}{\poly}\To{\Psi_{\mathfrak{s}}}
 \org_\cong\hookrightarrow\org.
 \]
 
-For the second statement, \cref{prop.store_refinement} gives a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}$; whiskering with $\Phi'$ yields the desired $\Phi_\alpha\coloneqq\Psi_\alpha*\Phi'\colon\Phi_{\mathfrak{s}}\Rightarrow\Phi_{\mathfrak{s}'}$.\qedhere
+For the second statement, \cref{prop.storage_to_org} gives a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}$; whiskering with $\Phi'$ yields the desired $\Phi_\alpha\coloneqq\Psi_\alpha*\Phi'\colon\Phi_{\mathfrak{s}}\Rightarrow\Phi_{\mathfrak{s}'}$.\qedhere
 \end{proof}
 
 Let $\store{\conf}$ and $\store{\phase}$ be the configuration and phase-space storages of \cref{prop.rvect_polynomial,lem.phase_storage}. Our main two functors of interest are:
