@@ -459,7 +459,6 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 %--------Paper-specific macros--------%
 
 \trackTerm{\mfd}{mfd}{\Cat{Mfd}}
-\newcommand{\plenspot}{\Cat{PLensPot}}
 \newcommand{\boxx}{\Fun{Box}}
 \trackTerm{\Store}{Store}{\Fun{Store}}
 \newcommand{\inc}{\Fun{inc}}
@@ -474,7 +473,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\ad}{\fun{ad}}
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
-\trackTerm{\potlens}{potlens}{\Cat{PLens}}
+\trackTerm{\potlens}{potlens}{\mathbb{P}\Cat{PLens}}
 \trackTerm{\cotstor}{cotstor}{\Cat{CotStor}}
 \trackTerm{\Para}{Para}{\mathbb{P}\Cat{ara}}
 \newcommand{\para}[2]{\Para_{#1}(#2)}
@@ -528,7 +527,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \maketitle
 
 \begin{abstract}
-We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{potentialized lenses}, which consist of a reactive parameter space, smooth forward and backward routing maps, and a real-valued potential.
+We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{parapotent lenses}, which consist of a reactive parameter space, smooth forward and backward routing maps, and a real-valued potential.
 
 The technical heart of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phi_{\phase},\Phi_{\conf}\colon\potlens\to\org$ into the bicategory $\org$ of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phi_{\phase}$ stores both position and momentum; $\Phi_{\conf}$ stores only position. When applied to a parameterized function, $\Phi_{\conf}$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to a collection of particles wired together in series, $\Phi_{\phase}$ recovers the discrete wave equation.
 \end{abstract}
@@ -567,7 +566,7 @@ For interfaces $b_1,\ldots,b_K,c$, a morphism $\varphi\colon b_1,\ldots,b_K\to c
 
 In the examples below we need a richer composition syntax: one where the effective coupling is itself part of the data and may adapt to the signals flowing between boxes. The way it adapts is the data of a dynamical system whose behavior depends on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider an adaptive spring material for which each connecting edge has a variable spring constant that responds both to external control and to a chosen potential $U$.
 
-We call these richer composition patterns \emph{smooth rewiring diagrams}; formally, they will be the multimorphisms in the operad of potentialized lenses constructed in \cref{sec.W_choice}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\org$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
+We call these richer composition patterns \emph{smooth rewiring diagrams}; formally, they will be the multimorphisms in the operad of smooth rewiring diagrams constructed in \cref{sec.W_choice}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\org$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
 
 The choice to have semantics land in $\org$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one representable $\yon$ by coproducts and products---the free distributive category on a single object---so a polynomial
 \[
@@ -605,7 +604,7 @@ To add the remaining pieces, we use two standard categorical devices. The potent
 \[
 \potlens\coloneqq\para{\rvect}{\lmfd^\rr};
 \]
-we call its morphisms \emph{potentialized lenses}. Under the semantics functor $\potlens\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
+we call its morphisms \emph{parapotent lenses}. Under the semantics functor $\potlens\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
 
 The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$, and this process constitutes a lax monoidal functor (\cref{thm.Theta}). This sends the ordinary set-lens interface $\binom{A}{B}$, represented in $\poly$ by $\binom{A\yon}{B\yon}$, to the monomial $B\yon^A$ (\cref{ex.moore}), whose coalgebras are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
 
@@ -665,7 +664,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 \Cref{ch.potential_driven_dynamics} constructs the dynamics functors. \Cref{sec.storage_semantics} defines the notion of \emph{cotangent storage}, which lets us understand $\cot(V)$-parameterized maps as coalgebras. 
 \Cref{sec.dynamics_functor} proves the main theorem, \cref{thm.functor}: every cotangent storage induces a normal lax symmetric monoidal functor $\Phi\colon\potlens\to\org$. The two storages relevant to this paper, configuration and phase-space, give rise to $\Phi_{\conf}$ and $\Phi_{\phase}$, unpacked in full detail in \cref{sec.phase_dynamics,sec.configuration_dynamics}.
 
-\Cref{ch.applications} contains three worked examples. \Cref{sec.newton_warmup} recovers Newton's method as $\Phi_{\conf}$ applied to a $\potlens$-scalar. \Cref{sec.dl_warmup} recovers gradient descent through a parameterized neural network $F\colon V\times\rr^m\to\rr^n$ as $\Phi_{\conf}$ applied to the corresponding $\potlens$-morphism, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} derives the discrete wave equation as $\Phi_{\phase}$ applied to a chain of harmonic-oscillator particles, with functoriality of $\Phi_{\phase}$ checked by composing in $\potlens$ first (\cref{sec.spring_first_pass}) and then in $\org$ (\cref{sec.spring_second_pass}).
+\Cref{ch.applications} contains three worked examples. \Cref{sec.newton_warmup} recovers Newton's method as $\Phi_{\conf}$ applied to a $\potlens$-scalar. \Cref{sec.dl_warmup} recovers gradient descent through a parameterized neural network $F\colon V\times\rr^m\to\rr^n$ as $\Phi_{\conf}$ applied to the corresponding $\potlens$-morphism, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} derives the discrete wave equation as $\Phi_{\phase}$ applied to a chain of harmonic-oscillator particles, with functoriality of $\Phi_{\phase}$ checked by composing in the underlying operad of $\potlens$ first (\cref{sec.spring_first_pass}) and then in $\org$ (\cref{sec.spring_second_pass}).
 
 
 %--------------------------------------------------------------------
@@ -1257,7 +1256,7 @@ The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 
 \chapter{From lenses to smooth rewiring diagrams}\label{ch.lenses_internalization}
 %====================================================================
 
-This chapter constructs the composition syntax used in the rest of the paper. We begin with lenses and their backward-monad variants, then use Moore internalization to turn lens interfaces into polynomial dynamical interfaces. Specializing this construction to cotangent lenses with real-valued potentials produces the category $\potlens$ of smooth rewiring diagrams. Its underlying operad is a smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; \cref{ch.potential_driven_dynamics} then constructs the smooth rewiring dynamics functors from this syntax into $\org$.
+This chapter constructs the composition syntax used in the rest of the paper. We begin with lenses and their backward-monad variants, then use Moore internalization to turn lens interfaces into polynomial dynamical interfaces. Specializing this construction to cotangent lenses with real-valued potentials produces the category $\potlens$. The operad underlying $\potlens$ is a smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; \cref{ch.potential_driven_dynamics} then constructs the smooth rewiring dynamics functors from this syntax into $\org$.
 
 %--------------------------------------------------------------------
 \section{Lenses and backward monads}\label{sec.lenses_general}
@@ -2148,10 +2147,10 @@ See \cref{rem.cot_as_category} for the next incarnation of this idea, as it trac
 \end{remark}
 
 %--------------------------------------------------------------------
-\section{Potentialized lenses}\label{sec.potentialized_lenses}
+\section{Potentialized manifold lenses}\label{sec.potentialized_lenses}
 %--------------------------------------------------------------------
 
-Potentialized lenses are ordinary manifold lenses whose backward pass also carries a real-valued potential; after cotangent internalization, its differential drives the induced dynamics. We package them as coKleisli lenses and then parameterize them by reactive vector spaces.
+Potentialized manifold lenses are ordinary manifold lenses whose backward pass also carries a real-valued potential; after cotangent internalization, its differential drives the induced dynamics. We package them as coKleisli lenses and then parameterize them by reactive vector spaces.
 
 \subsection{Potentialized coKleisli lenses}\label{sec.potentialized_cokleisli}
 
@@ -2257,22 +2256,25 @@ Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,prop.Theta_T_alpha}.
 Substituting $z\coloneqq\mathrm{rand}$ (\cref{rmk.alpha_general}) and the constant-$+1$ choice of $\alpha$ into \cref{prop.Theta_T_alpha} gives a functor sending a lens $\lensob p$ to $\outp p\otimes\ihom{\inpt p,\mathrm{rand}}$, whose backward leg is a stochastic covector field: at every $\inpt m\in\inpt M$, a discrete random variable valued in $T^*_{\inpt m}\inpt M$. Run through the dynamics functor, this would give a stochastic variant of the update rule, with randomness sampled at each step. We do not pursue this variation here.
 \end{remark}
 
-\subsection{Forming \texorpdfstring{$\potlens$}{PLens}}\label{sec.forming_potlens}
+\subsection{Forming \texorpdfstring{$\potlens$}{PPLens}}\label{sec.forming_potlens}
 
 There is an action of $\rvect$ on $\lmfd^\rr$ from \cref{lem.parameter_lens_action} (taking $\cat V=\rvect$, $\cat C=\mfd$, $J=\inc$, $\Fun T=\rr\times\blank$) and the resulting Para construction is symmetric monoidal.
 
 \begin{definition}\label{def.potlens}
-The symmetric monoidal category of \emph{smooth rewiring diagrams} is denoted and defined by
+The symmetric monoidal category $\potlens$ is defined by
 \[
 \defineTerm{potlens}\coloneqq\para{\rvect}{\lmfd^\rr}.
 \qedhere\]
 \end{definition}
 
+Morphisms in $\potlens$ are called \defineTermAs{parapotent_lens}{\emph{parapotent lenses}}.
+The multimorphisms in the operad underlying $\potlens$ are called \emph{smooth rewiring diagrams}.
+
 %--------------------------------------------------------------------
 \section{Smooth rewiring diagrams}\label{sec.W_choice}
 %--------------------------------------------------------------------
 
-We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the underlying operad of $\potlens$. We call its multimorphisms \emph{smooth rewiring diagrams}. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left((V,\sharp_V),\binom{\inpt f}{\outp f},U\right)$, namely a reactive vector space $(V,\sharp_V):\rvect$ called the \emph{parameter space}, smooth maps
+We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the operad underlying $\potlens$. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left((V,\sharp_V),\binom{\inpt f}{\outp f},U\right)$, namely a reactive vector space $(V,\sharp_V):\rvect$ called the \emph{parameter space}, smooth maps
 \begin{equation}\label{eqn.plens_map}
 \outp f\colon V\times\prod_{i=1}^K\outp X_i\to\outp Y,\qquad
 \inpt f\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\prod_{i=1}^K\inpt X_i,
@@ -2287,7 +2289,7 @@ There is a chain of functors
 \[
 \Lens{\finset\op}\To{\Lens{\rr^-}}\lmfd\To{\Lens{\eta}}\lmfd^\rr\To{\Para_{\rr^0}}\potlens
 \]
-where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized lens as a parameterized one with unit parameter $\rr^0$. This chain gives rise to progressively richer smooth rewiring diagrams.
+where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized manifold lens as a parapotent lens with unit parameter $\rr^0$. This chain gives rise to progressively richer smooth rewiring diagrams.
 
 The simplest---those coming from the leftmost category in the chain---are static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor, all the maps factor as projections and diagonals, and the potential is zero. These simplest maps give the syntax for something like traced symmetric monoidal semicategories, as discussed in \cref{sec.plenspot_ops}.
 
@@ -2297,7 +2299,7 @@ The wiring diagrams used merely to arrange boxes in the examples below are stati
 
 We can realize each such static wiring diagram as a lens between manifolds via $\Lens{\rr^-}$ (\cref{lemma.lens_rr}), but compositions coming from $\lmfd$ are more general: there are many more maps $M\times N\to M$ than just the projection. Moving to $\lmfd^\rr$ adds a potential but still no parameter space $V$: it assigns a real number to the interaction data consisting of the internal-box outputs together with the external-box input, e.g.\ a prediction error.
 
-Finally, the general smooth rewiring diagrams are maps in $\potlens$: the interaction pattern itself depends smoothly on a parameter in a reactive vector space $(V,\sharp_V)$, and under the dynamics functor that parameter is updated by the differential of the potential. Exactly how these smooth rewiring dynamics work is the subject of \cref{ch.potential_driven_dynamics}.
+Finally, the general smooth rewiring diagrams are multimorphisms in the operad underlying $\potlens$: the interaction pattern itself depends smoothly on a parameter in a reactive vector space $(V,\sharp_V)$, and under the dynamics functor that parameter is updated by the differential of the potential. Exactly how these smooth rewiring dynamics work is the subject of \cref{ch.potential_driven_dynamics}.
 
 %====================================================================
 \chapter{Smooth rewiring dynamics}\label{ch.potential_driven_dynamics}
@@ -2821,7 +2823,7 @@ dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
 \]
 and set $\alpha(x,m,\xi_N)\coloneqq\xi_M$ and $u(x,m,\xi_N)\coloneqq\sharp_x(\xi_V)$. Functoriality follows from the chain rule.
 
-The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\potlens$, the morphism $(V,\sharp_V,w,E)$ is sent to the potentialized lens with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
+The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\potlens$, the morphism $(V,\sharp_V,w,E)$ is sent to the parapotent lens with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
 dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M).
 \]
@@ -2879,7 +2881,7 @@ whose composite we denote $\lrn$. One could say that training a neural network i
 We now unfold this construction in coordinates, taking the source and target manifolds---the input and output layers of the neural network---to be $\rr^m$ and $\rr^n$.
 \par}
 
-\paragraph{A parameterized map as a smooth rewiring diagram.}
+\paragraph{A parameterized map as a parapotent lens.}
 Let $F\colon V\times\rr^m\to\rr^n$ be a smooth parameterized map, thought of as a feedforward neural network with parameter space $(V,\sharp_V):\rvect$---i.e., $V$ comes equipped with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$ (\cref{def.rvect}), whose value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a $\potlens$-morphism
 \[
 f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}
@@ -2955,7 +2957,7 @@ The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$,
 \section{The wave equation}\label{sec.wave_equation}
 %--------------------------------------------------------------------
 
-We illustrate $\Phi_{\phase}\colon\potlens\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary $\potlens$-morphism $\Part\colon I\to\boxob$ and arrange particles into a chain as a $K$-ary wiring morphism $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$, then illustrate functoriality of $\Phi_{\phase}$ by computing the wave equation in two different ways. In \cref{sec.spring_first_pass} we compose the particles and the wiring inside $\potlens$, apply $\Phi_{\phase}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we instead apply $\Phi_{\phase}$ to the particle and wiring separately and compose the resulting coalgebras in $\org$, showing that we again obtain the wave dynamics.
+We illustrate $\Phi_{\phase}\colon\potlens\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth rewiring diagram $\Part\colon I\to\boxob$ and arrange particles into a chain as a $K$-ary smooth rewiring diagram $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$, then illustrate functoriality of $\Phi_{\phase}$ by computing the wave equation in two different ways. In \cref{sec.spring_first_pass} we compose the particles and the wiring in the underlying operad of $\potlens$, apply $\Phi_{\phase}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we instead apply $\Phi_{\phase}$ to the particle and wiring separately and compose the resulting coalgebras in $\org$, showing that we again obtain the wave dynamics.
 
 That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -2988,21 +2990,21 @@ m\ddot x_i=\kappa(x_{i-1}-2x_i+x_{i+1}),
 \end{equation}
 where $\ddot x_i(t)=x_i(t+2)-2x_i(t+1)+x_i(t).$
 
-We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider morphisms of the form
+We will work in the full suboperad of $\potlens$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider multimorphisms of the form
 \[
 \varphi\in\potlens(\boxob\tpow{n},\boxob)
 \]
 for varying $n$. Note that $\boxob\tpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
 
-We give the derivation in two passes. In the first pass, we describe the particle and the wiring inside $\potlens$, compose them there, and apply $\Phi_{\phase}$ to the resulting $0$-ary $\potlens$-morphism to read off the dynamics. In the second pass, by functoriality and the lax monoidal structure of $\Phi_{\phase}$, we instead apply $\Phi_{\phase}$ to the particle and to the wiring separately, then compose in $\org$; the result is the same.
+We give the derivation in two passes. In the first pass, we describe the particle and the wiring in the underlying operad of $\potlens$, compose them there, and apply $\Phi_{\phase}$ to the resulting $0$-ary smooth rewiring diagram to read off the dynamics. In the second pass, by functoriality and the lax monoidal structure of $\Phi_{\phase}$, we instead apply $\Phi_{\phase}$ to the particle and to the wiring separately, then compose in $\org$; the result is the same.
 
-\subsection{First pass: composing in \texorpdfstring{$\potlens$}{PLens}}\label{sec.spring_first_pass}
+\subsection{First pass: composing in \texorpdfstring{$\potlens$}{PPLens}}\label{sec.spring_first_pass}
 
-First we give a $0$-ary morphism $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each internal box, representing the particle of mass $m>0$. Then we give a $K$-ary morphism for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
+First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each internal box, representing the particle of mass $m>0$. Then we give a $K$-ary smooth rewiring diagram for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
 
 \paragraph{The particle.}
 
-To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ in $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a reactive vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
+To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in the underlying operad of $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a reactive vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
 \[U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2.\] 
 This is called the \emph{harmonic} potential.
 
@@ -3022,13 +3024,13 @@ Applying $\rr^-$ from \cref{lemma.lens_rr}, we obtain the lens $\binom{\rr^K}{\r
 \inpt f\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq(x_0,\,x_1,\,\ldots,\,x_{K-1}).
 \]
 {\emergencystretch=2em
-Lenses without potential and without parameterization are special cases of $\potlens$\allowbreak-morphisms, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a $\potlens$\allowbreak-morphism
+Lenses without potential and without parameterization are special cases of smooth rewiring diagrams in the underlying operad of $\potlens$, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a smooth rewiring diagram
 \par}
 \[
 \fun{wire}_K\colon\boxob\tpow{K}\to\boxob,\qquad \left(\binom{\inpt f}{\outp f},0\right)
 \]
 
-Composing, we obtain a $0$-ary map, $\fun{wire}_K(\Part,\ldots,\Part)$ in $\potlens$, with parameter $V\coloneqq V'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and constant sharp
+Composing, we obtain a $0$-ary smooth rewiring diagram, $\fun{wire}_K(\Part,\ldots,\Part)$, with parameter $V\coloneqq V'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and constant sharp
 \begin{equation}\label{eqn.sharp_chain}
 \sharp_v\colon V^*\to V,\qquad p\mapsto p/m,
 \end{equation}
@@ -3117,7 +3119,7 @@ This is the calculation of \eqref{eqn.state_update_explicit}: writing the state 
 
 \subsection{Second pass: composing in \texorpdfstring{$\org$}{Org}}\label{sec.spring_second_pass}
 
-We have now recovered the wave equation by connecting $K$-many particles together in $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which agrees with the right-hand side by functoriality and the lax monoidal structure of $\Phi_{\phase}$:
+We have now recovered the wave equation by connecting $K$-many particles together in the underlying operad of $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which agrees with the right-hand side by functoriality and the lax monoidal structure of $\Phi_{\phase}$:
 \[
 \Phi_{\phase}\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phi_{\phase}(\fun{wire}_K)\bigl(\Phi_{\phase}(\Part),\ldots,\Phi_{\phase}(\Part)\bigr),
 \]
