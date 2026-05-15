@@ -449,6 +449,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\cofun}{{\raisebox{2pt}{\resizebox{2.5pt}{2.5pt}{$\setminus$}}}}
 
 \newcommand{\coalg}{\tn{-}\Cat{Coalg}}
+\newcommand{\alg}{\tn{-}\Cat{Alg}}
 
 \trackTerm{\org}{org}{\mathbb{O}\Cat{rg}}
 
@@ -690,9 +691,9 @@ This chapter collects the background required for this paper. We first fix the d
 
 We fix some typographic conventions. We denote generic categories using calligraphic script, $\cat{C},\cat{M},\cat{A}$, and specifically-named categories using boldface, $\smset,\poly,\mfd$. We write specifically-named functions or operations in roman, $\ev,\coev$, and named functors in sans-serif, $\Fun{T},\Fun{Dist}$. Number systems use blackboard bold, $\nn,\rr$; named bicategorical structures are written with a blackboard-bold initial, such as $\org$ and $\Para$. 
 
-For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$.
+For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$ is clickable.
 
-We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories.
+We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
 We reserve $\eta$ and $\mu$ for monad units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
 
@@ -805,7 +806,7 @@ Polynomial comonads are---up to isomorphism---the same data as small categories.
 \[
 c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
-The counit $\varepsilon\colon c\to\yon$ assigns an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $f\then g:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(f\then g)=\cod(g)$, and that composition is associative, i.e. that $(c,\epsilon,\delta)$ indeed can be identified with a category.
+The counit $\varepsilon\colon c\to\yon$ assigns an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $g\circ f:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(g\circ f)=\cod(g)$, and that composition is associative, i.e. that $(c,\epsilon,\delta)$ indeed can be identified with a category.
 
 \begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
 The above correspondence defines an isomorphism between polynomial comonads and small categories.
@@ -819,14 +820,18 @@ By \cref{prop.comonads_cats}, the comonad $(\Store(S),\epsilon,\delta)$ can be v
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec.coalgebras}
 
-For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\smset$ is a set and $\beta\colon S\to p(S)$ is a function. We call elements of $S$ states; given a state $s:S$, the map assigns a \emph{readout} position $r_s\coloneqq\beta_1(s):p(1)$ and an \emph{update} function $\bk{\beta}{s}\colon p[r_s]\to S$ sending each direction $d:p[r_s]$ to a new state $s_d$. We sometimes succinctly write the above coalgebra data as
-\begin{equation}\label{eqn.coalgebra_format}
-s\mapsto (r_s, d\mapsto s_d).
+For a polynomial $p$, a \emph{$p$-coalgebra} is a pair $(S,\beta)$ where $S:\smset$ is a set and $\beta\colon S\to p(S)$ is a function. We call elements of $S$ \emph{states}. Unpacking $p(S)=\sum_{i:p(1)} S^{p[i]}$, the function $\beta$ is equivalently a pair
+\begin{equation}\label{eqn.coalg_unpack}
+\beta_1\colon S\to p(1),\qquad
+\bk{\beta}{\blank}\colon\prod_{s:S} S^{p[\beta_1(s)]},
 \end{equation}
+where $\beta_1(s)$ returns a position and $\bk{\beta}{s}\colon p[\beta_1(s)]\to S$ returns a state-update function---from directions to new states---for each $s:S$. Given a state $s:S$, we call $r_s\coloneqq\beta_1(s):p(1)$ its \emph{readout} position and $\bk{\beta}{s}\colon p[r_s]\to S$ its \emph{update} function, sending each direction $d:p[r_s]$ to a new state $s_d\coloneqq\bk{\beta}{s}(d)$.
 
-When $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$, so \eqref{eqn.coalgebra_format} splits into two pieces, $s\mapsto r_s$, $(s,d\mapsto s_d)$. But in general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$.
+When $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$, which is independent of the readout. But in general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[\beta_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
+
+There is a connection between $p$-coalgebras and the $\Store$ comonad from \cref{ex.store}.
 
 \begin{lemma}\label{lem.store_monoidal}
 The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$, defines a strong symmetric monoidal functor
@@ -835,11 +840,11 @@ The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ t
 \]
 \end{lemma}
 \begin{proof}
-The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$. Functoriality on bijections is direct: $\Store(\id_S)=\id_S\yon^{\id_S}=\id_{\Store(S)}$ and $\Store(g\circ f)=(g\circ f)\yon^{f\inv\circ g\inv}=\Store(g)\circ\Store(f)$.
+The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$. Functoriality on bijections is direct: $\Store(g\circ f)=(g\circ f)\yon^{f\inv\circ g\inv}=\Store(g)\circ\Store(f)$.
 \end{proof}
 
 \begin{lemma}[Strong monoidal functors give actions]\label{lem.smc_action}
-Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces a symmetric monoidal action of $\cat A$ on $\cat D$ by left multiplication,
+Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces a symmetric monoidal action of $\cat A$ on $\cat D$, i.e.\ a strong monoidal functor $\cat{A}\times\cat{D}\to\cat{D}$, by left multiplication,
 \[
 a\cdot d\coloneqq J(a)\otimes d.
 \]
@@ -862,7 +867,7 @@ For $p:\poly$ and $S:\smsetiso$, there is a natural bijection
 \end{proposition}
 
 \begin{proof}
-A coalgebra $\beta\colon S\to p\tri S$ unpacks as a pair $\beta=(\beta_1,\beta^\sharp)\colon S\to\sum_{i:p(1)}\prod_{d:p[i]}S$: for each $s:S$, a position $\beta_1(s):p(1)$ and an update $\beta^\sharp_s\colon p[\beta_1(s)]\to S$. A polynomial map $\hat\beta\colon S\yon^S\to p$ unpacks as a pair $(\hat\beta_1,\hat\beta^\sharp)$ with the same type signature by \eqref{eqn.poly_map}. The bijection sets $\hat\beta_1\coloneqq\beta_1$ and $\hat\beta^\sharp\coloneqq\beta^\sharp$.\footnote{
+As in \eqref{eqn.coalg_unpack}, a coalgebra $\beta\colon S\to p\tri S$ unpacks as a pair $\beta_1\colon S\to p(1)$ and $\bk{\beta}{\blank}\colon\prod_{s:S}S^{p[\beta_1(s)]}$. A polynomial map $\hat\beta\colon S\yon^S\to p$ unpacks as a pair $\hat\beta_1\colon S\to p(1)$ and $\bk{\hat\beta}{\blank}\colon\prod_{s:S}S^{p[\hat\beta_1(s)]}$ with the same type signature by \eqref{eqn.poly_map}, so they are in bijection.\footnote{
 Equivalently, $\poly$ has a left Kan operation $\lens{p}{q}$ with $\poly(p,q'\tri q)\cong\poly(\lens{p}{q},q')$ given by $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{S}=S\yon^S$.
 }
 
@@ -880,12 +885,12 @@ Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection 
 	p
 \end{tikzcd}
 \]
-The first commutes iff $\beta'_1\circ f=\beta_1$ and $f\circ\beta^\sharp_s=\beta'^\sharp_{f(s)}$ for all $s:S$; the second iff $\hat{\beta'}_1\circ f=\hat\beta_1$ and $\hat\beta^\sharp_s=f\inv\circ\hat{\beta'}^\sharp_{f(s)}$. Under the identification $\hat\beta_\blank=\beta_\blank$, these coincide.\qedhere
+The first commutes iff $\beta'_1\circ f=\beta_1$ and $f\circ\beta^\sharp_s=\beta'^\sharp_{f(s)}$ for all $s:S$; the second iff $\hat{\beta'}_1\circ f=\hat\beta_1$ and $\hat\beta^\sharp_s=f\inv\circ\hat{\beta'}^\sharp_{f(s)}$. These coincide under the established bijection $\hat\beta_\blank=\beta_\blank$.\qedhere
 \end{proof}
 
 \subsection{Cotangent bundles as polynomials}\label{sec.cot}
 
-The category of smooth manifolds provides the source of polynomials relevant to physics and learning. Each manifold has a cotangent bundle, and each smooth map has a transpose on cotangent fibers; combining these gives a functor into $\poly$.
+The category $\mfd$ of smooth manifolds provides the source of polynomials relevant to physics and learning. Each manifold has a cotangent bundle, and each smooth map has a transpose on cotangent fibers; combining these gives a functor into $\poly$.
 
 \begin{definition}[Cotangent functor]\label{def.cot}
 The \emph{cotangent functor} $\defineTerm{cot}\colon\mfd\to\poly$ sends a smooth manifold $M$ to
@@ -905,7 +910,7 @@ This is indeed functorial: the identity map $\id_M\colon M\to M$ has $T_m(\id_M)
 \[
 (T_m(g\circ f))^\top=(T_m f)^\top\circ(T_{f(m)}g)^\top=\bk{\cot{f}}{m}\circ\bk{\cot{g}}{f(m)},
 \]
-which is the backward part of $\cot{f}\then\cot{g}$.
+which is the backward part of $\cot{g}\circ\cot{f}$.
 
 \begin{proposition}\label{prop.cot_monoidal}
 The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
@@ -917,7 +922,7 @@ The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otime
 \end{proposition}
 
 \begin{proof}
-The one-point manifold $\rr^0=\{0\}$ has $T^*_0\rr^0=\{0\}$, so $\cot{\mathbb{R}^0}=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$, so the unit is preserved. Products are preserved by \eqref{eqn.T_products}, so we have
+The one-point manifold $\rr^0=\{0\}$ has $T^*_0\rr^0=\{0\}$, so $\cot{\mathbb{R}^0}=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$, so the unit is preserved. By \eqref{eqn.T_products}, we have
 \begin{equation}\label{eqn.cot_times}
 \cot{M\times N}=\sum_{(m,n)\in M\times N}\yon^{T^*_{(m,n)}(M\times N)}\cong\sum_{m\in M}\yon^{T^*_mM}\otimes\sum_{n\in N}\yon^{T^*_nN}=\cot{M}\otimes\cot{N}
 \end{equation}
@@ -938,6 +943,8 @@ Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributi
 
 \Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot{M}$.
 
+Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. And since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. 
+
 \begin{lemma}\label{lem.cot_comonoid}
 For any smooth manifold $M$, the polynomial $\cot{M}$ is a cocommutative comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
 \[
@@ -945,10 +952,10 @@ For any smooth manifold $M$, the polynomial $\cot{M}$ is a cocommutative comonoi
 \qqand
  \cot{!_M}\colon\cot{M}\to\yon
 \]
-send positions by $m\mapsto(m,m)$ and $m\mapsto *$, respectively. On directions, each cotangent fiber $T^*_mM$ carries the induced cocommutative comonoid structure
+send positions by $m\mapsto(m,m)$ and $m\mapsto *$, respectively. On directions, each cotangent fiber $T^*_mM$ carries an induced \emph{commutative monoid} structure
 \[
 T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\xi')\mapsto\xi+\xi'
-\qqand 1\to T^*_mM,\quad *\mapsto 0,
+\qqand \rr^0\to T^*_mM,\quad *\mapsto 0,
 \]
 i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cot{M}$ recovers the additive structure of each cotangent space.%
 %\footnote{
@@ -968,7 +975,7 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 \end{lemma}
 
 \begin{proof}
-Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a cocommutative comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. Since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. On positions this gives $m\mapsto(m,m)$ and $m\mapsto *$. For the backward maps: $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(!_M)$ is $T_mM\to 0$, whose transpose is the map $1\to T^*_mM$ that selects the zero covector.
+On positions $\cot{\Delta_M}$ and $\cot{!_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(!_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
 
@@ -985,7 +992,7 @@ It is well known that strong monoidal functors preserve monoids, comonoids, and 
 \end{proof}
 
 \begin{remark}\label{rem.cot_as_category}
-It turns out that $\cot{M}$ is sometimes not only a $\otimes$-comonoid but also a $\tri$-comonoid, i.e.\ a category by \cref{prop.comonads_cats}. In these cases, the cotangent vectors $\xi\in T^*_mM$ can be thought of as maps out of $m$, in the sense that they exponentiate via \eqref{eqn.flow_cot} to give paths that land at other objects. We conjecture (see \cref{rmk.rnla_generalization}) that this works for any reactive nilpotent Lie algebra: the Baker-Campbell-Hausdorff formula \cite{knapp2002lie} allows one to compose cotangent vectors like morphisms. For simplicity, we only work with reactive vector spaces in this paper; the nilpotent Lie-algebra version is left for future work.
+It turns out that $\cot{M}$ is sometimes not only a $\otimes$-comonoid but also a $\tri$-comonoid, which would make it a category by \cref{prop.comonads_cats}. In these cases, the cotangent vectors $\xi\in T^*_mM$ can be thought of as maps out of $m$, in the sense that an exponential map sends each such $\xi$ to a path that lands at another point of $M$. We conjecture (see \cref{rmk.rnla_generalization}) that this works for any nilpotent Lie algebra whose underlying vector space is equipped with a reactive structure, as we will define in \cref{def.rvect}. Indeed the Baker-Campbell-Hausdorff formula \cite{knapp2002lie} allows one to compose tangent vectors like morphisms. For simplicity, we only work with reactive vector spaces in this paper; the nilpotent Lie-algebra version is left for future work.
 \end{remark}
 
 %--------------------------------------------------------------------
@@ -1081,21 +1088,22 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
 \end{equation}
 \smallskip
 
-\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-object-labeled-ports) and whose morphisms $\varphi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of internal boxes in an external box. That is, for a set $O$ of objects, there are operads $\cat{W}_{O\tn{-Cat}}$, $\cat{W}_{O\tn{-MnCat}}$, $\cat{W}_{O\tn{-TrCat}}$, and $\cat{W}_{O\tn{-Opd}}$ each with a 2-ary morphism that can be drawn as above.%
+\noindent In each case there is an associated operad $\cat{W}$ whose objects are the legal interfaces (boxes-with-object-labeled-ports) and whose morphisms $\varphi\colon b_1,\ldots,b_K\to c$ are the legal arrangements of internal boxes in an external box. That is, for a set $O$ of objects, there are operads $\cat{W}_{O\tn{-Cat}}$, $\cat{W}_{O\tn{-MnCat}}$, $\cat{W}_{O\tn{-TrCat}}$, and $\cat{W}_{O\tn{-Opd}}$ each with a 2-ary morphism that can be drawn as in \eqref{eqn.wd_examples}, because each of those wiring diagrams has two internal boxes.%
 \footnote{
 There is a potentially confusing level-shift in that there is an operad $\cat{W}_{O\tn{-Opd}}$ for which algebras are operads with object set $O$. In case it's helpful, the object set for $\cat{W}_{O\tn{-Opd}}$ would be $\List(O)\times O$, because every ``box'' has a list of inputs and an output.
 }
 
-Category-like structures that can interpret the compositionality syntax from $\cat{W}$ are precisely the $\cat{W}$-algebras
+Category-like structures that can interpret the compositionality syntax from $\cat{W}$ are precisely the $\cat{W}$-algebras, i.e.\ lax monoidal functors
 \begin{equation}\label{eqn.W_alg}
 \cat{C}\colon\cat{W}\to\smset.
 \end{equation}
-Indeed, such a functor assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\varphi$ the function $\cat{C}(\varphi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
+So any categories are lax monoidal functors $\cat{W}_{O\tn{-Cat}}\to\smset$ for various $O$, monoidal categories are lax monoidal functors $\cat{W}_{O\tn{-MnCat}}\to\smset$ for various $O$, etc. Indeed, such a functor $\cat{C}$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\varphi$ the function $\cat{C}(\varphi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
 \footnote{
 By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$. In general, the \emph{underlying operad} of a symmetric monoidal category $(\cat{C},I,\otimes)$ has the same objects as $\cat{C}$ and multimorphisms $\cat{C}(a_1,\ldots,a_n;b)\coloneqq\cat{C}(a_1\otimes\cdots\otimes a_n,b)$, with operadic composition by tensoring and composing in $\cat{C}$.
 }
 
-\begin{example}
+We'll make this explicit for categories.
+\begin{example}[$O$-categories as $\cat{W}_{O\tn{-Cat}}$-algebras]
 For a set $O$, let $\ob\cat{W}_{O\tn{-Cat}}\coloneqq O\times O$ and
 \[\cat{W}_{O\tn{-Cat}}((o_0',o_1),(o_1',o_2),\ldots(o_{K-1}',o_K);(o_0,o_K'))\coloneqq
 \begin{cases}
@@ -1126,20 +1134,21 @@ Thus the diagram
 \end{scope}
 \end{tikzpicture}
 \end{equation}
-	represents a map $\varphi\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_i=A'_i$ for $0\leq i\leq2$. 
+	represents a map $\varphi\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_0=A_0'$, $A_1=A_1'$ and $A_2=A_2'$. 
 
-If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then the above diagram shows $f_1:\cat{C}(A'_0,A_1)$, $f_2:\cat{C}(A'_1,A_2)$ and $\varphi(f_1,f_2):\cat{C}(A_0,A'_2)$. In other words the diagram $\varphi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.
+If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then \eqref{eqn.cat_composite} shows $f_1:\cat{C}(A'_0,A_1)$, $f_2:\cat{C}(A'_1,A_2)$ and $\varphi(f_1,f_2):\cat{C}(A_0,A'_2)$. In other words the $2$-ary morphism $\varphi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.%
+\footnote{It is not hard to let the objects change as well. For any function $O\to O'$, there is an induced operad functor $\cat{W}_{O\tn{-Cat}}\to\cat{W}_{O'\tn{-Cat}}$ and hence a functor $\cat{W}_{O'\tn{-Cat}}\alg\to\cat{W}_{O\tn{-Cat}}\alg$. The Grothendieck construction of this data is equivalent to the category of small categories. The same idea applies to all of the wiring diagram operads.}
 \end{example}
 
-Each such $\cat{W}$ is a \emph{composition syntax}: its multimorphisms specify legal arrangements of boxes---how systems compose---with no commitment about what fills them. An algebra is a semantics. A variety of examples of these wiring-diagram operads, whose algebras are structured categories, can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
+Each such $\cat{W}$ is a \emph{composition syntax}: its multimorphisms specify legal arrangements of boxes---how systems compose---with no commitment about what fills them. A $\cat{W}$-algebra is a semantics. A variety of examples of these wiring-diagram operads, whose algebras are structured categories, can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
 
 An advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
 consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine: it is the suboperad comprising the left class of a certain factorization system on $1\tn{-}\Cat{Cob}$.
 
-Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$ in place of \eqref{eqn.W_alg}. For example, a $\vect$-enriched category with object set $O$ is an operad functor $\cat{W}_{O\tn{-Cat}}\to\vect$.
+Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$ in place of $\smset$ as in \eqref{eqn.W_alg}. For example, a $\vect$-enriched category with object set $O$ is an operad functor $\cat{W}_{O\tn{-Cat}}\to\vect$.
 
 
-One can build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras. In \cite{shapiro2022dynamic}, a dynamic category is defined to be a category enriched in $\org$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
+For our purposes, the goal is to build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras. In \cite{shapiro2022dynamic}, a dynamic category is defined to be a category enriched in $\org$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
 \[
 \cat{W}_{O\tn{-Cat}}\to\org
 \qquad
