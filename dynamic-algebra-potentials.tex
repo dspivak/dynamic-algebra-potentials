@@ -1168,28 +1168,25 @@ for any $O:\smset$. We continue with this approach, and as such need to recall $
 
 \subsection{The monoidal bicategory \texorpdfstring{$\org$}{Org}}\label{sec.org}
 
-We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. The objects of $\org$ are polynomials, and for polynomials $p,q$ the hom-category is
+We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. Its objects are polynomials $\ob\org=\ob\poly$, and for polynomials $p,q$ the hom-category is
 \[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
-Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}\tri S)$. The interpretation is interactional: $p$ is an \emph{internal} interface and $q$ is an \emph{external} one, and at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
+Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}\tri S)$. We regard it as an interaction, regarding $p$ as an \emph{internal} interface and $q$ as an \emph{external} one: and at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
 \[
-\org(p_1,\ldots,p_K,q)=[p_1\otimes\cdots\otimes p_K,q]\coalg.
+\smset(S,\ihom{p,q}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
 \]
-These better point to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $q$---but the notation is heavier.
-
-The category $\ihom{p,q}\coalg$ has as objects pairs $(S,\beta)$ where $S$ is a set and $\beta\colon S\to\ihom{p,q}\tri S$ is a function, and where a morphism from $(S,\beta)$ to $(S',\beta')$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. We refer to $S$ as the \emph{state set}.
-
-Unwinding the definition of a $[p,q]$-coalgebra $(S,\beta)$ using \eqref{eqn.dirichlet_hom}, every state $s:S$ is sent to an element of
-\[
-[p,q](S)=\prod_{i:p(1)}\sum_{j:q(1)}\prod_{e:q[j]}\sum_{d:p[i]}S,
-\]
-i.e.\ for each output $i:p(1)$ of the internal box $p$, an assigned output $j(s,i):q(1)$ of the external box, and for every input $e:q[j]$ of the external box, an assigned input $d(s,i,e):p[i]$ of the internal box, together with a new state $s'(s,i,e):S$. We can denote such a function $\beta$ concisely in the form
+We refer to $S$ as the \emph{state set}; a morphism $(S,\beta)\to(S',\beta')$ in $\ihom{p,q}\coalg$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. Concisely, we denote the function $\beta$ by
 \begin{equation}\label{eqn.coalgebra_concise}
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
 \end{equation}
 
+We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
+\[
+\org(p_1,\ldots,p_K;q)\coloneqq[p_1\otimes\cdots\otimes p_K,q]\coalg.
+\]
+The operadic perspective is closer to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $q$---than the monoidal perspective is, but the operadic notation $\org(p_1,\ldots,p_K;q)$ is heavier than the monoidal notation $\org(p,q)$.
 
 \begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop.org}
-The hom-categories $\ihom{p,q}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects, with monoidal structure induced by the Dirichlet product on polynomials.
+The hom-categories $\ihom{p,q}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects, with monoidal structure $(\yon,\otimes)$ inherited by the Dirichlet product on polynomials.
 \end{proposition}
 
 This structure arises from the fact that the functor $\blank\coalg$ from $(\poly,\yon,\otimes)$ to $(\smcat,1,\times)$ is lax monoidal:
@@ -1198,7 +1195,7 @@ This structure arises from the fact that the functor $\blank\coalg$ from $(\poly
 \qqand
 p\coalg\times q\coalg\to(p\otimes q)\coalg.
 \]
-Thus the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce the identity and composition functors
+From here, the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce the identity and composition functors
 \[
 1\to[p,p]\coalg
 \qqand
@@ -1210,7 +1207,7 @@ The polynomial $[p,q]$ also serves as the internal hom in $\org$:
 \[
 \org(a,[p,q])\,=\,[a,[p,q]]\coalg\;\cong\;[a\otimes p,q]\coalg\,=\,\org(a\otimes p,q),
 \]
-by closedness of $\poly$ (\cref{sec.poly}). In particular, every 1-morphism $f\colon p\to q$ in $\org$ corresponds to a 0-morphism $\bar f\colon\yon\to[p,q]$.
+by closedness of $\poly$ (\cref{sec.poly}).
 \end{remark}
 
 \subsection{The Para construction}\label{sec.para_general}
