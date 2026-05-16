@@ -669,7 +669,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
 
-\Cref{ch.background} collects the background material used throughout the paper. The paper aims to be self-contained, so this chapter spans over 20\% of its length. \Cref{sec.prelim} fixes general notational conventions. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction.
+\Cref{ch.background} collects the background material used throughout the paper. The paper aims to be self-contained, so this chapter spans over 20\% of its length. \Cref{sec.prelim} fixes general notational conventions. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the Para construction, and the monoidal bicategory $\org$.
 
 \Cref{ch.lenses_internalization} constructs our syntax category $\potlens$. \Cref{sec.lenses_general} reviews the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$. \Cref{sec.abstract_representation} proves the central technical result: for any symmetric monoidal closed category $\cat{C}$, there is a normal lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$ sending a lens object $\lensob c$ to $\outp c\otimes\ihom{\inpt c,I}$. \Cref{sec.rvect} introduces the category $\rvect$ of reactive vector spaces---which will serve as the parameter objects for the Para construction that follows---together with the cotangent endofunctor on $\rvect$. \Cref{sec.potentialized_lenses} then builds the symmetric monoidal category (and underlying operad) $\potlens$ from parameterized manifold lenses equipped with potentials. \Cref{sec.W_choice} shows how to interpret the multimorphisms of $\potlens$ as smooth rewiring diagrams.
 
@@ -691,7 +691,7 @@ Thanks to Lukas Barth, Scott Viteri, David Jaz Myers, and Jake Arujo-Simon for s
 \chapter{Background}\label{ch.background}
 %====================================================================
 
-This chapter collects the background required for this paper. We first fix the differential-geometric notation. Then we recall polynomial functors, polynomial comonads, and polynomial coalgebras. Finally we review wiring-diagram operads, the monoidal bicategory $\org$, and the Para construction, which together provide the compositional setting used in the rest of the paper.
+This chapter collects the background required for this paper. We first fix the differential-geometric notation. Then we recall polynomial functors, polynomial comonads, and polynomial coalgebras. Finally we review wiring-diagram operads, the Para construction, and the monoidal bicategory $\org$, which together provide the compositional setting used in the rest of the paper.
 
 %--------------------------------------------------------------------
 \section{Notational conventions}\label{sec.prelim}
@@ -1007,16 +1007,21 @@ It turns out that $\cot{M}$ is sometimes not only a $\otimes$-comonoid but also 
 \section{Compositional dynamics}\label{sec.dynamic_structures}
 %--------------------------------------------------------------------
 
+This section gathers three pieces of categorical background used in the rest of the paper. Wiring-diagram operads (\cref{sec.wd_operads}) exemplify how operads can be used as a composition syntax for category-like structures; our
+  particular operad of interest, $\potlens$, will be built in \cref{ch.lenses_internalization} using the Para construction (\cref{sec.para_general}). The monoidal
+  bicategory $\org$ (\cref{sec.org}) is the target of the semantics functor $\potlens\to\org$, which we'll define in
+  \cref{ch.potential_driven_dynamics}. 
+  
 \subsection{Wiring-diagram operads}\label{sec.wd_operads}
 
-Categories, monoidal categories, traced categories, operads, etc.\ can be understood in terms of the sorts of compositions they allow. For example the following diagrams are interpretable:
+Categories, monoidal categories, traced categories, operads, etc.\ can be understood in terms of the sort of composition syntax they interpret. For example the following diagrams are interpretable:
 \begin{equation}\label{eqn.wd_examples}
 \begin{tikzpicture}[baseline=(Catg)]
 \begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
   \begin{scope}[oriented WD, bb port sep=1, bb port length=0, bb min width=.4cm, bby=.2cm, inner xsep=.2cm, x=.5cm, y=.3cm]
   	\node[bb={1}{1}] (Catf) {$f_1$};
   	\node[bb={1}{1}, right=1 of Catf] (Catg) {$f_2$};
-  	\node[bb={0}{0}, fit=(Catf) (Catg)] (Cat) {};
+  	\node[bb={0}{0}, inner ysep=8pt, fit=(Catf) (Catg)] (Cat) {};
   	\node[coordinate] at (Cat.west|-Catf_in1) (Cat_in1) {};
   	\node[coordinate] at (Cat.east|-Catg_out1) (Cat_out1) {};
   	\draw (Cat_in1) -- (Catf_in1);
@@ -1030,7 +1035,7 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
   %
   	\node[bb={1}{2}, above right=-1 and 6.5 of Catf] (Monf) {$f_1$};
   	\node[bb={2}{1}, below right=-.5 and 1 of Monf] (Mong) {$f_2$};
-  	\node[bb={0}{0}, fit=(Monf) (Mong)] (Mon) {};
+  	\node[bb={0}{0}, inner ysep=8pt, fit=(Monf) (Mong)] (Mon) {};
   	\node[coordinate] at (Mon.west|-Monf_in1) (Mon_in1) {};
   	\node[coordinate] at (Mon.west|-Mong_in2) (Mon_in2) {};
   	\node[coordinate] at (Mon.east|-Monf_out1) (Mon_out1) {};
@@ -1048,7 +1053,7 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
   		node[right=3pt of Mon_out2] {$E$}
   	;
   %
-  	\node[bb={2}{1}, below right= -1.75 and 6.5 of Monf] (Trf) {$f_1$};
+  	\node[bb={2}{1}, below right= -1 and 6.5 of Monf] (Trf) {$f_1$};
   	\node[bb={2}{2}, below right=-1 and 1 of Trf] (Trg) {$f_2$};
   	\node[bb={0}{0}, fit={($(Trf.north west)+(-.5,2)$) ($(Trg.south east)+(.5,0)$)}] (Tr) {};
   	\node[coordinate] at (Tr.west|-Trf_in2) (Tr_in1) {};
@@ -1164,7 +1169,66 @@ For our purposes, the goal is to build \emph{dynamic} versions of the structures
 \qquad
 \cat{W}_{O\tn{-Opd}}\to\org
 \] 
-for any $O:\smset$. We continue with this approach, and as such need to recall $\org$. We do so in \cref{sec.org}. In \cref{sec.W_choice} we will choose the particular composition syntax $\cat{W}$ used in this paper.
+for any $O:\smset$. We continue with this approach, and as such need to recall $\org$. We do so in \cref{sec.org}, after a brief detour through the Para construction in \cref{sec.para_general}. In \cref{sec.W_choice} we will choose the particular composition syntax $\cat{W}$ used in this paper.
+
+\subsection{The Para construction}\label{sec.para_general}
+
+We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\defineTerm{Para}_{\cat{A}}(\cat{D})$ has the same objects as $\cat{D}$, and a morphism $x\to y$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
+\[
+f\colon a\cdot x\to y
+\]
+in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The identity on $x$ has parameter $I$ and action given by the unitor $I\cdot x\cong x$. The composite of $(a,f)\colon x\to y$ and $(b,g)\colon y\to z$ has parameter $b\otimes a$ and uses
+\begin{equation}\label{eqn.para_map}
+(b\otimes a)\cdot x\cong b\cdot(a\cdot x)\To{b\cdot f}b\cdot y\To{g}z.
+\end{equation}
+
+When $\cat A$ and $\cat D$ are both symmetric monoidal and the action is strong monoidal, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $x\otimes y$ is the $\cat D$-tensor, and the tensor of $(a,f)\colon x\to y$ and $(b,g)\colon x'\to y'$ has parameter $a\otimes b$ and underlying map
+\begin{equation}\label{eqn.para_tensor}
+(a\otimes b)\cdot(x\otimes x')\To{\cong}(a\cdot x)\otimes(b\cdot x')\To{f\otimes g}y\otimes y',
+\end{equation}
+where the first isomorphism comes from the action being strong monoidal.
+
+The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $\alpha\colon a\to a'$ in $\cat A$ such that $f'\circ(\alpha\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
+In this paper, all of our parameter categories are groupoids, so these Para constructions are naturally $(2,1)$-categories; by the convention of \cref{sec.prelim}, we will usually call them categories.
+
+The following is straightforward.
+
+\begin{proposition}[Action squares from monoidal natural transformations]\label{prop.para_strong_induced}
+Let $J\colon\cat A\to\cat D$ and $J'\colon\cat A'\to\cat D'$ be strong monoidal functors, inducing actions of $\cat A$ on $\cat D$ and of $\cat A'$ on $\cat D'$ by left multiplication (\cref{lem.smc_action}). A monoidal natural transformation $\theta\colon J'\circ F\Rightarrow G\circ J$ as on the left, with $F$ strong monoidal and $G$ lax (resp.\ strong) monoidal, induces a lax (resp.\ strong) monoidal action square as on the right:
+\[
+\begin{tikzcd}[ampersand replacement=\&]
+\cat A\ar[r,"J"]\ar[d,"F"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
+\cat A'\ar[r,"J'"']\& \cat D'
+\arrow[Rightarrow, from=left, to=right, shorten <=3mm, shorten >=3mm, "\theta"]
+\end{tikzcd}
+\quad\leadsto\quad
+\begin{tikzcd}[ampersand replacement=\&]
+\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
+\cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
+\arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm]
+\end{tikzcd}
+\]
+\end{proposition}
+
+\begin{proposition}[Para functoriality from action squares {\cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}}]\label{prop.para_square}
+Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot G(x)\to G(a\cdot x)$ is a natural transformation compatible with the action unitors and associators:
+\begin{equation}\label{eqn.para_square}
+\begin{tikzcd}[ampersand replacement=\&]
+\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
+\cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
+\arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm, "\theta"]
+\end{tikzcd}
+\end{equation}
+Then there is an induced functor
+\[
+\para{F}{G}\colon\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'}.
+\]
+When $\cat D,\cat D'$ are symmetric monoidal, the actions are strong monoidal, $G$ is strong (resp.\ normal lax, resp.\ lax) symmetric monoidal, and $\theta$ is a monoidal natural transformation, then $\para{F}{G}$ extends to a strong (resp.\ normal lax, resp.\ lax) monoidal functor.
+\end{proposition}
+
+\begin{proof}
+The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\mathbb{P}\Cat{ara}$ on it. For the normal-lax case: the unitor of $\para{F}{G}$ at the unit object $(I_{\cat A}, I_{\cat D})$ is built from $F$'s unitor and $G$'s unitor, both of which are isomorphisms, so the unitor of $\para{F}{G}$ is too.\qedhere
+\end{proof}
 
 \subsection{The monoidal bicategory \texorpdfstring{$\org$}{Org}}\label{sec.org}
 
@@ -1209,65 +1273,6 @@ The polynomial $[p,q]$ also serves as the internal hom in $\org$:
 \]
 by closedness of $\poly$ (\cref{sec.poly}).
 \end{remark}
-
-\subsection{The Para construction}\label{sec.para_general}
-
-We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$, the category $\defineTerm{Para}_{\cat{A}}(\cat{D})$ has the same objects as $\cat{D}$, and a morphism $x\to y$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
-\[
-f\colon a\cdot x\to y
-\]
-in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The identity on $x$ has parameter $I$ and action given by the unitor $I\cdot x\cong x$. The composite of $(a,f)\colon x\to y$ and $(b,g)\colon y\to z$ has parameter $b\otimes a$ and uses
-\begin{equation}\label{eqn.para_map}
-(b\otimes a)\cdot x\cong b\cdot(a\cdot x)\To{b\cdot f}b\cdot y\To{g}z.
-\end{equation}
-
-When $\cat A$ and $\cat D$ are both symmetric monoidal and the action is monoidal, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $x\otimes y$ is the $\cat D$-tensor, and the tensor of $(a,f)\colon x\to y$ and $(b,g)\colon x'\to y'$ has parameter $a\otimes b$ and underlying map
-\begin{equation}\label{eqn.para_tensor}
-(a\otimes b)\cdot(x\otimes x')\To{\cong}(a\cdot x)\otimes(b\cdot x')\To{f\otimes g}y\otimes y',
-\end{equation}
-where the first isomorphism comes from the action being monoidal.
-
-The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $\alpha\colon a\to a'$ in $\cat A$ such that $f'\circ(\alpha\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
-In the cases below, the parameter categories are groupoids, so these Para constructions are naturally $(2,1)$-categories; by the convention of \cref{sec.prelim}, we will usually call them categories.
-
-The following is straightforward.
-
-\begin{proposition}[Action squares from monoidal natural transformations]\label{prop.para_strong_induced}
-Let $J\colon\cat A\to\cat D$ and $J'\colon\cat A'\to\cat D'$ be strong monoidal functors, inducing actions of $\cat A$ on $\cat D$ and of $\cat A'$ on $\cat D'$ by left multiplication (\cref{lem.smc_action}). A monoidal natural transformation $\theta\colon J'\circ F\Rightarrow G\circ J$ as on the left, with $F$ strong monoidal and $G$ lax (resp.\ strong) monoidal, induces a lax (resp.\ strong) monoidal action square as on the right:
-\[
-\begin{tikzcd}[ampersand replacement=\&]
-\cat A\ar[r,"J"]\ar[d,"F"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
-\cat A'\ar[r,"J'"']\& \cat D'
-\arrow[Rightarrow, from=left, to=right, shorten <=3mm, shorten >=3mm, "\theta"]
-\end{tikzcd}
-\quad\leadsto\quad
-\begin{tikzcd}[ampersand replacement=\&]
-\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
-\cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
-\arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm]
-\end{tikzcd}
-\]
-\end{proposition}
-
-\begin{proposition}[Para functoriality from action squares {\cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}}]\label{prop.para_square}
-Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot G(x)\to G(a\cdot x)$ is a natural transformation compatible with the action unitors and associators:
-\begin{equation}\label{eqn.para_square}
-\begin{tikzcd}[ampersand replacement=\&]
-\cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
-\cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
-\arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm, "\theta"]
-\end{tikzcd}
-\end{equation}
-Then there is an induced functor
-\[
-\para{F}{G}\colon\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'}.
-\]
-When $\cat D,\cat D'$ are symmetric monoidal, the actions are monoidal, $G$ is strong (resp.\ normal lax, resp.\ lax) symmetric monoidal, and $\theta$ is monoidal, then $\para{F}{G}$ extends to a strong (resp.\ normal lax, resp.\ lax) monoidal functor.
-\end{proposition}
-
-\begin{proof}
-The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\mathbb{P}\Cat{ara}$ on it. For the normal-lax case: the unitor of $\para{F}{G}$ at the unit object $(I_{\cat A}, I_{\cat D})$ is built from $F$'s (iso) unitor and $G$'s unitor, so iso-ness of the latter is inherited.\qedhere
-\end{proof}
 
 %====================================================================
 \chapter{From lenses to smooth rewiring diagrams}\label{ch.lenses_internalization}
