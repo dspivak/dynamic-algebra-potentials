@@ -1997,7 +1997,7 @@ on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to 
 %\]
 
 \begin{proof}
-Use the action of $\cat{A}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter_lens_action} and the action $a\cdot x\coloneqq J(a)\otimes x$ on $\cat C$, as shown above. The functor $\Theta_z$ is $\cat A$-equivariant:
+We obtain the two above-displayed actions of $\cat{A}$, on $\Lens{\cat C}^{\Fun T}$ and on $\cat{C}$, by \cref{lem.parameter_lens_action,lem.smc_action}. The functor $\Theta_z$ is $\cat A$-equivariant:
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 \cat A\times\Lens{\cat C}^{\Fun T}
@@ -2010,31 +2010,33 @@ Use the action of $\cat{A}$ on $\Lens{\cat C}^{\Fun T}$ from \cref{lem.parameter
 \& \cat C,
 \end{tikzcd}
 \]
-where the $(a,\binom{\inpt c}{\outp c})$ component of the natural isomorphism is
+where the $(a,\binom{\inpt c}{\outp c})$ component of the natural isomorphism is given by
 \[
 J(a)\otimes\Theta_z\lensob c
-\cong J(a)\otimes\outp c\otimes\ihom{\inpt c,z}
-=\Theta_z\left(a\cdot\lensob c\right).
+= J(a)\otimes(\outp c\otimes\ihom{\inpt c,z})
+\cong\Theta_z\left(a\cdot\lensob c\right).
 \]
 We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn.para_theta_z} as desired.
 \end{proof}
 
 %--------------------------------------------------------------------
-\section{Reactive vector spaces}\label{sec.rvect}
+\section{Reactive vector spaces and the cotangent endofunctor}\label{sec.rvect}
 %--------------------------------------------------------------------
 
-\subsection{Definition and canonical pairing}\label{sec.rvect_def}
+We will eventually define $\potlens\coloneqq\para{\rvect}{\lmfd^\rr}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$.
 
-We now introduce the parameter objects for the Para construction of the next section. A reactive vector space is a finite-dimensional real vector space equipped with a smooth section into self-isomorphisms of its dual---equivalently, a smoothly varying nondegenerate bilinear form. The point of carrying the form is that it turns covectors into updates, and the cotangent construction of \cref{sec.TT} supplies the phase-space version used in Hamiltonian dynamics.
+\subsection{Reactive vector spaces}\label{sec.rvect_def}
+
+A reactive vector space is a finite-dimensional real vector space $V$ equipped with a bundle isomorphism $T^*V\To{\cong}TV$, equivalently, a smoothly varying nondegenerate bilinear form. The point of carrying the form is that it turns covectors into updates.
 
 \begin{definition}\label{def.rvect}
 A \emph{reactive vector space} is a finite-dimensional real vector space $V$ together with a smooth section
 \begin{equation}\label{eqn.sharp_iso}
 \sharp_V\colon V\to\Iso(V^*,V),
 \end{equation}
-the \defineTermAs{sharp_map}{\emph{sharp}} map, with value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the non-degenerate, vector-space case.}%
+the \defineTermAs{sharp_map}{\emph{sharp}} map, where we write $\sharp_x\coloneqq\sharp_V(x)\colon V^*\To{\cong}V$ for each $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the non-degenerate, vector-space case.}%
 \footnote{
-Equivalently, $\sharp_V$ is a smooth section of the bundle whose fiber over $x:V$ is the set $\Iso(T_x^*V,T_xV)$, under the canonical identifications $T_xV\cong V$ and $T^*_xV\cong V^*$. It will be more convenient to use the above form.
+Equivalently, $\sharp_V$ is a smooth bundle isomorphism $T^*V\To{\cong}TV$ over $V$, under the canonical identifications $T_xV\cong V$ and $T^*_xV\cong V^*$. It will be more convenient to use the above form.
 }
 Its pointwise inverse $\flat_x\coloneqq\sharp_x\inv\colon V\to V^*$ is the \defineTermAs{flat_map}{\emph{flat}} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
 \begin{equation}\label{eqn.pairing}
@@ -2046,11 +2048,11 @@ We define the category $\defineTerm{rvect}$ to have reactive vector spaces as ob
 \footnote{
 Restricting to isomorphisms (making $\rvect$ a groupoid) is essential for our development below: each $\rvect$-morphism is used both as $\phi$ on vectors and as $(\phi^*)\inv$ on covectors, e.g.\ in $T^*\phi$ \eqref{eqn.TT_phi} below.
 }
-Equivalently, $\phi$ preserves the pairing iff the \emph{pairing-preservation equation} holds at every $x\in V$:
+Equivalently in sharp form, $\phi$ preserves the pairing iff for all $x\in V$ there is an equality,
 \begin{equation}\label{eqn.pairing_triangle}
-\phi\circ\sharp_x\circ\phi^*=\sharp_{\phi(x)}\colon W^*\to W.
-\qedhere
+\phi\circ\sharp_x\circ\phi^*=\sharp_{\phi(x)}
 \end{equation}
+as maps $W^*\to W$.
 \end{definition}
 
 \begin{proposition}\label{prop.rvect_monoidal}
@@ -2089,11 +2091,6 @@ For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the 
 \sharp_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi).
 \end{equation}
 
-\begin{remark}[Sign convention]\label{rmk.swap_pairing}
-The bilinear form $\pairing{(x,\xi),(x',\xi')}=\xi'(x)+\xi(x')$
-also makes $V\oplus V^*$ a reactive vector space; under \eqref{eqn.canonical_dual_sum}, its sharp map is the swap $(\xi,x)\mapsto(x,\xi)$ whereas \eqref{eqn.canonical_form} has sharp map \eqref{eqn.canonical_sharp}. We use \eqref{eqn.canonical_form} because its antisymmetry is required for the dynamics later in the paper.\qedhere
-\end{remark}
-
 \begin{remark}[Symplectic sharp produces perpendicular vectors]\label{rmk.symplectic_perpendicular}
 For any covector $\alpha=(\xi,x)\in V^*\oplus V$, the resulting vector $\sharp_{V\oplus V^*}(\alpha)=(x,-\xi)\in V\oplus V^*$ \eqref{eqn.canonical_sharp} is annihilated by $\alpha$: pairing the two via \eqref{eqn.canonical_dual_sum},
 \[
@@ -2110,13 +2107,24 @@ A finite-dimensional real vector space $V$ equipped with an inner product---a sy
 the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon V\to V^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, where ``descent'' corresponds to scaling the sharp by a negative \emph{learning rate}; see \eqref{eqn.learning_sharp}.\qedhere
 \end{example}
 
-\subsection{Cotangent endofunctor and exponential}\label{sec.TT}
+The \emph{exponential} of a reactive vector space $(V,\sharp_V)$ is the bundle map%
+\footnote{Strictly speaking, what we denote $\exp_V$ is the composite $V\oplus V^*\To{\id\oplus\sharp}V\oplus V\to V$ of $\sharp$ with the genuine exponential. We combine them for brevity.}
+\begin{equation}\label{eqn.flow_cot}
+\exp_V\colon V\oplus V^*\to V,\qquad (x,\xi)\longmapsto x+\sharp_x(\xi),
+\end{equation}
+which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharp_x(\xi)\in T_xV\cong V$. In the constant case $\sharp_x=\sharp_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}.
+
+\begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.rnla_generalization}
+Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie algebras} (RN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth bundle isomorphism $\sharp$ on its underlying vector space, as in \cref{def.rvect}. We conjecture that replacing $\rvect$ by $\defineTerm{rnla}$ extends every use of $\rvect$ in this paper to the non-abelian setting. A careful treatment is left to future work.
+\end{remark}
+
+\subsection{Cotangent endofunctor}\label{sec.TT}
 
 For a reactive vector space $(V,\sharp_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
 T^*V\coloneqq V\oplus V^*.
 \end{equation}
-Under the inclusion functor $\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this agrees with the cotangent bundle of $V$ as a manifold.
+Under the inclusion functor $\inc\colon\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this commutes with the taking the cotangent bundle of $V$ as a manifold.
 
 It is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
@@ -2144,7 +2152,7 @@ both sides are independent of $w$ by constancy of the canonical symplectic pairi
 \end{proof}
 
 \begin{remark}[Constancy of $\sharp_{T^*V}$]\label{rmk.constant_canonical_sharp}
-The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharp_V$, so $\sharp_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharp_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharp_{V\oplus V^*}$, regardless of any variation in $\sharp_V$. However, $\sharp_V$ is not discarded by the framework: it will be used to define the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
+The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharp_V$, so $\sharp_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharp_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharp_{V\oplus V^*}$, regardless of any variation in $\sharp_V$. However, $\sharp_V$ is not discarded by the framework: it appears in the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
 \qedhere
 \end{remark}
 
@@ -2172,23 +2180,11 @@ The direct-sum pairing on $T^*V_1\oplus T^*V_2$ unfolds via \eqref{eqn.directsum
 The two expansions are equal, so pairings are preserved.\qedhere
 \end{proof}
 
-The \emph{exponential} of a reactive vector space $(V,\sharp_V)$ is the bundle map
-\begin{equation}\label{eqn.flow_cot}
-\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharp_x(\xi),
-\end{equation}
-which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharp_x(\xi)\in T_xV\cong V$. In the constant case $\sharp_x=\sharp_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharp_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}.
-
-\begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.rnla_generalization}
-Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie algebras} (RN Lie Algebras): pairs $(\lie g,\sharp)$ of a finite-dimensional nilpotent real Lie algebra and a smooth section $\sharp$ on its underlying vector space in the sense of \cref{def.rvect}. We expect that replacing $\rvect$ by $\defineTerm{rnla}$ extends the constructions of this section to the non-abelian setting. A careful treatment is left to future work.
-
-See \cref{rem.cot_as_category} for the next incarnation of this idea, as it traces through the paper.\qedhere
-\end{remark}
-
 %--------------------------------------------------------------------
 \section{Potentialized manifold lenses}\label{sec.potentialized_lenses}
 %--------------------------------------------------------------------
 
-Potentialized manifold lenses are ordinary manifold lenses whose backward pass also carries a real-valued potential; after cotangent internalization, its differential drives the induced dynamics. We package them as coKleisli lenses and then parameterize them by reactive vector spaces.
+With $\rvect$ in hand, we can now assemble the syntax category $\potlens\coloneqq\para{\rvect}{\lmfd^\rr}$, whose morphisms are $\rvect$-parameterized manifold lenses with a real-valued potential on the backward pass. \cref{sec.potentialized_cokleisli} specializes the backward-monad construction of \cref{sec.backwards} to $\rr\times\blank$ on $\mfd$, producing $\lmfd^\rr$; \cref{sec.potential_algebra} defines the potential algebra $\potd$ used by Moore internalization; \cref{sec.forming_potlens} parameterizes $\lmfd^\rr$ over $\rvect$ to form $\potlens$.
 
 \subsection{Potentialized coKleisli lenses}\label{sec.potentialized_cokleisli}
 
