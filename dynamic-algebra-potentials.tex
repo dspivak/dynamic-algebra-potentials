@@ -418,7 +418,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\set}{\tn{-}\Cat{Set}}
 
 
-\newcommand{\yon}{\mathcal{y}}
+\trackTerm{\yon}{yon}{\mathcal{y}}
 \trackTerm{\poly}{poly}{\Cat{Poly}}
 \newcommand{\polycart}{\poly^{\tn{cart}}}
 \trackTermSymbol{tri}{\triangleleft}
@@ -486,6 +486,10 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \trackTermSymbol{Lens}{\Cat{Lens}}
 \newcommand{\Lens}[1]{\termref{Lens}{\termraw{Lens}}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
+\trackTermSymbol{Lcokl}{\Cat{Lens}_{\cat C}^{\Fun T}}
+\newcommand{\Lcokl}[2]{\termref{Lcokl}{\Cat{Lens}_{#1}^{#2}}}
+\newcommand{\plmfd}{\Lcokl{\mfd}{\rr}}
+\newcommand{\plpoly}{\Lcokl{\poly}{\rr}}
 \newcommand{\plm}{\Cat{PLM}}
 \newcommand{\inpt}[1]{#1^{-}}
 \newcommand{\outp}[1]{#1^{+}}
@@ -538,7 +542,7 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \maketitle
 
 \begin{abstract}
-We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{parapotent lenses}, which consist of a reactive parameter space, smooth forward and backward routing maps, and a real-valued potential.
+We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is a category $\potlens$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{smooth rewiring diagrams}, which consist of a reactive parameter space, smooth output and input maps, and a real-valued potential.
 
 The technical heart of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase{},\Phiconf{}\colon\potlens\to\org$ into the bicategory $\org$ of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase{}$ stores both position and momentum; $\Phiconf{}$ stores only position. When applied to a parameterized function, $\Phiconf{}$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to a collection of particles wired together in series, $\Phiphase{}$ recovers the discrete wave equation.
 \end{abstract}
@@ -611,15 +615,15 @@ Third, we add a reaction structure $\sharp_V$ to the parameter space $V$. And fo
 
 The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens: a map $\outp f\colon \outp M\to\outp N$ together with a map $\inpt f\colon\outp M\times\inpt N\to\inpt M$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming and database theory, compositional game theory, and categorical accounts of backpropagation~\cite{bohannon2006relational,johnson2012lenses,hedges2017coherence,fong2019backprop}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way. 
 
-To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\lmfd^\rr$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added using the Para construction~\cite{capucci2024actegories} (\cref{sec.para_general}): given a symmetric monoidal category $\cat A$ acting on a category $\cat M$, the category $\para{\cat A}{\cat M}$ has the same objects as $\cat M$, and a morphism $x\to y$ is a pair $(a,f)$ consisting of a parameter $a\in\cat A$ and an $\cat M$-map $f\colon a\cdot x\to y$; composites use $\cat{A}$'s monoidal structure to combine parameters. The resulting category is
+To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\plmfd$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added using the Para construction~\cite{capucci2024actegories} (\cref{sec.para_general}): given a symmetric monoidal category $\cat A$ acting on a category $\cat M$, the category $\para{\cat A}{\cat M}$ has the same objects as $\cat M$, and a morphism $x\to y$ is a pair $(a,f)$ consisting of a parameter $a\in\cat A$ and an $\cat M$-map $f\colon a\cdot x\to y$; composites use $\cat{A}$'s monoidal structure to combine parameters. The resulting category is
 \[
-\potlens\coloneqq\para{\rvect}{\lmfd^\rr};
+\potlens\coloneqq\para{\rvect}{\plmfd};
 \]
-we call its morphisms \emph{parapotent lenses}. Under the semantics functor $\potlens\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
+we call its morphisms \emph{smooth rewiring diagrams}. Under the dynamics functor $\potlens\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
 
 The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}). This sends the ordinary set-lens interface $\binom{A}{B}$, represented in $\poly$ by $\binom{A\yon}{B\yon}$, to the monomial $B\yon^A$ (\cref{ex.moore}), whose coalgebras are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
 
-Together, $\cot$ and Moore internalization turn ordinary smooth data---output routing, input routing, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. The two choices we consider---which we call configuration and phase- give rise to two semantics functors $\Phiconf{},\Phiphase{}\colon\potlens\to\org$. In the configuration semantics $\Phiconf{}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phiphase{}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates---more precisely, potential-driven phase-space updates (\cref{rmk.constant_inverse_mass_hamiltonian})---and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data, which is then automatically transformed into coalgebraic dynamics.
+Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. The two choices we consider---which we call configuration and phase- give rise to two dynamics functors $\Phiconf{},\Phiphase{}\colon\potlens\to\org$. In the configuration semantics $\Phiconf{}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phiphase{}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates---more precisely, potential-driven phase-space updates (\cref{rmk.constant_inverse_mass_hamiltonian})---and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data, which is then automatically transformed into coalgebraic dynamics.
 
 The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
@@ -769,7 +773,7 @@ The category $\poly$ has polynomial functors as objects and natural transformati
 \begin{equation}\label{eqn.poly}
 p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
 \end{equation}
-We use juxtaposition for multiplication: $pq\coloneqq p\times q$, and we write $\yon\coloneqq\yon^1$ and $1\coloneqq\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m\in M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
+We use juxtaposition for multiplication: $pq\coloneqq p\times q$, and we write $\defineTerm{yon}\coloneqq\yon^1$ and $1\coloneqq\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m\in M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
 
 One can derive from the universal property of coproducts and the Yoneda lemma that the maps in $\poly$, i.e.\ the natural transformations $\varphi\colon p\to q$, are given by:
 \begin{equation}\label{eqn.poly_map}
@@ -1009,7 +1013,7 @@ It turns out that $\cot{M}$ is sometimes not only a $\otimes$-comonoid but also 
 
 This section gathers three pieces of categorical background used in the rest of the paper. Wiring-diagram operads (\cref{sec.wd_operads}) exemplify how operads can be used as a composition syntax for category-like structures; our
   particular operad of interest, $\potlens$, will be built in \cref{ch.lenses_internalization} using the Para construction (\cref{sec.para_general}). The monoidal
-  bicategory $\org$ (\cref{sec.org}) is the target of the semantics functor $\potlens\to\org$, which we'll define in
+  bicategory $\org$ (\cref{sec.org}) is the target of the dynamics functor $\potlens\to\org$, which we'll define in
   \cref{ch.potential_driven_dynamics}. 
   
 \subsection{Wiring-diagram operads}\label{sec.wd_operads}
@@ -1278,7 +1282,7 @@ by closedness of $\poly$ (\cref{sec.poly}).
 \chapter{From lenses to smooth rewiring diagrams}\label{ch.lenses_internalization}
 %====================================================================
 
-This chapter constructs the composition syntax used in the rest of the paper, the domain of the semantics functor $\potlens\to\org$ defined in \cref{thm.functor}. We begin by recalling lenses and a \emph{backward-monad} construction in \cref{sec.lenses_general}. Then in \cref{sec.abstract_representation} we define \emph{Moore internalization}, a functor $\Lens{\cat{C}}\to\cat{C}$ when $\cat{C}$ is monoidal closed; we'll use this for $\cat{C}=\poly$ when building the semantics functor. After introducing the category $\rvect$ of reactive vector spaces in \cref{sec.rvect}, we build $\potlens$ as the category of $\rvect$-parameterized manifold lenses with real-valued potentials in \cref{sec.potentialized_lenses}. The operad underlying $\potlens$ is a smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}.
+This chapter constructs the composition syntax used in the rest of the paper, the domain of the dynamics functor $\potlens\to\org$ defined in \cref{thm.functor}. We begin by recalling lenses and a \emph{backward-monad} construction in \cref{sec.lenses_general}. Then in \cref{sec.abstract_representation} we define \emph{Moore internalization}, a functor $\Lens{\cat{C}}\to\cat{C}$ when $\cat{C}$ is monoidal closed; we'll use this for $\cat{C}=\poly$ when building the dynamics functor. After introducing the category $\rvect$ of reactive vector spaces in \cref{sec.rvect}, we build $\potlens$ as the category of $\rvect$-parameterized manifold lenses with real-valued potentials in \cref{sec.potentialized_lenses}. The operad underlying $\potlens$ is a smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}.
 
 %--------------------------------------------------------------------
 \section{Lenses and backward monads}\label{sec.lenses_general}
@@ -1368,7 +1372,7 @@ Our main example will be $\cat{C}=\mfd$ with its cartesian product. But the foll
 \begin{example}\label{ex.lens_finsetop}
 The category $\finset\op$, opposite to the category of finite sets, is cartesian monoidal where the product is given by the disjoint union $(0,+)$, i.e.\ the coproduct in $\finset$. Thus every object carries a canonical comonoid structure $A\from 0$ and $A\from A+A$, and every morphism preserves it automatically. 
 
-An object in $\Lens{\finset\op}$ is just a pair of finite sets $\binom{\inpt A}{\outp A}$. A morphism $\binom{\inpt f}{\outp f}\colon\binom{\inpt A}{\outp A}\to\binom{\inpt B}{\outp B}$ consists of two maps
+An object in $\Lens{\finset\op}$ is just a pair of finite sets $\binom{\inpt A}{\outp A}$. A morphism $\binom{\inpt f}{\outp f}\colon\binom{\inpt A}{\outp A}\to\binom{\inpt B}{\outp B}$ consists of two maps, together sometimes called a \emph{prism}:
 \begin{equation}\label{eqn.lens_finsetop}
 \outp A\From{\outp f} \outp B
 \qqand
@@ -1458,7 +1462,7 @@ X\otimes \Fun{T}Y\To{\eta_X}\Fun{T}(X)\otimes \Fun{T}(Y)\To{\tau_{X,Y}}\Fun{T}(X
 \]
 
 \begin{proposition}\label{prop.backward_comonad}
-Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$. We denote its coKleisli category by $\Lens{\cat{C}}^{\Fun{T}}\coloneqq(\Lens{\cat{C}})_{\Lens{\Fun T}}$. 
+Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\Lens{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$. We denote its coKleisli category by $\defineTerm{Lcokl}\coloneqq(\Lens{\cat{C}})_{\Lens{\Fun T}}$. 
 
 If moreover $\Fun{T}$ is a monoidal monad, then $\Lens{\Fun T}$ is a colax monoidal comonad, thus the coKleisli category $(\Lens{\cat{C}}^{\Fun{T}},I,\otimes)$ is naturally monoidal.
 \end{proposition}
@@ -1547,7 +1551,7 @@ By \cref{prop.lens_functoriality}, $F$ induces $\Lens F\colon\Lens{\cat C}\to\Le
 \[
 \gamma\colon\Lens{\Fun T'}\circ\Lens F\Rightarrow \Lens F\circ\Lens{\Fun T},
 \]
-whose component at $\lensob c$ has forward map $\id_{F(\outp c)}$ and backward map given by
+whose component at $\lensob c$ has output map $\id_{F(\outp c)}$ and input map given by
 \[
 F(\outp c)\otimes F(\Fun T\inpt c)\To{\varepsilon_{F(\outp c)}\otimes\id}F(\Fun T\inpt c)\To{\theta_{\inpt c}}\Fun T'F(\inpt c).
 \]
@@ -2023,7 +2027,7 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 \section{Reactive vector spaces and the cotangent endofunctor}\label{sec.rvect}
 %--------------------------------------------------------------------
 
-We will eventually define $\potlens\coloneqq\para{\rvect}{\lmfd^\rr}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$.
+We will eventually define $\potlens\coloneqq\para{\rvect}{\plmfd}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$.
 
 \subsection{Reactive vector spaces}\label{sec.rvect_def}
 
@@ -2184,7 +2188,7 @@ The two expansions are equal, so pairings are preserved.\qedhere
 \section{Potentialized manifold lenses}\label{sec.potentialized_lenses}
 %--------------------------------------------------------------------
 
-With $\rvect$ in hand, we can now assemble the syntax category $\potlens\coloneqq\para{\rvect}{\lmfd^\rr}$, whose morphisms are $\rvect$-parameterized manifold lenses with a real-valued potential on the backward pass. \cref{sec.potentialized_cokleisli} specializes the backward-monad construction of \cref{sec.backwards} to $\rr\times\blank$ on $\mfd$, producing $\lmfd^\rr$; \cref{sec.potential_algebra} defines the potential algebra $\potd$ used by Moore internalization; \cref{sec.forming_potlens} parameterizes $\lmfd^\rr$ over $\rvect$ to form $\potlens$.
+Now that we have $\rvect$ in hand, we can assemble the syntax category $\potlens\coloneqq\para{\rvect}{\plmfd}$, whose morphisms are $\rvect$-parameterized manifold lenses equipped with a \emph{potential}---a smooth function $U\colon X\to\rr$---on the backward pass. This is the source of the $\rr$ throughout the section. \cref{sec.potentialized_cokleisli} specializes the backward-monad construction of \cref{sec.backwards} to $(\rr\times\blank)$ on $\mfd$, producing $\plmfd$; \cref{sec.potential_algebra} defines the potential monoid $\potd$ used by Moore internalization; \cref{sec.forming_potlens} parameterizes $\plmfd$ over $\rvect$ to form $\potlens$ and provides an explicit diagrammatic depiction of its morphisms.
 
 \subsection{Potentialized coKleisli lenses}\label{sec.potentialized_cokleisli}
 
@@ -2200,16 +2204,16 @@ The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The mon
 The coherence diagrams arise from the monoid laws and commutativity of $M$. Functoriality in $(\cat C,M)$ is straightforward.
 \end{proof}
 
-Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cot{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $\rr\times\blank$ and $\cot{\rr}\otimes\blank$ on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\Lens{\mfd}^\rr,\rr^0,\times)$ and $(\Lens{\poly}^\rr,\yon,\otimes)$ denote the corresponding coKleisli categories.
+Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cot{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $(\rr\times\blank)$ and $(\cot{\rr}\otimes\blank)$ respectively on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\plmfd,\binom{\rr^0}{\rr^0},\times)$ and $(\plpoly,\binom{\yon}{\yon},\otimes)$ denote the corresponding coKleisli categories.
 
-A map in $\lmfd^\rr$ is a tuple $f=\big(\binom{\inpt f}{\outp f},U\big)\colon\lensob M\to\lensob N$ with
+A map in $\plmfd$ is a tuple $f=\big(\binom{\inpt f}{\outp f},U\big)\colon\lensob M\to\lensob N$ with
 \[
 \outp f\colon\outp M\to\outp N,\qquad
 \inpt f\colon\outp M\times\inpt N\to\inpt M,\qquad
 U\colon\outp M\times\inpt N\to\rr.
 \]
 We call such maps \defineTermAs{potentialized_manifold_lens}{\emph{potentialized manifold lenses}}.
-A map $\lensob p\to\lensob q$ in $\Lens{\poly}^\rr$ is a pair
+A map $\lensob p\to\lensob q$ in $\plpoly$ is a pair
 \[
 \outp f\colon\outp p\to\outp q,\qquad
 \inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p.
@@ -2218,7 +2222,7 @@ A map $\lensob p\to\lensob q$ in $\Lens{\poly}^\rr$ is a pair
 \begin{lemma}\label{lem.cot_lifts_lens_potential}
 The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong symmetric monoidal functor
 \[
-\Lens\cot\colon\lmfd^\rr\to\Lens{\poly}^\rr.
+\Lens\cot\colon\plmfd\to\plpoly.
 \]
 \end{lemma}
 
@@ -2226,30 +2230,30 @@ The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong
 Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal by \cref{prop.cot_monoidal}) and the monad morphism $\cot{\rr\times\blank}\Rightarrow\cot{\rr}\otimes\cot{\blank}$ supplied by \cref{lemma.monoid_to_monad}.
 \end{proof}
 
-\subsection{The potential algebra \texorpdfstring{$\potd$}{d}}\label{sec.potential_algebra}
+\subsection{The potential monoid \texorpdfstring{$\potd$}{d}}\label{sec.potential_algebra}
 
-In \cref{lem.Theta_poly_potential} we will apply the construction of \cref{thm.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics application, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cot{\rr}\to\yon$ is extra data.
+In \cref{lem.Theta_poly_potential} we will apply the Moore internalization from \cref{thm.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cot{\rr}\to\yon$ is extra data.
 
 \begin{lemma}\label{lem.alpha_constant}
-Let $\Fun{T}\coloneqq(\cot{\rr}\otimes\blank)$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
+Consider the monad $\Fun{T}\coloneqq(\cot{\rr}\otimes\blank)$ on $\poly$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
 \end{lemma}
 
 \begin{proof}
-There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, sending $\alpha$ to $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ to make it a $\Fun{T}$-monoid is that the following equation holds for all $x_1,x_2\in\rr$
+There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, where $\alpha$ is identified with $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ necessary to make it a $\Fun{T}$-monoid is that the following equation holds for all $x_1,x_2\in\rr$
 \[
 \left(\omega(x_1),\omega(x_2)\right)=
-\left(\omega(x_1+x_2),\omega(x_1+x_2)\right)
+\left(\omega(x_1+x_2),\omega(x_1+x_2)\right).
 \]
 Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In other words, $\omega=r$ is constant at some $r:\rr$. And conversely, any constant covector field is a $\Fun{T}$-monoid.
 \end{proof}
 
 \begin{remark}[General form]\label{rmk.alpha_general}
-\Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cot{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position.
+\Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cot{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cot{\rr}$ this is $T^*_0\rr\cong\rr$.
 
-As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,\cdot,1)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables~\cite{Spivak2023lotteries}, which underlies (the monad of) the operad of simplices~\cite{leinster2021entropy}. For $m\coloneqq\cot G$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of the Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
+As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables~\cite{Spivak2023lotteries}, which underlies (the monad of) the operad of simplices~\cite{leinster2021entropy}. For $m\coloneqq\cot{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
 \end{remark}
 
-The role of $\rr$ in this section is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cot\rr$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
+The role of $\rr$ throughout \cref{sec.potentialized_lenses} is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cot{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
 \begin{equation}\label{eqn.d_potential}
 \defineTerm{potd}\colon\cot{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
 \end{equation}
@@ -2262,7 +2266,7 @@ exactly as in \eqref{eqn.differential}.
 \begin{lemma}\label{lem.Theta_poly_potential}
 There is a normal lax monoidal functor
 \[
-\Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly,\qquad
+\Theta_{\potd}\colon\plpoly\to\poly,\qquad
 \Theta_{\potd}\lensob p\coloneqq\outp p\otimes\ihom{\inpt p,\yon}.
 \]
 %It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p$, to the composite
@@ -2286,26 +2290,25 @@ There is a normal lax monoidal functor
 Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,thm.Theta_T_alpha}.
 \end{proof}
 
-\begin{remark}[Stochastic variant]\label{rmk.rand}
-Substituting $z\coloneqq\mathrm{rand}$ (\cref{rmk.alpha_general}) and the constant-$+1$ choice of $\alpha$ into \cref{thm.Theta_T_alpha} gives a functor sending a lens $\lensob p$ to $\outp p\otimes\ihom{\inpt p,\mathrm{rand}}$, whose backward leg is a stochastic covector field: at every $\inpt m\in\inpt M$, a discrete random variable valued in $T^*_{\inpt m}\inpt M$. Run through the dynamics functor, this would give a stochastic variant of the update rule, with randomness sampled at each step. We do not pursue this variation here.
+\begin{remark}[Stochastic update]\label{rmk.rand}
+Substituting $z\coloneqq\mathrm{rand}$ (see \cref{rmk.alpha_general}) and the constant-$+1$ choice of $\alpha$ into \cref{thm.Theta_T_alpha} gives a functor sending a lens $\lensob p$ to $\outp p\otimes\ihom{\inpt p,\mathrm{rand}}$, whose input component is a stochastic covector field: at every $\inpt m\in\inpt M$, a discrete random variable valued in $T^*_{\inpt m}\inpt M$. Run through the dynamics functor, this would give a stochastic version of the update rule, with randomness sampled at each step. We do not pursue this variation here.
 \end{remark}
 
 \subsection{Forming \texorpdfstring{$\potlens$}{PPLens}}\label{sec.forming_potlens}
 
-There is an action of $\rvect$ on $\lmfd^\rr$ from \cref{lem.parameter_lens_action} (taking $\cat A=\rvect$, $\cat C=\mfd$, $J=\inc$, $\Fun T=\rr\times\blank$) and the resulting Para construction is symmetric monoidal.
+There is an action of $\rvect$ on $\plmfd$ from \cref{lem.parameter_lens_action} (taking $\cat A\coloneqq\rvect$, $\cat C\coloneqq\mfd$, $J\coloneqq\inc$, $\Fun T\coloneqq\rr\times\blank$) and the resulting Para construction is symmetric monoidal.
 
 \begin{definition}\label{def.potlens}
 The symmetric monoidal category $\potlens$ is defined by
 \[
-\defineTerm{potlens}\coloneqq\para{\rvect}{\lmfd^\rr}.
+\defineTerm{potlens}\coloneqq\para{\rvect}{\plmfd}.
 \qedhere\]
 \end{definition}
 
-Morphisms in $\potlens$ are called \defineTermAs{parapotent_lens}{\emph{parapotent lenses}}.
-The multimorphisms in the operad underlying $\potlens$ are called \defineTermAs{smooth_rewiring_diagram}{\emph{smooth rewiring diagrams}}.
+Morphisms in $\potlens$, and more generally multimorphisms in its underlying operad, are called \defineTermAs{smooth_rewiring_diagram}{\emph{smooth rewiring diagrams}}.
 
 \begin{remark}
-The following depicts composition of parapotent lenses $f=(V,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$ and $g=(W,\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $V\oplus W$, forward and backward components inherited from $\lmfd$, and potential added via the coKleisli multiplication $\mu=+$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
+The following diagram depicts composition of smooth rewiring diagrams $f=(V,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$ and $g=(W,\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $V\oplus W$, forward and backward components inherited from $\lmfd$, and potential added via the monad multiplication $\mu\coloneqq(+)$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={2}{1}] (fo) {$\outp f$};
@@ -2374,30 +2377,26 @@ The following depicts composition of parapotent lenses $f=(V,\outp f,\inpt f,U)\
 \section{Smooth rewiring diagrams}\label{sec.W_choice}
 %--------------------------------------------------------------------
 
-We can now settle the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take it to be the operad underlying $\potlens$. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left((V,\sharp_V),\binom{\inpt f}{\outp f},U\right)$, namely a reactive vector space $(V,\sharp_V):\rvect$ called the \emph{parameter space}, smooth maps
+We can now settle the choice of composition syntax $\cat{W}$, which we deferred at the end of \cref{sec.wd_operads}: we take it to be the operad underlying $\potlens$. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left((V,\sharp_V),\binom{\inpt f}{\outp f},U\right)$, namely a reactive vector space $(V,\sharp_V):\rvect$ called the \emph{parameter space}, smooth maps
 \begin{equation}\label{eqn.plens_map}
 \outp f\colon V\times\prod_{i=1}^K\outp X_i\to\outp Y,\qquad
 \inpt f\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\prod_{i=1}^K\inpt X_i,
 \end{equation}
-called the \emph{output map} and the \emph{input maps}, and a smooth function
+called the \emph{output map} and the \emph{input map}, and a smooth function called the \emph{potential}:
 \begin{equation}\label{eqn.plens_potential}
-U\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\rr,
+U\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\rr.
 \end{equation}
-called the \emph{potential}.
 
 There is a chain of functors
 \[
-\Lens{\finset\op}\To{\Lens{\rr^\blank}}\lmfd\To{\Lens{\eta}}\lmfd^\rr\To{\Para_{\rr^0}}\potlens
+\Lens{\finset\op}\To{\Lens{\,\rr^{\!\blank}}}\lmfd\To{\Lens{\eta}}\plmfd\To{\Para_{\rr^0}}\potlens
 \]
-where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized manifold lens as a parapotent lens with unit parameter $\rr^0$. This chain gives rise to progressively richer smooth rewiring diagrams.
+where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized manifold lens as a smooth rewiring diagram with unit parameter $\rr^0$. This chain gives rise to progressively richer smooth rewiring diagrams.
 
-The simplest---those coming from the leftmost category in the chain---are static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor, all the maps factor as projections and diagonals, and the potential is zero. These simplest maps give the syntax for something like traced symmetric monoidal semicategories, as discussed in \cref{sec.plenspot_ops}.
+The simplest---those coming from the leftmost category in the chain---are static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor, all the maps factor as projections and diagonals, and the potential is zero. These simplest maps give the syntax for something like ``traced symmetric monoidal semicategories," as discussed in \cref{sec.plenspot_ops}.
 
-\begin{remark}
-The wiring diagrams used merely to arrange boxes in the examples below are static in this sense: the parameter space is the one-point space $\rr^0$, so the routing maps are fixed smooth maps. Dynamic rewiring can be represented by allowing the routing maps and potentials to depend on a reactive parameter. We do not pursue such examples here.
-\end{remark}
 
-We can realize each such static wiring diagram as a lens between manifolds via $\Lens{\rr^\blank}$ (\cref{lemma.lens_pow}), but compositions coming from $\lmfd$ are more general: there are many more maps $M\times N\to M$ than just the projection. Moving to $\lmfd^\rr$ adds a potential but still no parameter space $V$: it assigns a real number to the interaction data consisting of the internal-box outputs together with the external-box input, e.g.\ a prediction error.
+We can realize each such static wiring diagram as a lens between manifolds via $\Lens{\,\rr^{\!\blank}}$ (\cref{lemma.lens_pow}), but compositions coming from $\lmfd$ are more general: there are many more maps $M\times N\to M$ than just the projection. Moving to $\plmfd$ adds a potential but still no parameter space $V$: it assigns a real number to the interaction data consisting of the internal-box outputs together with the external-box input, e.g.\ a prediction error.
 
 Finally, the general smooth rewiring diagrams are multimorphisms in the operad underlying $\potlens$: the interaction pattern itself depends smoothly on a parameter in a reactive vector space $(V,\sharp_V)$, and under the dynamics functor that parameter is updated by the differential of the potential. Exactly how these smooth rewiring dynamics work is the subject of \cref{ch.potential_driven_dynamics}.
 
@@ -2617,11 +2616,11 @@ There is a normal lax symmetric monoidal functor
 \end{lemma}
 
 \begin{proof}
-By \cref{def.potlens}, $\potlens=\para{\rvect}{\lmfd^\rr}$. We have a strong monoidal functor $\Lens\cot\colon\lmfd^\rr\to\Lens{\poly}^\rr$ from \cref{lem.cot_lifts_lens_potential} and a normal lax monoidal $\Theta_{\potd}\colon\Lens{\poly}^\rr\to\poly$ from
+By \cref{def.potlens}, $\potlens=\para{\rvect}{\plmfd}$. We have a strong monoidal functor $\Lens\cot\colon\plmfd\to\plpoly$ from \cref{lem.cot_lifts_lens_potential} and a normal lax monoidal $\Theta_{\potd}\colon\plpoly\to\poly$ from
 \cref{lem.Theta_poly_potential}. The action square for $\Lens\cot$ and the action square for $\Theta_{\potd}$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two normal lax monoidal maps below; the desired functor is their composite:
 \[
 \potlens\To{\para{\rvect}{\Lens\cot}}
-\para{\rvect}{\Lens{\poly}^\rr}\To{\para{\rvect}{\Theta_{\potd}}}
+\para{\rvect}{\plpoly}\To{\para{\rvect}{\Theta_{\potd}}}
 \para{\cot}{\poly}.
 \]
 \end{proof}
@@ -2969,7 +2968,7 @@ dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
 \]
 and set $\alpha(x,m,\xi_N)\coloneqq\xi_M$ and $u(x,m,\xi_N)\coloneqq\sharp_x(\xi_V)$. Functoriality follows from the chain rule.
 
-The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\potlens$, the morphism $(V,\sharp_V,w,E)$ is sent to the parapotent lens with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
+The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\potlens$, the morphism $(V,\sharp_V,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
 dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M).
 \]
@@ -3019,7 +3018,7 @@ one step of \emph{Newton's method} for finding a critical point of $\ell$. Wheth
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
 %--------------------------------------------------------------------
 
-By \emph{deep learning} we mean the training of an artificial neural network. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\lmfd^\rr$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf{}$ yields a normal lax symmetric monoidal functor
+By \emph{deep learning} we mean the training of an artificial neural network. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf{}$ yields a normal lax symmetric monoidal functor
 \[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\potlens\To{\Phiconf{}}\org,\]
 whose composite we denote $\lrn$. One could say that training a neural network is a case of our configuration dynamics construction, in the case that input manifolds and potentials are trivial: $\inpt M=\rr^0$ and $U=0$.
 
@@ -3027,7 +3026,7 @@ whose composite we denote $\lrn$. One could say that training a neural network i
 We now unfold this construction in coordinates, taking the source and target manifolds---the input and output layers of the neural network---to be $\rr^m$ and $\rr^n$.
 \par}
 
-\paragraph{A parameterized map as a parapotent lens.}
+\paragraph{A parameterized map as a smooth rewiring diagram.}
 Let $F\colon V\times\rr^m\to\rr^n$ be a smooth parameterized map, thought of as a feedforward neural network with parameter space $(V,\sharp_V):\rvect$---i.e., $V$ comes equipped with a smooth section $\sharp_V\colon V\to\Iso(V^*,V)$ (\cref{def.rvect}), whose value $\sharp_x\colon V^*\To{\cong}V$ at $x\in V$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a $\potlens$-morphism
 \[
 f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}
@@ -3150,7 +3149,7 @@ First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}
 
 \paragraph{The particle.}
 
-To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in the underlying operad of $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a reactive vector space $(V,\sharp_V)$, a smooth ``forward'' map $\outp f\colon V\to\rr$, and a smooth ``potential'' $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the forward map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
+To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in the underlying operad of $\potlens$ \eqref{eqn.para_potential_lens_maps}, we need a reactive vector space $(V,\sharp_V)$, a smooth output map $\outp f\colon V\to\rr$, and a smooth potential $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharp_v(p)\coloneqq p/m$ (independent of $v\in\rr$). We take the output map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
 \[U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2.\] 
 This is called the \emph{harmonic} potential.
 
