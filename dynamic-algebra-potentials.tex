@@ -791,19 +791,23 @@ Together with unit $\yon$, the Dirichlet product forms a symmetric monoidal stru
 \begin{equation}\label{eqn.dirichlet_hom}
 \ihom{p,q}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
 \end{equation}
-satisfying $\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q})$ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it in standard form as
-\begin{equation}\label{eqn.ihom_pos_dir}
-\ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
+satisfying the hom-tensor adjunction
+\begin{equation}\label{eqn.dirichlet_adjunction}
+\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q}),
 \end{equation}
+naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it in standard form as
+\begin{equation*}
+\ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
+\end{equation*}
 
 \subsection{Polynomial comonads as categories}\label{sec.comonads}
 
 The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$; it is a (nonsymmetric) monoidal structure with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
-\begin{align}\label{eqn.substitution}
+\begin{align*}
 p\defineTermAs{tri}{\mathbin{\termraw{tri}}} q&=
 \sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
 \sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
-\end{align}
+\end{align*}
 A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, we recover the notion of applying $\smset\To{p}\smset$ to $S$ using substition: $p\tri S=p(S)$.
 
 Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, $\yon$, and there is a map of the form
@@ -906,9 +910,9 @@ The category $\mfd$ of smooth manifolds provides the source of polynomials relev
 
 \begin{definition}[Cotangent functor]\label{def.cot}
 The \emph{cotangent functor} $\defineTerm{cot}\colon\mfd\to\poly$ sends a smooth manifold $M$ to
-\begin{equation}\label{eqn.cot_def}
+\begin{equation*}
 \cot{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
-\end{equation}
+\end{equation*}
 where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cot{f}\colon\cot{M}\to\cot{N}$ whose positions and directions are
 \[
   \cot{f}_1\coloneqq f
@@ -1182,14 +1186,14 @@ We use the following form of the Para construction. If a symmetric monoidal cate
 f\colon a\cdot x\to y
 \]
 in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The identity on $x$ has parameter $I$ and action given by the unitor $I\cdot x\cong x$. The composite of $(a,f)\colon x\to y$ and $(b,g)\colon y\to z$ has parameter $b\otimes a$ and uses
-\begin{equation}\label{eqn.para_map}
+\begin{equation*}
 (b\otimes a)\cdot x\cong b\cdot(a\cdot x)\To{b\cdot f}b\cdot y\To{g}z.
-\end{equation}
+\end{equation*}
 
 When $\cat A$ and $\cat D$ are both symmetric monoidal and the action is strong monoidal, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $x\otimes y$ is the $\cat D$-tensor, and the tensor of $(a,f)\colon x\to y$ and $(b,g)\colon x'\to y'$ has parameter $a\otimes b$ and underlying map
-\begin{equation}\label{eqn.para_tensor}
+\begin{equation*}
 (a\otimes b)\cdot(x\otimes x')\To{\cong}(a\cdot x)\otimes(b\cdot x')\To{f\otimes g}y\otimes y',
-\end{equation}
+\end{equation*}
 where the first isomorphism comes from the action being strong monoidal.
 
 The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $\alpha\colon a\to a'$ in $\cat A$ such that $f'\circ(\alpha\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
@@ -1216,13 +1220,13 @@ Let $J\colon\cat A\to\cat D$ and $J'\colon\cat A'\to\cat D'$ be strong monoidal 
 
 \begin{proposition}[Para functoriality from action squares {\cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}}]\label{prop.para_square}
 Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot G(x)\to G(a\cdot x)$ is a natural transformation compatible with the action unitors and associators:
-\begin{equation}\label{eqn.para_square}
+\begin{equation*}
 \begin{tikzcd}[ampersand replacement=\&]
 \cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
 \cat A'\times\cat D'\ar[r,"(\cdot')"']\& \cat D'.
 \arrow[Rightarrow, from=left, to=right, shorten <=6mm, shorten >=6mm, "\theta"]
 \end{tikzcd}
-\end{equation}
+\end{equation*}
 Then there is an induced functor
 \[
 \para{F}{G}\colon\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'}.
@@ -1243,9 +1247,9 @@ Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on p
 \smset(S,\ihom{p,q}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
 \]
 We refer to $S$ as the \emph{state set}; a morphism $(S,\beta)\to(S',\beta')$ in $\ihom{p,q}\coalg$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. Concisely, we denote the function $\beta$ by
-\begin{equation}\label{eqn.coalgebra_concise}
+\begin{equation*}
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
-\end{equation}
+\end{equation*}
 
 We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
 \[
@@ -1293,11 +1297,11 @@ This section reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoi
 
 \subsection{Lenses}\label{sec.lenses}
 We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
-\begin{equation}\label{eqn.lens_def}
+\begin{equation*}
 \outp f\colon \outp c\to\outp d
 \qqand
 \inpt f\colon \outp c\otimes\inpt d\to\inpt c,
-\end{equation}
+\end{equation*}
 and $\outp f$ is a comonoid homomorphism.%
 \footnote{
 When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
@@ -1335,7 +1339,7 @@ Morphisms compose as follows: given also $g\colon \lensob{d}\to\lensob{e}$, the 
 	\inpt{f}.
 \]
 This dense notation can be depicted in a string-diagram as follows:
-\begin{equation}\label{eqn.lens_pic}
+\begin{equation*}
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={1}{1}] (fo) {$\outp f$};
   \node[bb={1}{1}, right=5 of fo] (go) {$\outp g$\vphantom{$\inpt f$}};
@@ -1362,7 +1366,7 @@ This dense notation can be depicted in a string-diagram as follows:
   \draw[ar] (dot1) to[out=30, in=0] (fi_out1);
   \draw[ar] (dot2) to[out=30, in=0] (gi_out1);
 \end{tikzpicture}
-\end{equation}
+\end{equation*}
 The identity on $\lensob{c}$ is $\binom{\varepsilon_{\outp c}\otimes\id_{\inpt c}}{\id_{\outp c}}$, i.e.\ counit in the first argument. The category $\Lens{\cat{C}}$ inherits a monoidal structure with unit $\binom{I}{I}$ and
 \[
 \lensob{c}\otimes\lensob{d}\coloneqq\lensobs{c}{d}.
@@ -1468,16 +1472,16 @@ If moreover $\Fun{T}$ is a monoidal monad, then $\Lens{\Fun T}$ is a colax monoi
 \end{proposition}
 \begin{proof}
 On a lens map $\binom{\inpt f}{\outp f}$ with $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, define the backward component of $\Lens{\Fun T}\binom{\inpt f}{\outp f}$ to be the following composite:
-\begin{equation}\label{eqn.lens_T_morphism}
+\begin{equation*}
 \outp c\otimes\Fun{T}\inpt d\To{\sigma}\Fun{T}(\outp c\otimes\inpt d)\To{\Fun{T}\inpt f}\Fun{T}\inpt c.
-\end{equation}
+\end{equation*}
 The counit and comultiplication of $\Lens{\Fun{T}}$ are given on positions by the identity and on-directions by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp c}$:
-\begin{equation}\label{eqn.lens_T_counit}
+\begin{equation*}
 \outp c\otimes\inpt c\To{\varepsilon_{\outp c}\otimes\id}\inpt c\To{\eta}\Fun{T}\inpt c,
-\end{equation}
-\begin{equation}\label{eqn.lens_T_comult}
+\end{equation*}
+\begin{equation*}
 \outp c\otimes\Fun{T}\Fun{T}\inpt c\To{\varepsilon_{\outp c}\otimes\id}\Fun{T}\Fun{T}\inpt c\To{\mu}\Fun{T}\inpt c.
-\end{equation}
+\end{equation*}
 We need to prove that $\Lens{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond precisely to the four axioms of a monad strength.
 %The unit axiom~\cite[(1.5)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
 
@@ -1586,9 +1590,9 @@ The following is straightforward.
 
 \begin{proposition}\label{prop.lens_inclusion}
 Let $(\cat{C}, 1, \times)$ be a cartesian monoidal category and $\Fun{T}$ a monoidal monad on $\cat{C}$ with unit $\eta$. There is a strong symmetric monoidal functor
-\begin{equation}\label{eqn.lens_inclusion}
+\begin{equation*}
 \inc\colon\cat{C}\to\Lens{\cat{C}}^{\Fun{T}},\qquad X\mapsto\binom{1}{X},
-\end{equation}
+\end{equation*}
 sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=(!\then\eta_1)\colon X\times 1\To{!} 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
 
 \begin{lemma}\label{lem.parameter_lens_action}
@@ -2043,9 +2047,9 @@ the \defineTermAs{sharp_map}{\emph{sharp}} map, where we write $\sharp_x\coloneq
 Equivalently, $\sharp_V$ is a smooth bundle isomorphism $T^*V\To{\cong}TV$ over $V$, under the canonical identifications $T_xV\cong V$ and $T^*_xV\cong V^*$. It will be more convenient to use the above form.
 }
 Its pointwise inverse $\flat_x\coloneqq\sharp_x\inv\colon V\to V^*$ is the \defineTermAs{flat_map}{\emph{flat}} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
-\begin{equation}\label{eqn.pairing}
+\begin{equation*}
 \pairing{v,v'}_x\coloneqq\flat_x(v)(v')\colon V\otimes V\to\rr.
-\end{equation}
+\end{equation*}
 The three forms $\sharp_x$, $\flat_x$, and $\pairing{-,-}_x$ package the same data; we use whichever is most convenient. We say the reaction is \emph{constant} if $\sharp_x=\sharp_0$ for all $x$; this is just a bilinear form on $V$.
 
 We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects, and as morphisms $(V,\sharp_V)\to(W,\sharp_W)$ the linear isomorphisms $\phi\colon V\To{\cong}W$ preserving the pairing pointwise: $\pairing{\phi v,\phi v'}_{\phi(x)}=\pairing{v,v'}_x$ for all $x,v,v'\in V$.%
@@ -2105,9 +2109,9 @@ Geometrically, the symplectic sharp ``rotates'' each covector to a vector perpen
 
 \begin{example}[Euclidean sharp]\label{ex.euclidean_sharp}
 A finite-dimensional real vector space $V$ equipped with an inner product---a symmetric, positive-definite bilinear form $\pairing{-,-}\colon V\otimes V\to\rr$---is a reactive vector space with constant sharp
-\begin{equation}\label{eqn.euclidean_sharp}
+\begin{equation*}
 \defineTerm{sharpEuc}\colon V^*\To{\cong}V,
-\end{equation}
+\end{equation*}
 the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon V\to V^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, where ``descent'' corresponds to scaling the sharp by a negative \emph{learning rate}; see \eqref{eqn.learning_sharp}.\qedhere
 \end{example}
 
@@ -2166,9 +2170,9 @@ The endofunctor $T^*\colon\rvect\to\rvect$ is strong symmetric monoidal with res
 
 \begin{proof}
 The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comparison is the swap
-\begin{equation}\label{eqn.Tstar_swap}
+\begin{equation*}
 T^*(V_1\oplus V_2)\To{\cong}T^*V_1\oplus T^*V_2,\quad ((x_1,x_2),(\xi_1,\xi_2))\mapsto((x_1,\xi_1),(x_2,\xi_2)).
-\end{equation}
+\end{equation*}
 It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. To check preservation of pairings, take a second element $((x'_1,x'_2),(\xi'_1,\xi'_2))$ in $T^*(V_1\oplus V_2)$. The canonical symplectic pairing on $T^*(V_1\oplus V_2)$ unfolds via \eqref{eqn.canonical_form} as
 \begin{align*}
 \pairing{((x_1,x_2),(\xi_1,\xi_2)),\,((x'_1,x'_2),(\xi'_1,\xi'_2))}
@@ -2404,15 +2408,18 @@ Finally, the general smooth rewiring diagrams are multimorphisms in the operad u
 \chapter{Smooth rewiring dynamics}\label{ch.potential_driven_dynamics}
 %====================================================================
 
+This chapter constructs the dynamics functors $\potlens\to\org$ promised in the introduction. \Cref{sec.storage_semantics} introduces \emph{storages}, the device that converts a $V$-parameterization with $V:\rvect$ into ordinary coalgebra state, to be used in $\org$. It also singles out the two cotangent storages---configuration and phase-space---built using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then proves the main theorem of the paper, \cref{thm.functor}: each cotangent storage induces a normal lax symmetric monoidal functor $\Phi\colon\potlens\to\org$. \Cref{sec.phase_dynamics,sec.configuration_dynamics} unpack the differential geometry underyling $\Phiphase{}$ and $\Phiconf{}$ in full detail.
+
 %--------------------------------------------------------------------
 \section{Storage semantics}\label{sec.storage_semantics}
 %--------------------------------------------------------------------
 
-We first explain how cotangent parameterizations are presented to $\org$ as ordinary coalgebra state.
+In \cref{sec.org_as_para} we show how to repackage $\org_\cong$ as a Para construction over the store action of $\smsetiso$ on $\poly$. \Cref{sec.cotangent_storages} then introduces \emph{storages} and singles out the two used in this paper: configuration $\store{\conf}$ and phase-space $\store{\phase}$.
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
 
-The Para construction over the store action of $\smsetiso$ on $\poly$ (\cref{def.store_action}) repackages the truncation $\org_{\cong}$ (with only coalgebra isomorphisms as 2-cells) exactly. Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories:
+Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
+
 
 \begin{proposition}\label{prop.org_as_para}
 There is an isomorphism of categories
@@ -2429,12 +2436,10 @@ Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories w
   \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
   \sum_{S:\smsetiso}\poly(S,[p,q]\tri S)=\org_\cong(p,q)
 \end{align*}
-by \cref{eqn.dirichlet_hom,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
+by \cref{eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
 
 In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
-
-Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
 \begin{lemma}\label{lem.poly_to_org}
 Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
@@ -2444,7 +2449,7 @@ D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \end{lemma}
 
 \begin{proof}
-The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\otimes p$. The functor $F$ fills the (commuting) action square
+The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\otimes p$. The following action square obviously commutes:
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
 \cat A\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
@@ -2990,9 +2995,9 @@ In this concluding chapter we illustrate the two dynamics functors on three conc
 The simplest morphisms in a monoidal category are \emph{scalars}, i.e.\ endomorphisms of the monoidal unit $I$, preserved by normal lax monoidal functors like $\Phi$. In the case of $\potlens$, both interfaces are trivial, $\binom{\rr^0}{\rr^0}$, so $\outp f$ and $\inpt f$ are forced to be the unique map $!$ and the only data is a reactive parameter space $(V,\sharp_V)$ and a potential $U\colon V\to\rr$. Newton's method for finding critical points of a potential is such a scalar. It determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$.
 
 Let $\ell\colon V\to\rr$ be a smooth map on a finite-dimensional real vector space $V$. Its derivative $d\ell\colon V\to V^*$ sends $v\in V$ to the gradient covector $d\ell|_v\in V^*$, and the derivative of $d\ell$ at $v$ is itself a linear map
-\begin{equation}\label{eqn.hessian}
+\begin{equation*}
 T_v(d\ell)\colon V\to V^*,
-\end{equation}
+\end{equation*}
 called the \emph{Hessian} of $\ell$ at $v$. In a basis $e_1,\ldots,e_n$ of $V$, the linear map $T_v(d\ell)$ is given by the matrix of second partial derivatives
 \[
 \bigl(T_v(d\ell)\bigr)_{ij}=\partial_i\partial_j\ell(v),
@@ -3046,9 +3051,9 @@ because $\cot{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phiconf{
 Because we are using configuration storage, the state set is $\absval{V}$ by \eqref{eqn.state_space_conf}; an element is a vector of the ``weights and biases'' of the artificial neural network. We unpack the coalgebra step at fixed $x\in V$, given an input position $z\in\rr^m$ from upstream and a direction $\xi\in T^*_{F(x,z)}\rr^n$ from downstream; where these come from during the training process is taken up below.
 
 At state $x\in V$ and input data $z\in\rr^m$, the readout point is
-\begin{equation}\label{eqn.dl_readout}
+\begin{equation*}
 \outp n\coloneqq\outp f(x,z)=F(x,z),
-\end{equation}
+\end{equation*}
 which is \eqref{eqn.outpn} in this special case.
 
 Now we feed the external interface a direction $\xi\in T^*_{F(x,z)}\rr^n$. Since $\inpt f$ is the unique map to $\rr^0$ and $U=0$, the second and third summands in \eqref{eqn.bigtheta} vanish. Thus the only nonzero contribution is the cotangent pullback along $F$:
@@ -3198,9 +3203,9 @@ The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \Phiphase{}(\fun{wire}_K(\Part,\ldots,\Part))\colon S\To{}\Phiphase{}(\boxob)\tri S
 \]
 with state set $S\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
-\begin{equation}\label{eqn.wave_coalg}
+\begin{equation*}
 (\vec x,\vec p)\mapsto\Bigl(\bigl(x_K,\,\omega_\boxob\bigr),\;(\xi_N,x_0)\mapsto\bigl(\vec x+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
-\end{equation}
+\end{equation*}
 where each piece is read off from the unpacking in \cref{sec.phase_dynamics}:
 \begin{itemize}
 \item The output position $x_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
@@ -3310,9 +3315,9 @@ The $\org$-composite $\Phiphase{}(\fun{wire}_K)\bigl(\Phiphase{}(\Part),\ldots,\
 T^*\rr^K\To{\Phiphase{}(\Part)^{\otimes K}}\Phiphase{}(\boxob)^{\otimes K}\tri T^*\rr^K\To{\Phiphase{}(\fun{wire}_K)\tri T^*\rr^K}\Phiphase{}(\boxob)\tri T^*\rr^K.
 \]
 Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
-\begin{equation}\label{eqn.lots_coalgebras}
+\begin{equation*}
 \Bigl(\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K,\;(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})\mapsto\bigl(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x)\bigr)\Bigr).
-\end{equation}
+\end{equation*}
 When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the threading goes as follows. 
 
 Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_N$, and $(x_{\fun{prev}})_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
