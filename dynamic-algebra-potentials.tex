@@ -464,7 +464,8 @@ replacement=\&]{}\ar[r,slash, "{#1}"]\&{}\end{tikzcd}}
 \trackTerm{\Store}{Store}{\Fun{Store}}
 \newcommand{\inc}{\Fun{inc}}
 \trackTermSymbol{cot}{\fun{cot}}
-\RenewDocumentCommand{\cot}{g}{\IfValueTF{#1}{\termref{cot}{\termraw{cot}}(#1)}{\termref{cot}{\termraw{cot}}}}
+\RenewDocumentCommand{\cot}{}{\termref{cot}{\termraw{cot}}}
+\NewDocumentCommand{\cotof}{m}{\termref{cot}{\termraw{cot}}(#1)}
 \newcommand{\ev}{\fun{ev}}
 \newcommand{\coev}{\fun{coev}}
 \newcommand{\pr}{\fun{pr}}
@@ -605,9 +606,9 @@ so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomia
 
 The bridge from manifolds to polynomial functors is the cotangent functor $\cot\colon\mfd\to\poly$. It sends a manifold $M$ to the polynomial
 \[
-\cot{M}\coloneqq\sum_{m\in M}\yon^{T_m^*M},
+\cotof{M}\coloneqq\sum_{m\in M}\yon^{T_m^*M},
 \]
-whose positions are points $m\in M$ and whose directions at $m$ are the covectors $T_m^*M$. A smooth map $f\colon M\to N$ acts forward on positions by $f$ and backward on directions by cotangent pullback $(T_mf)^\top$. Crucially, $\cot$ is strong symmetric monoidal: $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$. Thus parallel products of polynomial interfaces correspond to ordinary products of manifolds.
+whose positions are points $m\in M$ and whose directions at $m$ are the covectors $T_m^*M$. A smooth map $f\colon M\to N$ acts forward on positions by $f$ and backward on directions by cotangent pullback $(T_mf)^\top$. Crucially, $\cot$ is strong symmetric monoidal: $\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}$. Thus parallel products of polynomial interfaces correspond to ordinary products of manifolds.
 
 It remains to describe the source syntax: ordinary smooth data that will be sent through $\cot$ and then converted into polynomial coalgebra update rules. A neural network, for example, begins as a smooth map $f\colon V\times \rr^{m}\to\rr^{n}$: a choice of parameter, input, and output manifolds, together with a model map. Smooth rewiring diagrams generalize this familiar situation in four ways. First, an ordinary manifold $M$ becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; the input side $\inpt M$ is an ordinary smooth port for information supplied by the surrounding system. 
 Second, an ordinary map $f\colon M\to N$ becomes only one component of a \emph{lens} $\binom{\inpt f}{\outp f}$, namely the output map $\outp f\colon\outp M\to\outp N$; the input map $\inpt f\colon\outp M\times\inpt N\to\inpt M$ routes external inputs back to internal interfaces. 
@@ -677,7 +678,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 
 \Cref{ch.lenses_internalization} constructs our syntax category $\potlens$. \Cref{sec.lenses_general} reviews the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$. \Cref{sec.abstract_representation} proves the central technical result: for any symmetric monoidal closed category $\cat{C}$, there is a normal lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$ sending a lens object $\lensob c$ to $\outp c\otimes\ihom{\inpt c,I}$. \Cref{sec.rvect} introduces the category $\rvect$ of reactive vector spaces---which will serve as the parameter objects for the Para construction that follows---together with the cotangent endofunctor on $\rvect$. \Cref{sec.potentialized_lenses} then builds the symmetric monoidal category (and underlying operad) $\potlens$ from parameterized manifold lenses equipped with potentials. \Cref{sec.W_choice} shows how to interpret the multimorphisms of $\potlens$ as smooth rewiring diagrams.
 
-\Cref{ch.potential_driven_dynamics} constructs the dynamics functors. \Cref{sec.storage_semantics} defines the notion of \emph{cotangent storage}, which lets us understand $\cot(V)$-parameterized maps as coalgebras. 
+\Cref{ch.potential_driven_dynamics} constructs the dynamics functors. \Cref{sec.storage_semantics} defines the notion of \emph{cotangent storage}, which lets us understand $\cotof{V}$-parameterized maps as coalgebras. 
 \Cref{sec.dynamics_functor} proves the main theorem, \cref{thm.functor}: every cotangent storage induces a normal lax symmetric monoidal functor $\Phi\colon\potlens\to\org$. The two storages relevant to this paper, configuration and phase-space, give rise to $\Phiconf{}$ and $\Phiphase{}$, unpacked in full detail in \cref{sec.phase_dynamics,sec.configuration_dynamics}.
 
 \Cref{ch.applications} contains three worked examples. \Cref{sec.newton_warmup} recovers Newton's method as $\Phiconf{}$ applied to a $\potlens$-scalar. \Cref{sec.dl_warmup} recovers gradient descent through a parameterized neural network $F\colon V\times\rr^m\to\rr^n$ as $\Phiconf{}$ applied to the corresponding $\potlens$-morphism, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} derives the discrete wave equation as $\Phiphase{}$ applied to a chain of harmonic-oscillator particles, with functoriality of $\Phiphase{}$ checked by composing in the underlying operad of $\potlens$ first (\cref{sec.spring_first_pass}) and then in $\org$ (\cref{sec.spring_second_pass}).
@@ -705,7 +706,7 @@ We fix some typographic conventions. We denote generic categories using calligra
 
 For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$ is clickable.
 
-We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
+We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
 We reserve $\eta$ and $\mu$ for monad units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
 
@@ -911,40 +912,40 @@ The category $\mfd$ of smooth manifolds provides the source of polynomials relev
 \begin{definition}[Cotangent functor]\label{def.cot}
 The \emph{cotangent functor} $\defineTerm{cot}\colon\mfd\to\poly$ sends a smooth manifold $M$ to
 \begin{equation*}
-\cot{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
+\cotof{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
 \end{equation*}
-where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cot{f}\colon\cot{M}\to\cot{N}$ whose positions and directions are
+where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cotof{f}\colon\cotof{M}\to\cotof{N}$ whose positions and directions are
 \[
-  \cot{f}_1\coloneqq f
+  \cotof{f}_1\coloneqq f
   \qqand
-  \bk{\cot{f}}{m}\coloneqq(T_m f)^\top
+  \bk{\cotof{f}}{m}\coloneqq(T_m f)^\top
  \]
  as maps $M\to N$ and $T^*_{f(m)}N\to T^*_mM$.
 \end{definition}
 
-This is indeed functorial: the identity map $\id_M\colon M\to M$ has $T_m(\id_M)=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cot{\id_M}=\id_{\cot{M}}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $T_m(g\circ f)=T_{f(m)}g\circ T_m f$, so
+This is indeed functorial: the identity map $\id_M\colon M\to M$ has $T_m(\id_M)=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cotof{\id_M}=\id_{\cotof{M}}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $T_m(g\circ f)=T_{f(m)}g\circ T_m f$, so
 \[
-(T_m(g\circ f))^\top=(T_m f)^\top\circ(T_{f(m)}g)^\top=\bk{\cot{f}}{m}\circ\bk{\cot{g}}{f(m)},
+(T_m(g\circ f))^\top=(T_m f)^\top\circ(T_{f(m)}g)^\top=\bk{\cotof{f}}{m}\circ\bk{\cotof{g}}{f(m)},
 \]
-which is the backward part of $\cot{g}\circ\cot{f}$.
+which is the backward part of $\cotof{g}\circ\cotof{f}$.
 
 \begin{proposition}\label{prop.cot_monoidal}
 The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
 \[
-\cot{\mathbb{R}^0}\cong\yon
+\cotof{\mathbb{R}^0}\cong\yon
 \qqand
-\cot{M\times N}\cong\cot{M}\otimes\cot{N}.
+\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}.
 \]
 \end{proposition}
 
 \begin{proof}
-The one-point manifold $\rr^0=\{0\}$ has $T^*_0\rr^0=\{0\}$, so $\cot{\mathbb{R}^0}=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$, so the unit is preserved. By \eqref{eqn.T_products}, we have
+The one-point manifold $\rr^0=\{0\}$ has $T^*_0\rr^0=\{0\}$, so $\cotof{\mathbb{R}^0}=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$, so the unit is preserved. By \eqref{eqn.T_products}, we have
 \begin{equation}\label{eqn.cot_times}
-\cot{M\times N}=\sum_{(m,n)\in M\times N}\yon^{T^*_{(m,n)}(M\times N)}\cong\sum_{m\in M}\yon^{T^*_mM}\otimes\sum_{n\in N}\yon^{T^*_nN}=\cot{M}\otimes\cot{N}
+\cotof{M\times N}=\sum_{(m,n)\in M\times N}\yon^{T^*_{(m,n)}(M\times N)}\cong\sum_{m\in M}\yon^{T^*_mM}\otimes\sum_{n\in N}\yon^{T^*_nN}=\cotof{M}\otimes\cotof{N}
 \end{equation}
 using the definition of the Dirichlet product \eqref{eqn.dirichlet}.
 
-This isomorphism $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$ is natural: given a product map $f\times g\colon M\times N\to M'\times N'$, the tangent map is block-diagonal: $T_{(m,n)}(f\times g)=T_m f\oplus T_n g$. Hence $(T_{(m,n)}(f\times g))^\top=(T_m f)^\top\times(T_n g)^\top$.
+This isomorphism $\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}$ is natural: given a product map $f\times g\colon M\times N\to M'\times N'$, the tangent map is block-diagonal: $T_{(m,n)}(f\times g)=T_m f\oplus T_n g$. Hence $(T_{(m,n)}(f\times g))^\top=(T_m f)^\top\times(T_n g)^\top$.
 %
 %\textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
 \end{proof}
@@ -952,34 +953,34 @@ This isomorphism $\cot{M\times N}\cong\cot{M}\otimes\cot{N}$ is natural: given a
 \begin{remark}
 In fact, $\cot$ also preserves coproducts,
 \[
-\cot{M}+\cot{N}\cong\cot{M+N}.
+\cotof{M}+\cotof{N}\cong\cotof{M+N}.
 \]
 Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributive monoidal functor. We will not use this fact in this paper.
 \end{remark}
 
-\Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cot{M}$.
+\Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cotof{M}$.
 
 Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. And since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. 
 
 \begin{lemma}\label{lem.cot_comonoid}
-For any smooth manifold $M$, the polynomial $\cot{M}$ is a comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
+For any smooth manifold $M$, the polynomial $\cotof{M}$ is a comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
 \[
-\cot{\Delta_M}\colon\cot{M}\to\cot{M}\otimes\cot{M}
+\cotof{\Delta_M}\colon\cotof{M}\to\cotof{M}\otimes\cotof{M}
 \qqand
- \cot{!_M}\colon\cot{M}\to\yon
+ \cotof{!_M}\colon\cotof{M}\to\yon
 \]
 send positions by $m\mapsto(m,m)$ and $m\mapsto *$, respectively. On directions, each cotangent fiber $T^*_mM$ carries an induced \emph{commutative monoid} structure
 \[
 T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\xi')\mapsto\xi+\xi'
 \qqand \rr^0\to T^*_mM,\quad *\mapsto 0,
 \]
-i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cot{M}$ recovers the additive structure of each cotangent space.%
+i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cotof{M}$ recovers the additive structure of each cotangent space.%
 %\footnote{
 %One can recover scalar structure on $T^*_mM$ as well. For any $M:\mfd$, there is a natural map
 %\[
-%(\cdot)\colon\cot{M}\to\yon^\rr\otimes\cot{M}
+%(\cdot)\colon\cotof{M}\to\yon^\rr\otimes\cotof{M}
 %\]
-%Axioms relating the comonoid structure of $\cot{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}{x}\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
+%Axioms relating the comonoid structure of $\cotof{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}{x}\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
 %\[
 %	1\cdot\xi=\xi,\qquad
 %	(r_1r_2)\cdot\xi=r_1\cdot(r_2\cdot\xi),\qquad
@@ -991,16 +992,16 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 \end{lemma}
 
 \begin{proof}
-On positions $\cot{\Delta_M}$ and $\cot{!_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(!_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
+On positions $\cotof{\Delta_M}$ and $\cotof{!_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(!_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
 
 \begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop.cot_hopf}
-Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cot{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
+Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cotof{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
 \[
-\cot{\eta}\colon\yon\to\cot{G},\qquad \cot{\mu}\colon\cot{G}\otimes\cot{G}\to\cot{G},
+\cotof{\eta}\colon\yon\to\cotof{G},\qquad \cotof{\mu}\colon\cotof{G}\otimes\cotof{G}\to\cotof{G},
 \]
-the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\cot{\iota}\colon\cot{G}\to\cot{G}$.
+the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\cotof{\iota}\colon\cotof{G}\to\cotof{G}$.
 \end{proposition}
 
 \begin{proof}
@@ -1008,7 +1009,7 @@ It is well known that strong monoidal functors preserve monoids, comonoids, and 
 \end{proof}
 
 \begin{remark}\label{rem.cot_as_category}
-It turns out that $\cot{M}$ is sometimes not only a $\otimes$-comonoid but also a $\tri$-comonoid, which would make it a category by \cref{prop.comonads_cats}. In these cases, the cotangent vectors $\xi\in T^*_mM$ can be thought of as maps out of $m$, in the sense that an exponential map sends each such $\xi$ to a path that lands at another point of $M$. We conjecture (see \cref{rmk.rnla_generalization}) that this works for any nilpotent Lie algebra whose underlying vector space is equipped with a reactive structure, as we will define in \cref{def.rvect}. Indeed the Baker-Campbell-Hausdorff formula \cite{knapp2002lie} allows one to compose tangent vectors like morphisms. For simplicity, we only work with reactive vector spaces in this paper; the nilpotent Lie-algebra version is left for future work.
+It turns out that $\cotof{M}$ is sometimes not only a $\otimes$-comonoid but also a $\tri$-comonoid, which would make it a category by \cref{prop.comonads_cats}. In these cases, the cotangent vectors $\xi\in T^*_mM$ can be thought of as maps out of $m$, in the sense that an exponential map sends each such $\xi$ to a path that lands at another point of $M$. We conjecture (see \cref{rmk.rnla_generalization}) that this works for any nilpotent Lie algebra whose underlying vector space is equipped with a reactive structure, as we will define in \cref{def.rvect}. Indeed the Baker-Campbell-Hausdorff formula \cite{knapp2002lie} allows one to compose tangent vectors like morphisms. For simplicity, we only work with reactive vector spaces in this paper; the nilpotent Lie-algebra version is left for future work.
 \end{remark}
 
 %--------------------------------------------------------------------
@@ -2208,7 +2209,7 @@ The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The mon
 The coherence diagrams arise from the monoid laws and commutativity of $M$. Functoriality in $(\cat C,M)$ is straightforward.
 \end{proof}
 
-Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cot{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $(\rr\times\blank)$ and $(\cot{\rr}\otimes\blank)$ respectively on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\plmfd,\binom{\rr^0}{\rr^0},\times)$ and $(\plpoly,\binom{\yon}{\yon},\otimes)$ denote the corresponding coKleisli categories.
+Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cotof{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $(\rr\times\blank)$ and $(\cotof{\rr}\otimes\blank)$ respectively on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\plmfd,\binom{\rr^0}{\rr^0},\times)$ and $(\plpoly,\binom{\yon}{\yon},\otimes)$ denote the corresponding coKleisli categories.
 
 A map in $\plmfd$ is a tuple $f=\big(\binom{\inpt f}{\outp f},U\big)\colon\lensob M\to\lensob N$ with
 \[
@@ -2220,7 +2221,7 @@ We call such maps \defineTermAs{potentialized_manifold_lens}{\emph{potentialized
 A map $\lensob p\to\lensob q$ in $\plpoly$ is a pair
 \[
 \outp f\colon\outp p\to\outp q,\qquad
-\inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p.
+\inpt f\colon\outp p\otimes\inpt q\to\cotof{\rr}\otimes\inpt p.
 \]
 
 \begin{lemma}\label{lem.cot_lifts_lens_potential}
@@ -2231,19 +2232,19 @@ The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong
 \end{lemma}
 
 \begin{proof}
-Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal by \cref{prop.cot_monoidal}) and the monad morphism $\cot{\rr\times\blank}\Rightarrow\cot{\rr}\otimes\cot{\blank}$ supplied by \cref{lemma.monoid_to_monad}.
+Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal by \cref{prop.cot_monoidal}) and the monad morphism $\cotof{\rr\times\blank}\Rightarrow\cotof{\rr}\otimes\cotof{\blank}$ supplied by \cref{lemma.monoid_to_monad}.
 \end{proof}
 
 \subsection{The potential monoid \texorpdfstring{$\potd$}{d}}\label{sec.potential_algebra}
 
-In \cref{lem.Theta_poly_potential} we will apply the Moore internalization from \cref{thm.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cot{\rr}\to\yon$ is extra data.
+In \cref{lem.Theta_poly_potential} we will apply the Moore internalization from \cref{thm.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cotof{\rr}\to\yon$ is extra data.
 
 \begin{lemma}\label{lem.alpha_constant}
-Consider the monad $\Fun{T}\coloneqq(\cot{\rr}\otimes\blank)$ on $\poly$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
+Consider the monad $\Fun{T}\coloneqq(\cotof{\rr}\otimes\blank)$ on $\poly$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
 \end{lemma}
 
 \begin{proof}
-There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cot{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, where $\alpha$ is identified with $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ necessary to make it a $\Fun{T}$-monoid is that the following equation holds for all $x_1,x_2\in\rr$
+There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cotof{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, where $\alpha$ is identified with $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ necessary to make it a $\Fun{T}$-monoid is that the following equation holds for all $x_1,x_2\in\rr$
 \[
 \left(\omega(x_1),\omega(x_2)\right)=
 \left(\omega(x_1+x_2),\omega(x_1+x_2)\right).
@@ -2252,18 +2253,18 @@ Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In othe
 \end{proof}
 
 \begin{remark}[General form]\label{rmk.alpha_general}
-\Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cot{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cot{\rr}$ this is $T^*_0\rr\cong\rr$.
+\Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cotof{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$.
 
-As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables~\cite{Spivak2023lotteries}, which underlies (the monad of) the operad of simplices~\cite{leinster2021entropy}. For $m\coloneqq\cot{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
+As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables~\cite{Spivak2023lotteries}, which underlies (the monad of) the operad of simplices~\cite{leinster2021entropy}. For $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
 \end{remark}
 
-The role of $\rr$ throughout \cref{sec.potentialized_lenses} is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cot{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
+The role of $\rr$ throughout \cref{sec.potentialized_lenses} is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
 \begin{equation}\label{eqn.d_potential}
-\defineTerm{potd}\colon\cot{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
+\defineTerm{potd}\colon\cotof{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
 \end{equation}
-We call it $\potd$ because this is the choice for which potentials contribute their usual differentials. Indeed, for a smooth map $U\colon X\to\rr$, the composite $\potd\circ\cot{U}\colon\cot{X}\to\yon$ corresponds to the covector field $dU$ on $X$: tracing on directions,
+We call it $\potd$ because this is the choice for which potentials contribute their usual differentials. Indeed, for a smooth map $U\colon X\to\rr$, the composite $\potd\circ\cotof{U}\colon\cotof{X}\to\yon$ corresponds to the covector field $dU$ on $X$: tracing on directions,
 \[
-\bk{\potd\circ\cot{U}}{x}(*)=(T_x U)^\top(+1)=dU|_x
+\bk{\potd\circ\cotof{U}}{x}(*)=(T_x U)^\top(+1)=dU|_x
 \]
 exactly as in \eqref{eqn.differential}.
 
@@ -2273,7 +2274,7 @@ There is a normal lax monoidal functor
 \Theta_{\potd}\colon\plpoly\to\poly,\qquad
 \Theta_{\potd}\lensob p\coloneqq\outp p\otimes\ihom{\inpt p,\yon}.
 \]
-%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\outp p\otimes\inpt q\to\cot{\rr}\otimes\inpt p$, to the composite
+%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\outp p\otimes\inpt q\to\cotof{\rr}\otimes\inpt p$, to the composite
 %\[
 %\begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
 %\outp p\otimes\ihom{\inpt p,\yon}\ar[r,"{\delta_{\outp p}\otimes\id}"]\ar[dd, dashed, "\Theta_{\potd}(f)"']
@@ -2461,7 +2462,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 
 \subsection{Cotangent storages}\label{sec.cotangent_storages}
 
-By the isomorphism $\org_\cong\cong\para{\smsetiso}{\poly}$ from \cref{prop.org_as_para}, we can package our $\org$ framework for coalgebras as $\Store$-parameterizations of sets. When $V:\rvect$ is a reactive vector space, there are multiple ways to similarly interpret $V$-parameterized smooth maps as $\Store$-parameterizations. The required data is given abstractly by the notion of \emph{storage}. 
+Looking ahead, the dynamics functor of \cref{thm.functor} will take $\potlens$-morphisms and produce $\poly$-morphisms of the form $\cotof{V}\to[p,q]$, which we want to read as an $\org$-morphism $p\to q$. By \cref{prop.coalg_as_poly_map}, the latter is equivalent to a map $\Store(S)\to[p,q]$ for some state set $S$, so it suffices to convert $\cotof{V}$ into something of the form $\Store(S)=S\yon^S$, functorially over $V:\rvect$. Doing so is what we call a \emph{storage} of $\cot$.
 
 \begin{definition}[Storage]\label{def.storage}
 Let $\cat A$ be a symmetric monoidal category and let $G\colon\cat A\to\poly$ be a strong symmetric monoidal functor. A \emph{$G$-storage} is a pair $\defineTerm{store}=(F,\vartheta)$, where $F\colon\cat A\to\smsetiso$ is strong symmetric monoidal and $\vartheta\colon \Store\circ F\to G$ is a monoidal natural transformation.
@@ -2512,7 +2513,7 @@ The category of \emph{cotangent storages} is $\defineTerm{cotstor}\coloneqq\Stor
 \]
 \end{definition}
 
-Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cot{V}\otimes p$ induced by $\cot\circ\inc$. Applying \cref{prop.storage_to_org} at $\cat A=\rvect$, $G=\cot\circ\inc$, every cotangent storage $\mathfrak{s}$ induces a normal lax symmetric monoidal functor
+Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cotof{V}\otimes p$ induced by $\cot\circ\inc$. Applying \cref{prop.storage_to_org} at $\cat A=\rvect$, $G=\cot\circ\inc$, every cotangent storage $\mathfrak{s}$ induces a normal lax symmetric monoidal functor
 \[\Psi_{\mathfrak{s}}\colon\para{\cot}{\poly}\to\org_\cong.\]
 
 We now get to our bifurcation between learning and physics: which state set the cotangent parameterization presents to $\org$. In learning, we will be storing the points of $V$, whereas in physics we will be storing the phase points of $T^*V$. These are formalized in \cref{prop.rvect_polynomial} and \cref{lem.phase_storage}.
@@ -2522,7 +2523,7 @@ The following proposition---in particular the fact that \eqref{eqn.directions_sh
 \begin{proposition}\label{prop.rvect_polynomial}
 There is a cotangent storage, which we call \defineTermAs{configuration_storage}{\emph{configuration storage}}, given by
 \[\store{\conf}\coloneqq(\absval{\blank},\theta)\]
-where $\absval{\blank}\colon\rvect\to\smsetiso$ sends a reactive vector space to its underlying set of points $V\mapsto \absval{V}$ and where $\theta_V\colon V\yon^V\To{\cong}\cot{V}$ is the polynomial map, natural in $V:\rvect$, which is identity on positions and, given on directions at $x\in V$ by the exponential \eqref{eqn.flow_cot}
+where $\absval{\blank}\colon\rvect\to\smsetiso$ sends a reactive vector space to its underlying set of points $V\mapsto \absval{V}$ and where $\theta_V\colon V\yon^V\To{\cong}\cotof{V}$ is the polynomial map, natural in $V:\rvect$, which is identity on positions and, given on directions at $x\in V$ by the exponential \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
 T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_x}V\To{x+\blank}V,
 \qquad
@@ -2531,11 +2532,11 @@ T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharp_x}V\To{x+\blank}V,
 \end{proposition}
 
 \begin{proof}
-On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so we can take the on-positions component of $\theta_V$ to be the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $x$, hence a bijection. So $\Store(\absval{V})=V\yon^V\cong\cot{V}$ in $\poly$ for each $V$. 
+On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so we can take the on-positions component of $\theta_V$ to be the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of two linear isomorphisms with translation by $x$, hence a bijection. So $\Store(\absval{V})=V\yon^V\cong\cotof{V}$ in $\poly$ for each $V$. 
 
 For naturality at a $\rvect$-isomorphism $\phi\colon V\to W$, the on-positions square commutes by definition. On directions at $x:V$, we must check that the two backward composites $T^*_{\phi(x)}W\to V$ agree:
 \begin{align*}
-\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_x}\;\sharp_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharp_x(\phi^*\xi), && \text{[$\theta_V\circ\cot{\phi}$]}\\
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharp_x}\;\sharp_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharp_x(\phi^*\xi), && \text{[$\theta_V\circ\cotof{\phi}$]}\\
 \xi\;&\Mapsto{\sharp_{\phi(x)}}\;\sharp_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharp_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharp_{\phi(x)}\xi) && \text{[$\Store(\phi)\circ\theta_W$]}.
 \end{align*}
 The two are equal iff $\sharp_x\circ\phi^*=\phi^{-1}\circ\sharp_{\phi(x)}$, which is the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_2}=\sharp_{V_1}\oplus\sharp_{V_2}$ (\cref{prop.rvect_monoidal}).\qedhere
@@ -2544,13 +2545,13 @@ The two are equal iff $\sharp_x\circ\phi^*=\phi^{-1}\circ\sharp_{\phi(x)}$, whic
 \begin{remark}\label{rmk.rvect_fiberwise_addition}
 By \cref{prop.comonads_cats}, a $\tri$-comonoid structure on $V\yon^V$ is a category whose object set is $V$ and whose arrows out of each object are indexed by $V$. By \cref{ex.store}, the canonical such structure is the codiscrete category on $V$: there is exactly one morphism $x\to x'$ for each pair, and the direction-set $V$ at position $x$ is interpreted as the set of codomains.
 
-Transporting this $\tri$-comonoid structure to $\cot{V}$ along the iso of \cref{prop.rvect_polynomial}, a covector $\xi\in T^*_xV$ corresponds to the unique morphism $x\To{\xi} x+\sharp_x(\xi)=:\cod(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_x(0)=x$. Composition of $\xi\in T^*_xV$ with $\xi'\in T^*_{x+\sharp_x(\xi)}V$ corresponds to the unique covector $\xi\star\xi'\in T^*_xV$ for which
+Transporting this $\tri$-comonoid structure to $\cotof{V}$ along the iso of \cref{prop.rvect_polynomial}, a covector $\xi\in T^*_xV$ corresponds to the unique morphism $x\To{\xi} x+\sharp_x(\xi)=:\cod(\xi)$ in the codiscrete category on $V$. The identity at $x$ corresponds to the zero covector $0\in T^*_xV$, since $x+\sharp_x(0)=x$. Composition of $\xi\in T^*_xV$ with $\xi'\in T^*_{x+\sharp_x(\xi)}V$ corresponds to the unique covector $\xi\star\xi'\in T^*_xV$ for which
 \begin{equation}\label{eqn.twisted_composition}
 \sharp_x(\xi\star\xi')=\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi'),
 \qquad\text{i.e.}\qquad
 \xi\star\xi'=\xi+\flat_x\bigl(\sharp_{\cod(\xi)}(\xi')\bigr),
 \end{equation}
-since both produce the codiscrete morphism with codomain $x+\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi')$. Thus $\sharp_V$ identifies $\cot{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_x(\xi)$ and the $\sharp_V$-twisted composition \eqref{eqn.twisted_composition}. In the constant case $\sharp_x=\sharp_0$, \eqref{eqn.twisted_composition} collapses to fiberwise addition $\xi\star\xi'=\xi+\flat(\sharp(\xi'))=\xi+\xi'$.\qedhere
+since both produce the codiscrete morphism with codomain $x+\sharp_x(\xi)+\sharp_{x+\sharp_x(\xi)}(\xi')$. Thus $\sharp_V$ identifies $\cotof{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharp_x(\xi)$ and the $\sharp_V$-twisted composition \eqref{eqn.twisted_composition}. In the constant case $\sharp_x=\sharp_0$, \eqref{eqn.twisted_composition} collapses to fiberwise addition $\xi\star\xi'=\xi+\flat(\sharp(\xi'))=\xi+\xi'$.\qedhere
 \end{remark}
 
 \begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
@@ -2568,7 +2569,7 @@ T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
 
 \begin{definition}[Legendre projection]\label{def.legendre_projection}
-Let $(V,\sharp)$ be a reactive vector space. The \defineTermAs{legendre_projection}{\emph{Legendre projection}} $\rho_V\colon\cot{T^*V}\to\cot{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
+Let $(V,\sharp)$ be a reactive vector space. The \defineTermAs{legendre_projection}{\emph{Legendre projection}} $\rho_V\colon\cotof{T^*V}\to\cotof{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
 \[
 T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharp_x(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \]
@@ -2586,7 +2587,7 @@ There is a cotangent storage, which we call \defineTermAs{phase_space_storage}{\
 \]
 The first component sends $V\mapsto\absval{T^*V}$, the underlying set of its cotangent bundle, and the second component at $V:\rvect$ composes the configuration-storage component $\theta$ at $T^*V$ (see \cref{prop.rvect_polynomial}) with the Legendre projection,
 \[
-\Store(\absval{T^*V})\To{\theta_{T^*V}}\cot{T^*V}\To{\rho_V}\cot{V}.
+\Store(\absval{T^*V})\To{\theta_{T^*V}}\cotof{T^*V}\To{\rho_V}\cotof{V}.
 \]
 \end{lemma}
 
@@ -2594,7 +2595,7 @@ The first component sends $V\mapsto\absval{T^*V}$, the underlying set of its cot
 The functor $T^*\colon\rvect\to\rvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}, so the composite $\absval{T^*\blank}\colon\rvect\to\smsetiso$ is strong symmetric monoidal. The components $\rho_V$ assemble into a monoidal natural transformation
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=50pt]
-\rvect\ar[r,bend left=25,"\cot{T^*\blank}", ""{name=U,below}]\ar[r,bend right=25,"\cot{\blank}"', ""{name=D,above}]\& \poly.
+\rvect\ar[r,bend left=25,"\cotof{T^*\blank}", ""{name=U,below}]\ar[r,bend right=25,"\cotof{\blank}"', ""{name=D,above}]\& \poly.
 \arrow[Rightarrow, from=U, to=D-|U, pos=.4, "\rho"]
 \end{tikzcd}
 \]
@@ -2602,7 +2603,7 @@ Indeed, monoidality follows from the direct-sum convention $\sharp_{V_1\oplus V_
 Therefore $\rho\circ\theta_{T^*\blank}$ is a monoidal natural transformation $\Store\circ\absval{T^*\blank}\Rightarrow\cot\circ\inc$, i.e.\ a cotangent storage.
 \end{proof}
 
-In other words, $\rho\circ\theta_{T^*\blank}\colon T^*V\yon^{T^*V}\to \cot{V}$ is given succinctly by
+In other words, $\rho\circ\theta_{T^*\blank}\colon T^*V\yon^{T^*V}\to \cotof{V}$ is given succinctly by
 \begin{equation}\label{eqn.phase_storage_update}
 (x,\xi)\mapsto\bigl(x,\xi'\mapsto (x+\sharp_x(\xi),\,\xi-\xi')\bigr)
 \end{equation}
@@ -2630,10 +2631,10 @@ By \cref{def.potlens}, $\potlens=\para{\rvect}{\plmfd}$. We have a strong monoid
 \]
 \end{proof}
 The functor $\Phi'$ acts on objects by
-\[\Phi'\lensob{M}\coloneqq\cot{\outp{M}}\otimes\ihom{\cot{\inpt{M}},\yon}.\] 
-And $\Phi'$ sends a smooth rewiring diagram as in \eqref{eqn.plens_map} and \eqref{eqn.plens_potential} to a $\cot{V}$-parameterized polynomial map of the form
+\[\Phi'\lensob{M}\coloneqq\cotof{\outp{M}}\otimes\ihom{\cotof{\inpt{M}},\yon}.\] 
+And $\Phi'$ sends a smooth rewiring diagram as in \eqref{eqn.plens_map} and \eqref{eqn.plens_potential} to a $\cotof{V}$-parameterized polynomial map of the form
 \[
-\cot{V}\otimes
+\cotof{V}\otimes
 \Phi'\lensob{X_1}\otimes\cdots\otimes\Phi'\lensob{X_K}
 \to
 \Phi'\lensob{Y}.
@@ -2642,13 +2643,13 @@ This is the bulk of the construction. Our main functor of interest $\Phi_{\mathf
 \[\Phi_{\mathfrak{s}}\lensob{M}=\Phi'\lensob{M}.\]
 What \cref{thm.functor} does is to first rearrange to
 \[
-\cot{V}\to
+\cotof{V}\to
 \left[
   \Phi_\mathfrak{s}\lensob{X_1}\otimes\cdots\otimes\Phi_\mathfrak{s}\lensob{X_K},
   \Phi_\mathfrak{s}\lensob{Y}
 \right],
 \]
-then use $\mathfrak{s}$ to turn the $\cot{V}$ into something of the form $S\yon^S$ for some set $S$, and finally, to unfold that to a coalgebra
+then use $\mathfrak{s}$ to turn the $\cotof{V}$ into something of the form $S\yon^S$ for some set $S$, and finally, to unfold that to a coalgebra
 \[
 S\to\left[
   \Phi_\mathfrak{s}\lensob{X_1}\otimes\cdots\otimes\Phi_\mathfrak{s}\lensob{X_K},
@@ -2703,9 +2704,9 @@ For example, a coalgebra of the form $S\to q\tri q\tri S$ takes every state, out
 \section{Phase-space dynamics \texorpdfstring{$\Phiphase{}$}{Phi phase}}\label{sec.phase_dynamics}
 %--------------------------------------------------------------------
 
-For phase-space storage, the functor $\Psi_{\store{\phase}}$ presents a $\cot{V}$-parameter by the store polynomial on $S\coloneqq\absval{T^*V}$:
+For phase-space storage, the functor $\Psi_{\store{\phase}}$ presents a $\cotof{V}$-parameter by the store polynomial on $S\coloneqq\absval{T^*V}$:
 \[
-S\yon^S\To{\theta_{T^*V}}\cot{T^*V}\To{\rho_V}\cot{V}.
+S\yon^S\To{\theta_{T^*V}}\cotof{T^*V}\To{\rho_V}\cotof{V}.
 \]
 A state consists of a position and a momentum $(x,\xi)\in T^*V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $(x+\sharp_x(\xi),\,\xi-\xi')$
  by \eqref{eqn.phase_storage_update}. But the majority of what takes place under $\Phi_\mathfrak{s}$ is still compressed within the $\Phi'$ factor from \cref{lem.potlens_to_para_poly}. So we now unpack $\Phiphase{}$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
@@ -2718,7 +2719,7 @@ for the set of (not-necessarily continuous) \emph{covector fields} on $M$. The c
 The functor $\Phiphase{}$ acts on objects as follows:
 \begin{equation}\label{eqn.Phi_on_obs}
 \Phiphase{}\lensob M=
-\cot{\outp M}\otimes\ihom{\cot{\inpt M},\yon}\cong
+\cotof{\outp M}\otimes\ihom{\cotof{\inpt M},\yon}\cong
 \sum_{(\outp m,\omega):\outp M\times\Omega(\inpt M)}\yon^{\left(T^*_{\outp{m}}\outp M\right)\times\inpt M}.
 \end{equation}
 A position in $\Phiphase{}\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in\outp{M}$ is a point and $\omega\in\Omega(\inpt M)$ is a covector field. A direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$ where $\xi:T^*_{\outp{m}}\outp M$ is a covector and $\inpt m\in\inpt M$ is a point.
@@ -2846,9 +2847,9 @@ where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegap
 
 The dynamics functor $\Phiconf{}\colon\potlens\to\org$ is the configuration-storage analog of $\Phiphase{}$: its state space is the position manifold $V$ (no momentum component), and each step updates $x\mapsto x+\sharp_x(\xi_V)$, where $\xi_V\in V^*$ is the parameter-direction covector assembled from $f$'s backward pass and the differential of its potential. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
 
-For configuration-space storage, the functor $\Psi_{\store{\conf}}$ presents a $\cot{V}$-parameter by the store polynomial on $S\coloneqq\absval{V}$:
+For configuration-space storage, the functor $\Psi_{\store{\conf}}$ presents a $\cotof{V}$-parameter by the store polynomial on $S\coloneqq\absval{V}$:
 \[
-S\yon^S\To{\theta_V}\cot{V}.
+S\yon^S\To{\theta_V}\cotof{V}.
 \]
 A state consists of a position $x\in V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $x+\sharp_x(\xi')$ by \eqref{eqn.directions_sharp}. Note that in this case $\sharp$ can depend on $x\in V$. But the majority of what takes place under $\Phi_\mathfrak{s}$ is still compressed within the $\Phi'$ factor from \cref{lem.potlens_to_para_poly}. So as in \cref{sec.phase_dynamics} we now carefully unpack $\Phiconf{}$.
 
@@ -3042,10 +3043,10 @@ with parameter $V$, by taking $\outp f=F\colon V\times \rr^m\to\rr^n$, taking $\
 On objects, $\lrn(\rr^m)$ is given by
 \[
 \lrn(\rr^m)=\Phiconf{}\binom{\rr^0}{\rr^m}
-=\cot{\rr^m}\otimes\ihom{\cot{\rr^0},\yon}
-\cong\cot{\rr^m}=\sum_{z:\rr^m}\yon^{T^*_z\rr^m},
+=\cotof{\rr^m}\otimes\ihom{\cotof{\rr^0},\yon}
+\cong\cotof{\rr^m}=\sum_{z:\rr^m}\yon^{T^*_z\rr^m},
 \]
-because $\cot{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phiconf{}(f)$ is a $[\cot{\rr^m},\cot{\rr^n}]$-coalgebra.
+because $\cotof{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phiconf{}(f)$ is a $[\cotof{\rr^m},\cotof{\rr^n}]$-coalgebra.
 
 \paragraph{The coalgebra.}
 Because we are using configuration storage, the state set is $\absval{V}$ by \eqref{eqn.state_space_conf}; an element is a vector of the ``weights and biases'' of the artificial neural network. We unpack the coalgebra step at fixed $x\in V$, given an input position $z\in\rr^m$ from upstream and a direction $\xi\in T^*_{F(x,z)}\rr^n$ from downstream; where these come from during the training process is taken up below.
@@ -3087,19 +3088,19 @@ Thus $\xi_V=d_x(\ell(F(\blank,z)))$ is the parameter-gradient covector, while $\
 \paragraph{Training data as an environment.}
 The preceding discussion focuses on $\xi=d\ell|_{F(x,z)}$ for a single fixed loss function $\ell\colon\rr^n\to\rr$ and a single input $z\in\rr^m$. Genuine training involves a stream of such pairs, which we package as an $\org$-map $\delta_{\mathrm{gen}}\colon\yon\to\Phiconf{}\binom{\rr^n}{\rr^m}$, i.e.\ a coalgebra on
 \[
-\cot{\rr^m}\otimes\ihom{\cot{\rr^n},\yon}
+\cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}
 \]
 whose positions are pairs $(z,\omega)\in\rr^m\times\Omega(\rr^n)$: an input point together with a covector field on the output (typically $\omega=d\ell$ for some per-datum loss $\ell\colon\rr^n\to\rr$). Such a coalgebra is, in general, not just a stream of $(z,\omega)$'s, but can branch after each step based on a pair $(\xi_M,y)\in T^*_z\rr^m\times\rr^n$. These are exactly what the network gives back when we wire it in, below: $y=F(x,z)$ is the predicted output and $\xi_M$ is the backpropagated input-gradient. So the training-data block emits $(z,\omega)$ and may transition based on what the network replies, namely the prediction $y$ and the backpropagated input-gradient $\xi_M$. When the transition of the data generator depends on these replies, the data presented to the model-in-training is adapted to that model's behavior; when it ignores them, the data presentation is simply an externally specified supervised stream.
 
-We can combine $\delta_{\mathrm{gen}}$ with the network $\lrn(F)\colon\cot{\rr^m}\to\cot{\rr^n}$ as follows. By closedness of $\org$ (\cref{rmk.org_closed}), $\lrn(F)$ corresponds equivalently to a map
+We can combine $\delta_{\mathrm{gen}}$ with the network $\lrn(F)\colon\cotof{\rr^m}\to\cotof{\rr^n}$ as follows. By closedness of $\org$ (\cref{rmk.org_closed}), $\lrn(F)$ corresponds equivalently to a map
 \[
-\overline{\lrn(F)}\colon\yon\to[\cot{\rr^m},\cot{\rr^n}]
+\overline{\lrn(F)}\colon\yon\to[\cotof{\rr^m},\cotof{\rr^n}]
 \]
 in $\org$. Tensoring with $\delta_{\mathrm{gen}}$ and applying the two evaluation pairings of $\poly$ closes the system:
 \[
-\yon\To{\delta_{\mathrm{gen}}\otimes\overline{\lrn(F)}}\bigl(\cot{\rr^m}\otimes\ihom{\cot{\rr^n},\yon}\bigr)\otimes[\cot{\rr^m},\cot{\rr^n}]\To{\ev_1}\cot{\rr^n}\otimes\ihom{\cot{\rr^n},\yon}\To{\ev_2}\yon.
+\yon\To{\delta_{\mathrm{gen}}\otimes\overline{\lrn(F)}}\bigl(\cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}\bigr)\otimes[\cotof{\rr^m},\cotof{\rr^n}]\To{\ev_1}\cotof{\rr^n}\otimes\ihom{\cotof{\rr^n},\yon}\To{\ev_2}\yon.
 \]
-The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$, where $V_{\mathrm{gen}}$ is the carrier of $\delta_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $V\times V_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in V$ and dataset state $s\in V_{\mathrm{gen}}$: $\delta_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cot{\rr^m}$ (carrying $z$) with $[\cot{\rr^m},\cot{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cot{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cot{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x+\sharp_x(\xi_V)$, and advance $\delta_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
+The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$, where $V_{\mathrm{gen}}$ is the carrier of $\delta_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $V\times V_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in V$ and dataset state $s\in V_{\mathrm{gen}}$: $\delta_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cotof{\rr^m}$ (carrying $z$) with $[\cotof{\rr^m},\cotof{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cotof{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cotof{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x+\sharp_x(\xi_V)$, and advance $\delta_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
 
 
 
@@ -3269,7 +3270,7 @@ This is the calculation of \eqref{eqn.state_update_explicit}: writing the state 
 
 \subsection{Second pass: composing in \texorpdfstring{$\org$}{Org}}\label{sec.spring_second_pass}
 
-We have now recovered the wave equation by connecting $K$-many particles together in the underlying operad of $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cot{\rr}\otimes[\cot{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which agrees with the right-hand side by functoriality and the lax monoidal structure of $\Phiphase{}$:
+We have now recovered the wave equation by connecting $K$-many particles together in the underlying operad of $\potlens$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cotof{\rr}\otimes[\cotof{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which agrees with the right-hand side by functoriality and the lax monoidal structure of $\Phiphase{}$:
 \[
 \Phiphase{}\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phiphase{}(\fun{wire}_K)\bigl(\Phiphase{}(\Part),\ldots,\Phiphase{}(\Part)\bigr),
 \]
