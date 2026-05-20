@@ -3239,11 +3239,11 @@ In other words, starting at position $x$ and momentum $p$, it outputs $x$ to the
 \paragraph{The static wiring.}
 
 Apply $\Phiphase{}$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phiphase{}(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phiphase{}(\boxob)^{\otimes K},\allowbreak\Phiphase{}(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phiphase{}(\boxob)^{\otimes K}\to\allowbreak\Phiphase{}(\boxob)$, i.e.\
-\begin{multline*}
-\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}\\
+\[
+\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}
 \To{\Phiphase{}(\fun{wire}_K)}
 \sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}.
-\end{multline*}
+\]
 To each $(\vec x,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(x_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,x_0)$ at the external box, we assign the internal inputs $(\omega_2(x_1),x_0)$, $(\omega_3(x_2),x_1)$, $\ldots$, $(\omega_K(x_{K-1}),x_{K-2})$, $(\xi_N,x_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $x_i$ in its $\xi$-slot, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
 \begin{equation}\label{eqn.org_wiring_concise}
 (\vec x,\vec \omega)\mapsto\Big((x_K,\omega_1),\;(\xi_N,x_0)\mapsto\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)\Big).
@@ -3264,8 +3264,96 @@ When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the
 
 Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_N$, and $(x_{\fun{prev}})_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
 
-\begin{remark}\label{rmk.wave_generalizations}
-The construction generalizes. Replacing $\rr$ by $\rr^d$ as the box object and replacing the chain by any $K$-ary wiring---e.g.\ a $d$-dimensional cubic lattice---gives the discrete wave equation $m\ddot x_i=\kappa\sum_{j\sim i}(x_j-x_i)$ on that lattice, where $\sim$ is the neighbor relation.
+\subsection{Graph Laplacian on a directed graph}\label{sec.graph_laplacian}
+
+The chain of \cref{sec.spring_first_pass} is one instance of a more general construction: if we take each particle to be harmonic, any finite directed graph $G$ specifies a $0$-ary smooth rewiring diagram whose image under $\Phiphase{}$ is the discrete dynamics of the graph Laplacian of $G$. Hopefully this serves as a sanity check and surface area to understand the formalism of this paper.
+
+\paragraph{The prism wiring of a digraph.}
+
+Let $G=(V,E,\mathrm{src},\mathrm{tgt})$ be a finite digraph: $V$ is a finite vertex set, $E$ is a finite edge set, and $\mathrm{src},\mathrm{tgt}\colon E\to V$ assign source and target vertices. For each $v\in V$ write
+\[
+S_v\coloneqq\mathrm{src}^{-1}(v)\subseteq E\qqand T_v\coloneqq\mathrm{tgt}^{-1}(v)\subseteq E
+\]
+for the out-edges and in-edges at $v$. The maps $\mathrm{src}$ and $\mathrm{tgt}$ supply canonical bijections $\sum_{v\in V}S_v\cong E\cong\sum_{v\in V}T_v$.
+
+Working in $\Lens{\finset\op}$ (\cref{ex.lens_finsetop}), the $|V|$-ary \emph{prism wiring} of $G$ is the lens
+\[
+\varphi_G\colon\sum_{v\in V}\binom{S_v}{T_v}\to\binom{0}{0}
+\]
+with $\outp{f}\colon 0\to\sum_{v}T_v$ unique and $\inpt{f}\colon\sum_{v}S_v\to\sum_{v}T_v$ the identity on $E$ under the two bijections above; concretely, $\inpt{f}$ sends $e\in S_v$ (an internal-input slot at box $v=\mathrm{src}(e)$) to the same $e\in T_{\mathrm{tgt}(e)}$ (an internal-output slot at box $\mathrm{tgt}(e)$). Applying $\rr^{\blank}$ (\cref{lemma.lens_pow}) gives a lens
+\[
+\rr^{\varphi_G}\colon\sum_{v\in V}\binom{\rr^{S_v}}{\rr^{T_v}}\to\binom{\rr^0}{\rr^0}
+\]
+whose input map $\prod_{v}\rr^{T_v}\to\prod_{v}\rr^{S_v}$ is the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth rewiring diagram in the underlying operad of $\potlens$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$.
+
+\paragraph{The particle at a vertex.}
+
+For each $v\in V$, fix a mass $m_v>0$ and a stiffness $\kappa_e>0$ for each $e\in S_v$. The \emph{harmonic particle at $v$} is the $0$-ary smooth rewiring diagram
+\[
+\Part_v\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^{S_v}}{\rr^{T_v}}
+\]
+in the underlying operad of $\potlens$ defined by:
+\begin{itemize}
+\item parameter space $V_v\coloneqq\rr\in\rvect$ with constant sharp $\sharpR_x(p)\coloneqq p/m_v$ (independent of $x\in\rr$);
+\item output map $\outp{f_v}\colon V_v\to\rr^{T_v}$ the broadcast diagonal $x\mapsto(x)_{e\in T_v}$, sending the particle's position to each of its $|T_v|$ in-edge ports;
+\item input map $\inpt{f_v}\colon V_v\times\rr^{S_v}\to\rr^0$ unique;
+\item potential $U_v\colon V_v\times\rr^{S_v}\to\rr$ given by
+\[
+U_v\bigl(x,(n_e)_{e\in S_v}\bigr)\coloneqq\sum_{e\in S_v}\tfrac{\kappa_e}{2}\,(x-n_e)^2.
+\]
+\end{itemize}
+The particle $\Part$ of \cref{sec.spring_first_pass} is the instance $|S_v|=|T_v|=1$ with $\kappa_e=\kappa$ and $m_v=m$.
+
+\paragraph{The composite.}
+
+Composing $\rr^{\varphi_G}$ with the family $(\Part_v)_{v\in V}$ in the underlying operad of $\potlens$ produces a $0$-ary smooth rewiring diagram
+\[
+\rr^{\varphi_G}\bigl((\Part_v)_{v\in V}\bigr)\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}
+\]
+with composite parameter space $V_G\coloneqq\bigoplus_{v\in V}V_v=\rr^V$, constant sharp $\sharpR_{\vec x}(\vec p)\coloneqq(p_v/m_v)_{v\in V}$ (block-diagonal per vertex), vacuous output and input maps, and composite potential
+\begin{equation}\label{eqn.graph_potential}
+U(\vec x)\;=\;\sum_{v\in V}U_v\bigl(x_v,(x_{\mathrm{tgt}(e)})_{e\in S_v}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(x_{\mathrm{src}(e)}-x_{\mathrm{tgt}(e)})^2.
+\end{equation}
+The first equality substitutes the $e$-input at box $v=\mathrm{src}(e)$ by what the wiring routes in, namely $\outp{f_{\mathrm{tgt}(e)}}(x_{\mathrm{tgt}(e)})_e=x_{\mathrm{tgt}(e)}$ (the broadcast diagonal at box $\mathrm{tgt}(e)$, restricted to the $e$-component); the second equality uses the partition $E=\bigsqcup_{v\in V}S_v$ to collapse the double sum to a single sum over edges, with each edge $e$ contributing exactly once (at the vertex $\mathrm{src}(e)$).
+
+\paragraph{The discrete dynamics.}
+
+Apply $\Phiphase{}$. By \cref{sec.phase_dynamics}, with $\outp f$ and $\inpt f$ vacuous and the external box-object trivial, the resulting $\Phiphase{}\binom{\rr^0}{\rr^0}=\yon$-coalgebra is a state-update on $T^*\rr^V$, sending $(\vec x,\vec p)\in T^*\rr^V$ to
+\[
+(\vec x,\vec p)\;\mapsto\;\bigl(\vec x+(p_v/m_v)_{v\in V},\,\vec p-\xi_{V_G}\bigr),
+\]
+where $\xi_{V_G}\in(\rr^V)^*$ is the contribution from \eqref{eqn.bigtheta}. With $\outp f$ vacuous, the pullback term $(T_{\vec x}\outp f)^\top\xi_N$ vanishes and $\xi_{V_G}=dU(\vec x)$, the differential of \eqref{eqn.graph_potential}. Component-wise (via \eqref{eqn.tangent_vec}):
+\begin{align*}
+(\xi_{V_G})_v
+&=\partial_{x_v}\sum_{e\in E}\tfrac{\kappa_e}{2}(x_{\mathrm{src}(e)}-x_{\mathrm{tgt}(e)})^2\\
+&=\sum_{e\in E}\kappa_e\,(x_{\mathrm{src}(e)}-x_{\mathrm{tgt}(e)})\cdot\bigl(\mathbf{1}_{\mathrm{src}(e)=v}-\mathbf{1}_{\mathrm{tgt}(e)=v}\bigr)\\
+&=\sum_{e\in S_v}\kappa_e(x_v-x_{\mathrm{tgt}(e)})\;+\;\sum_{e\in T_v}\kappa_e(x_v-x_{\mathrm{src}(e)}),
+\end{align*}
+where the second line differentiates each squared term and uses the indicator $\mathbf{1}_{\mathrm{src}(e)=v}-\mathbf{1}_{\mathrm{tgt}(e)=v}$ for the sign of $\partial_{x_v}(x_{\mathrm{src}(e)}-x_{\mathrm{tgt}(e)})$, and the third line splits the sum over $E$ into the disjoint contributions from edges with $\mathrm{src}(e)=v$ (giving $+1$) and edges with $\mathrm{tgt}(e)=v$ (giving $-1$, which then flips the sign inside the parenthesis). Define
+\begin{equation}\label{eqn.graph_laplacian}
+(L_G\,\vec x)_v\;\coloneqq\;\sum_{e\in S_v}\kappa_e(x_v-x_{\mathrm{tgt}(e)})\;+\;\sum_{e\in T_v}\kappa_e(x_v-x_{\mathrm{src}(e)});
+\end{equation}
+as a matrix, $L_G$ has diagonal $(L_G)_{vv}=\sum_{e\in S_v\cup T_v}\kappa_e$ and off-diagonal $(L_G)_{vw}=-\sum_{e}\kappa_e$, summed over edges $e$ with $\{\mathrm{src}(e),\mathrm{tgt}(e)\}=\{v,w\}$ (in either direction). This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$.
+
+\begin{proposition}\label{prop.graph_laplacian}
+\leavevmode\par\nobreak
+The $\yon$-coalgebra $\Phiphase{}\bigl(\rr^{\varphi_G}\bigl((\Part_v)_{v\in V}\bigr)\bigr)$, viewed as a $t\mapsto t+1$ update on $T^*\rr^V$, satisfies
+\begin{equation}\label{eqn.graph_laplacian_dynamics}
+m_v\,\bigl(x_v(t+2)-2x_v(t+1)+x_v(t)\bigr)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
+\qquad\text{for all }v\in V,
+\end{equation}
+where $L_G$ is the graph Laplacian \eqref{eqn.graph_laplacian} of $G$.
+\end{proposition}
+\begin{proof}
+From the state-update formula above, the position update is $x_v(t+1)=x_v(t)+p_v(t)/m_v$, which rearranges to $p_v(t)=m_v\bigl(x_v(t+1)-x_v(t)\bigr)$. The momentum update is $p_v(t+1)=p_v(t)-(\xi_{V_G})_v=p_v(t)-(L_G\vec x(t))_v$, using \eqref{eqn.graph_laplacian} for the last equality. Substituting the rearranged position update into both sides of the momentum update gives
+\[
+m_v\bigl(x_v(t+2)-x_v(t+1)\bigr)\;=\;m_v\bigl(x_v(t+1)-x_v(t)\bigr)-(L_G\vec x(t))_v,
+\]
+and collecting the position terms on the left yields \eqref{eqn.graph_laplacian_dynamics}.
+\end{proof}
+
+\begin{remark}\label{rmk.graph_laplacian_specializations}
+When $G$ is the path digraph on vertices $\{1,\ldots,K\}$ with edges $e_i\colon i+1\to i$ and uniform $\kappa_e=\kappa$, $m_v=m$, \eqref{eqn.graph_laplacian_dynamics} reduces to the discrete wave equation \eqref{eqn.discrete_wave} for the interior, recovering \cref{prop.wave_equation} modulo the boundary choices \eqref{eqn.wave_pin}-\eqref{eqn.wave_bc} (here the external box $\binom{0}{0}$ has no input or output, so the chain has free ends rather than pinned ones). Replacing the path digraph by any other digraph---e.g.\ a $d$-dimensional cubic lattice oriented in some chosen direction along each axis---gives the discrete wave equation $m_v\ddot x_v=-(L_G\vec x)_v$ on the corresponding graph. Since $L_G$ depends on $G$ only through the symmetrized adjacency $A+A^\top$, an undirected weighted graph yields the standard graph Laplacian once each undirected edge is given any orientation.
 \qedhere
 \end{remark}
 
