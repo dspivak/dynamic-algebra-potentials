@@ -2036,12 +2036,18 @@ A finite-dimensional real vector space $V$ equipped with an inner product---a sy
 the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon V\to V^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, where ``descent'' corresponds to scaling the sharp by a negative \emph{learning rate}; see \eqref{eqn.learning_sharp}.\qedhere
 \end{example}
 
-The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the bundle map%
+The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the smooth map%
 \footnote{Strictly speaking, what we denote $\exp_V$ is the composite $V\oplus V^*\To{\id\oplus\sharpR}V\oplus V\to V$ of $\sharpR$ with the genuine exponential. We combine them for brevity.}
 \begin{equation}\label{eqn.flow_cot}
-\exp_V\colon V\oplus V^*\to V,\qquad (x,\xi)\longmapsto x+\sharpR_x(\xi),
+\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharpR_x(\xi),
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}.
+
+The same datum $\sharpR_x(\xi)\in V$ admits a second packaging, as a 1-form on $T^*V$: the \defineTermAs{kinetic_one_form}{\emph{kinetic 1-form}} of $(V,\sharpR_V)$ is the section
+\begin{equation}\label{eqn.kinetic_one_form}
+\beta_V\colon T^*V\to T^*(T^*V),\qquad (x,\xi)\longmapsto (0,\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V),
+\end{equation}
+where the last isomorphism uses \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. As with $\exp_V$, naturality of $\beta_V$ in $\rvect$-isomorphisms follows from \eqref{eqn.pairing_triangle}. The name reflects that, when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.rnla_generalization}
 Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie algebras} (RN Lie Algebras): pairs $(\lie g,\sharpR)$ of a finite-dimensional nilpotent real Lie algebra and a smooth bundle isomorphism $\sharpR$ on its underlying vector space, as in \cref{def.rvect}. We conjecture that replacing $\rvect$ by $\defineTerm{rnla}$ extends every use of $\rvect$ in this paper to the non-abelian setting. A careful treatment is left to future work.
@@ -2367,6 +2373,7 @@ Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \]
+Moreover, a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ induces a monoidal pseudonatural transformation $D_\alpha\colon D_F\circ\Para^{\Store(\alpha)}\Rightarrow D_{F'}$.
 \end{lemma}
 
 \begin{proof}
@@ -2413,7 +2420,7 @@ For $\alpha\colon\mathfrak{s}\to\mathfrak{s}'=(F',\vartheta')$, applying \cref{p
 \[
 \Para^{\Store(\alpha)}\colon\para{\Store\circ F'}{\poly}\to\para{\Store\circ F}{\poly}.
 \]
-Since $\id_\rvect$ is strict monoidal, both $\Para_{\mathfrak{s}'}$ and $\Para^{\Store(\alpha)}$ are strict by \cref{prop.para_square}, and their composite is precomposition with $\vartheta'\circ\Store(\alpha)\colon\Store\circ F\Rightarrow G$. The storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$ then gives $\Para^{\Store(\alpha)}\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$. The components $\alpha_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\Para^{\Store(\alpha)}\Rightarrow D_{F'}$; precomposing with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$,
+Since $\id_\rvect$ is strict monoidal, both $\Para_{\mathfrak{s}'}$ and $\Para^{\Store(\alpha)}$ are strict by \cref{prop.para_square}, and their composite is precomposition with $\vartheta'\circ\Store(\alpha)\colon\Store\circ F\Rightarrow G$. The storage-morphism condition $\vartheta'\circ\Store(\alpha)=\vartheta$ then gives $\Para^{\Store(\alpha)}\circ\Para_{\mathfrak{s}'}=\Para_{\mathfrak{s}}$. Precomposing $D_\alpha$ from \cref{lem.poly_to_org} with $\Para_{\mathfrak{s}'}$ gives $\Psi_\alpha$,
 \[
 \begin{tikzcd}[column sep=60pt]
 	\para{G}{\poly}\ar[r, "\Para_\mathfrak{s}"]\ar[d, "\Para_{\mathfrak{s}'}"']&
@@ -2498,15 +2505,15 @@ T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 \]
 using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
 
-\begin{definition}[Legendre projection]\label{def.legendre_projection}
-Let $(V,\sharpR)$ be a reactive vector space. The \defineTermAs{legendre_projection}{\emph{Legendre projection}} $\defineTerm{rho}_V\colon\cotof{T^*V}\to\cotof{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
+\begin{definition}[Phase lift]\label{def.phase_lift}
+Let $(V,\sharpR)$ be a reactive vector space. The \defineTermAs{phase_lift}{\emph{phase lift}} $\defineTerm{rho}_V\colon\cotof{T^*V}\to\cotof{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
 \[
 T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharpR_x(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \qedhere
 \]
 \end{definition}
 
-Thus, at a phase point $(x,\xi)$, the Legendre projection sends a covector $\xi_V\in T^*_xV$ to the covector $(\xi_V,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$.
+Thus, at a phase point $(x,\xi)$, the phase lift sends a covector $\xi_V\in T^*_xV$ to the covector $(\xi_V,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$.
 
 
 This gives us a second storage in the sense of \cref{def.cotangent_storage}.
@@ -2516,7 +2523,7 @@ There is a cotangent storage, which we call \defineTermAs{phase_space_storage}{\
 \[
 \store{\phase}\coloneqq\bigl(\absval{T^*\blank},\,\rho\circ\theta_{T^*\blank}\bigr).
 \]
-The first component sends $V\mapsto\absval{T^*V}$, the underlying set of its cotangent bundle, and the second component at $V:\rvect$ composes the configuration-storage component $\theta$ at $T^*V$ (see \cref{prop.rvect_polynomial}) with the Legendre projection,
+The first component sends $V\mapsto\absval{T^*V}$, the underlying set of its cotangent bundle, and the second component at $V:\rvect$ composes the configuration-storage component $\theta$ at $T^*V$ (see \cref{prop.rvect_polynomial}) with the phase lift,
 \[
 \Store(\absval{T^*V})\To{\theta_{T^*V}}\cotof{T^*V}\To{\rho_V}\cotof{V}.
 \]
@@ -2534,7 +2541,7 @@ Indeed, monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V
 Therefore $\rho\circ\theta_{T^*\blank}$ is a monoidal natural transformation $\Store\circ\absval{T^*\blank}\Rightarrow\cot\circ\inc$, i.e.\ a cotangent storage.
 \end{proof}
 
-In other words, $\rho\circ\theta_{T^*\blank}\colon T^*V\yon^{T^*V}\to \cotof{V}$ is given succinctly by
+In other words, the phase storage $\rho\circ\theta_{T^*\blank}\colon T^*V\yon^{T^*V}\to \cotof{V}$ is given succinctly by
 \begin{equation}\label{eqn.phase_storage_update}
 (x,\xi)\mapsto\bigl(x,\xi'\mapsto (x+\sharpR_x(\xi),\,\xi-\xi')\bigr)
 \end{equation}
@@ -2716,7 +2723,7 @@ s+\sharpS_S(\xi_V,\sharpR_x(\xi))=\bigl(x+\sharpR_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
 We will now break down \cref{eqn.state_update}, which is the phase-space storage \eqref{eqn.phase_storage_update} with the substitution $\xi'=\xi_V$. 
 
-Its left-hand side records where the three pieces of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharpR_x(\xi))\in T^*_sS$ comes from the Legendre projection at $(x,\xi)$, \cref{def.legendre_projection}. 
+Its left-hand side records where the three pieces of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharpR_x(\xi))\in T^*_sS$ comes from the phase lift at $(x,\xi)$, \cref{def.phase_lift}. 
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_V,\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharpR_x(\xi),\,\xi-\xi_V)$.
 
