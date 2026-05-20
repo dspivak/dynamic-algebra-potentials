@@ -2004,29 +2004,34 @@ The composite $\rvect\to\vect\hookrightarrow\mfd$ is strong symmetric monoidal, 
 The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\vect$); the inclusion $\vect\hookrightarrow\mfd$ preserves products.\qedhere
 \end{proof}
 
+For any finite-dimensional vector space $V:\vect$, the global chart \eqref{eqn.tangent_vec} identifies the cotangent bundle of $V$ as a manifold with $V\oplus V^*$; we write
+\begin{equation}\label{eqn.TT_def}
+T^*V \coloneqq V\oplus V^*
+\end{equation}
+for either side. The next proposition equips $T^*V$ with a canonical reactive-vector-space structure; \cref{sec.TT} will then show that $T^*\colon\rvect\to\rvect$ is a strong monoidal endofunctor.
+
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
-For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ is a reactive vector space under the constant \defineTermAs{canonical_symplectic_pairing}{\emph{canonical symplectic pairing}}
+For any finite-dimensional vector space $V:\vect$, the cotangent bundle $T^*V$ is a reactive vector space under the constant \defineTermAs{canonical_symplectic_pairing}{\emph{canonical symplectic pairing}}
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(x,\xi),(x',\xi')} \;=\; \xi'(x)-\xi(x').
+\pairing{(x,\xi),(x',\xi')} \;=\; \xi'(x)-\xi(x'),
 \end{equation}
-The associated \emph{symplectic sharp map} is
+The associated \emph{symplectic sharp map} is the constant linear map
 \begin{equation}\label{eqn.canonical_sharp}
-\defineTerm{sharp_symp}_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi).
+\defineTerm{sharp_symp}_{T^*V}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi),
 \end{equation}
+where we identify $T^*_{(x,\xi)}(T^*V)\cong (T^*V)^*\cong V^*\oplus V$ via \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum}.
 \end{proposition}
 
 \begin{proof}
-The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in V^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in V$, hence $\xi=0$. 
-
-The associated sharp map comes from an application of \eqref{eqn.canonical_dual_sum}. \qedhere
+The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in V^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in V$, hence $\xi=0$. The flat map sends $(x,\xi)\mapsto(-\xi,x)\in V^*\oplus V$ via \eqref{eqn.canonical_dual_sum}, whose inverse is \eqref{eqn.canonical_sharp}.\qedhere
 \end{proof}
 
 \begin{remark}[Symplectic sharp produces perpendicular vectors]\label{rmk.symplectic_perpendicular}
-For any covector $\alpha=(\xi,x)\in V^*\oplus V$, the resulting vector $\sharpS_{V\oplus V^*}(\alpha)=(x,-\xi)\in V\oplus V^*$ is annihilated by $\alpha$: pairing the two via \eqref{eqn.canonical_dual_sum},
+For any covector $\alpha=(\xi,x)\in V^*\oplus V$, the resulting vector $\sharpS_{T^*V}(\alpha)=(x,-\xi)\in V\oplus V^*$ is annihilated by $\alpha$: pairing the two via \eqref{eqn.canonical_dual_sum},
 \[
-\alpha\bigl(\sharpS_{V\oplus V^*}(\alpha)\bigr) = \xi(x) + (-\xi)(x) = 0.
+\alpha\bigl(\sharpS_{T^*V}(\alpha)\bigr) = \xi(x) + (-\xi)(x) = 0.
 \]
-Geometrically, the symplectic sharp ``rotates'' each covector to a vector perpendicular to it. In particular, when $\alpha=dH|_w$ is the differential of a smooth function $H\colon V\oplus V^*\to\rr$, the vector $\sharpS_{V\oplus V^*}(dH|_w)$ is tangent to the level set $\{H=H(w)\}$, so the flow it generates conserves $H$.\qedhere
+Geometrically, the symplectic sharp ``rotates'' each covector to a vector perpendicular to it. In particular, when $\alpha=dH|_w$ is the differential of a smooth function $H\colon T^*V\to\rr$, the vector $\sharpS_{T^*V}(dH|_w)$ is tangent to the level set $\{H=H(w)\}$, so the flow it generates conserves $H$.\qedhere
 \end{remark}
 
 \begin{example}[Euclidean sharp]\label{ex.euclidean_sharp}
@@ -2044,11 +2049,12 @@ The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the smooth 
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}.
 
-The same datum $\sharpR_x(\xi)\in V$ admits a second packaging, as a 1-form on $T^*V$: the \defineTermAs{kinetic_one_form}{\emph{kinetic 1-form}} of $(V,\sharpR_V)$ is the section
+The same datum $\sharpR_x(\xi)\in V$ admits a second packaging---used later in \cref{def.phase_lift}---as a 1-form on $T^*V$, equivalently a $\poly$-morphism to $\yon$. The \defineTermAs{kinetic_one_form}{\emph{kinetic 1-form}} of $(V,\sharpR_V)$ is
 \begin{equation}\label{eqn.kinetic_one_form}
-\beta_V\colon T^*V\to T^*(T^*V),\qquad (x,\xi)\longmapsto (0,\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V),
+\beta_V\colon\cotof{T^*V}\to\yon,\qquad
+(x,\xi)\mapsto(0,\sharpR_x(\xi))
 \end{equation}
-where the last isomorphism uses \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. As with $\exp_V$, naturality of $\beta_V$ in $\rvect$-isomorphisms follows from \eqref{eqn.pairing_triangle}. The name reflects that, when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).
+using the identification $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ from \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. Equivalently, $\beta_V$ is the section $T^*V\to T^*(T^*V)$, $(x,\xi)\mapsto(0,\sharpR_x(\xi))$. As with $\exp_V$, naturality of $\beta_V$ in $\rvect$-isomorphisms follows from \eqref{eqn.pairing_triangle}. The name reflects that, when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).
 
 \begin{remark}[Generalization to nilpotent Lie algebras]\label{rmk.rnla_generalization}
 Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie algebras} (RN Lie Algebras): pairs $(\lie g,\sharpR)$ of a finite-dimensional nilpotent real Lie algebra and a smooth bundle isomorphism $\sharpR$ on its underlying vector space, as in \cref{def.rvect}. We conjecture that replacing $\rvect$ by $\defineTerm{rnla}$ extends every use of $\rvect$ in this paper to the non-abelian setting. A careful treatment is left to future work.
@@ -2056,20 +2062,13 @@ Reactive vector spaces are the abelian case of \emph{reactive nilpotent Lie alge
 
 \subsection{Cotangent endofunctor}\label{sec.TT}
 
-For a reactive vector space $(V,\sharpR_V):\rvect$, define
-\begin{equation}\label{eqn.TT_def}
-T^*V\coloneqq V\oplus V^*.
-\end{equation}
-Under the inclusion functor $\inc\colon\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this commutes with the taking the cotangent bundle of $V$ as a manifold.
-
-Thus the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing} is precisely the reactive structure on the phase space $T^*V$, with sharp map \eqref{eqn.canonical_sharp}.
-For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
+\cref{prop.canonical_symplectic_pairing} gives a canonical reactive-vector-space structure to the cotangent bundle $T^*V=V\oplus V^*$ \eqref{eqn.TT_def} of any $V:\rvect$. To make this functorial, we extend the assignment to $\rvect$-morphisms: for $\phi\colon V\To{\cong}W$, define
 \begin{equation}\label{eqn.TT_phi}
 T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
 \end{equation}
 
 \begin{proposition}\label{prop.TT_endofunctors}
-Equipping $T^*V$ with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, the assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\rvect\to\rvect$.
+The assignments \eqref{eqn.TT_def} and \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\rvect\to\rvect$.
 \end{proposition}
 
 \begin{proof}
@@ -2088,7 +2087,7 @@ both sides are independent of $w$ by constancy of the canonical symplectic pairi
 \end{proof}
 
 \begin{remark}[Constancy of $\sharpS_{T^*V}$]\label{rmk.constant_canonical_sharp}
-The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharpR_V$, so $\sharpS_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharpR_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{V\oplus V^*}$, regardless of any variation in $\sharpR_V$. However, $\sharpR_V$ is not discarded by the framework: it appears in the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
+The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharpR_V$, so $\sharpS_{T^*V}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharpR_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{T^*V}$, regardless of any variation in $\sharpR_V$. However, $\sharpR_V$ is not discarded by the framework: it appears in the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
 \qedhere
 \end{remark}
 
@@ -2507,15 +2506,18 @@ T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
 
 \begin{definition}[Phase lift]\label{def.phase_lift}
-Let $(V,\sharpR)$ be a reactive vector space. The \defineTermAs{phase_lift}{\emph{phase lift}} $\defineTerm{rho}_V\colon\cotof{T^*V}\to\cotof{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
-\[
-T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharpR_x(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
-\qedhere
-\]
+Let $(V,\sharpR)$ be a reactive vector space, let $\pi_V\colon T^*V\to V$ be the bundle projection, and let $\cotof{\Delta_{T^*V}}\colon\cotof{T^*V}\to\cotof{T^*V}\otimes\cotof{T^*V}$ be the $\otimes$-comultiplication of \cref{lem.cot_comonoid}. The \defineTermAs{phase_lift}{\emph{phase lift}} is the composite
+\begin{equation}\label{eqn.phase_lift_decomp}
+\defineTerm{rho}_V\;\coloneqq\;\bigl(\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\beta_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}\bigr),
+\end{equation}
+where $\beta_V$ is the kinetic 1-form \eqref{eqn.kinetic_one_form}.\qedhere
 \end{definition}
 
-Thus, at a phase point $(x,\xi)$, the phase lift sends a covector $\xi_V\in T^*_xV$ to the covector $(\xi_V,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$.
-
+Unpacking \eqref{eqn.phase_lift_decomp}: $\rho_V$ has positions $(x,\xi)\mapsto x$, and its direction map at $(x,\xi)$ sends a covector $\xi_V\in T^*_xV$ to
+\[
+(\xi_V,\,0)\;+\;\beta_V(x,\xi)\;=\;(\xi_V,\,\sharpR_x(\xi))\;\in\;V^*\oplus V\cong T^*_{(x,\xi)}(T^*V),
+\]
+where the first summand is the cotangent pullback along $\pi_V$, the second is the direction value of $\beta_V$, and the sum is taken in the cotangent fiber via the comultiplication $\cotof{\Delta_{T^*V}}$.
 
 This gives us a second storage in the sense of \cref{def.cotangent_storage}.
 
