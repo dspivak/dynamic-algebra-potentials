@@ -426,8 +426,8 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\sharpEuc}{\termref{sharpEuc}{\termraw{sharpEuc}}}
 \trackTermSymbol{sharpR}{\sharp}
 \newcommand{\sharpR}{\termref{sharp_map}{\termraw{sharpR}}}
-\trackTermSymbol{sharpS}{\sharp}
-\newcommand{\sharpS}{\termref{sharp_symp}{\termraw{sharpS}}}
+\trackTermSymbol{sharp_symp}{\sharp}
+\newcommand{\sharpS}{\termref{sharp_symp}{\termraw{sharp_symp}}}
 
 \font\MnSyCfont=MnSymbolC10
 \newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
@@ -2005,18 +2005,17 @@ The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\ve
 \end{proof}
 
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
-For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ is a reactive vector space under the \defineTermAs{canonical_symplectic_pairing}{\emph{canonical symplectic pairing}}: at every basepoint $w\in V\oplus V^*$,
+For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ is a reactive vector space under the constant \defineTermAs{canonical_symplectic_pairing}{\emph{canonical symplectic pairing}}
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(x,\xi),(x',\xi')}_{w} \;=\; \xi'(x)-\xi(x').
+\pairing{(x,\xi),(x',\xi')} \;=\; \xi'(x)-\xi(x').
 \end{equation}
-The right-hand side does not depend on $w$, so the section is constant.
 \end{proposition}
 
 \begin{proof}
 The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in V^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in V$, hence $\xi=0$.\qedhere
 \end{proof}
 
-For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is the constant section
+For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is the constant linear map $T^*V\to TV$ given by 
 \begin{equation}\label{eqn.canonical_sharp}
 \defineTerm{sharp_symp}_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi).
 \end{equation}
@@ -2056,7 +2055,7 @@ T^*V\coloneqq V\oplus V^*.
 \end{equation}
 Under the inclusion functor $\inc\colon\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this commutes with the taking the cotangent bundle of $V$ as a manifold.
 
-It is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
+Thus the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing} is precisely the reactive structure on the phase space $T^*V$, with sharp map \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
 \begin{equation}\label{eqn.TT_phi}
 T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
