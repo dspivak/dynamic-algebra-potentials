@@ -350,6 +350,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \trackTerm{\poly}{poly}{\Cat{Poly}}
 \trackTermSymbol{tri}{\triangleleft}
 \newcommand{\tri}{\mathbin{\termref{tri}{\termraw{tri}}}}
+\trackTerm{\bang}{bang}{\mathord{!}}
 
 % lenses
 \newcommand{\biglens}[2]{
@@ -565,7 +566,7 @@ However, neither their framework nor the one in this paper subsumes the other. T
 w\colon V\times M\to N,\qquad
 E\colon V\times M\to\rr.
 \]
-There is a wide strong monoidal functor $\cat{R}\to\mathbf{OpenErg}$ and a fully faithful strong monoidal functor $\cat{R}\to\potlens$, the latter sending $M$ to $\binom{\rr^0}{M}$, output map $\outp f\coloneqq w$, unique input map $\inpt f\coloneqq !$, and potential $U\coloneqq E$. 
+There is a wide strong monoidal functor $\cat{R}\to\mathbf{OpenErg}$ and a fully faithful strong monoidal functor $\cat{R}\to\potlens$, the latter sending $M$ to $\binom{\rr^0}{M}$, output map $\outp f\coloneqq w$, unique input map $\inpt f\coloneqq \bang$, and potential $U\coloneqq E$. 
 In other words, the two extensions of $\cat{R}$ go in orthogonal directions: $\potlens$ has richer interfaces and additional input-routing data in its morphisms, while CLS allows more general state spaces and reactions inside its open systems.%
 \footnote{For example, our restrictions on the reaction structure---that it be a bundle isomorphism $T^*V\cong TV$ over a vector space rather than a bundle map $T^*M\to TM$ over a manifold---are necessary in order to prove \cref{prop.rvect_polynomial}.}
 
@@ -626,7 +627,7 @@ We fix some typographic conventions. We denote generic categories using calligra
 
 For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$ is clickable.
 
-We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $!$, e.g.\ $!\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
+We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $\defineTerm{bang}$, e.g.\ $\bang\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
 We reserve $\eta$ and $\mu$ for monad units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
 
@@ -884,14 +885,14 @@ Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributi
 
 \Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cotof{M}$.
 
-Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $!_M\colon M\to\mathbb{R}^0$. And since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. 
+Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $\bang_M\colon M\to\mathbb{R}^0$. And since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. 
 
 \begin{lemma}\label{lem.cot_comonoid}
 For any smooth manifold $M$, the polynomial $\cotof{M}$ is a comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
 \[
 \cotof{\Delta_M}\colon\cotof{M}\to\cotof{M}\otimes\cotof{M}
 \qqand
- \cotof{!_M}\colon\cotof{M}\to\yon
+ \cotof{\bang_M}\colon\cotof{M}\to\yon
 \]
 send positions by $m\mapsto(m,m)$ and $m\mapsto *$, respectively. On directions, each cotangent fiber $T^*_mM$ carries an induced \emph{commutative monoid} structure
 \[
@@ -916,7 +917,7 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 \end{lemma}
 
 \begin{proof}
-On positions $\cotof{\Delta_M}$ and $\cotof{!_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(!_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
+On positions $\cotof{\Delta_M}$ and $\cotof{\bang_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(\bang_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
 
@@ -1519,7 +1520,7 @@ Let $(\cat{C}, 1, \times)$ be a cartesian monoidal category and $\Fun{T}$ a mono
 \begin{equation*}
 \inc\colon\cat{C}\to\Lens{\cat{C}}^{\Fun{T}},\qquad X\mapsto\binom{1}{X},
 \end{equation*}
-sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=(!\then\eta_1)\colon X\times 1\To{!} 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
+sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=(\bang\then\eta_1)\colon X\times 1\To{\bang} 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
 
 \begin{lemma}\label{lem.parameter_lens_action}
 Let $\cat A$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat A\to\cat C$ be a strong monoidal functor such that each object $J(a)$ carries a comonoid structure $(\delta_{J(a)},\varepsilon_{J(a)})$ in $\cat C$ and each morphism $J(u)$ is a comonoid homomorphism. Then we have an action $\cat A\times\Lens{\cat C}^{\Fun T}\to\Lens{\cat C}^{\Fun T}$ given by
@@ -2240,7 +2241,7 @@ The symmetric monoidal category $\potlens$ is defined by
 \qedhere\]
 \end{definition}
 
-Morphisms in $\potlens$, and more generally multimorphisms in its underlying operad, are called \defineTermAs{smooth_rewiring_diagram}{\emph{smooth rewiring diagrams}}. When the parameter is the trivial reactive vector space $\rr^0$, we call such a morphism a \defineTermAs{smooth_wiring_diagram}{\emph{smooth wiring diagram}}.
+Morphisms in $\potlens$, and more generally multimorphisms in its underlying operad, are called \defineTermAs{smooth_rewiring_diagram}{\emph{smooth rewiring diagrams}}. When the parameter is the trivial reactive vector space $\rr^0$, we call such a morphism a \defineTermAs{smooth_wiring_diagram}{\emph{smooth (static) wiring diagram}}.
 
 \begin{remark}
 The following diagram depicts composition of smooth rewiring diagrams $f=(V,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$ and $g=(W,\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $V\oplus W$, forward and backward components inherited from $\lmfd$, and potential added via the monad multiplication $\mu\coloneqq(+)$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
@@ -2326,7 +2327,7 @@ There is a chain of functors
 \[
 \Lens{\finset\op}\To{\Lens{\,\rr^{\!\blank}}}\lmfd\To{\Lens{\eta}}\plmfd\To{\Para_{\rr^0}}\potlens
 \]
-where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized manifold lens as a smooth wiring diagram. This chain gives rise to progressively richer smooth rewiring diagrams.
+where $\eta\colon\id_\mfd\Rightarrow\rr\times\blank$ is the unique map from the initial monad $\id$, and $\Para_{\rr^0}$ regards a potentialized manifold lens as a smooth (static) wiring diagram. This chain gives rise to progressively richer smooth rewiring diagrams.
 
 The simplest---those coming from the leftmost category in the chain---are static wiring diagrams, which come from ``prisms,'' i.e.\ lenses in $\finset\op$, as we saw in \cref{ex.lens_finsetop}. In this case the maps in \eqref{eqn.plens_map} have trivial $V=\rr^0$-factor, all the maps factor as projections and diagonals, and the potential is zero. These simplest maps give the syntax for something like ``traced symmetric monoidal semicategories," as discussed in \cref{sec.plenspot_ops}.
 
@@ -2938,7 +2939,7 @@ In this concluding chapter we illustrate the two dynamics functors on three conc
 \section{Newton's method}\label{sec.newton_warmup}
 %--------------------------------------------------------------------
 
-The simplest morphisms in a monoidal category are \emph{scalars}, i.e.\ endomorphisms of the monoidal unit $I$, preserved by normal lax monoidal functors like $\Phi$. In the case of $\potlens$, both interfaces are trivial, $\binom{\rr^0}{\rr^0}$, so $\outp f$ and $\inpt f$ are forced to be the unique map $!$ and the only data is a reactive parameter space $(V,\sharpR_V)$ and a potential $U\colon V\to\rr$. Newton's method for finding critical points of a potential is such a scalar. It determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$.
+The simplest morphisms in a monoidal category are \emph{scalars}, i.e.\ endomorphisms of the monoidal unit $I$, preserved by normal lax monoidal functors like $\Phi$. In the case of $\potlens$, both interfaces are trivial, $\binom{\rr^0}{\rr^0}$, so $\outp f$ and $\inpt f$ are forced to be the unique map $\bang$ and the only data is a reactive parameter space $(V,\sharpR_V)$ and a potential $U\colon V\to\rr$. Newton's method for finding critical points of a potential is such a scalar. It determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$.
 
 Let $\ell\colon V\to\rr$ be a smooth map on a finite-dimensional real vector space $V$. Its derivative $d\ell\colon V\to V^*$ sends $v\in V$ to the gradient covector $d\ell|_v\in V^*$, and the derivative of $d\ell$ at $v$ is itself a linear map
 \begin{equation*}
@@ -2954,11 +2955,11 @@ which is symmetric by equality of mixed partials. Newton's method requires this 
 \]
 so $(V,\sharpR_V)\in\rvect$. So we now have a scalar in $\potlens$
 \[
-\bigl((V,\sharpR_V),\ \outp f=!,\ \inpt f=!,\ U=\ell\bigr)\colon I\to I
+\bigl((V,\sharpR_V),\ \outp f=\bang,\ \inpt f=\bang,\ U=\ell\bigr)\colon I\to I
 \]
 with potential $\ell$. 
 
-Applying $\Phiconf{}$ to $(V,\sharpR_V,!,!,\ell)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU=d\ell|_v$, and the state update \eqref{eqn.state_update_gradient} reads
+Applying $\Phiconf{}$ to $(V,\sharpR_V,\bang,\bang,\ell)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU=d\ell|_v$, and the state update \eqref{eqn.state_update_gradient} reads
 \[
 v\longmapsto v+\sharpR_v(d\ell|_v)=v-\bigl(T_v(d\ell)\bigr)^{-1}(d\ell|_v),
 \]
@@ -3053,7 +3054,7 @@ The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$,
 \section{The wave equation}\label{sec.wave_equation}
 %--------------------------------------------------------------------
 
-We illustrate $\Phiphase{}\colon\potlens\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth rewiring diagram $\Part\colon I\to\boxob$ and arrange particles into a chain as a $K$-ary smooth wiring diagram $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$, then illustrate functoriality of $\Phiphase{}$ by computing the wave equation in two different ways. In \cref{sec.spring_first_pass} we compose the particles and the wiring in the underlying operad of $\potlens$, apply $\Phiphase{}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we instead apply $\Phiphase{}$ to the particle and wiring separately and compose the resulting coalgebras in $\org$, showing that we again obtain the wave dynamics.
+We illustrate $\Phiphase{}\colon\potlens\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth rewiring diagram $\Part\colon I\to\boxob$ and arrange particles into a chain as a $K$-ary smooth (static) wiring diagram $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$, then illustrate functoriality of $\Phiphase{}$ by computing the wave equation in two different ways. In \cref{sec.spring_first_pass} we compose the particles and the wiring in the underlying operad of $\potlens$, apply $\Phiphase{}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we instead apply $\Phiphase{}$ to the particle and wiring separately and compose the resulting coalgebras in $\org$, showing that we again obtain the wave dynamics.
 
 That is, we begin with a single particle with position and momentum, which we put in a ``box'' that in some sense delivers the particle's position to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the locations of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -3096,7 +3097,7 @@ We give the derivation in two passes. In the first pass, we describe the particl
 
 \subsection{First pass: composing in \texorpdfstring{$\potlens$}{PPLens}}\label{sec.spring_first_pass}
 
-First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each internal box, representing the particle of mass $m>0$. Then we give a $K$-ary smooth wiring diagram for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
+First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$, for the dynamical system that goes in each internal box, representing the particle of mass $m>0$. Then we give a $K$-ary smooth (static) wiring diagram for each $K>0$ that describes the (static) wiring diagram shown in \eqref{eqn.wave_wd}. Then we calculate what happens when we compose.
 
 \paragraph{The particle.}
 
@@ -3120,7 +3121,7 @@ Applying $\rr^\blank$ from \cref{lemma.lens_pow}, we obtain the lens $\binom{\rr
 \inpt f\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq(x_0,\,x_1,\,\ldots,\,x_{K-1}).
 \]
 {\emergencystretch=2em
-Lenses without potential and without parameterization are special cases of smooth rewiring diagrams in the underlying operad of $\potlens$, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a smooth wiring diagram
+Lenses without potential and without parameterization are special cases of smooth rewiring diagrams in the underlying operad of $\potlens$, i.e.\ taking $V'\coloneqq\rr^0$ and the $0$-potential $U'\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a smooth (static) wiring diagram
 \par}
 \[
 \fun{wire}_K\colon\boxob\tpow{K}\to\boxob,\qquad \left(\binom{\inpt f}{\outp f},0\right)
@@ -3287,66 +3288,74 @@ Working in $\Lens{\finset\op}$ (\cref{ex.lens_finsetop}), define the $|V|$-ary \
 \[
 \varphi_G\colon\sum_{v\in V}\binom{\inpt{v}}{\outp{v}}\to\binom{0}{0}
 \]
-with $\outp{f}\coloneqq!\colon 0\to\sum_{v}\outp{v}$ unique and $\inpt{f}\colon\sum_{v}\inpt{v}\to\sum_{v}\outp{v}$ as in \eqref{eqn.prism_f}. Concretely, each $v$ becomes a box with as many output and input ports as the out-degree and in-degree of $v$; the edges connect these ports one-to-one.
+with $\outp{f}\coloneqq\bang\colon 0\to\sum_{v}\outp{v}$ unique and $\inpt{f}\colon\sum_{v}\inpt{v}\to\sum_{v}\outp{v}$ as in \eqref{eqn.prism_f}. Concretely, each $v$ becomes a box with as many output and input ports as the out-degree and in-degree of $v$; the edges connect these ports one-to-one.
 
 Applying $\rr^{\blank}$ (\cref{lemma.lens_pow}) gives a lens
 \[
 \rr^{\varphi_G}\colon\prod_{v\in V}\binom{\rr^{\inpt{v}}}{\rr^{\outp{v}}}\to\binom{\rr^0}{\rr^0}
 \]
-whose input map $\prod_{v}\rr^{\outp{v}}\to\prod_{v}\rr^{\inpt{v}}$ is again the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth wiring diagram in the underlying operad of $\potlens$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$.
+whose input map $\prod_{v}\rr^{\outp{v}}\to\prod_{v}\rr^{\inpt{v}}$ is again the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth (static) wiring diagram in the underlying operad of $\potlens$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$.
 
 \paragraph{The particle at a vertex.}
 
-For each $v\in V$, fix a mass $m_v>0$ and a stiffness $\kappa_e>0$ for each $e\in\inpt{v}$. The \emph{harmonic particle at $v$} is the $0$-ary smooth rewiring diagram
+For each $v\in V$, fix a mass $m_v>0$, and fix a stiffness $\kappa_e>0$ for each $e\in\inpt{v}$. The \emph{harmonic particle at $v$} is the $0$-ary smooth rewiring diagram
 \[
 \Part_v\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^{\inpt{v}}}{\rr^{\outp{v}}}
 \]
-in the underlying operad of $\potlens$ defined by:
+defined by:
 \begin{itemize}
 \item parameter space $V_v\coloneqq\rr\in\rvect$ with constant sharp $\sharpR_x(p)\coloneqq p/m_v$ (independent of $x\in\rr$);
-\item output map $\outp{f_v}\colon V_v\to\rr^{\outp{v}}$ the broadcast diagonal $x\mapsto(x)_{e\in\outp{v}}$, sending the particle's position to each of its $|\outp{v}|$ out-edge ports;
-\item input map $\inpt{f_v}\colon V_v\times\rr^{\inpt{v}}\to\rr^0$ unique;
+\item output map $\outp{f_v}\colon V_v\to\rr^{\outp{v}}$ the broadcast diagonal $x\mapsto(x)_{e\in\outp{v}}$, sending the particle's position to each of its $|\outp{v}|$-many out-edges;
+\item input map $\inpt{f_v}\coloneqq\bang\colon V_v\times\rr^{\inpt{v}}\to\rr^0$, uniquely determined;
 \item potential $U_v\colon V_v\times\rr^{\inpt{v}}\to\rr$ given by
 \[
 U_v\bigl(x,(n_e)_{e\in\inpt{v}}\bigr)\coloneqq\sum_{e\in\inpt{v}}\tfrac{\kappa_e}{2}\,(x-n_e)^2.
 \]
 \end{itemize}
-The particle $\Part$ of \cref{sec.spring_first_pass} is the instance $|\outp{v}|=|\inpt{v}|=1$ with $\kappa_e=\kappa$ and $m_v=m$.
+The particle $\Part$ of \cref{sec.spring_first_pass} is the case where $|\outp{v}|=|\inpt{v}|\coloneqq 1$ with $\kappa_e\coloneqq\kappa$ and $m_v\coloneqq m$ for a single $\kappa,m>0$.
 
 \paragraph{The composite.}
 
 Composing $\rr^{\varphi_G}$ with the family $(\Part_v)_{v\in V}$ in the underlying operad of $\potlens$ produces a $0$-ary smooth rewiring diagram
-\[
-\rr^{\varphi_G}\bigl((\Part_v)_{v\in V}\bigr)\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}
-\]
-with composite parameter space $V_G\coloneqq\bigoplus_{v\in V}V_v=\rr^V$, constant sharp $\sharpR_{\vec x}(\vec p)\coloneqq(p_v/m_v)_{v\in V}$ (block-diagonal per vertex), vacuous output and input maps, and composite potential
+\begin{equation}\label{eqn.psi_graph_lap}
+\psi\coloneqq\rr^{\varphi_G}\bigl((\Part_v)_{v\in V}\bigr)\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}
+\end{equation}
+with composite parameter space $V_G\coloneqq\bigoplus_{v\in V}V_v=\rr^V$, constant sharp $\sharpR_{\vec x}(\vec p)\coloneqq(p_v/m_v)_{v\in V}$, vacuous output and input maps, and composite potential $\rr^V\to\rr$ calculated as
 \begin{equation}\label{eqn.graph_potential}
 U(\vec x)\;=\;\sum_{v\in V}U_v\bigl(x_v,(x_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(x_{\tgt(e)}-x_{\src(e)})^2.
 \end{equation}
-The first equality substitutes the $e$-input at box $v=\tgt(e)$ by what the wiring routes in, namely $\outp{f_{\src(e)}}(x_{\src(e)})_e=x_{\src(e)}$ (the broadcast diagonal at box $\src(e)$, restricted to the $e$-component); the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$ to collapse the double sum to a single sum over edges, with each edge $e$ contributing exactly once (at the vertex $\tgt(e)$).
+The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$.
 
 \paragraph{The discrete dynamics.}
 
-Apply $\Phiphase{}$. By \cref{sec.phase_dynamics}, with $\outp f$ and $\inpt f$ vacuous and the external box-object trivial, the resulting $\Phiphase{}\binom{\rr^0}{\rr^0}=\yon$-coalgebra is a state-update on $T^*\rr^V$, sending $(\vec x,\vec p)\in T^*\rr^V$ to
+Next we will apply $\Phiphase{}$ to $\psi\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}$. By \cref{sec.phase_dynamics}, since $\Phiphase{}\binom{\rr^0}{\rr^0}=\yon$, we have that $\Phiphase(\psi)$ is a $[\yon,\yon]=\yon$-coalgebra, i.e.\ a function $T^*\rr^V\to T^*\rr^V$. For $(\vec x,\vec p)\in T^*\rr^V$, it is given by
 \[
 (\vec x,\vec p)\;\mapsto\;\bigl(\vec x+(p_v/m_v)_{v\in V},\,\vec p-\xi_{V_G}\bigr),
 \]
-where $\xi_{V_G}\in(\rr^V)^*$ is the contribution from \eqref{eqn.bigtheta}. With $\outp f$ vacuous, the pullback term $(T_{\vec x}\outp f)^\top\xi_N$ vanishes and $\xi_{V_G}=dU(\vec x)$, the differential of \eqref{eqn.graph_potential}. Component-wise (via \eqref{eqn.tangent_vec}):
-\begin{align*}
+where $\xi_{V_G}\in(\rr^V)^*$ is the contribution from \eqref{eqn.bigtheta}. With $\outp f$ and $\inpt f$ both vacuous, the pullback terms $(T_{\vec x}\outp f)^\top\xi_N$ and $(T_{\vec x}\inpt f)^\top\omega_M(\inpt m)$ vanish, leaving $\xi_{V_G}=dU(\vec x)$, i.e.\ the differential of \eqref{eqn.graph_potential}. Component-wise (via \eqref{eqn.tangent_vec}):
+\begin{align}\label{eqn.no_self}
 (\xi_{V_G})_v
-&=\partial_{x_v}\sum_{e\in E}\tfrac{\kappa_e}{2}(x_{\tgt(e)}-x_{\src(e)})^2\\
-&=\sum_{e\in E}\kappa_e\,(x_{\tgt(e)}-x_{\src(e)})\cdot\bigl(\mathbf{1}_{\tgt(e)=v}-\mathbf{1}_{\src(e)=v}\bigr)\\
-&=\sum_{e\in\inpt{v}}\kappa_e(x_v-x_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(x_v-x_{\tgt(e)}),
-\end{align*}
-where the second line differentiates each squared term and uses the indicator $\mathbf{1}_{\tgt(e)=v}-\mathbf{1}_{\src(e)=v}$ for the sign of $\partial_{x_v}(x_{\tgt(e)}-x_{\src(e)})$, and the third line splits the sum over $E$ into the disjoint contributions from edges with $\tgt(e)=v$ (giving $+1$) and edges with $\src(e)=v$ (giving $-1$, which then flips the sign inside the parenthesis). Define
+&=\partial_{x_v}\sum_{e\in E}\tfrac{\kappa_e}{2}(x_{\tgt(e)}-x_{\src(e)})^2\\\nonumber
+&=\sum_{e\in E}\kappa_e\,(x_{\tgt(e)}-x_{\src(e)})\cdot\bigl(\mathbf{1}_{\tgt(e)=v}-\mathbf{1}_{\src(e)=v}\bigr)\\\nonumber
+&=\sum_{e\in\inpt{v}}\kappa_e(x_v-x_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(x_v-x_{\tgt(e)}).
+\end{align}
+where $\mathbf{1}_{\tgt(e)=v}$ and $\mathbf{1}_{\src(e)=v}$ are indicator functions. We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contribute nothing to the sum \eqref{eqn.no_self}. Define a $(V\times V)$-matrix $L_G$ to be the linear function that sends $\vec{x}$ to the vector with the following components:
 \begin{equation}\label{eqn.graph_laplacian}
 (L_G\,\vec x)_v\;\coloneqq\;\sum_{e\in\inpt{v}}\kappa_e(x_v-x_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(x_v-x_{\tgt(e)});
 \end{equation}
-as a matrix, $L_G$ has diagonal $(L_G)_{vv}=\sum_{e\in\inpt{v}\cup\outp{v}}\kappa_e$ and off-diagonal $(L_G)_{vw}=-\sum_{e}\kappa_e$, summed over edges $e$ with $\{\src(e),\tgt(e)\}=\{v,w\}$ (in either direction). This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$.
+One can check that $L_G$ has diagonal and off-diagonal entries given by
+\[
+(L_G)_{vv}=\sum_{e\in\inpt{v}\cup\outp{v}}\kappa_e
+\qqand
+(L_G)_{vw}=-\sum_{\src(e)=v,\tgt(e)=w}\kappa_e
+\]
+This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$.
+
+Given a function $f\colon X\to X$, .... something about f(t)
 
 \begin{proposition}\label{prop.graph_laplacian}
 \leavevmode\par\nobreak
-The $\yon$-coalgebra $\Phiphase{}\bigl(\rr^{\varphi_G}\bigl((\Part_v)_{v\in V}\bigr)\bigr)$, viewed as a $t\mapsto t+1$ update on $T^*\rr^V$, satisfies
+As in \eqref{eqn.psi_graph_lap}, let $\psi$ be the composite smooth rewiring diagram corresponding to a harmonic particle at each vertex of the graph $G$. The $\yon$-coalgebra $\Phiphase{}(\psi)$, is the function $T^*\rr^V\to T^*\rr^V$ that ... [notation] satisfies
 \begin{equation}\label{eqn.graph_laplacian_dynamics}
 m_v\,\bigl(x_v(t+2)-2x_v(t+1)+x_v(t)\bigr)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
 \qquad\text{for all }v\in V,
