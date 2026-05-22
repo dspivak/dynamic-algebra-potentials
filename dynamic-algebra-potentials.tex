@@ -314,6 +314,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \newcommand{\too}{\longrightarrow}
 \newcommand{\To}[2][]{\xrightarrow[#1]{#2}}
+\newcommand{\inj}{\hookrightarrow}
 \newcommand{\tto}{\rightrightarrows}
 \renewcommand{\Mapsto}[1]{\xmapsto{#1}}
 \newcommand{\from}{\leftarrow}
@@ -395,7 +396,9 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\lie}[1]{\mathfrak{#1}}
 \newcommand{\tpow}[1]{^{\otimes #1}}
 \trackTerm{\potlens}{potlens}{\mathbb{P}\Cat{PLens}}
-\trackTerm{\srw}{srw}{\Cat{SRW}}
+\trackTerm{\srw}{srw}{\mathbb{S}\Cat{RW}}
+\trackTerm{\srwlin}{srwlin}{\mathbb{S}\Cat{RW}^\lin}
+\trackTerm{\srwcrit}{srwcrit}{\mathbb{S}\Cat{RW}_\crit}
 \trackTermSymbol{Stor}{\Cat{Stor}}
 \newcommand{\Stor}[1]{\termref{Stor}{\termraw{Stor}}_{#1}}
 \trackTerm{\cotstor}{cotstor}{\Cat{CotStor}}
@@ -423,6 +426,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\euc}{\mathrm{Euc}}
 \newcommand{\lin}{\mathrm{lin}}
 \newcommand{\cnst}{\mathrm{cnst}}
+\newcommand{\crit}{\mathrm{crit}}
 
 \newcommand{\src}{\mathrm{src}}
 \newcommand{\tgt}{\mathrm{tgt}}
@@ -479,16 +483,16 @@ The technical heart of the paper is what we call a \emph{Moore internalization},
 \chapter{Introduction}\label{ch.intro}
 %====================================================================
 
-There is a commonality in Hamiltonian dynamics and gradient descent, namely an isomorphism of the form $T^*M\cong TM$, between a cotangent bundle and a tangent bundle, transforming covectors into vectors that change the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, it is the \emph{symplectic sharp} map on phase space; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. And in each case, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
+There is a commonality between Hamiltonian dynamics and gradient descent, namely an isomorphism of the form $T^*M\cong TM$, between a cotangent bundle and a tangent bundle, transforming covectors into vectors that change the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, it is the \emph{symplectic sharp} map on phase space; in the gradient descent of machine learning, it is the \emph{Riemannian metric}, which determines the learning rate on parameter space. And in each case, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
 
-The goal of this paper is to build a compositional syntax for such smooth reactive, potential-driven systems, including adaptive couplings, and a functorial semantics that turns this syntax into explicit discrete update rules.
+The goal of this paper is to build a \emph{compositional syntax} for such smooth reactive, potential-driven systems---including adaptive couplings---and a family of \emph{functorial semantics}, indexed by how parameters are stored, that turns this syntax into explicit discrete update rules. The same compositional setting accommodates the small-oscillation and linear-response dynamics around critical points of the potential, via an operad functor given by Taylor linearization.
 
 %--------------------------------------------------------------------
 \section{Motivation for smooth rewiring diagrams}\label{sec.intro_smooth_rewiring}
 %--------------------------------------------------------------------
 
-Operads are a natural categorical setting for establishing compositionality results. An operad $\cat{W}$ establishes a composition syntax---what sorts of diagrams can be composed---and a functor $\cat{W}\to\smset$ establishes the corresponding semantics. For example
-\[
+Operads are a natural categorical setting for establishing compositionality results~\cite{Spivak:2013b,Yau:2015a}. An operad $\cat{W}$ establishes a composition \emph{syntax}---what sorts of diagrams can be composed---and a functor $\cat{W}\to\smset$ establishes the corresponding \emph{semantics}. For example, the following diagram
+\begin{equation}\label{eqn.path_graph}
 \varphi=\begin{tikzpicture}[oriented WD, bb port length=4pt, bb port sep=1.5, bb min width=.35cm, bbx=.4cm, bby=.8ex, baseline=(box1), particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
   \def\N{6}
   \node[bb={1}{1}, particle] (box1) {};
@@ -502,18 +506,28 @@ Operads are a natural categorical setting for establishing compositionality resu
   \draw (Y_in1) -- (box1_in1);
   \draw (box\N_out1) -- (Y_out1);
 \end{tikzpicture}
-\]
-For interfaces $b_1,\ldots,b_K,c$, a morphism $\varphi\colon b_1,\ldots,b_K\to c$ in $\cat{W}$ represents an arrangement of $K$ internal boxes, with interfaces $b_1,\ldots,b_K$, inside an external box with interface $c$. The picture above has $K=6$: it wires up six boxes of the same type inside a box of the same type again. As syntax, it records the architecture of the chain---the types of each wire and how boxes are connected---but it does not say what the boxes do, what signals pass along each wire, or how strongly one box affects the next.
+\end{equation}
+represents a morphism $\varphi\colon b_1,\ldots,b_K\to c$ in $\cat{W}$ in an operad, where here $K=6$ and all the $b_k$'s and $c$ are the same object 
+$\begin{tikzpicture}[oriented WD, bb small]
+\node[bb={1}{1}]{};
+\end{tikzpicture}$.
+ We sometimes refer to objects in the operad as \emph{boxes} or as \emph{interfaces}, and to the morphisms as \emph{arrangements}: $\varphi$ is an arrangement of six boxes in a box. As syntax, $\varphi$ records the architecture of the chain---the types of each wire and how boxes are connected---but it does not say what the boxes do, what signals pass along each wire, or how strongly one box affects the next.
+ 
+ A special case is when $K=0$---an arrangement of no inner boxes inside a box---which is a way of filling the outer box outright. For example each
+ $\begin{tikzpicture}[oriented WD, bb small, particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
+\node[bb={1}{1}, particle]{};
+\end{tikzpicture}$
+ in the above picture represents a fully-implemented harmonic particle. The composite of $\varphi$ with these six particles is again a fully-implemented box, a $0$-ary morphism, now describing six harmonic particles whose joint dynamics is the discrete wave equation. This is the content of \cref{sec.wave_equation}.
 
-In the examples below we need a richer composition syntax: one where the effective coupling is itself part of the data and may adapt to the signals flowing between boxes. The way it adapts is the data of a dynamical system whose behavior depends on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider an adaptive spring material for which each connecting edge has a variable spring constant that responds both to external control and to a chosen potential $U$.
+In the examples below we need a richer composition syntax: one where the effective coupling between boxes is itself part of the arrangement $\varphi$ and may adapt to the signals flowing between them. We want that the dynamics by which $\varphi$ adapts  depends on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider an adaptive spring material for which each connecting edge has a variable spring constant that responds both to external control and to a chosen potential $U$.
 
-We call these richer composition patterns \emph{smooth rewiring diagrams}; formally, they will be the multimorphisms in the operad of smooth rewiring diagrams constructed in \cref{sec.W_choice}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\org$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
+We call these richer composition patterns \emph{smooth rewiring diagrams}; formally, they will be the multimorphisms in an operad $\srw$ constructed in \cref{sec.W_choice}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\org$~\cite[Def.~2.19]{spivak2021learners}, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems.
 
 The choice to have semantics land in $\org$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one representable $\yon$ by coproducts and products---the free distributive category on a single object---so a polynomial
 \[
 p=\sum_{i:I}\yon^{p[i]}
 \]
-is just a family of \emph{directions} $p[i]$ indexed by a family of \emph{positions} $i:I$. We regard positions as the possible outputs and the directions as the inputs accepted at that output. A $p$-coalgebra $S\to p(S)$ is then a deterministic dynamical system with state: given a state $s$ it specifies an output position and, for every acceptable input direction, specifies a next state. 
+is just a family of \emph{directions} $p[i]$ indexed by a family of \emph{positions} $i:I$. For dynamics, we regard positions as the possible outputs and the directions as the inputs accepted at that output. A $p$-coalgebra $S\to p(S)$ is then a deterministic dynamical system with state: given a state $s$ it specifies an output position and, for every acceptable input direction, specifies a next state. A one-state coalgebra $1\to p(1)$ represents a single output value of $p$, static rather than dynamic.
 
 Just as the free coproduct completion of a single object has all limits---i.e.\ $\smset$ has a great deal of structure emerging unexpectedly when simply asking for coproducts---much of the usefulness of $\poly$ comes from structure that emerges unexpectedly from the free-distributive description. For example, as recalled in \cref{sec.poly}, polynomials can be understood as functors $\smset\to\smset$, and under this interpretation they compose, which gives a monoidal product $\tri$ on $\poly$. This leads naturally to considering polynomial monads, polynomial comonads, and polynomial coalgebras, all of which will be relevant to us.
 
@@ -535,19 +549,44 @@ The bridge from manifolds to polynomial functors is the cotangent functor $\cot\
 \]
 whose positions are points $m\in M$ and whose directions at $m$ are the covectors $T_m^*M$. A smooth map $f\colon M\to N$ acts forward on positions by $f$ and backward on directions by cotangent pullback $(T_mf)^\top$. Crucially, $\cot$ is strong symmetric monoidal: $\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}$. Thus parallel products of polynomial interfaces correspond to ordinary products of manifolds.
 
-It remains to describe the source syntax: ordinary smooth data that will be sent through $\cot$ and then converted into polynomial coalgebra update rules. A neural network, for example, begins as a smooth map $f\colon V\times \rr^{m}\to\rr^{n}$: a choice of parameter, input, and output manifolds, together with a model map. Smooth rewiring diagrams generalize this familiar situation in four ways. First, an ordinary manifold $M$ becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; the input side $\inpt M$ is an ordinary smooth port for information supplied by the surrounding system. 
-Second, an ordinary map $f\colon M\to N$ becomes only one component of a \emph{lens} $\binom{\inpt f}{\outp f}$, namely the output map $\outp f\colon\outp M\to\outp N$; the input map $\inpt f\colon\outp M\times\inpt N\to\inpt M$ routes external inputs back to internal interfaces. 
-Third, we add a reaction structure $\sharpR_V$ to the parameter space $V$. And fourth, we add a potential $U\colon V\times\outp{M}\times\inpt{N}\to\rr$, whose differential contributes to the dynamics.
+It remains to describe the source syntax: ordinary smooth data that will be sent through $\cot$ and then converted into the dynamics of a polynomial coalgebra. A neural network, for example, begins as a smooth map
+\[f\colon V\times M\to N\]
+i.e.\ a choice of parameter, input, and output manifolds, together with a model map; typically, $M=\rr^m$ and $N=\rr^n$ are Euclidean. Categorically, $f$ is a parameterized map $M\to N$ in the sense of the Para construction~\cite[Def.~2]{capucci2022cybernetics} (\cref{sec.para_general}), with parameter $V$. Gradient descent updates this parameter via a map $T^*V\to TV$ that converts a cotangent (the gradient) into a tangent step on $V$; such a map is exactly a reaction structure $\sharpR_V$ (\cref{sec.rvect}), so $V$ is implicitly reactive in the gradient-descent setting.
 
-The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens: a map $\outp f\colon \outp M\to\outp N$ together with a map $\inpt f\colon\outp M\times\inpt N\to\inpt M$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming and database theory, compositional game theory, and categorical accounts of backpropagation~\cite{bohannon2006relational,johnson2012lenses,hedges2017coherence,fong2019backprop}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way. 
+Aside from making the reactive structure explicit, smooth rewiring diagrams generalize the above familiar situation in three ways. First, an ordinary manifold $M$, i.e.\ in the role of $\rr^m$ and $\rr^n$ above, becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; that is, we add a new input side $\inpt M$, which is an ordinary smooth port for information supplied by the surrounding system.
+Second, an ordinary map $f\colon V\times M\to N$ becomes only the first component of a pair of maps
+\[
+\outp f\colon V\times\outp M\to\outp N
+\qqand
+\inpt f\colon V\times\outp M\times\inpt N\to\inpt M.
+\]
+The new input map $\inpt f\colon V\times\outp M\times\inpt N\to\inpt M$ routes the new external inputs back to the new input sides of the internal interfaces.
+And third, we add a potential $U\colon V\times\outp{M}\times\inpt{N}\to\rr$, whose differential contributes to the dynamics.
 
-To add the remaining pieces, we use two standard categorical devices. The potential $U$ is packaged by passing from lenses to the coKleisli category $\plmfd$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. Reactive parameters are added using the Para construction~\cite{capucci2024actegories} (\cref{sec.para_general}): given a symmetric monoidal category $\cat A$ acting on a category $\cat M$, the category $\para{\cat A}{\cat M}$ has the same objects as $\cat M$, and a morphism $x\to y$ is a pair $(a,f)$ consisting of a parameter $a\in\cat A$ and an $\cat M$-map $f\colon a\cdot x\to y$; composites use $\cat{A}$'s monoidal structure to combine parameters. We write $\srw$ for the operad underlying the symmetric monoidal category $\para{\rvect}{\plmfd}$, and call its multimorphisms \emph{smooth rewiring diagrams}. Under the dynamics functor $\srw\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
+The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens $\binom{\inpt f}{\outp f}$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming and database theory, compositional game theory, and categorical accounts of backpropagation~\cite{bohannon2006relational,johnson2012lenses,hedges2017coherence,fong2019backprop,cruttwell2021categorical}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way. 
 
-The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}). This sends the ordinary set-lens interface $\binom{A}{B}$, represented in $\poly$ by $\binom{A\yon}{B\yon}$, to the monomial $B\yon^A$ (\cref{ex.moore}), whose coalgebras are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
+To accommodate the potential---the last piece---we pass from lenses to the coKleisli category $\plmfd$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$: informally, the backward direction now handles both inputs and a real number, in the sense of monadic lenses~\cite{abou2016reflections}. We write $\srw$ for the operad underlying the symmetric monoidal category $\para{\rvect}{\plmfd}$, and call its multimorphisms \emph{smooth rewiring diagrams}. Under the dynamics functor $\srw\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the update rule.
 
-Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. The two choices we consider---which we call configuration and phase- give rise to two dynamics functors $\Phiconf{},\Phiphase{}\colon\srw\to\org$. In the configuration semantics $\Phiconf{}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phiphase{}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates---more precisely, potential-driven phase-space updates (\cref{rmk.constant_inverse_mass_hamiltonian})---and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation---or, on any finite directed graph of such particles, the discrete dynamics of the graph Laplacian. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data, which is then automatically transformed into coalgebraic dynamics. Applied to that same graph syntax---same parameters, same potentials---the other semantics, $\Phiconf{}$, recovers the discrete heat equation (\cref{rmk.graph_heat}): changing the storage takes us from energy conservation semantics to energy dissipation semantics. Configuration and phase are two named points in a small design space of cotangent storages (\cref{sec.design_space}), whose axes --- constancy, antisymmetry, and symmetric positive-definiteness of the carrier's reactive structure --- are independently responsible for superposition, energy conservation, and gradient descent. We name the syntactic regime where the superposition axis lives the \emph{linear stratum} $\srw^{\lin}\subset\srw$ (\cref{def.srw_lin}).
+The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}). Moore machines \cite{moore1956gedanken}---a simple kind of dynamical system---arise in this way.%
+\footnote{Moore internalization sends the ordinary set-lens interface $\binom{A}{B}$, represented in $\poly$ by $\binom{A\yon}{B\yon}$, to the monomial $B\yon^A$ (\cref{ex.moore}), whose coalgebras are precisely $(A,B)$-Moore machines.} 
 
-The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
+Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. For example, in Hamiltonian dynamics, we not only store the data of position---which affects the current moment's dynamics---but also a momentum, which affects the next's. We package this relationship as a \emph{storage}: a choice of carrier $S$, depending functorially on $V$, together with how the smooth data reads the current state and updates to the next. Each storage $\mathfrak s$ gives a dynamics functor $\Phi_{\mathfrak s}\colon\srw\to\org$.
+
+Thus storage is where the dynamical regime gets decided: one smooth rewiring diagram fed through different storages can produce qualitatively different behaviors. We work out two sorts of storage. We show that \emph{configuration storage} ($S\coloneqq V$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\srw$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. We also show that \emph{phase storage} ($S\coloneqq T^*V$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. On that same graph syntax---same parameters, same potentials---configuration storage recovers the discrete heat equation (\cref{rmk.graph_heat}): one diagram on which the two storages yield energy-conserving vs.\ energy-dissipating semantics. This is the sense in which smooth rewiring diagrams are syntax. Antisymmetric and symmetric positive-definite $\sharp$ are two extreme cases: the former makes the dynamics conservative, the latter dissipative, with generic $\sharp$ mixing both. \cref{sec.design_space} works this out.
+
+We also describe a suboperad $\srwlin\ss\srw$, where everything is made linear: interfaces are vector spaces, lens maps are linear, $\sharp$ is constant, and potential is a pure quadratic form (\cref{cor.srw_lin_four_conditions}). On $\srwlin$, both of the storages we develop produce dynamics which---when fully implemented---support superposition, i.e.\ form a vector space. For example, each arrangement used to construct the wave-equation (and more generally, the graph-Laplacian) is a morphism in $\srwlin$. Any smooth rewiring diagram, pointed at a critical point of its potential, has a second-order Taylor approximation that lands in $\srwlin$; indeed, we can factor the above inclusion $\inc\colon\srwlin\to\srw$ as a composite (solid arrows)
+\[
+\begin{tikzcd}
+\srwlin\ar[r, shift left=3pt, "\iota"]&
+\srwcrit\ar[r]\ar[l, shift left=3pt, dashed, "J^2"]&
+\srw
+\end{tikzcd}
+\]
+of strong monoidal functors, and we provide a retract $J^2\colon\srwcrit\to\srwlin$. Composing with the dynamics functors, $\Phiphase{}\circ\inc\circ J^2$ gives the small-oscillation dynamics, and $\Phiconf{}\circ\inc\circ J^2$ gives the linear-response dynamics, about that critical point.
+
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. 
+
+The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
 
 %--------------------------------------------------------------------
@@ -558,7 +597,7 @@ The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci202
 \[
 \mathbf{OpenErg}\To{T^*}\mathbf{OpenODE}\To{\mathrm{collapse}}\mathbf{COrg}
 \]
- from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\org$. A first difference is that our semantics $\Phiconf{},\Phiphase{}\colon\srw\to\org$ is discrete-time, rather than continuous.
+ from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\org$. A first difference is that our semantics, e.g.\ $\Phiconf{},\Phiphase{}\colon\srw\to\org$, is discrete-time rather than continuous.
 
 However, neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(V,\sharpR_V,w,E)$ where
 \[
@@ -586,7 +625,7 @@ There is a category $\cat S$, whose objects are submersions, and a diagram
 \]
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition*}
-The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_V$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\org$ on our side, where the tangent component $\dot x$ becomes the Euler step $x\mapsto x+\dot x$.
+The point is that, on the overlap $\cat R$, both our semantics and theirs are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_V$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete-time coalgebra on the $\org$ side, where the tangent component $\dot x$ becomes the Euler step $x\mapsto x+\dot x$.
 
 
 
@@ -595,12 +634,13 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
 
-\Cref{ch.background} collects the background material used throughout the paper. The paper aims to be self-contained, so this chapter spans over 20\% of its length. \Cref{sec.prelim} fixes general notational conventions. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the Para construction, and the monoidal bicategory $\org$.
+\Cref{ch.background} collects the background material used throughout the paper. \Cref{sec.manifolds_notation} fixes notation for smooth manifolds. \Cref{sec.poly_dynamic_bg} recalls $(\poly,\yon,\otimes,[\blank,\blank])$ as a symmetric monoidal closed category with an additional monoidal structure $(\yon,\tri)$, and describes polynomial coalgebras as deterministic input-output dynamical systems. \Cref{sec.dynamic_structures} sets up the categorical infrastructure for compositional dynamics: wiring-diagram operads, the Para construction, and the monoidal bicategory $\org$.
 
 \Cref{ch.lenses_internalization} constructs our syntax operad $\srw$. \Cref{sec.lenses_general} reviews the category $\Lens{\cat{C}}$ of lenses in a symmetric monoidal category $\cat{C}$. \Cref{sec.abstract_representation} proves the central technical result: for any symmetric monoidal closed category $\cat{C}$, there is a normal lax monoidal functor $\Theta\colon\Lens{\cat{C}}\to\cat{C}$ sending a lens object $\lensob c$ to $\outp c\otimes\ihom{\inpt c,I}$. \Cref{sec.rvect} introduces the category $\rvect$ of reactive vector spaces---which will serve as the parameter objects for the Para construction that follows---together with the cotangent endofunctor on $\rvect$. \Cref{sec.potentialized_lenses} then builds the operad $\srw$ from parameterized manifold lenses equipped with potentials. \Cref{sec.W_choice} shows how to interpret the multimorphisms of $\srw$ as smooth rewiring diagrams.
 
 \Cref{ch.potential_driven_dynamics} constructs the dynamics functors. \Cref{sec.storage_semantics} defines the notion of \emph{cotangent storage}, which lets us understand $\cotof{V}$-parameterized maps as coalgebras. 
-\Cref{sec.dynamics_functor} proves the main theorem, \cref{thm.functor}: every cotangent storage induces an operad functor $\Phi\colon\srw\to\org$. The two storages relevant to this paper, configuration and phase-space, give rise to $\Phiconf{}$ and $\Phiphase{}$, unpacked in full detail in \cref{sec.phase_dynamics,sec.configuration_dynamics}.
+\Cref{sec.dynamics_functor} proves the main theorem, \cref{thm.functor}: every cotangent storage induces an operad functor $\Phi\colon\srw\to\org$. The two storages relevant to this paper, configuration and phase-space, give rise to $\Phiconf{}$ and $\Phiphase{}$, unpacked in full detail in \cref{sec.phase_dynamics,sec.configuration_dynamics}. 
+\Cref{sec.design_space} locates these two storages at named corners of a small design space of cotangent storages, whose three independent axes --- kinematical, conservative, dissipative --- are responsible for superposition, energy conservation, and gradient descent respectively. \Cref{sec.critical_linearization} identifies the kinematical axis --- the linear stratum $\srwlin\subset\srw$ --- as the canonical second-order Taylor target of any critically-pointed smooth system, via a strong symmetric monoidal functor $J^2\colon\srwcrit\to\srwlin$; the Newton scalar of \cref{sec.newton_warmup}, pointed at a critical point of its potential, illustrates.
 
 \Cref{ch.applications} contains four worked examples. \Cref{sec.newton_warmup} recovers Newton's method as $\Phiconf{}$ applied to a $\srw$-scalar. \Cref{sec.dl_warmup} recovers gradient descent through a parameterized neural network $F\colon V\times\rr^m\to\rr^n$ as $\Phiconf{}$ applied to the corresponding $\srw$-morphism, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} derives the discrete wave equation as $\Phiphase{}$ applied to a chain of harmonic-oscillator particles, with functoriality of $\Phiphase{}$ checked by composing in $\srw$ first (\cref{sec.spring_first_pass}) and then in $\org$ (\cref{sec.spring_second_pass}). \Cref{sec.graph_laplacian} generalizes this to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check.
 
@@ -681,6 +721,8 @@ dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
 \end{equation}
 Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=V$ is a vector space, we regard $dU|_x$ as an element of $V^*$ under \eqref{eqn.tangent_vec}.
 
+A point $m\in M$ with $dU|_m=0$ is a \defineTermAs{critical_point}{\emph{critical point}} of $U$. At a critical point---or anywhere when $M$ is a vector space---the second derivative $d^2U|_m\colon T_mM\times T_mM\to\rr$ is a well-defined symmetric bilinear form, the \defineTermAs{hessian}{\emph{Hessian}} of $U$ at $m$.\footnote{On a general manifold, away from a critical point, $d^2U|_m$ depends on a choice of connection; at a critical point it is independent of any such choice.}
+
 We will not use $f'$ notation to mean derivatives; ``priming'' a symbol (such as $f$) will only be used to indicate that $f'$ is somehow analogous to $f$.
 
 %--------------------------------------------------------------------
@@ -750,7 +792,7 @@ c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
 The counit $\varepsilon\colon c\to\yon$ assigns an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $g\circ f:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(g\circ f)=\cod(g)$, and that composition is associative, i.e. that $(c,\epsilon,\delta)$ indeed can be identified with a category.
 
-\begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
+\begin{proposition}[Polynomial comonads are categories {\cite[\S 3.2]{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
 The above correspondence defines an isomorphism between polynomial comonads and small categories.
 \end{proposition}
 
@@ -1231,7 +1273,7 @@ This section reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoi
 
 
 \subsection{Lenses}\label{sec.lenses}
-We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
+We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
 \begin{equation*}
 \outp f\colon \outp c\to\outp d
 \qqand
@@ -1859,11 +1901,11 @@ A pointwise direct sum of smooth sections of linear isomorphisms is again such a
 \end{proof}
 
 \begin{proposition}\label{prop.rvect_smc_action}
-The composite $\rvect\to\vect\hookrightarrow\mfd$ is strong symmetric monoidal, so $\rvect$ acts on $\mfd$ via $((V,\sharpR_V),M)\mapsto V\times M$.
+The composite $\rvect\to\vect\inj\mfd$ is strong symmetric monoidal, so $\rvect$ acts on $\mfd$ via $((V,\sharpR_V),M)\mapsto V\times M$.
 \end{proposition}
 
 \begin{proof}
-The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\vect$); the inclusion $\vect\hookrightarrow\mfd$ preserves products.\qedhere
+The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\vect$); the inclusion $\vect\inj\mfd$ preserves products.\qedhere
 \end{proof}
 
 For any finite-dimensional vector space $V:\vect$, the global chart \eqref{eqn.tangent_vec} identifies the cotangent bundle of $V$ as a manifold with $V\oplus V^*$; we write
@@ -2049,7 +2091,7 @@ Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In othe
 \begin{remark}[General form]\label{rmk.alpha_general}
 \Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cotof{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$.
 
-As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables~\cite{Spivak2023lotteries}, which underlies (the monad of) the operad of simplices~\cite{leinster2021entropy}. For $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
+As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables (called $\mathrm{lott}$ in~\cite{Spivak2023lotteries}), which underlies (the monad of) the operad of simplices~\cite[Ch.~12]{leinster2021entropy}. For $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
 \end{remark}
 
 The role of $\rr$ throughout \cref{sec.potentialized_lenses} is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
@@ -2180,27 +2222,27 @@ both linear (the second discards $V$ via the comonoid counit). The potential of 
 \end{proof}
 
 \begin{definition}\label{def.srw_lin}
-The symmetric monoidal category $\srw^{\lin}$ is the Para construction
+The symmetric monoidal category $\defineTerm{srwlin}$ is the Para construction
 \[
-\srw^{\lin}\;\coloneqq\;\para{\rvect^{\cnst}}{\plmfd^{\lin}}
+\srwlin\;\coloneqq\;\para{\rvect^{\cnst}}{\plmfd^{\lin}}
 \]
-for the restricted action of \cref{lem.action_restricts}; we identify $\srw^{\lin}$ with its underlying operad.
+for the restricted action of \cref{lem.action_restricts}; we identify $\srwlin$ with its underlying operad.
 \end{definition}
 
 \begin{theorem}\label{thm.srw_lin_suboperad}
-The inclusions $\rvect^{\cnst}\hookrightarrow\rvect$ and $\plmfd^{\lin}\hookrightarrow\plmfd$ induce a strong symmetric monoidal embedding $\srw^{\lin}\hookrightarrow\srw$.
+The inclusions $\rvect^{\cnst}\inj\rvect$ and $\plmfd^{\lin}\inj\plmfd$ induce a strong symmetric monoidal embedding $\srwlin\inj\srw$.
 \end{theorem}
 
 \begin{proof}
-Apply \cref{prop.para_square} with $F$ the inclusion $\rvect^{\cnst}\hookrightarrow\rvect$, $G$ the inclusion $\plmfd^{\lin}\hookrightarrow\plmfd$, and 2-cell $\theta=\id$ filling the action square: $F$ and $G$ are strict monoidal as sub-SMC inclusions, and by \cref{lem.action_restricts} the two composites $F(a)\cdot' G(x)$ and $G(a\cdot x)$ are literally equal, so the coherence diagrams of the action square are tautological. The proposition produces a strong symmetric monoidal functor
+Apply \cref{prop.para_square} with $F$ the inclusion $\rvect^{\cnst}\inj\rvect$, $G$ the inclusion $\plmfd^{\lin}\inj\plmfd$, and 2-cell $\theta=\id$ filling the action square: $F$ and $G$ are strict monoidal as sub-SMC inclusions, and by \cref{lem.action_restricts} the two composites $F(a)\cdot' G(x)$ and $G(a\cdot x)$ are literally equal, so the coherence diagrams of the action square are tautological. The proposition produces a strong symmetric monoidal functor
 \[
 \para{\rvect^{\cnst}}{\plmfd^{\lin}}\;\longrightarrow\;\para{\rvect}{\plmfd}\;=\;\potlens,
 \]
-identity on the parameter and lens components by construction. Since $F$ and $G$ are sub-SMC inclusions, this functor is injective on objects and faithful, hence an embedding. Taking underlying operads gives $\srw^{\lin}\hookrightarrow\srw$.\qedhere
+identity on the parameter and lens components by construction. Since $F$ and $G$ are sub-SMC inclusions, this functor is injective on objects and faithful, hence an embedding. Taking underlying operads gives $\srwlin\inj\srw$.\qedhere
 \end{proof}
 
 \begin{corollary}\label{cor.srw_lin_four_conditions}
-A multimorphism $f=\bigl((V,\sharpR_V),\binom{\inpt f}{\outp f},U\bigr)\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob Y$ in $\srw$ lies in $\srw^{\lin}$ if and only if (i) every interface $\outp{X_i},\inpt{X_i},\outp Y,\inpt Y$ is a vector space, (ii) $\outp f$ and $\inpt f$ are linear, (iii) $\sharpR_V$ is constant in $x\in V$, and (iv) $U$ is a pure quadratic form.
+A multimorphism $f=\bigl((V,\sharpR_V),\binom{\inpt f}{\outp f},U\bigr)\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob Y$ in $\srw$ lies in $\srwlin$ if and only if (i) every interface $\outp{X_i},\inpt{X_i},\outp Y,\inpt Y$ is a vector space, (ii) $\outp f$ and $\inpt f$ are linear, (iii) $\sharpR_V$ is constant in $x\in V$, and (iv) $U$ is a pure quadratic form.
 \end{corollary}
 
 \begin{proof}
@@ -2575,7 +2617,7 @@ Define $\Phi_{\mathfrak{s}}$ to be the composite of the operad functors below, g
 \[
 \srw\To{\Phi'}
 \para{\cot}{\poly}\To{\Psi_{\mathfrak{s}}}
-\org_\cong\hookrightarrow\org.
+\org_\cong\inj\org.
 \]
 
 For the second statement, \cref{prop.storage_to_org} gives a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}$; whiskering with $\Phi'$ yields the desired $\Phi_\alpha\coloneqq\Psi_\alpha*\Phi'\colon\Phi_{\mathfrak{s}}\Rightarrow\Phi_{\mathfrak{s}'}$.\qedhere
@@ -2835,7 +2877,7 @@ These maps are natural in vector-space isomorphisms and submersion lenses, and m
 \[
 \para{\vect_\cong}{\Cat{SLens}}\to\para{\smsetiso}{\poly}.
 \]
-Composing with the identification $\para{\smsetiso}{\poly}\cong\org_\cong$ of \cref{prop.org_as_para} and the inclusion $\org_\cong\hookrightarrow\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(V, r, u,\alpha)$ to the coalgebra with state set $V$ whose action is
+Composing with the identification $\para{\smsetiso}{\poly}\cong\org_\cong$ of \cref{prop.org_as_para} and the inclusion $\org_\cong\inj\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(V, r, u,\alpha)$ to the coalgebra with state set $V$ whose action is
 \[
 x\longmapsto b\longmapsto
 \left(
@@ -2867,18 +2909,18 @@ Applications of $\Phiconf{}$ appear in \cref{sec.newton_warmup} (Newton's method
 
 Having unpacked $\Phiphase{}$ and $\Phiconf{}$ in detail (\cref{sec.phase_dynamics,sec.configuration_dynamics}), we step back and locate them in a small design space. A cotangent storage's effective data is its carrier $F(V)$ together with anchor and update (\cref{prop.storage_pair}); what controls the resulting dynamical regime is the reactive structure $\sharp$ on that carrier. Three independent properties of $\sharp$ each have a dynamical consequence:
 \begin{itemize}
-\item (\emph{kinematical}) $\sharp$ constant linear makes the anchor and update linear maps of vector spaces, so the dynamics functor sends the suboperad $\srw^{\lin}\subset\srw$ to linear endomaps of the carrier (\cref{prop.linear_stratum});
+\item (\emph{kinematical}) $\sharp$ constant linear makes the anchor and update linear maps of vector spaces, so the dynamics functor sends the suboperad $\srwlin\subset\srw$ to linear endomaps of the carrier (\cref{prop.linear_stratum});
 \item (\emph{conservative}) $\sharp$ antisymmetric makes the associated continuous-time vector field tangent to the level sets of its driving function (the argument of \cref{rmk.symplectic_perpendicular} uses only antisymmetry), so the flow conserves that function; the discrete update is its Euler step (\cref{rmk.constant_inverse_mass_hamiltonian});
 \item (\emph{dissipative}) $\sharp$ symmetric positive-definite makes the associated vector field descend the gradient of its driving function (\cref{rmk.cotangent_learners}).
 \end{itemize}
-The two storages of \cref{sec.cotangent_storages} sit at two corners of this space, sharing the kinematical axis but diverging on the dynamical one. Configuration storage $\store{\conf}$ has carrier $V$ with $\sharp=\sharpR_V$; the gradient-descent instance takes $\sharpEuc{}$ (constant, symmetric positive-definite), placing $\store{\conf}$ in the kinematical $\cap$ dissipative corner. Phase storage $\store{\phase}$ has carrier $T^*V$ with $\sharp=\sharpS_{T^*V}$ from \eqref{eqn.canonical_sharp}, which is constant in $V$ by \cref{rmk.constant_canonical_sharp} and antisymmetric by \eqref{eqn.canonical_form}, placing $\store{\phase}$ in the kinematical $\cap$ conservative corner. The two axes are independent: $\store{\phase}$ enjoys superposition because $\sharpS_{T^*V}$ is constant linear, not because it is antisymmetric, and it conserves energy because $\sharpS_{T^*V}$ is antisymmetric, not because it is constant. Mixed-symmetry $\sharp$ on $T^*V$ (Langevin / GENERIC-type) and $\sharp$-variable carriers (e.g.\ a double pendulum) are other points in the same design space; we do not work them out in this paper.
+The two storages of \cref{sec.cotangent_storages} sit at two corners of this space, sharing the kinematical axis but diverging on the dynamical one. Configuration storage $\store{\conf}$ has carrier $V$ with $\sharp=\sharpR_V$; the gradient-descent instance takes $\sharpEuc{}$ (constant, symmetric positive-definite), placing $\store{\conf}$ in the kinematical $\cap$ dissipative corner. Phase storage $\store{\phase}$ has carrier $T^*V$ with $\sharp=\sharpS_{T^*V}$ from \eqref{eqn.canonical_sharp}, which is constant in $V$ by \cref{rmk.constant_canonical_sharp} and antisymmetric by \eqref{eqn.canonical_form}, placing $\store{\phase}$ in the kinematical $\cap$ conservative corner. The two axes are independent: $\store{\phase}$ enjoys superposition because $\sharpS_{T^*V}$ is constant linear, not because it is antisymmetric, and it conserves energy because $\sharpS_{T^*V}$ is antisymmetric, not because it is constant. Mixed-symmetry $\sharp$ on $T^*V$ (Langevin / GENERIC-type) and $\sharp$-variable carriers (e.g.\ a double pendulum) are other points in the same design space; we do not work them out in this paper. The kinematical regime $\srwlin$ is moreover more than the home of the wave and heat examples --- it is the canonical second-order Taylor target of any critically-pointed smooth system in $\srw$; see \cref{sec.critical_linearization}.
 
 \begin{proposition}[Linear stratum]\label{prop.linear_stratum}
-For any cotangent storage $\mathfrak{s}=(F,\vartheta)$ whose anchor $\vartheta_V^{\mathrm{pos}}\colon F(V)\to V$ and update $\vartheta_V^{\mathrm{dir}}\colon F(V)\times V^*\to F(V)$ are linear maps of vector spaces, the dynamics functor $\Phi_\mathfrak{s}$ sends every $0$-ary closed system $I\to I$ in $\srw^{\lin}$ to a linear endomap on the carrier $F(V)$.
+For any cotangent storage $\mathfrak{s}=(F,\vartheta)$ whose anchor $\vartheta_V^{\mathrm{pos}}\colon F(V)\to V$ and update $\vartheta_V^{\mathrm{dir}}\colon F(V)\times V^*\to F(V)$ are linear maps of vector spaces, the dynamics functor $\Phi_\mathfrak{s}$ sends every $0$-ary closed system $I\to I$ in $\srwlin$ to a linear endomap on the carrier $F(V)$.
 \end{proposition}
 
 \begin{proof}
-Let $f=\bigl((V,\sharpR_0),\binom{\inpt f}{\outp f},U\bigr)$ be a $0$-ary closed system in $\srw^{\lin}$, so $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the parameter sharp $\sharpR_x=\sharpR_0$ is constant linear, and $U\colon V\to\rr$ is a pure quadratic form. Since $U$ is pure quadratic, $dU|_x=Qx$ for some linear $Q\colon V\to V^*$. In the closed case, the inputs $\xi_N$, $\omega_M$ to \eqref{eqn.bigtheta} both vanish, so \eqref{eqn.bigtheta} collapses to $\xi_V=dU|_x=Qx$, linear in $x$.
+Let $f=\bigl((V,\sharpR_0),\binom{\inpt f}{\outp f},U\bigr)$ be a $0$-ary closed system in $\srwlin$, so $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the parameter sharp $\sharpR_x=\sharpR_0$ is constant linear, and $U\colon V\to\rr$ is a pure quadratic form. Since $U$ is pure quadratic, $dU|_x=Qx$ for some linear $Q\colon V\to V^*$. In the closed case, the inputs $\xi_N$, $\omega_M$ to \eqref{eqn.bigtheta} both vanish, so \eqref{eqn.bigtheta} collapses to $\xi_V=dU|_x=Qx$, linear in $x$.
 
 By \cref{prop.storage_pair}, the dynamics functor's state-update at $f$ acts on a state $s\in F(V)$ by reading off $x=\vartheta_V^{\mathrm{pos}}(s)\in V$, computing $\xi_V=Qx$, then applying the storage's update:
 \[
@@ -2890,7 +2932,7 @@ Under the proposition's linearity hypothesis on $\vartheta_V^{\mathrm{pos}}$ and
 Both worked-out storages satisfy the hypothesis when $\sharpR_V$ is constant: $\store{\conf}$ has anchor $\id_V$ and update $(x,\xi')\mapsto x+\sharpR_0(\xi')$ from \eqref{eqn.directions_sharp}, giving state-update $x\mapsto x+\sharpR_0(Qx)$; $\store{\phase}$ has anchor $\pi_V$ and update $((x,\xi),\xi')\mapsto(x+\sharpR_0(\xi),\,\xi-\xi')$ from \eqref{eqn.phase_storage_update}, giving state-update $(x,\xi)\mapsto(x+\sharpR_0(\xi),\,\xi-Qx)$.
 
 \begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
-Suppose $f$ is a $0$-ary closed system in $\srw^{\lin}$, applied through $\store{\phase}$. By \cref{cor.srw_lin_four_conditions}, $\sharpR_x=\sharpR_0$ is constant and $U\colon V\to\rr$ is a pure quadratic form, so $dU|_x=Qx$ for some linear $Q\colon V\to V^*$; closedness collapses \eqref{eqn.bigtheta} to $\xi_V=dU|_x$. The state-update \eqref{eqn.state_update} becomes
+Suppose $f$ is a $0$-ary closed system in $\srwlin$, applied through $\store{\phase}$. By \cref{cor.srw_lin_four_conditions}, $\sharpR_x=\sharpR_0$ is constant and $U\colon V\to\rr$ is a pure quadratic form, so $dU|_x=Qx$ for some linear $Q\colon V\to V^*$; closedness collapses \eqref{eqn.bigtheta} to $\xi_V=dU|_x$. The state-update \eqref{eqn.state_update} becomes
 \[
 s+\sharpS_S(dU|_x,\sharpR_0(\xi))
 =
@@ -2913,16 +2955,275 @@ Indeed, the symmetry condition and the linearity of $\sharpR_0$ give $dH|_{(x,\x
 \sharpS_S(dH|_{(x,\xi)})=(\sharpR_0(\xi),-dU|_x)=(\dot{x},\dot{\xi}).
 \]
 
-The continuous-time flow conserves $H$ by \cref{rmk.symplectic_perpendicular}, whose argument uses only antisymmetry of the carrier sharp $\sharpS_{T^*V}$ \eqref{eqn.canonical_form} --- the conservative-axis property of this design space. The $f\in\srw^{\lin}$-closed and parameter-symmetric hypotheses on the $\srw$ side play a separate role: they are what allow $U$ to be reread as the explicit kinetic-plus-potential Hamiltonian \eqref{eqn.hamiltonian}. Conservation in the continuous lift is therefore the carrier's antisymmetry, not the parameter's symmetry. The discrete update of $\Phiphase{}$ is the Euler step of this flow and does not in general conserve $H$ (\cref{rmk.euler_energy}).\qedhere
+The continuous-time flow conserves $H$ by \cref{rmk.symplectic_perpendicular}, whose argument uses only antisymmetry of the carrier sharp $\sharpS_{T^*V}$ \eqref{eqn.canonical_form} --- the conservative-axis property of this design space. The $f\in\srwlin$-closed and parameter-symmetric hypotheses on the $\srw$ side play a separate role: they are what allow $U$ to be reread as the explicit kinetic-plus-potential Hamiltonian \eqref{eqn.hamiltonian}. Conservation in the continuous lift is therefore the carrier's antisymmetry, not the parameter's symmetry. The discrete update of $\Phiphase{}$ is the Euler step of this flow and does not in general conserve $H$ (\cref{rmk.euler_energy}).\qedhere
 \end{remark}
 
 \begin{remark}[Gradient descent as the dissipative-corner instance]\label{rmk.cotangent_learners}
-For $f\in\srw^{\lin}$ with parameter sharp $\sharpR_V$ symmetric positive-definite, applied through $\store{\conf}$, the dynamics functor $\Phiconf{}$ recovers gradient descent on $U$. On Euclidean parameter spaces, the convention absorbs the descent direction and learning rate into the sharp,
+For $f\in\srwlin$ with parameter sharp $\sharpR_V$ symmetric positive-definite, applied through $\store{\conf}$, the dynamics functor $\Phiconf{}$ recovers gradient descent on $U$. On Euclidean parameter spaces, the convention absorbs the descent direction and learning rate into the sharp,
 \begin{equation}\label{eqn.learning_sharp}
 \sharpR_x=-\eta_{\mathrm{LR}}\sharpEuc{},
 \end{equation}
 with $\sharpEuc{}$ the Euclidean sharp (\cref{ex.euclidean_sharp}) and $\eta_{\mathrm{LR}}>0$ the learning rate; the minus sign makes the dynamics descent rather than ascent. This is the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}, with backpropagation arising as the lens backward pass of $\Phiconf{}(f)$ (\cref{sec.configuration_dynamics,sec.dl_warmup}).\qedhere
 \end{remark}
+
+%--------------------------------------------------------------------
+\section{Critical operating points and Taylor linearization}\label{sec.critical_linearization}
+%--------------------------------------------------------------------
+
+The wave and graph-Laplacian examples of \cref{ch.applications} land in the linear stratum $\srwlin\subset\srw$ (\cref{def.srw_lin}) on the nose: their interfaces are vector spaces, their lens maps are linear, and their potentials are pure quadratic forms. In typical engineering practice this is not the starting situation. One usually begins with a smooth system, picks an operating point, and linearizes about it. This section records that the linearization step is itself operad-functorial. Pointed smooth rewiring diagrams with vanishing differential of the potential at the operating point form an operad $\srwcrit$, and Taylor expansion to second order at the operating point gives a strong symmetric monoidal functor $J^2\colon\srwcrit\to\srwlin$.
+
+The Para construction $\srw=\para{\rvect}{\plmfd}$ pre-decomposes both stories. On the parameter side we point $\rvect$; on the lens-and-potential side we point $\plmfd$ and impose criticality; the lifted action of \cref{lem.parameter_lens_action} combines them. The picture this furnishes for the design-space discussion of \cref{sec.design_space} is that $\srwlin$ is not merely the regime in which the wave and heat examples happen to live; it is the canonical second-order Taylor target of any critically-pointed smooth rewiring diagram, via $J^2$. The wave and heat semantics then split, as in \cref{prop.linear_stratum}, on the choice of cotangent storage applied downstream.
+
+%--------------------------------------------------------------------
+\subsection{Pointed and critical smooth rewiring diagrams}\label{sec.srw_pointed}
+%--------------------------------------------------------------------
+
+We define each side's pointed variant and combine via the same Para construction, then carve out the criticality property on the $\plmfd$ side.
+
+\begin{definition}\label{def.rvect_pointed}
+Let $\rvect_*$ be the category whose objects are triples $(V,\sharpR_V,v_0)$ with $(V,\sharpR_V)\in\rvect$ and a chosen basepoint $v_0\in V$ (in general $v_0\ne 0$), and whose morphisms $(V,v_0)\to(V',v'_0)$ are $\rvect$-isomorphisms $u\colon V\To{\cong}V'$ satisfying $u(v_0)=v'_0$. The direct-sum monoidal structure of \cref{prop.rvect_monoidal} lifts via $(V,v_0)\oplus(W,w_0)\coloneqq(V\oplus W,(v_0,w_0))$, with unit $(0,0)$.
+\end{definition}
+
+Closure under $\oplus$ is by inspection: a direct sum of basepoint-preserving isomorphisms preserves the direct-sum basepoint. The forgetful functor $\rvect_*\to\rvect$ is strict symmetric monoidal.
+
+\begin{definition}\label{def.plmfd_pointed}
+Let $\plmfd_*$ be the category whose objects are pairs $(\lensob M,m_0)$ of a lens object $\lensob M\in\plmfd$ and a basepoint $m_0=(\outp m_0,\inpt m_0)\in\outp M\times\inpt M$; whose morphisms $(\lensob M,m_0)\to(\lensob N,n_0)$ are $\plmfd$-morphisms $f=(\outp f,\inpt f,U)$ satisfying
+\begin{equation}\label{eqn.plmfd_pointed_compat}
+\outp f(\outp m_0)=\outp n_0,\qquad
+\inpt f(\outp m_0,\inpt n_0)=\inpt m_0,\qquad
+U(\outp m_0,\inpt n_0)=0;
+\end{equation}
+and whose monoidal product lifts that of $\plmfd$ via $(\lensob M,m_0)\otimes(\lensob N,n_0)\coloneqq(\lensob M\otimes\lensob N,(m_0,n_0))$, with unit $(\binom{\rr^0}{\rr^0},0)$.
+\end{definition}
+
+The third condition $U(\outp m_0,\inpt n_0)=0$ in \eqref{eqn.plmfd_pointed_compat} is a free normalization: the dynamics functor only sees $dU$ (\cref{prop.storage_pair}), so a constant shift of $U$ produces the same dynamics, and we may always pick the constant so that $U$ vanishes at the basepoint.
+
+\begin{lemma}\label{lem.plmfd_pointed_smc}
+\Cref{def.plmfd_pointed} gives a symmetric monoidal category, with composition, identity, and monoidal product inherited from $\plmfd$.
+\end{lemma}
+
+\begin{proof}
+We verify closure of the pointed conditions \eqref{eqn.plmfd_pointed_compat} under identity, composition, and monoidal product.
+
+\emph{Identity.} The identity at $(\lensob M,m_0)$ has $\outp f=\id_{\outp M}$, $\inpt f=\id_{\inpt M}$ (extracting from the second factor), and $U=0$; each condition of \eqref{eqn.plmfd_pointed_compat} holds by inspection.
+
+\emph{Composition.} For pointed $f\colon(\lensob M,m_0)\to(\lensob N,n_0)$ and $g\colon(\lensob N,n_0)\to(\lensob P,p_0)$, the coKleisli composition formula of \cref{lem.plmfd_lin_smc} gives
+\[
+\outp{g\circ f}(\outp m_0)=\outp g(\outp f(\outp m_0))=\outp g(\outp n_0)=\outp p_0,
+\]
+\[
+\inpt{g\circ f}(\outp m_0,\inpt p_0)=\inpt f\bigl(\outp m_0,\inpt g(\outp f(\outp m_0),\inpt p_0)\bigr)=\inpt f(\outp m_0,\inpt n_0)=\inpt m_0,
+\]
+and
+\[
+U_{g\circ f}(\outp m_0,\inpt p_0)=U_g(\outp n_0,\inpt p_0)+U_f(\outp m_0,\inpt n_0)=0+0=0.
+\]
+
+\emph{Monoidal product.} The lens components of $f_1\otimes f_2$ act componentwise on the basepoints, and the potential of $f_1\otimes f_2$ is $U_1\oplus U_2$, which vanishes at $((m_1)_0,(m_2)_0)$ because each $U_i$ vanishes at its own basepoint. The unit $(\binom{\rr^0}{\rr^0},0)$ satisfies \eqref{eqn.plmfd_pointed_compat} trivially.\qedhere
+\end{proof}
+
+\begin{lemma}\label{lem.action_restricts_pointed}
+The action $\rvect\times\plmfd\to\plmfd$ of \cref{lem.parameter_lens_action} restricts to an action $\rvect_*\times\plmfd_*\to\plmfd_*$.
+\end{lemma}
+
+\begin{proof}
+\emph{On objects.} For $(V,v_0)\in\rvect_*$ and $(\lensob X,x_0)\in\plmfd_*$, the action object $\binom{\inpt X}{V\times\outp X}$ inherits the basepoint $\bigl((v_0,\outp x_0),\inpt x_0\bigr)$.
+
+\emph{On morphisms.} For $u\colon(V,v_0)\to(V',v'_0)$ in $\rvect_*$ and $f\colon(\lensob c,c_0)\to(\lensob d,d_0)$ in $\plmfd_*$, the lens components of $u\cdot f$ are (\cref{lem.action_restricts})
+\[
+\outp{u\cdot f}(v_0,\outp c_0)=(u(v_0),\outp f(\outp c_0))=(v'_0,\outp d_0),
+\]
+\[
+\inpt{u\cdot f}(v_0,\outp c_0,\inpt d_0)=\inpt f(\outp c_0,\inpt d_0)=\inpt c_0,
+\]
+the first by basepoint preservation of $u$ and $\outp f$, the second by basepoint preservation of $\inpt f$. The potential of $u\cdot f$ is the pullback of $U_f$ along the projection $V\times\outp c\times\inpt d\to\outp c\times\inpt d$, so
+\[
+U_{u\cdot f}(v_0,\outp c_0,\inpt d_0)=U_f(\outp c_0,\inpt d_0)=0.\qedhere
+\]
+\end{proof}
+
+\begin{definition}\label{def.srw_pointed}
+The symmetric monoidal category $\srw_*$ is the Para construction
+\[
+\srw_*\;\coloneqq\;\para{\rvect_*}{\plmfd_*}
+\]
+for the restricted action of \cref{lem.action_restricts_pointed}; we identify $\srw_*$ with its underlying operad and call its multimorphisms \defineTermAs{pointed_srw_diagram}{\emph{pointed smooth rewiring diagrams}}.
+\end{definition}
+
+Unpacking the Para construction against \cref{lem.parameter_lens_action}, a multimorphism in $\srw_*$ between pointed sources $\bigl((\lensob{M_i},(m_i)_0)\bigr)_i$ and pointed target $(\lensob N,n_0)$ consists of a pointed parameter $(V,\sharpR_V,v_0)\in\rvect_*$ together with a $\plmfd_*$-morphism between the action object $\binom{\inpt M}{V\times\outp M}$ (basepoint $((v_0,\outp m_0),\inpt m_0)$, where $\outp m_0\coloneqq(\outp{m_i})_{i\,0}$ and likewise $\inpt m_0$) and the target $(\lensob N,n_0)$. Written out at the level of lens components and potential of $f=\bigl(\binom{\inpt f}{\outp f},U\bigr)$, the pointed compatibility conditions \eqref{eqn.plmfd_pointed_compat} read
+\begin{equation}\label{eqn.pointed_compatibility}
+\outp f(v_0,\outp m_0)=\outp n_0,\qquad
+\inpt f(v_0,\outp m_0,\inpt n_0)=\inpt m_0,\qquad
+U(v_0,\outp m_0,\inpt n_0)=0.
+\end{equation}
+So a pointed smooth rewiring diagram is a smooth rewiring diagram together with a parameter value $v_0$ and an external input $\inpt n_0$ consistent with the chosen points on each interface, and a constant shift of $U$ so that $U$ vanishes at the resulting operating point $z\coloneqq(v_0,\outp m_0,\inpt n_0)$.
+
+\begin{definition}\label{def.plmfd_critical}
+Let $\plmfd_*^{\crit}\subseteq\plmfd_*$ be the subcategory on the same objects and on morphisms $f$ of $\plmfd_*$ additionally satisfying
+\begin{equation}\label{eqn.plmfd_crit}
+dU|_{(\outp m_0,\inpt n_0)}\;=\;0\;\in\;T^*_{(\outp m_0,\inpt n_0)}(\outp M\times\inpt N).
+\end{equation}
+\end{definition}
+
+\begin{lemma}\label{lem.plmfd_critical_smc}
+$\plmfd_*^{\crit}\subseteq\plmfd_*$ is closed under identity, composition, and monoidal product, and the action $\rvect_*\times\plmfd_*\to\plmfd_*$ restricts further to $\rvect_*\times\plmfd_*^{\crit}\to\plmfd_*^{\crit}$.
+\end{lemma}
+
+\begin{proof}
+\emph{Identity.} The identity has $U=0$, so $dU=0$.
+
+\emph{Composition.} For $f\colon(\lensob M,m_0)\to(\lensob N,n_0)$ and $g\colon(\lensob N,n_0)\to(\lensob P,p_0)$ both in $\plmfd_*^{\crit}$, the composite potential is
+\[
+U_{g\circ f}(\outp m,\inpt p)=U_g(\outp f(\outp m),\inpt p)+U_f(\outp m,\inpt g(\outp f(\outp m),\inpt p))
+\]
+(\cref{lem.plmfd_lin_smc}). Writing $a\colon\outp M\times\inpt P\to\outp N\times\inpt P$ for the assembly map of the first summand's argument and $b\colon\outp M\times\inpt P\to\outp M\times\inpt N$ for that of the second, both smooth maps with $a(\outp m_0,\inpt p_0)=(\outp n_0,\inpt p_0)$ and $b(\outp m_0,\inpt p_0)=(\outp m_0,\inpt n_0)$, the chain rule gives
+\[
+dU_{g\circ f}|_{(\outp m_0,\inpt p_0)}\;=\;(Ta)^\top\bigl(dU_g|_{(\outp n_0,\inpt p_0)}\bigr)+(Tb)^\top\bigl(dU_f|_{(\outp m_0,\inpt n_0)}\bigr).
+\]
+Both pulled-back differentials vanish by criticality of $g$ and $f$.
+
+\emph{Monoidal product.} The potential of $f_1\otimes f_2$ is the external sum $U_1\oplus U_2$, whose differential at the basepoint is the direct sum of the constituent differentials, both zero by criticality of each.
+
+\emph{Action.} For $u\in\rvect_*$ and $f\in\plmfd_*^{\crit}$, the potential of $u\cdot f$ is the pullback of $U_f$ along the projection $\pi\colon V\times\outp c\times\inpt d\to\outp c\times\inpt d$. The differential at the basepoint is $(T\pi)^\top dU_f|_{(\outp c_0,\inpt d_0)}=0$.\qedhere
+\end{proof}
+
+\begin{definition}\label{def.srw_critical}
+The symmetric monoidal category $\defineTerm{srwcrit}$ is the Para construction
+\[
+\srwcrit\;\coloneqq\;\para{\rvect_*}{\plmfd_*^{\crit}}
+\]
+for the further-restricted action of \cref{lem.plmfd_critical_smc}; we identify $\srwcrit$ with its underlying operad and call its multimorphisms \defineTermAs{critical_srw_diagram}{\emph{critical smooth rewiring diagrams}}.
+\end{definition}
+
+\begin{remark}[Full criticality vs.\ storage-dependent equilibrium]\label{rmk.full_vs_storage_critical}
+Criticality \eqref{eqn.plmfd_crit} is stronger than the equilibrium conditions for the storages of \cref{sec.cotangent_storages}. Applied to a closed system in $\srw_*$, the configuration-storage update of \cref{prop.storage_pair} fixes a state $x\in V$ when $\sharpR_x(dU|_x)=0$ in $V$, equivalently $dU|_x=0$ in $V^*$ since $\sharpR_x$ is an isomorphism; this places no constraint on derivatives in the external-input directions $\inpt N$. \Cref{eqn.plmfd_crit} demands the differential to vanish in all directions of $V\times\outp M\times\inpt N$. The extra strength is exactly what is needed for the second-order Taylor expansion below to land in the pure quadratic potentials of $\srwlin$, rather than in a larger second-jet target retaining the second derivatives of the lens components.\qedhere
+\end{remark}
+
+%--------------------------------------------------------------------
+\subsection{The Taylor functor \texorpdfstring{$J^2$}{J2}}\label{sec.taylor_critical}
+%--------------------------------------------------------------------
+
+We define a Taylor functor on each side of the Para construction, check that the two side-functors are compatible with the actions, and apply \cref{prop.para_square} to obtain the combined functor $J^2\colon\srwcrit\to\srwlin$.
+
+\begin{definition}\label{def.J2_rvect}
+The \defineTermAs{J2_rvect}{\emph{parameter-side Taylor functor}} $J^2_{\rvect}\colon\rvect_*\to\rvect^\cnst$ sends $(V,\sharpR_V,v_0)\mapsto(V,\sharpR_{v_0})$, replacing the smoothly varying sharp by its constant value at the basepoint, and acts identically on the underlying linear isomorphism on morphisms.
+\end{definition}
+
+A morphism $u\colon(V,v_0)\to(V',v'_0)$ of $\rvect_*$ is a linear isomorphism $V\To{\cong}V'$ with $u(v_0)=v'_0$ preserving the (basepoint-varying) pairing pointwise \eqref{eqn.pairing_triangle}; instantiating that equation at $x=v_0$ gives $u\circ\sharpR_{v_0}\circ u^*=\sharpR_{v'_0}$, so $u$ is also a morphism between the constant-sharp objects $(V,\sharpR_{v_0})$ and $(V',\sharpR_{v'_0})$.
+
+\begin{lemma}\label{lem.J2_rvect_smc}
+$J^2_{\rvect}\colon\rvect_*\to\rvect^\cnst$ is a strong symmetric monoidal functor.
+\end{lemma}
+
+\begin{proof}
+By \cref{prop.rvect_monoidal} (direct-sum sharp at $(v_0,w_0)$ equals the direct sum of sharps at $v_0$ and $w_0$),
+\[
+J^2_{\rvect}\bigl((V,v_0)\oplus(W,w_0)\bigr)=(V\oplus W,\sharpR_{(v_0,w_0)})=(V\oplus W,\sharpR_{v_0}\oplus\sharpR_{w_0})=J^2_{\rvect}(V,v_0)\oplus J^2_{\rvect}(W,w_0).
+\]
+The unit $(0,0)\in\rvect_*$ goes to the unit $(0,\sharpR_0)\in\rvect^\cnst$.\qedhere
+\end{proof}
+
+\begin{definition}\label{def.J2_plmfd}
+The \defineTermAs{J2_plmfd}{\emph{lens-side Taylor functor}} $J^2_{\plmfd}\colon\plmfd_*^\crit\to\plmfd^\lin$ acts as follows. On objects,
+\[
+J^2_{\plmfd}(\lensob M,m_0)\;\coloneqq\;\binom{T_{\inpt m_0}\inpt M}{T_{\outp m_0}\outp M};
+\]
+on a morphism $f=(\outp f,\inpt f,U)\colon(\lensob M,m_0)\to(\lensob N,n_0)$,
+\begin{equation}\label{eqn.J2_lens}
+\outp{J^2(f)}\;\coloneqq\;T_{\outp m_0}\outp f,\qquad
+\inpt{J^2(f)}\;\coloneqq\;T_{(\outp m_0,\inpt n_0)}\inpt f,
+\end{equation}
+\begin{equation}\label{eqn.J2_pot}
+U_{J^2(f)}\;\colon\;\delta z\;\longmapsto\;\tfrac12\,d^2U|_{(\outp m_0,\inpt n_0)}(\delta z,\delta z),
+\end{equation}
+for $\delta z\in T_{\outp m_0}\outp M\oplus T_{\inpt n_0}\inpt N$, with $d^2U|_{(\outp m_0,\inpt n_0)}$ the Hessian of $U$ at the basepoint.
+\end{definition}
+
+The tangent maps \eqref{eqn.J2_lens} are linear by construction; the Hessian is a symmetric bilinear form, and evaluating it on the diagonal yields a pure quadratic form (\cref{lem.quadratic_functorial}). So the data of $J^2_{\plmfd}(f)$ satisfies the four conditions of \cref{cor.srw_lin_four_conditions} on the lens side.
+
+\begin{lemma}\label{lem.J2_plmfd_smc}
+$J^2_{\plmfd}\colon\plmfd_*^\crit\to\plmfd^\lin$ is a strong symmetric monoidal functor.
+\end{lemma}
+
+\begin{proof}
+\emph{Identity.} $J^2$ of the identity $(\id_{\outp M},\id_{\inpt M},0)$ has lens components $T\id=\id$ and Hessian $\tfrac12 d^2 0=0$, the identity in $\plmfd^\lin$.
+
+\emph{Composition.} For $f\colon(\lensob M,m_0)\to(\lensob N,n_0)$ and $g\colon(\lensob N,n_0)\to(\lensob P,p_0)$ in $\plmfd_*^\crit$, the lens components of $g\circ f$ are
+\[
+\outp{g\circ f}=\outp g\circ\outp f,\qquad
+\inpt{g\circ f}(\outp m,\inpt p)=\inpt f(\outp m,\inpt g(\outp f(\outp m),\inpt p))
+\]
+(\cref{lem.plmfd_lin_smc}). The chain rule $T(g\circ f)=Tg\circ Tf$ at the appropriate basepoints gives $J^2(\outp{g\circ f})=J^2(\outp g)\circ J^2(\outp f)$ and likewise for $\inpt{g\circ f}$.
+
+For the potential, the composite formula gives $U_{g\circ f}=U_g\circ a+U_f\circ b$ with $a\colon(\outp m,\inpt p)\mapsto(\outp f(\outp m),\inpt p)$ and $b\colon(\outp m,\inpt p)\mapsto(\outp m,\inpt g(\outp f(\outp m),\inpt p))$, smooth maps with $a(\outp m_0,\inpt p_0)=(\outp n_0,\inpt p_0)$ and $b(\outp m_0,\inpt p_0)=(\outp m_0,\inpt n_0)$. The Hessian chain rule for a composite $U\circ a$ at a point where $dU=0$ reads
+\[
+d^2(U\circ a)|_{(\outp m_0,\inpt p_0)}\;=\;(Ta)^\top\,d^2U|_{a(\outp m_0,\inpt p_0)}\,(Ta)\;+\;d^2a|_{(\outp m_0,\inpt p_0)}\!\cdot\!dU|_{a(\outp m_0,\inpt p_0)},
+\]
+and the second group of terms is killed by criticality of $g$ (which says $dU_g|_{(\outp n_0,\inpt p_0)}=0$); the same argument applies to $U_f\circ b$ via criticality of $f$. So
+\[
+d^2 U_{g\circ f}|_{(\outp m_0,\inpt p_0)}\;=\;(Ta)^\top\bigl(d^2U_g|_{(\outp n_0,\inpt p_0)}\bigr)(Ta)\;+\;(Tb)^\top\bigl(d^2U_f|_{(\outp m_0,\inpt n_0)}\bigr)(Tb).
+\]
+The right-hand side is exactly the coKleisli composition of the linearized data: $Ta$ and $Tb$ are the assembly maps of the composite of $J^2(g)$ and $J^2(f)$ in $\plmfd^\lin$ (\cref{lem.plmfd_lin_smc}), and pullback-and-sum of pure quadratic forms is the composition formula there. So $J^2(g\circ f)=J^2(g)\circ J^2(f)$.
+
+\emph{Monoidal product.} The tangent functor takes products to direct sums: $T_{(m_1,m_2)_0}(M_1\times M_2)\cong T_{(m_1)_0}M_1\oplus T_{(m_2)_0}M_2$, naturally in smooth maps. The Hessian on a product is the direct sum of constituent Hessians by inspection. So $J^2(f_1\otimes f_2)=J^2(f_1)\otimes J^2(f_2)$, and the monoidal unit goes to the monoidal unit.\qedhere
+\end{proof}
+
+\begin{lemma}\label{lem.J2_action_compatible}
+The action squares for $(J^2_{\rvect},J^2_{\plmfd})$ commute up to the canonical natural isomorphism $T_{v_0}V\cong V$. Explicitly, for $(V,v_0)\in\rvect_*$ and $(\lensob X,x_0)\in\plmfd_*^\crit$,
+\[
+J^2_{\rvect}(V,v_0)\cdot J^2_{\plmfd}(\lensob X,x_0)\;=\;\binom{T_{\inpt x_0}\inpt X}{V\times T_{\outp x_0}\outp X}\;\cong\;\binom{T_{\inpt x_0}\inpt X}{T_{(v_0,\outp x_0)}(V\times\outp X)}\;=\;J^2_{\plmfd}\bigl(V\cdot(\lensob X,x_0)\bigr),
+\]
+the middle isomorphism induced by the canonical identification $T_{v_0}V\cong V$ (translation-invariance of the tangent bundle of a vector space) and $T_{(v_0,\outp x_0)}(V\times\outp X)\cong T_{v_0}V\oplus T_{\outp x_0}\outp X$.
+\end{lemma}
+
+\begin{proof}
+The displayed equalities and the canonical isomorphism are by direct computation. Naturality in the $\rvect_*$-isomorphism $u$ and the $\plmfd_*^\crit$-morphism $f$ reduces to naturality of $T(-)$ in smooth maps and of $T_{v_0}V\cong V$ in linear isomorphisms; both standard. The coherence with action unitors and associators reduces, on the parameter side, to the fact that $J^2_{\rvect}$ is strong monoidal (\cref{lem.J2_rvect_smc}), and on the lens side to strong monoidality of $J^2_{\plmfd}$ (\cref{lem.J2_plmfd_smc}).\qedhere
+\end{proof}
+
+\begin{theorem}[Critical Taylor linearization]\label{thm.taylor_critical_functor}
+The data of \cref{def.J2_rvect,def.J2_plmfd,lem.J2_action_compatible} induces a strong symmetric monoidal functor
+\[
+J^2\;\coloneqq\;\para[\theta]{J^2_{\rvect}}{J^2_{\plmfd}}\colon\srwcrit\;\longrightarrow\;\srwlin.
+\]
+\end{theorem}
+
+\begin{proof}
+Apply \cref{prop.para_square} with $F=J^2_{\rvect}$, $G=J^2_{\plmfd}$, and $\theta$ the 2-cell of \cref{lem.J2_action_compatible}. $F$ is strong monoidal by \cref{lem.J2_rvect_smc}, $G$ is strong monoidal by \cref{lem.J2_plmfd_smc}, and $\theta$ is a monoidal natural transformation by \cref{lem.J2_action_compatible}. The proposition produces a strong symmetric monoidal functor $\para{\rvect_*}{\plmfd_*^\crit}\to\para{\rvect^\cnst}{\plmfd^\lin}$, i.e.\ $\srwcrit\to\srwlin$, on underlying operads.\qedhere
+\end{proof}
+
+\begin{corollary}[Linear stratum as Taylor retract]\label{cor.taylor_retract}
+The zero-pointing functor $\iota\colon\srwlin\to\srwcrit$ obtained by pointing every object at the origin and every multimorphism at the origin of its action object satisfies $J^2\circ\iota=\id_{\srwlin}$.
+\end{corollary}
+
+\begin{proof}
+For a morphism $f=\bigl((V,\sharpR_0),\binom{\inpt f}{\outp f},U\bigr)$ of $\srwlin$ (\cref{cor.srw_lin_four_conditions}), basepoint $z=(0,0,0)$ satisfies $\outp f(0,0)=0$, $\inpt f(0,0,0)=0$, $U(0,0,0)=0$ since $\outp f,\inpt f$ are linear and $U$ is pure quadratic, and $dU|_0=0$ for the same reason; so $\iota(f)\in\srwcrit$. Under $J^2$, the tangent map of a linear $L$ at $0$ is $L$ itself (via $T_0V\cong V$), and $\tfrac12 d^2 U|_0=U$ for pure quadratic $U(v)=q(v,v)$ since the Hessian of $q(v,v)$ at $0$ is $2q$ (\cref{lem.quadratic_functorial}). So $J^2(\iota(f))=f$.\qedhere
+\end{proof}
+
+\begin{remark}[$\srwlin$ as Taylor target]\label{rmk.srw_lin_taylor_target}
+\Cref{thm.taylor_critical_functor,cor.taylor_retract} sharpen the role of $\srwlin$ in the design-space picture of \cref{sec.design_space}. The kinematical axis of that picture is the regime in which the dynamics functor produces linear endomaps (\cref{prop.linear_stratum}); the present results identify the same regime as the canonical second-order Taylor target of any critically-pointed smooth rewiring diagram, with the embedding $\iota$ exhibiting $\srwlin$ as a retract of $\srwcrit$. The composites
+\[
+\srwcrit\;\To{J^2}\;\srwlin\;\To{\Phi_{\store{\bullet}}}\;\org
+\]
+give, for $\store{\bullet}=\store{\phase}$, the small-oscillation (wave-type) dynamics about a critical operating point and, for $\store{\bullet}=\store{\conf}$, the linear-response (heat-type) dynamics; the split between the two is the storage choice of \cref{sec.design_space}, not the syntactic data of the linearization. We do not develop these dynamical consequences further here.\qedhere
+\end{remark}
+
+\begin{example}[Newton's method linearizes about a critical point]\label{ex.newton_critical}
+The Newton scalar of \cref{sec.newton_warmup} is a $\srw$-scalar that lies outside $\srwlin$: for a smooth $\ell\colon V\to\rr$ whose Hessian $T_vd\ell\colon V\to V^*$ is invertible everywhere, the data $((V,\sharpR_V),\bang,\bang,\ell)$ with $\sharpR_v=-(T_vd\ell)^{-1}$ has neither constant parameter sharp nor pure quadratic potential. Pointing at a critical $v^*\in V$ of $\ell$ (where $d\ell|_{v^*}=0$) and normalizing the potential to $\tilde\ell\coloneqq\ell-\ell(v^*)$ produces a critical pointed scalar
+\[
+\bigl((V,\sharpR_V,v^*),\,\bang,\,\bang,\,\tilde\ell\bigr)\;\in\;\srwcrit,
+\]
+since $d\tilde\ell|_{v^*}=d\ell|_{v^*}=0$ and the lens compatibility conditions \eqref{eqn.pointed_compatibility} are vacuous. Applying $J^2$ (\cref{thm.taylor_critical_functor}) replaces the basepoint-varying sharp by its value at $v^*$ and the potential by half its Hessian at $v^*$:
+\[
+J^2\bigl((V,\sharpR_V,v^*),\bang,\bang,\tilde\ell\bigr)\;=\;\bigl((V,\sharpR_{v^*}),\bang,\bang,\,U^*\bigr),\qquad U^*(\delta v)\coloneqq\tfrac12 d^2\ell|_{v^*}(\delta v,\delta v),
+\]
+a scalar in $\srwlin$ with constant sharp $\sharpR_{v^*}=-(T_{v^*}d\ell)^{-1}$ (the inverse Hessian at $v^*$) and pure quadratic potential $U^*$ (the Hessian-induced quadratic form).
+
+Applying $\Phiconf{}$ to the linearized scalar, the state update on $\delta v\in T_{v^*}V\cong V$ reads
+\[
+\delta v\;\longmapsto\;\delta v+\sharpR_{v^*}(dU^*|_{\delta v})\;=\;\delta v-(T_{v^*}d\ell)^{-1}\bigl((T_{v^*}d\ell)(\delta v)\bigr)\;=\;0,
+\]
+using $dU^*|_{\delta v}=(T_{v^*}d\ell)(\delta v)\in V^*$. Translating back via $v=v^*+\delta v$: from any state $v$, one step lands at the critical point $v^*$. This is the categorical articulation of the engineering folk theorem that Newton's method is exact on the quadratic Taylor approximation.\qedhere
+\end{example}
 
 %====================================================================
 \chapter{Applications}\label{ch.applications}
@@ -2965,7 +3266,7 @@ one step of \emph{Newton's method} for finding a critical point of $\ell$. Wheth
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
 %--------------------------------------------------------------------
 
-By \emph{deep learning} we mean the training of an artificial neural network. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf{}$ yields an operad functor
+By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation~\cite{rumelhart1986learning}. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf{}$ yields an operad functor
 \[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\srw\To{\Phiconf{}}\org,\]
 whose composite we denote $\lrn$. One could say that training a neural network is a case of our configuration dynamics construction, in the case that input manifolds and potentials are trivial: $\inpt M=\rr^0$ and $U=0$.
 
@@ -3098,7 +3399,7 @@ First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}
 
 To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in $\srw$ \eqref{eqn.para_potential_lens_maps}, we need a reactive vector space $(V,\sharpR_V)$, a smooth output map $\outp f\colon V\to\rr$, and a smooth potential $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharpR_x(p)\coloneqq p/m$ (independent of $x\in\rr$); we read the value $x\in\rr$ as the particle's transverse displacement from equilibrium. We take the output map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
 \[U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2,\]
-the \emph{harmonic} potential, assigning energy to the relative displacement of the particle and its neighbor. Thus $\Part\in\srw^{\lin}$ (\cref{cor.srw_lin_four_conditions}).
+the \emph{harmonic} potential, assigning energy to the relative displacement of the particle and its neighbor. Thus $\Part\in\srwlin$ (\cref{cor.srw_lin_four_conditions}).
 
 \paragraph{The wiring diagram.}
 For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\varphi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
@@ -3132,7 +3433,7 @@ acting per-particle on each $\rr$-summand (the inverse-mass pairing), independen
 \qqand
 U\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(x_i-x_{i-1})^2,
 \]
-with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input). Both $\Part$ and $\fun{wire}_K$ lie in $\srw^{\lin}$, so by closure under operadic composition (\cref{lem.plmfd_lin_smc}) so does $\fun{wire}_K(\Part,\ldots,\Part)$.
+with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input). Both $\Part$ and $\fun{wire}_K$ lie in $\srwlin$, so by closure under operadic composition (\cref{lem.plmfd_lin_smc}) so does $\fun{wire}_K(\Part,\ldots,\Part)$.
 
 \paragraph{The discrete dynamics.}
 
@@ -3293,7 +3594,7 @@ Applying $\rr^{\blank}$ (\cref{lemma.lens_pow}) gives a lens
 \[
 \rr^{\varphi_G}\colon\prod_{v\in V}\binom{\rr^{\inpt{v}}}{\rr^{\outp{v}}}\to\binom{\rr^0}{\rr^0}
 \]
-whose input map $\prod_{v}\rr^{\outp{v}}\to\prod_{v}\rr^{\inpt{v}}$ is again the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth (static) wiring diagram in $\srw$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$; hence $\rr^{\varphi_G}\in\srw^{\lin}$.
+whose input map $\prod_{v}\rr^{\outp{v}}\to\prod_{v}\rr^{\inpt{v}}$ is again the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth (static) wiring diagram in $\srw$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$; hence $\rr^{\varphi_G}\in\srwlin$.
 
 \paragraph{The particle at a vertex.}
 
@@ -3311,7 +3612,7 @@ defined by:
 U_v\bigl(x,(n_e)_{e\in\inpt{v}}\bigr)\coloneqq\sum_{e\in\inpt{v}}\tfrac{\kappa_e}{2}\,(x-n_e)^2.
 \]
 \end{itemize}
-The particle $\Part$ of \cref{sec.spring_first_pass} is the case where $|\outp{v}|=|\inpt{v}|\coloneqq 1$ with $\kappa_e\coloneqq\kappa$ and $m_v\coloneqq m$ for a single $\kappa,m>0$. As for $\Part$, the same four-condition check gives $\Part_v\in\srw^{\lin}$.
+The particle $\Part$ of \cref{sec.spring_first_pass} is the case where $|\outp{v}|=|\inpt{v}|\coloneqq 1$ with $\kappa_e\coloneqq\kappa$ and $m_v\coloneqq m$ for a single $\kappa,m>0$. As for $\Part$, the same four-condition check gives $\Part_v\in\srwlin$.
 \paragraph{The composite.}
 
 Composing $\rr^{\varphi_G}$ with the family $(\Part_v)_{v\in V}$ in $\srw$ produces a $0$-ary smooth rewiring diagram
@@ -3322,7 +3623,7 @@ with composite parameter space $V_G\coloneqq\bigoplus_{v\in V}V_v=\rr^V$, consta
 \begin{equation}\label{eqn.graph_potential}
 U(\vec x)\;=\;\sum_{v\in V}U_v\bigl(x_v,(x_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(x_{\tgt(e)}-x_{\src(e)})^2.
 \end{equation}
-The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$. Since $\rr^{\varphi_G}$ and each $\Part_v$ lie in $\srw^{\lin}$, closure under operadic composition (\cref{lem.plmfd_lin_smc}) gives $\psi_G\in\srw^{\lin}$.
+The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$. Since $\rr^{\varphi_G}$ and each $\Part_v$ lie in $\srwlin$, closure under operadic composition (\cref{lem.plmfd_lin_smc}) gives $\psi_G\in\srwlin$.
 
 \paragraph{The discrete dynamics.}
 
@@ -3347,7 +3648,7 @@ One can check that $L_G$ has diagonal and off-diagonal entries given by
 \qqand
 (L_G)_{vw}=-\sum_{\{\src(e),\tgt(e)\}=\{v,w\}}\kappa_e
 \end{equation}
-This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$. 
+This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite[\S 1.2--1.4]{chung1997spectral}. 
 
 Fixing an initial state $(\vec x(0),\vec p(0))\in T^*\rr^V$ and iterating $\Phiphase{}(\psi_G)$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec x(t),\vec p(t)\bigr)_{t\in\nn}$. As a notational convenience, write $\ddot{x}_v(t)\coloneqq x_v(t+2)-2x_v(t+1)+x_v(t)$.
 
@@ -3376,7 +3677,7 @@ m_v\bigl(x_v(t+1)-x_v(t)\bigr)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
 i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. In the design-space picture (\cref{sec.design_space}), this is the \emph{dissipative}-corner instance of the syntax $\psi_G$ --- $\Phiconf{}$ with symmetric $\sharpR_V$ --- versus the \emph{conservative}-corner instance --- $\Phiphase{}$ with antisymmetric carrier $\sharpS_{T^*V}$ --- that produced the wave equation \eqref{eqn.discrete_wave}. The choice between wave and heat dynamics on a given $\psi_G$ is a choice of storage, not of syntax.
 \end{remark}
 
-Both wave and heat dynamics on $\psi_G$ are instances of \cref{prop.linear_stratum}, applied through $\store{\phase}$ and $\store{\conf}$ respectively: the shared kinematical hypothesis --- $\psi_G\in\srw^{\lin}$ together with linear anchor and update at constant $\sharpR$ --- accounts for the superposition both exhibit, independent of the conservative/dissipative split.
+Both wave and heat dynamics on $\psi_G$ are instances of \cref{prop.linear_stratum}, applied through $\store{\phase}$ and $\store{\conf}$ respectively: the shared kinematical hypothesis --- $\psi_G\in\srwlin$ together with linear anchor and update at constant $\sharpR$ --- accounts for the superposition both exhibit, independent of the conservative/dissipative split.
 
 \clearpage
 \begin{landscape}
