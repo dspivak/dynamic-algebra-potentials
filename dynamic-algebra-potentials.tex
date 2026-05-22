@@ -2324,14 +2324,14 @@ The iso \eqref{eqn.cot_constant_fiber} lets us repackage a cotangent storage as 
 \begin{proposition}[Storage as anchor and update]\label{prop.storage_pair}
 Under \eqref{eqn.cot_constant_fiber}, the component $\vartheta_V\colon\absval{F(V)}\yon^{\absval{F(V)}}\to\cotof V$ of a cotangent storage $(F,\vartheta)$ is exactly a pair of functions
 \begin{equation}\label{eqn.storage_pair}
-\vartheta_{V,1}\colon\absval{F(V)}\to\absval V,\qquad
-\bk{{\vartheta_V}}{\blank}\colon\absval{F(V)}\times V^*\to\absval{F(V)},
+\vartheta_V^{\mathrm{pos}}\colon\absval{F(V)}\to\absval V,\qquad
+\vartheta_V^{\mathrm{dir}}\colon\absval{F(V)}\times V^*\to\absval{F(V)},
 \end{equation}
-recovering $\vartheta_V$ by $s\mapsto\bigl(\vartheta_{V,1}(s),\,\xi'\mapsto\bk{{\vartheta_V}}{s}(\xi')\bigr)$. We call $\vartheta_{V,1}$ the \defineTermAs{anchor}{\emph{anchor}} and $\bk{{\vartheta_V}}{\blank}$ the \defineTermAs{update}{\emph{update}}; both are natural in $\rvect$-isomorphisms and monoidal in $V$.
+recovering $\vartheta_V$ by $s\mapsto\bigl(\vartheta_V^{\mathrm{pos}}(s),\,\xi'\mapsto\vartheta_V^{\mathrm{dir}}(s,\xi')\bigr)$. We call $\vartheta_V^{\mathrm{pos}}$ the \defineTermAs{anchor}{\emph{anchor}} and $\vartheta_V^{\mathrm{dir}}$ the \defineTermAs{update}{\emph{update}}; both are natural in $\rvect$-isomorphisms and monoidal in $V$.
 \end{proposition}
 
 \begin{proof}
-A polynomial map $\absval{F(V)}\yon^{\absval{F(V)}}\to\absval V\yon^{V^*}$ consists of a function on positions, $\vartheta_{V,1}\colon\absval{F(V)}\to\absval V$, together with, at each $s:\absval{F(V)}$, a function on directions $V^*\to\absval{F(V)}$. Since the direction-source $V^*$ does not depend on $s$, those direction-functions assemble into a single $\bk{{\vartheta_V}}{\blank}\colon\absval{F(V)}\times V^*\to\absval{F(V)}$. Naturality and monoidality of $\vartheta_V$ become the corresponding properties of the pair.
+A polynomial map $\absval{F(V)}\yon^{\absval{F(V)}}\to\absval V\yon^{V^*}$ consists of a function on positions, $\vartheta_V^{\mathrm{pos}}\colon\absval{F(V)}\to\absval V$, together with, at each $s:\absval{F(V)}$, a function on directions $V^*\to\absval{F(V)}$. Since the direction-source $V^*$ does not depend on $s$, those direction-functions assemble into a single $\vartheta_V^{\mathrm{dir}}\colon\absval{F(V)}\times V^*\to\absval{F(V)}$. Naturality and monoidality of $\vartheta_V$ become the corresponding properties of the pair.
 \end{proof}
 
 \paragraph{Design space of cotangent storages.}
@@ -2352,8 +2352,8 @@ There is a cotangent storage, which we call \defineTermAs{configuration_storage}
 \[\store{\conf}\coloneqq(\absval{\blank},\theta)\]
 where $\absval{\blank}\colon\rvect\to\smsetiso$ sends a reactive vector space to its underlying set of points $V\mapsto\absval V$, and where $\theta_V$ has anchor and update (\cref{prop.storage_pair})
 \begin{equation}\label{eqn.directions_sharp}
-\theta_{V,1}=\id_{\absval V},\qquad
-\bk{{\theta_V}}{\blank}\colon\absval V\times V^*\To{}\absval V,\quad (x,\xi')\longmapsto x+\sharpR_x(\xi').
+\theta_V^{\mathrm{pos}}=\id_{\absval V},\qquad
+\theta_V^{\mathrm{dir}}\colon\absval V\times V^*\To{}\absval V,\quad (x,\xi')\longmapsto x+\sharpR_x(\xi').
 \end{equation}
 The update is a bijection in $\xi'$ at each $x$, so $\theta_V$ is a poly iso $\absval V\yon^{\absval V}\To{\cong}\cotof V$.
 \end{proposition}
@@ -2363,8 +2363,8 @@ At each $x:V$, the update $\xi'\mapsto x+\sharpR_x(\xi')$ is the composite of th
 
 For naturality at a $\rvect$-iso $\phi\colon V\To{\cong}W$, the anchor square commutes since both composites $\absval V\to\absval W$ equal $\phi$. For the update at $x:V$, we must check that the two functions $V^*\to\absval V$ agree (via $\phi$ on positions, $\phi^*=\phi^{-1}$ on duals):
 \begin{align*}
-\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharpR_x}\;\sharpR_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharpR_x(\phi^*\xi), && \text{[$\bk{{\theta_V}}{\blank}\circ(\id\times\phi^*)$]}\\
-\xi\;&\Mapsto{\sharpR_{\phi(x)}}\;\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharpR_{\phi(x)}\xi) && \text{[$\phi^{-1}\circ\bk{{\theta_W}}{\blank}\circ(\phi\times\id)$]}.
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharpR_x}\;\sharpR_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharpR_x(\phi^*\xi), && \text{[$\theta_V^{\mathrm{dir}}\circ(\id\times\phi^*)$]}\\
+\xi\;&\Mapsto{\sharpR_{\phi(x)}}\;\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharpR_{\phi(x)}\xi) && \text{[$\phi^{-1}\circ\theta_W^{\mathrm{dir}}\circ(\phi\times\id)$]}.
 \end{align*}
 The two agree iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, which is the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V_2}=\sharpR_{V_1}\oplus\sharpR_{V_2}$ (\cref{prop.rvect_monoidal}).\qedhere
 \end{proof}
@@ -2400,8 +2400,8 @@ There is a cotangent storage, which we call \defineTermAs{phase_space_storage}{\
 \[\store{\phase}\coloneqq(\absval{T^*\blank},\,\defineTerm{rho})\]
 where $\absval{T^*\blank}\colon\rvect\to\smsetiso$ sends $V\mapsto\absval{T^*V}$, and where $\rho_V$ has anchor and update (\cref{prop.storage_pair})
 \begin{equation}\label{eqn.phase_storage_update}
-\rho_{V,1}=\pi_V\colon\absval{T^*V}\to\absval V,\qquad
-\bk{{\rho_V}}{\blank}\colon\absval{T^*V}\times V^*\To{}\absval{T^*V},\quad ((x,\xi),\xi')\longmapsto(x+\sharpR_x(\xi),\,\xi-\xi').
+\rho_V^{\mathrm{pos}}=\pi_V\colon\absval{T^*V}\to\absval V,\qquad
+\rho_V^{\mathrm{dir}}\colon\absval{T^*V}\times V^*\To{}\absval{T^*V},\quad ((x,\xi),\xi')\longmapsto(x+\sharpR_x(\xi),\,\xi-\xi').
 \end{equation}
 \end{lemma}
 
@@ -2420,7 +2420,7 @@ where $\theta_{T^*V}$ is the configuration storage of \cref{prop.rvect_polynomia
 
 \emph{Pair-form readout.} We verify that $\rho_V$ has the anchor and update displayed in \eqref{eqn.phase_storage_update} by tracing positions and directions through the composite, recalling that polynomial maps act forward on positions and backward on directions.
 
-\emph{Anchor.} On positions, $\theta_{T^*V,1}=\id_{\absval{T^*V}}$ by \eqref{eqn.directions_sharp} applied at $T^*V$, and $\lambda_{V,1}\colon(x,\xi)\mapsto x$ since the second factor of \eqref{eqn.phase_lift_decomp} acts as $\cotof{\pi_V}$ on positions (the $\yon$-factor contributes nothing) and $\cotof{\Delta_{T^*V}}$ is the diagonal. Their composite is $\pi_V$, agreeing with \eqref{eqn.phase_storage_update}.
+\emph{Anchor.} On positions, $\theta_{T^*V}^{\mathrm{pos}}=\id_{\absval{T^*V}}$ by \eqref{eqn.directions_sharp} applied at $T^*V$, and $\lambda_V^{\mathrm{pos}}\colon(x,\xi)\mapsto x$ since the second factor of \eqref{eqn.phase_lift_decomp} acts as $\cotof{\pi_V}$ on positions (the $\yon$-factor contributes nothing) and $\cotof{\Delta_{T^*V}}$ is the diagonal. Their composite is $\pi_V$, agreeing with \eqref{eqn.phase_storage_update}.
 
 \emph{Update.} Fix $(x,\xi)\in\absval{T^*V}$ and a direction $\xi'\in T^*_xV\cong V^*$ at the output position $x\in V$ of $\cotof V$. The composite sends $\xi'$ backwards through $\lambda_V$ first and then through $\theta_{T^*V}$.
 \begin{description}
@@ -2429,17 +2429,17 @@ where $\theta_{T^*V}$ is the configuration storage of \cref{prop.rvect_polynomia
 (\xi',\,0)\;+\;\beta_V(x,\xi)\;=\;(\xi',\,\sharpR_x(\xi))\;\in\;V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \]
 The second component is the \emph{kinetic-drift contribution}, supplied by $\beta_V$.
-\item[Step 2 (apply $\theta_{T^*V}$ on directions at $(x,\xi)$).] By \eqref{eqn.directions_sharp} applied at $T^*V$, $\theta_{T^*V}$'s update at $(x,\xi)$ sends a covector $\omega\in T^*_{(x,\xi)}(T^*V)$ to $(x,\xi)+\sharpS_{T^*V}(\omega)$. At $\omega=(\xi',\sharpR_x(\xi))$ from Step 1, \eqref{eqn.canonical_sharp} gives
+\item[Step 2 (apply $\theta_{T^*V}$ on directions at $(x,\xi)$).] By \eqref{eqn.directions_sharp} applied at $T^*V$, $\theta_{T^*V}^{\mathrm{dir}}$ sends a state-covector pair $((x,\xi),\omega)$ with $\omega\in T^*_{(x,\xi)}(T^*V)$ to $(x,\xi)+\sharpS_{T^*V}(\omega)$. At $\omega=(\xi',\sharpR_x(\xi))$ from Step 1, \eqref{eqn.canonical_sharp} gives
 \[
 \sharpS_{T^*V}\bigl(\xi',\,\sharpR_x(\xi)\bigr)\;=\;\bigl(\sharpR_x(\xi),\,-\xi'\bigr),
 \]
 so
 \[
-\bk{{\theta_{T^*V}}}{(x,\xi)}\bigl(\xi',\,\sharpR_x(\xi)\bigr)\;=\;(x,\xi)+\bigl(\sharpR_x(\xi),\,-\xi'\bigr)\;=\;\bigl(x+\sharpR_x(\xi),\,\xi-\xi'\bigr).
+\theta_{T^*V}^{\mathrm{dir}}\bigl((x,\xi),\,(\xi',\,\sharpR_x(\xi))\bigr)\;=\;(x,\xi)+\bigl(\sharpR_x(\xi),\,-\xi'\bigr)\;=\;\bigl(x+\sharpR_x(\xi),\,\xi-\xi'\bigr).
 \]
 The position--momentum flip and the minus sign on momentum are the \emph{symplectic contribution}, supplied by $\sharpS_{T^*V}$.
 \end{description}
-Adding the two contributions recovers $\bk{{\rho_V}}{(x,\xi)}(\xi')=\bigl(x+\sharpR_x(\xi),\,\xi-\xi'\bigr)$ as displayed in \eqref{eqn.phase_storage_update}; the drift $x+\sharpR_x(\xi)$ enters through $\beta_V$ via $\lambda_V$, while the kick $\xi-\xi'$ --- minus sign included --- enters through $\sharpS_{T^*V}$ via $\theta_{T^*V}$.
+Adding the two contributions recovers $\rho_V^{\mathrm{dir}}((x,\xi),\xi')=\bigl(x+\sharpR_x(\xi),\,\xi-\xi'\bigr)$ as displayed in \eqref{eqn.phase_storage_update}; the drift $x+\sharpR_x(\xi)$ enters through $\beta_V$ via $\lambda_V$, while the kick $\xi-\xi'$ --- minus sign included --- enters through $\sharpS_{T^*V}$ via $\theta_{T^*V}$.
 
 \emph{Naturality and monoidality.} $\theta_{T^*V}$ is natural in $\rvect$-isomorphisms by \cref{prop.rvect_polynomial} applied at $T^*V$, where the pairing-preservation equation \eqref{eqn.pairing_triangle} is used for $\sharpS_{T^*V}$. The components of $\lambda_V$ are likewise natural: $\cotof{\Delta_{T^*V}}$ by functoriality of $\cot$ on the diagonal, $\cotof{\pi_V}$ by functoriality of $\cot$ on $\pi_V$, and $\beta_V$ by \eqref{eqn.pairing_triangle} (as in the discussion following \eqref{eqn.kinetic_one_form}). Monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V_2}=\sharpR_{V_1}\oplus\sharpR_{V_2}$ (\cref{prop.rvect_monoidal}), together with the monoidality of $\theta$, of $\cot$ on the diagonal and projection, and of $\beta$.
 \end{proof}
@@ -3275,17 +3275,17 @@ i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. In 
 The wave equation \eqref{eqn.discrete_wave} exhibits \emph{superposition}: trajectories form a vector space, so any linear combination of solutions is again a solution. This is a kinematical property of the dynamics functor on a suboperad of $\srw$ --- it follows from constancy and linearity of the data and is independent of antisymmetry of $\sharpS_{T^*V}$.
 
 \begin{proposition}[Linear stratum]\label{prop.linear_stratum}
-Write $\srw^{\mathrm{lin}}\subset\srw$ for the suboperad whose interfaces $\outp M,\inpt M$ are vector spaces, whose maps $\inpt f$, $\outp f$ are linear, whose parameter $(V,\sharpR_V)$ has constant $\sharpR_V$, and whose potential $U$ is a pure quadratic form. For any cotangent storage $\mathfrak{s}=(F,\vartheta)$ whose anchor $\vartheta_{V,1}\colon F(V)\to V$ and update $\bk{{\vartheta_V}}{\blank}\colon F(V)\times V^*\to F(V)$ are linear maps of vector spaces, the dynamics functor $\Phi_\mathfrak{s}$ sends every $0$-ary closed system $I\to I$ in $\srw^{\mathrm{lin}}$ to a linear endomap on the carrier $F(V)$.
+Write $\srw^{\mathrm{lin}}\subset\srw$ for the suboperad whose interfaces $\outp M,\inpt M$ are vector spaces, whose maps $\inpt f$, $\outp f$ are linear, whose parameter $(V,\sharpR_V)$ has constant $\sharpR_V$, and whose potential $U$ is a pure quadratic form. For any cotangent storage $\mathfrak{s}=(F,\vartheta)$ whose anchor $\vartheta_V^{\mathrm{pos}}\colon F(V)\to V$ and update $\vartheta_V^{\mathrm{dir}}\colon F(V)\times V^*\to F(V)$ are linear maps of vector spaces, the dynamics functor $\Phi_\mathfrak{s}$ sends every $0$-ary closed system $I\to I$ in $\srw^{\mathrm{lin}}$ to a linear endomap on the carrier $F(V)$.
 \end{proposition}
 
 \begin{proof}
 Let $f=\bigl((V,\sharpR_0),\binom{\inpt f}{\outp f},U\bigr)$ be a $0$-ary closed system in $\srw^{\mathrm{lin}}$, so $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the parameter sharp $\sharpR_x=\sharpR_0$ is constant linear, and $U\colon V\to\rr$ is a pure quadratic form. Pure-quadraticity of $U$ means $dU|_x=Qx$ for some linear $Q\colon V\to V^*$. In the closed case, the inputs $\xi_N$, $\omega_M$ to \eqref{eqn.bigtheta} both vanish, so \eqref{eqn.bigtheta} collapses to $\xi_V=dU|_x=Qx$, linear in $x$.
 
-By \cref{prop.storage_pair}, the dynamics functor's state-update at $f$ acts on a state $s\in F(V)$ by reading off $x=\vartheta_{V,1}(s)\in V$, computing $\xi_V=Qx$, then applying the storage's update:
+By \cref{prop.storage_pair}, the dynamics functor's state-update at $f$ acts on a state $s\in F(V)$ by reading off $x=\vartheta_V^{\mathrm{pos}}(s)\in V$, computing $\xi_V=Qx$, then applying the storage's update:
 \[
-s\;\longmapsto\;\bk{{\vartheta_V}}{s}\!\bigl(Q\,\vartheta_{V,1}(s)\bigr).
+s\;\longmapsto\;\vartheta_V^{\mathrm{dir}}\!\bigl(s,\,Q\,\vartheta_V^{\mathrm{pos}}(s)\bigr).
 \]
-Under the proposition's linearity hypothesis on $\vartheta_{V,1}$ and $\bk{{\vartheta_V}}{\blank}$, this is a composite of linear maps of vector spaces, hence a linear endomap on $F(V)$.\qedhere
+Under the proposition's linearity hypothesis on $\vartheta_V^{\mathrm{pos}}$ and $\vartheta_V^{\mathrm{dir}}$, this is a composite of linear maps of vector spaces, hence a linear endomap on $F(V)$.\qedhere
 \end{proof}
 
 Both worked-out storages satisfy the hypothesis when $\sharpR_V$ is constant: $\store{\conf}$ has anchor $\id_V$ and update $(x,\xi')\mapsto x+\sharpR_0(\xi')$ from \eqref{eqn.directions_sharp}, giving state-update $x\mapsto x+\sharpR_0(Qx)$; $\store{\phase}$ has anchor $\pi_V$ and update $((x,\xi),\xi')\mapsto(x+\sharpR_0(\xi),\,\xi-\xi')$ from \eqref{eqn.phase_storage_update}, giving state-update $(x,\xi)\mapsto(x+\sharpR_0(\xi),\,\xi-Qx)$. The wave equation \eqref{eqn.discrete_wave} is the $\Phiphase{}$ case of \cref{prop.linear_stratum}; the heat equation of \cref{rmk.graph_heat} is the $\Phiconf{}$ case with $\sharpEuc$. Both exhibit superposition for the same kinematical reason --- constancy and linearity of the storage data --- despite differing on the conservative/dissipative axis.
