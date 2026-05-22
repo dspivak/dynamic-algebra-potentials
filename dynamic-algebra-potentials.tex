@@ -1914,7 +1914,7 @@ The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the smooth 
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the pointwise pairing-preservation equation \eqref{eqn.pairing_triangle}.
 
-The same datum $\sharpR_x(\xi)\in V$ admits a second packaging---used later in the proof of \cref{lem.phase_storage}---as a 1-form on $T^*V$, equivalently a $\poly$-morphism to $\yon$. The \defineTermAs{kinetic_one_form}{\emph{kinetic 1-form}} of $(V,\sharpR_V)$ is
+The same datum $\sharpR_x(\xi)\in V$ admits a second packaging---used later in the phase lift \eqref{eqn.phase_lift_decomp}---as a 1-form on $T^*V$, equivalently a $\poly$-morphism to $\yon$. The \defineTermAs{kinetic_one_form}{\emph{kinetic 1-form}} of $(V,\sharpR_V)$ is
 \begin{equation}\label{eqn.kinetic_one_form}
 \beta_V\colon\cotof{T^*V}\to\yon,\qquad
 (x,\xi)\mapsto(0,\sharpR_x(\xi))
@@ -2395,53 +2395,35 @@ T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 \]
 using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
 
-\begin{lemma}\label{lem.phase_storage}
-There is a cotangent storage, which we call \defineTermAs{phase_space_storage}{\emph{phase-space storage}}, given by
-\[\store{\phase}\coloneqq(\absval{T^*\blank},\,\defineTerm{rho})\]
-where $\absval{T^*\blank}\colon\rvect\to\smsetiso$ sends $V\mapsto\absval{T^*V}$, and where $\rho_V$ has anchor and update (\cref{prop.storage_pair})
-\begin{equation}\label{eqn.phase_storage_update}
-\rho_V^{\mathrm{pos}}=\pi_V\colon\absval{T^*V}\to\absval V,\qquad
-\rho_V^{\mathrm{dir}}\colon\absval{T^*V}\times V^*\To{}\absval{T^*V},\quad ((x,\xi),\xi')\longmapsto(x+\sharpR_x(\xi),\,\xi-\xi').
+The construction uses one additional ingredient beyond the configuration storage $\theta_{T^*V}$ of \cref{prop.rvect_polynomial} applied at the carrier $T^*V$. Let $\pi_V\colon T^*V\to V$ be the bundle projection, let $\cotof{\Delta_{T^*V}}\colon\cotof{T^*V}\to\cotof{T^*V}\otimes\cotof{T^*V}$ be the $\otimes$-comultiplication of \cref{lem.cot_comonoid}, and let $\beta_V$ be the kinetic 1-form \eqref{eqn.kinetic_one_form}. Define the \defineTermAs{phase_lift}{\emph{phase lift}} $\lambda_V$ as the composite
+\begin{equation}\label{eqn.phase_lift_decomp}
+\lambda_V\;\colon\;\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\beta_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}.
 \end{equation}
+
+\begin{lemma}[Phase storage]\label{lem.phase_storage}
+The composite
+\begin{equation}\label{eqn.phase_storage_def}
+\rho_V\;\coloneqq\;\lambda_V\circ\theta_{T^*V}\;\colon\;\Store(\absval{T^*V})\To[\cong]{\theta_{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof V
+\end{equation}
+is a cotangent storage, the \defineTermAs{phase_space_storage}{\emph{phase-space storage}} $\store{\phase}\coloneqq(\absval{T^*\blank},\,\defineTerm{rho})$.
 \end{lemma}
 
 \begin{proof}
-$T^*\colon\rvect\to\rvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}, so $\absval{T^*\blank}\colon\rvect\to\smsetiso$ is too.
+$\absval{T^*\blank}\colon\rvect\to\smsetiso$ is strong symmetric monoidal because $T^*\colon\rvect\to\rvect$ is (\cref{prop.TT_monoidal}). Each factor of $\rho_V$ is natural in $\rvect$-isomorphisms and monoidal in $V$: $\theta_{T^*V}$ by \cref{prop.rvect_polynomial} applied at $T^*V$ (using the pairing-preservation equation \eqref{eqn.pairing_triangle} for $\sharpS_{T^*V}$), and $\lambda_V$ via naturality and monoidality of its components --- $\cotof{\Delta_{T^*V}}$ from \cref{lem.cot_comonoid}, $\cotof{\pi_V}$ from functoriality of $\cot$, and $\beta_V$ from \eqref{eqn.pairing_triangle} and \cref{prop.rvect_monoidal}. Hence so is $\rho_V$.
+\end{proof}
 
-We construct $\rho_V$ as a composite of two named ingredients, each of which will contribute exactly one half of the update \eqref{eqn.phase_storage_update}. Let $\pi_V\colon T^*V\to V$ be the bundle projection, let $\cotof{\Delta_{T^*V}}\colon\cotof{T^*V}\to\cotof{T^*V}\otimes\cotof{T^*V}$ be the $\otimes$-comultiplication of \cref{lem.cot_comonoid}, and let $\beta_V$ be the kinetic 1-form \eqref{eqn.kinetic_one_form}. Let $\lambda_V$ denote the composite
-\begin{equation}\label{eqn.phase_lift_decomp}
-\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\beta_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V},
+The two factors of $\rho_V$ enter at separate steps of the composite \eqref{eqn.phase_storage_def} and produce separate halves of the pair-form below. The configuration storage $\theta_{T^*V}$ uses the carrier's reactive structure, which by \cref{prop.canonical_symplectic_pairing} is the canonical antisymmetric $\sharpS_{T^*V}$ of \eqref{eqn.canonical_sharp} --- the conservative-axis ingredient in the design space of \cref{sec.cotangent_storages}. The phase lift $\lambda_V$ uses the parameter sharp $\sharpR_V$ via $\beta_V$ --- the source of the kinetic drift.
+
+\begin{proposition}[Phase storage pair-form]\label{prop.phase_storage_pair}
+Under \cref{prop.storage_pair}, the anchor and update of $\rho_V$ are
+\begin{equation}\label{eqn.phase_storage_update}
+\rho_V^{\mathrm{pos}}=\pi_V\colon\absval{T^*V}\to\absval V,\qquad
+\rho_V^{\mathrm{dir}}\colon\absval{T^*V}\times V^*\to\absval{T^*V},\quad ((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,\xi-\xi').
 \end{equation}
-which we call the \defineTermAs{phase_lift}{\emph{phase lift}}, and define
-\[
-\rho_V\;\coloneqq\;\lambda_V\circ\theta_{T^*V}\;\colon\;\Store(\absval{T^*V})\To{\cong}\cotof{T^*V}\To{\lambda_V}\cotof V,
-\]
-where $\theta_{T^*V}$ is the configuration storage of \cref{prop.rvect_polynomial} applied at the carrier $T^*V$ --- by \cref{prop.canonical_symplectic_pairing}, the reactive structure that $\theta_{T^*V}$'s update uses is $\sharpS_{T^*V}$ of \eqref{eqn.canonical_sharp}.
+\end{proposition}
 
-\emph{Pair-form readout.} We verify that $\rho_V$ has the anchor and update displayed in \eqref{eqn.phase_storage_update} by tracing positions and directions through the composite, recalling that polynomial maps act forward on positions and backward on directions.
-
-\emph{Anchor.} On positions, $\theta_{T^*V}^{\mathrm{pos}}=\id_{\absval{T^*V}}$ by \eqref{eqn.directions_sharp} applied at $T^*V$, and $\lambda_V^{\mathrm{pos}}\colon(x,\xi)\mapsto x$ since the second factor of \eqref{eqn.phase_lift_decomp} acts as $\cotof{\pi_V}$ on positions (the $\yon$-factor contributes nothing) and $\cotof{\Delta_{T^*V}}$ is the diagonal. Their composite is $\pi_V$, agreeing with \eqref{eqn.phase_storage_update}.
-
-\emph{Update.} Fix $(x,\xi)\in\absval{T^*V}$ and a direction $\xi'\in T^*_xV\cong V^*$ at the output position $x\in V$ of $\cotof V$. The composite sends $\xi'$ backwards through $\lambda_V$ first and then through $\theta_{T^*V}$.
-\begin{description}
-\item[Step 1 (apply $\lambda_V$ on directions at $(x,\xi)$).] Reading \eqref{eqn.phase_lift_decomp} backward, $\cotof{\pi_V}\otimes\beta_V$ sends $\xi'$ to $(\xi',0)\in T^*_{(x,\xi)}(T^*V)$ via the cotangent pullback along $\pi_V$ on the first factor and to $\beta_V(x,\xi)=(0,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$ on the second factor (using \eqref{eqn.kinetic_one_form}); the comultiplication $\cotof{\Delta_{T^*V}}$ then sums these in $T^*_{(x,\xi)}(T^*V)$, giving
-\[
-(\xi',\,0)\;+\;\beta_V(x,\xi)\;=\;(\xi',\,\sharpR_x(\xi))\;\in\;V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
-\]
-The second component is the \emph{kinetic-drift contribution}, supplied by $\beta_V$.
-\item[Step 2 (apply $\theta_{T^*V}$ on directions at $(x,\xi)$).] By \eqref{eqn.directions_sharp} applied at $T^*V$, $\theta_{T^*V}^{\mathrm{dir}}$ sends a state-covector pair $((x,\xi),\omega)$ with $\omega\in T^*_{(x,\xi)}(T^*V)$ to $(x,\xi)+\sharpS_{T^*V}(\omega)$. At $\omega=(\xi',\sharpR_x(\xi))$ from Step 1, \eqref{eqn.canonical_sharp} gives
-\[
-\sharpS_{T^*V}\bigl(\xi',\,\sharpR_x(\xi)\bigr)\;=\;\bigl(\sharpR_x(\xi),\,-\xi'\bigr),
-\]
-so
-\[
-\theta_{T^*V}^{\mathrm{dir}}\bigl((x,\xi),\,(\xi',\,\sharpR_x(\xi))\bigr)\;=\;(x,\xi)+\bigl(\sharpR_x(\xi),\,-\xi'\bigr)\;=\;\bigl(x+\sharpR_x(\xi),\,\xi-\xi'\bigr).
-\]
-The position--momentum flip and the minus sign on momentum are the \emph{symplectic contribution}, supplied by $\sharpS_{T^*V}$.
-\end{description}
-Adding the two contributions recovers $\rho_V^{\mathrm{dir}}((x,\xi),\xi')=\bigl(x+\sharpR_x(\xi),\,\xi-\xi'\bigr)$ as displayed in \eqref{eqn.phase_storage_update}; the drift $x+\sharpR_x(\xi)$ enters through $\beta_V$ via $\lambda_V$, while the kick $\xi-\xi'$ --- minus sign included --- enters through $\sharpS_{T^*V}$ via $\theta_{T^*V}$.
-
-\emph{Naturality and monoidality.} $\theta_{T^*V}$ is natural in $\rvect$-isomorphisms by \cref{prop.rvect_polynomial} applied at $T^*V$, where the pairing-preservation equation \eqref{eqn.pairing_triangle} is used for $\sharpS_{T^*V}$. The components of $\lambda_V$ are likewise natural: $\cotof{\Delta_{T^*V}}$ by functoriality of $\cot$ on the diagonal, $\cotof{\pi_V}$ by functoriality of $\cot$ on $\pi_V$, and $\beta_V$ by \eqref{eqn.pairing_triangle} (as in the discussion following \eqref{eqn.kinetic_one_form}). Monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V_2}=\sharpR_{V_1}\oplus\sharpR_{V_2}$ (\cref{prop.rvect_monoidal}), together with the monoidality of $\theta$, of $\cot$ on the diagonal and projection, and of $\beta$.
+\begin{proof}
+On positions, $\theta_{T^*V}^{\mathrm{pos}}=\id_{\absval{T^*V}}$ from \eqref{eqn.directions_sharp} and $\lambda_V$ acts as $\cotof{\pi_V}$ from \eqref{eqn.phase_lift_decomp}, so $\rho_V^{\mathrm{pos}}=\pi_V$. On directions at $(x,\xi)$, $\lambda_V$ sends $\xi'\in V^*$ to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ --- cotangent pullback along $\pi_V$ summed with $\beta_V(x,\xi)$ via $\cotof{\Delta_{T^*V}}$, using \eqref{eqn.kinetic_one_form}. Then $\theta_{T^*V}^{\mathrm{dir}}$ adds $\sharpS_{T^*V}(\xi',\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi')$ from \eqref{eqn.canonical_sharp} to $(x,\xi)$, giving $(x+\sharpR_x(\xi),\,\xi-\xi')$ as displayed.
 \end{proof}
 
 %--------------------------------------------------------------------
@@ -2621,7 +2603,7 @@ s+\sharpS_S(\xi_V,\sharpR_x(\xi))=\bigl(x+\sharpR_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
 We will now break down \cref{eqn.state_update}, which is the phase-space storage \eqref{eqn.phase_storage_update} with the substitution $\xi'=\xi_V$. 
 
-Its left-hand side records where the three pieces of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharpR_x(\xi))\in T^*_sS$ comes from the phase lift at $(x,\xi)$ (the proof of \cref{lem.phase_storage}). 
+Its left-hand side records where the three pieces of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharpR_x(\xi))\in T^*_sS$ comes from the phase lift \eqref{eqn.phase_lift_decomp} at $(x,\xi)$. 
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_V,\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharpR_x(\xi),\,\xi-\xi_V)$.
 

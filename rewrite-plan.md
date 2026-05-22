@@ -276,3 +276,27 @@ Format: each entry covers one session-step. Lists files/locations touched, devia
 - **Sections touched:** `sec.cotangent_storages` (design-space subsection, lemma proof, conf-learners remark), `sec.phase_dynamics` (one back-reference, the Hamiltonian remark body), `sec.graph_laplacian` (linear-stratum proposition, heat-equation remark), `ch.background` (kinetic-1-form back-reference), intro chapter (one sentence).
 - **Choices that asymmetrically split the design-space picture:** `prop.linear_stratum` (kinematical axis) was graduated to a proposition; `rmk.constant_inverse_mass_hamiltonian` (conservative axis) was sharpened as a remark, not graduated. The asymmetry was deliberate (single-use propositions don't amortize, the Hamiltonian-reading hypothesis is hard to abstract cleanly) and is logged at step 5. Easy to flip either direction on the editorial pass.
 - **Known minor imprecision flagged for the editorial pass:** design-space subsection's "symmetric positive-definite ⇒ gradient descent" elides the sign convention (descent really needs negative-definite, or pos-def with a conventional minus sign).
+
+### Step 10 — Split `lem.phase_storage` (post-rewrite refactor)
+- **Files:** `dynamic-algebra-potentials.tex`.
+- **Trigger:** user noted the verbose `lem.phase_storage` proof was awkward; suggested splitting into composite-form lemma + pair-form proposition with a discussion paragraph between them.
+- **Touched:**
+  - Replaced the verbose `lem.phase_storage` + proof (~46 lines) with:
+    - A paragraph defining $\lambda_V$ (the phase lift) above the lemma, with `\eqref{eqn.phase_lift_decomp}` retained.
+    - A new compact `lem.phase_storage` that defines $\rho_V \coloneqq \lambda_V \circ \theta_{T^*V}$ in `\eqref{eqn.phase_storage_def}` (new label) and asserts it is a storage. Proof is now just the naturality + monoidality argument (~3 lines).
+    - A short discussion paragraph between the lemma and proposition, naming each factor's role: $\theta_{T^*V}$ uses the antisymmetric carrier sharp $\sharpS_{T^*V}$ (conservative-axis); $\lambda_V$ uses the parameter sharp $\sharpR_V$ via $\beta_V$ (kinetic drift).
+    - A new `prop.phase_storage_pair` stating the pair-form anchor and update in `\eqref{eqn.phase_storage_update}` (label preserved).
+    - A 4-line proof that gestures at the chase through $\lambda_V$ then $\theta_{T^*V}$, citing the four key equations (`eqn.kinetic_one_form`, `eqn.phase_lift_decomp`, `eqn.directions_sharp`, `eqn.canonical_sharp`) and relying on the reader to verify.
+  - Updated two back-references: line 1917 (kinetic-1-form's "second packaging") now points at `\eqref{eqn.phase_lift_decomp}` directly; line 2606 (the three-pieces breakdown after `eqn.state_update`) likewise.
+- **Decisions / deviations:**
+  - This step wasn't in the original plan — it came from the user noticing the verbose proof was a problem after the page-budget conversation. The split is the user's suggested structure.
+  - Kept `eqn.phase_storage_update`'s label even though it moved from the lemma to the new proposition — all four downstream citations (lines 2530, 2604, 3273) resolve unchanged.
+  - Kept `lem.phase_storage`'s label even though its content is now narrower (storage existence only, no pair-form) — two downstream citations (lines 2344, 2346) read sensibly with the narrower content.
+  - The new proposition's proof is deliberately terse: it states the chase, names the key equations, and stops. Per user direction: "calls a few lines and relies on readers to do the rest of the calculation."
+  - Term-tracking entries (`\defineTermAs{phase_lift}`, `\defineTermAs{phase_space_storage}`, `\defineTerm{rho}`) all preserved.
+- **Verified:** Build clean (two passes), 65 pages (was 66 — split saved a page). No undefined references.
+
+## Updated final state (after step 10)
+- **Total page delta:** +1 (64 → 65).
+- **Labels added (cumulative):** `prop.linear_stratum`, `eqn.hamiltonian`, `eqn.phase_storage_def`, `prop.phase_storage_pair`.
+- **Labels removed (cumulative):** `rmk.linear_stratum`, `rmk.phase_lift`.
