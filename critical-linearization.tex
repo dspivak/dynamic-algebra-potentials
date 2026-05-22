@@ -1,0 +1,144 @@
+% !TEX root = dynamic-algebra-potentials.tex
+%
+% Standalone section, intended to be \input{}'d into dynamic-algebra-potentials.tex
+% as a new section at the end of \ch.potential_driven_dynamics, immediately
+% following \sec.design_space. It uses the macros and conventions of the host
+% paper (\srw, \plmfd, \rvect, \lensob, \inpt, \outp, \store, \Phiphase,
+% \Phiconf, \lin, \cnst) and cites existing labels (def.srw_lin,
+% cor.srw_lin_four_conditions, prop.linear_stratum, lem.parameter_lens_action,
+% sec.design_space).
+%
+% No new preamble macros are required.
+
+%--------------------------------------------------------------------
+\section{Critical operating points and Taylor linearization}\label{sec.critical_linearization}
+%--------------------------------------------------------------------
+
+The wave and graph-Laplacian examples of \cref{ch.applications} land in the linear stratum $\srw^{\lin}\subset\srw$ (\cref{def.srw_lin}) on the nose: their interfaces are vector spaces, their lens maps are linear, and their potentials are pure quadratic forms. In typical engineering practice this is not the starting situation. One usually begins with a smooth system, picks an operating point, and linearizes about it. This section records that the linearization step is itself operad-functorial. Pointed smooth rewiring diagrams with vanishing first derivative of the potential at the operating point form a suboperad $\srw_{\crit}\subseteq\srw$, and Taylor expansion to second order at the operating point gives an operad functor $J^2\colon\srw_{\crit}\to\srw^{\lin}$.
+
+The picture this furnishes for the design-space discussion of \cref{sec.design_space} is that $\srw^{\lin}$ is not merely the regime in which the wave and heat examples happen to live; it is the canonical second-order Taylor target of any critically-pointed smooth rewiring diagram. Wave and heat then split, as in \cref{prop.linear_stratum}, on the choice of cotangent storage applied downstream.
+
+%--------------------------------------------------------------------
+\subsection{Pointed and critical smooth rewiring diagrams}\label{sec.srw_pointed}
+%--------------------------------------------------------------------
+
+A pointed lens interface picks out a point of $\inpt M\times\outp M$; a pointed smooth rewiring diagram picks out additionally a parameter value and external input compatible with the chosen points on either side.
+
+\begin{definition}[Pointed smooth rewiring diagrams]\label{def.srw_pointed}
+A \defineTermAs{pointed_interface}{\emph{pointed interface}} is a pair $(\lensob M,m)$ of an object $\lensob M$ of $\srw$ and a point $m=(\inpt m,\outp m)\in\inpt M\times\outp M$. A \defineTermAs{pointed_srw_diagram}{\emph{pointed smooth rewiring diagram}}
+\[
+(f,z)\colon (\lensob{M_1},m_1),\ldots,(\lensob{M_K},m_K)\to(\lensob N,n)
+\]
+consists of a multimorphism $f=\bigl((V,\sharpR_V),\binom{\inpt f}{\outp f},U\bigr)$ of $\srw$ together with a point
+\[
+z\;=\;(v,\outp m_1,\ldots,\outp m_K,\inpt n)\;\in\;V\times\outp M\times\inpt N
+\]
+of the domain of $U$, where $\outp M\coloneqq\prod_i\outp{M_i}$ and analogously for $\inpt M$, satisfying the \emph{compatibility conditions}
+\begin{equation}\label{eqn.pointed_compatibility}
+\outp f(v,\outp m)\;=\;\outp n,\qquad
+\inpt f(v,\outp m,\inpt n)\;=\;\inpt m,
+\end{equation}
+with $\outp m\coloneqq(\outp m_i)_i$ and $\inpt m\coloneqq(\inpt m_i)_i$.
+\end{definition}
+
+The compatibility conditions \eqref{eqn.pointed_compatibility} say exactly that the chosen operating points on the sources and target are consistent with the lens maps of $f$ at the chosen parameter $v$ and external input $\inpt n$.
+
+\begin{proposition}\label{prop.srw_pointed_operad}
+Pointed smooth rewiring diagrams form an operad $\srw_*$. The forgetful assignment $(\lensob M,m)\mapsto\lensob M$, $(f,z)\mapsto f$ is a morphism of operads $\srw_*\to\srw$.
+\end{proposition}
+
+\begin{proof}
+The operad structure on the underlying multimorphisms is that of $\srw$; what needs checking is that composition lifts to operating points. Given pointed diagrams $(g_i,z_i)\colon(\lensob{L_{i1}},\ell_{i1}),\ldots,(\lensob{L_{ir_i}},\ell_{ir_i})\to(\lensob{M_i},m_i)$ and $(f,z_f)\colon(\lensob{M_1},m_1),\ldots,(\lensob{M_K},m_K)\to(\lensob N,n)$, the parameter component of the composite operating point is the tuple of parameter components of $z_f$ and each $z_i$. The external output points of the composite are the points $\outp\ell_{ij}$ on the innermost interfaces, and the external input point is $\inpt n$. Each intermediate input point $\inpt m_i$ on $\lensob{M_i}$ is determined twice: once as the output of $\inpt f$ at the chosen parameter and inputs (this is \eqref{eqn.pointed_compatibility} for $f$), and once as an input to $\inpt{g_i}$ in $z_i$ (this is the compatibility \eqref{eqn.pointed_compatibility} for $g_i$). The two agree by hypothesis, so the substitution is consistent.
+
+Associativity and equivariance under symmetric group actions are inherited from $\srw$: the operating-point data is functorial along the operadic structure maps. Identities are pointed by any choice of point on their interface, with $v=0$ trivial parameter and the compatibility conditions reading $\outp m=\outp m$ and $\inpt m=\inpt m$.\qedhere
+\end{proof}
+
+We now restrict to those pointed diagrams whose potential has vanishing first derivative at the operating point.
+
+\begin{definition}[Critical pointed smooth rewiring diagrams]\label{def.srw_crit}
+A pointed smooth rewiring diagram $(f,z)$ is \defineTermAs{critical_srw_diagram}{\emph{critical}} if
+\begin{equation}\label{eqn.crit}
+dU|_z\;=\;0\;\in\;T^*_z\bigl(V\times\outp M\times\inpt N\bigr).
+\end{equation}
+We write $\srw_{\crit}\subseteq\srw_*$ for the full suboperad on the critical multimorphisms.
+\end{definition}
+
+\begin{proposition}\label{prop.srw_crit_suboperad}
+$\srw_{\crit}\subseteq\srw_*$ is closed under operadic composition, hence a suboperad.
+\end{proposition}
+
+\begin{proof}
+By the coKleisli composition formula in $\plmfd$ recalled in the proof of \cref{lem.plmfd_lin_smc}, the potential of a composite has the form
+\[
+U_{g\circ f}\;=\;U_g\circ a\;+\;U_f\circ b
+\]
+for smooth maps $a,b$ assembled from the lens components and parameters; the parameter version is the same formula with the parameter variables of $f$ and $g$ included in the inputs of $a$ and $b$. Taking the differential at the composite operating point and applying the chain rule,
+\[
+dU_{g\circ f}|_{z_{g\circ f}}\;=\;(Ta)^\top\bigl(dU_g|_{z_g}\bigr)\;+\;(Tb)^\top\bigl(dU_f|_{z_f}\bigr).
+\]
+Both pulled-back differentials vanish by criticality of $(f,z_f)$ and $(g,z_g)$, so $dU_{g\circ f}|_{z_{g\circ f}}=0$. Identities have zero potential and are critical.\qedhere
+\end{proof}
+
+\begin{remark}[Full criticality vs.\ storage-dependent equilibrium]\label{rmk.full_vs_storage_critical}
+Criticality \eqref{eqn.crit} is stronger than the equilibrium condition that arises for a given storage. For instance, $\Phiconf{}$ at a closed system fixes a state $x\in V$ when $\sharpR_x(dU|_x)=0$ in $V$, equivalently $dU|_x=0$ in $V^*$ since $\sharpR_x$ is an isomorphism; this places no constraint on derivatives in the external-input directions $\inpt N$. \Cref{eqn.crit} demands the differential to vanish in all directions of $V\times\outp M\times\inpt N$. This extra strength is exactly what is needed for the second-order Taylor expansion below to land in the pure-quadratic potentials of $\srw^{\lin}$, rather than in a larger second-jet target retaining the second derivatives of the lens components.\qedhere
+\end{remark}
+
+%--------------------------------------------------------------------
+\subsection{The Taylor functor \texorpdfstring{$J^2\colon\srw_{\crit}\to\srw^{\lin}$}{J2: SRW\_crit -> SRW\_lin}}\label{sec.taylor_critical}
+%--------------------------------------------------------------------
+
+\begin{definition}[Second-order Taylor expansion]\label{def.taylor_critical}
+Define $J^2\colon\srw_{\crit}\to\srw^{\lin}$ as follows.
+
+\emph{On objects.} A pointed interface $(\lensob M,m)$ is sent to the lens object on tangent spaces at $m$:
+\[
+J^2(\lensob M,m)\;\coloneqq\;\binom{T_{\inpt m}\inpt M}{T_{\outp m}\outp M}.
+\]
+
+\emph{On a critical pointed multimorphism} $(f,z)$ with $f=\bigl((V,\sharpR_V),\binom{\inpt f}{\outp f},U\bigr)$ and $z=(v,\outp m,\inpt n)$, $J^2(f,z)$ is the multimorphism of $\srw^{\lin}$
+\[
+J^2(\lensob{M_1},m_1),\ldots,J^2(\lensob{M_K},m_K)\;\longrightarrow\;J^2(\lensob N,n)
+\]
+whose parameter is the reactive vector space $V$ with its constant sharp (it inherits constancy from $\sharpR_V$ via $T_vV\cong V$; if $\sharpR_V$ is not constant, take its value at $v$), and whose lens components and potential are
+\begin{equation}\label{eqn.J2_lens}
+\outp{J^2(f,z)}\;\coloneqq\;T_z\outp f,\qquad \inpt{J^2(f,z)}\;\coloneqq\;T_z\inpt f,
+\end{equation}
+\begin{equation}\label{eqn.J2_pot}
+J^2(f,z)\text{ potential}\;\colon\;\delta z\;\longmapsto\;\tfrac12\,d^2U|_z(\delta z,\delta z),
+\end{equation}
+where $\delta z\in T_vV\oplus T_{\outp m}\outp M\oplus T_{\inpt n}\inpt N$ and $d^2U|_z$ is the Hessian of $U$ at $z$.
+\end{definition}
+
+The tangent maps in \eqref{eqn.J2_lens} are linear by construction; the Hessian in \eqref{eqn.J2_pot} is a symmetric bilinear form, and evaluating it on the diagonal yields a pure quadratic form (\cref{lem.quadratic_functorial}). So the four conditions of \cref{cor.srw_lin_four_conditions} hold, and the image really does lie in $\srw^{\lin}$. The next theorem is that this assignment respects operadic composition.
+
+\begin{theorem}[Critical Taylor linearization]\label{thm.taylor_critical_functor}
+The assignment of \cref{def.taylor_critical} is an operad functor $J^2\colon\srw_{\crit}\to\srw^{\lin}$.
+\end{theorem}
+
+\begin{proof}
+For the lens part, the ordinary chain rule $T(g\circ f)=Tg\circ Tf$ gives functoriality of \eqref{eqn.J2_lens} on the linear output and input maps.
+
+It remains to check that the Hessian rule \eqref{eqn.J2_pot} respects composition. As in the proof of \cref{prop.srw_crit_suboperad}, the composite potential is
+\[
+U_{g\circ f}\;=\;U_g\circ a\;+\;U_f\circ b,
+\]
+for assembly maps $a,b$. Taking second derivatives at the critical operating point and applying the Hessian chain rule,
+\[
+d^2(U_g\circ a)|_z \;=\; (Ta)^\top\bigl(d^2U_g|_{a(z)}\bigr)(Ta) \;+\; \bigl(\text{terms involving }d^2 a\bigr)\!\cdot\!dU_g|_{a(z)}.
+\]
+The second group of terms is multiplied by $dU_g|_{a(z)}$, which vanishes by criticality of $(g,z_g)$. The same applies to $d^2(U_f\circ b)$. So
+\[
+d^2 U_{g\circ f}|_z\;=\;(Ta)^\top\bigl(d^2U_g|_{a(z)}\bigr)(Ta)\;+\;(Tb)^\top\bigl(d^2U_f|_{b(z)}\bigr)(Tb),
+\]
+i.e.\ the Hessian of the composite is the sum of pullbacks of the constituent Hessians along the linearized assembly maps $Ta=T_z a$ and $Tb=T_z b$. This is exactly the coKleisli composition formula of \cref{lem.plmfd_lin_smc} applied to the linearized data, so $J^2(g\circ f)=J^2(g)\circ J^2(f)$.
+
+Identities are preserved because the identity potential is zero, and tangent and Hessian functors commute with permutation of factors, giving equivariance.\qedhere
+\end{proof}
+
+\begin{remark}[$\srw^{\lin}$ as Taylor target]\label{rmk.srw_lin_taylor_target}
+\Cref{thm.taylor_critical_functor} sharpens the role of $\srw^{\lin}$ in the design-space picture of \cref{sec.design_space}. The kinematical axis of that picture is the regime in which the dynamics functor produces linear endomaps (\cref{prop.linear_stratum}); the present theorem is that this same regime is the canonical second-order Taylor target of any critically-pointed smooth rewiring diagram. The composite
+\[
+\srw_{\crit}\;\To{J^2}\;\srw^{\lin}\;\To{\Phi_\store{\bullet}}\;\org
+\]
+gives, for $\store{\bullet}=\store{\phase}$, the small-oscillation (wave-type) dynamics about a critical operating point and, for $\store{\bullet}=\store{\conf}$, the linear-response (heat-type) dynamics; the split between the two is the storage choice of \cref{sec.design_space}, not the syntactic data of the linearization. We do not develop these dynamical consequences further here.\qedhere
+\end{remark}

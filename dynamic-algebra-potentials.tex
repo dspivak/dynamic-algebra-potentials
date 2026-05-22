@@ -158,6 +158,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \theoremstyle{definition}
 \newtheorem{definitionx}{Definition}[section]
+\crefname{definitionx}{Definition}{Definitions}
 
 \newaliascnt{examplex}{definitionx}
 \newtheorem{examplex}[examplex]{Example}
@@ -420,6 +421,8 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\phase}{\mathrm{phase}}
 \newcommand{\lrn}{\mathrm{lrn}}
 \newcommand{\euc}{\mathrm{Euc}}
+\newcommand{\lin}{\mathrm{lin}}
+\newcommand{\cnst}{\mathrm{cnst}}
 
 \newcommand{\src}{\mathrm{src}}
 \newcommand{\tgt}{\mathrm{tgt}}
@@ -542,7 +545,7 @@ To add the remaining pieces, we use two standard categorical devices. The potent
 
 The passage from lenses to polynomial coalgebras is mediated by a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\outp c\otimes\ihom{\inpt c,I}$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}). This sends the ordinary set-lens interface $\binom{A}{B}$, represented in $\poly$ by $\binom{A\yon}{B\yon}$, to the monomial $B\yon^A$ (\cref{ex.moore}), whose coalgebras are precisely Moore machines~\cite{moore1956gedanken}, hence the name. 
 
-Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. The two choices we consider---which we call configuration and phase- give rise to two dynamics functors $\Phiconf{},\Phiphase{}\colon\srw\to\org$. In the configuration semantics $\Phiconf{}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phiphase{}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates---more precisely, potential-driven phase-space updates (\cref{rmk.constant_inverse_mass_hamiltonian})---and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation---or, on any finite directed graph of such particles, the discrete dynamics of the graph Laplacian. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data, which is then automatically transformed into coalgebraic dynamics. Applied to that same graph syntax---same parameters, same potentials---the other semantics, $\Phiconf{}$, recovers the discrete heat equation (\cref{rmk.graph_heat}): changing the storage takes us from energy conservation semantics to energy dissipation semantics. Configuration and phase are two named points in a small design space of cotangent storages (\cref{sec.cotangent_storages}), whose axes --- constancy, antisymmetry, and symmetric positive-definiteness of the carrier's reactive structure --- are independently responsible for superposition, energy conservation, and gradient descent.
+Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice for this paper is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. The two choices we consider---which we call configuration and phase- give rise to two dynamics functors $\Phiconf{},\Phiphase{}\colon\srw\to\org$. In the configuration semantics $\Phiconf{}$, taking $S=V$, the state is just the current parameter value; this gives Newton's method and gradient descent for parameterized neural networks, with backpropagation as the lens backward pass. In the phase semantics $\Phiphase{}$, taking $S=T^*V$, the state also carries momentum; this gives Hamiltonian-style updates---more precisely, potential-driven phase-space updates (\cref{rmk.constant_inverse_mass_hamiltonian})---and when applied to a chain of particles joined by ideal linear springs, it recovers the discrete wave equation---or, on any finite directed graph of such particles, the discrete dynamics of the graph Laplacian. This is the sense in which smooth rewiring diagrams are syntax: they specify the smooth interaction data, which is then automatically transformed into coalgebraic dynamics. Applied to that same graph syntax---same parameters, same potentials---the other semantics, $\Phiconf{}$, recovers the discrete heat equation (\cref{rmk.graph_heat}): changing the storage takes us from energy conservation semantics to energy dissipation semantics. Configuration and phase are two named points in a small design space of cotangent storages (\cref{sec.design_space}), whose axes --- constancy, antisymmetry, and symmetric positive-definiteness of the carrier's reactive structure --- are independently responsible for superposition, energy conservation, and gradient descent. We name the syntactic regime where the superposition axis lives the \emph{linear stratum} $\srw^{\lin}\subset\srw$ (\cref{def.srw_lin}).
 
 The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
@@ -2104,6 +2107,106 @@ We write $\defineTerm{srw}$ for its underlying operad. From this point on we wor
 
 Multimorphisms in $\srw$ are called \defineTermAs{smooth_rewiring_diagram}{\emph{smooth rewiring diagrams}}. When the parameter is the trivial reactive vector space $\rr^0$, we call such a multimorphism a \defineTermAs{smooth_wiring_diagram}{\emph{smooth (static) wiring diagram}}; when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$, we call it a \defineTermAs{closed_system}{\emph{closed system}}.
 
+It will be useful to single out the sub-operad of $\srw$ on which both sides of the Para construction $\srw=\para{\rvect}{\plmfd}$ are linear: linear lens-and-potential data on the $\plmfd$ side, constant parameter sharp on the $\rvect$ side. We define each side's linear part as a sub-SMC of its parent, check that the action of \cref{lem.parameter_lens_action} restricts, and combine via the same Para construction.
+
+\begin{definition}\label{def.rvect_cnst}
+Let $\rvect^{\cnst}\subseteq\rvect$ be the full sub-SMC on objects $(V,\sharpR_V)$ whose sharp section $\sharpR_V\colon V\to\Iso(V^*,V)$ \eqref{eqn.sharp_iso} is constant in $x\in V$, i.e.\ $\sharpR_x=\sharpR_0$ for all $x$.
+\end{definition}
+
+Constancy is closed under direct sum: by \eqref{eqn.directsum_pairing}, $\sharpR_{V\oplus W}$ is constant when both $\sharpR_V$ and $\sharpR_W$ are; the monoidal unit $0\in\rvect$ is vacuously constant. So $\rvect^{\cnst}$ is closed under $\oplus$ in $\rvect$ and inherits the symmetric monoidal structure of \cref{prop.rvect_monoidal}.
+
+\begin{definition}\label{def.plmfd_lin}
+Let $\plmfd^{\lin}\subseteq\plmfd$ be the sub-SMC on lens objects $\lensob M$ with $\outp M,\inpt M\in\vect$, and on morphisms $f=\bigl(\binom{\inpt f}{\outp f},U\bigr)\colon\lensob M\to\lensob N$ with $\outp f$ and $\inpt f$ linear and $U\colon\outp M\times\inpt N\to\rr$ a pure quadratic form.
+\end{definition}
+
+The sub-SMC claims for both definitions hinge on one functorial fact about pure quadratic forms, which we package first.
+
+\begin{lemma}\label{lem.quadratic_functorial}
+A \defineTermAs{pure_quadratic_form}{\emph{pure quadratic form}} on a finite-dimensional vector space $V$ is a smooth function $U\colon V\to\rr$ of the form $U(v)=q(v,v)$ for some symmetric bilinear $q\colon V\times V\to\rr$. The pure quadratic forms on $V$ make a real vector space; pullback along a linear map $L\colon W\to V$ sends pure quadratic to pure quadratic and is linear in $U$.
+\end{lemma}
+
+\begin{proof}
+For pure quadratic $U_1,U_2$ on $V$ with bilinear data $q_1,q_2$, we have $(U_1+U_2)(v)=q_1(v,v)+q_2(v,v)=(q_1+q_2)(v,v)$ with $q_1+q_2$ symmetric bilinear, so the pure quadratic forms on $V$ are closed under sums (and trivially under scalar multiples), hence a vector space.
+
+For pullback along a linear $L\colon W\to V$, set $q'(w_1,w_2)\coloneqq q(Lw_1,Lw_2)$, which is symmetric bilinear in $w_1,w_2$, and compute
+\[
+(U\circ L)(w)\;=\;q(Lw,Lw)\;=\;q'(w,w),
+\]
+so $U\circ L$ is a pure quadratic form on $W$. The map $U\mapsto U\circ L$ depends linearly on $U$ (hence on $q$).\qedhere
+\end{proof}
+
+\begin{lemma}\label{lem.plmfd_lin_smc}
+$\plmfd^{\lin}\subseteq\plmfd$ is a sub-SMC.
+\end{lemma}
+
+\begin{proof}
+We verify closure under identity, composition, and monoidal product.
+
+\emph{Identity.} The identity at $\lensob M$ in $\plmfd$ is $\bigl(\id_{\outp M},\id_{\inpt M},0\bigr)$; the lens components are linear and the zero potential is pure quadratic (take $q\equiv 0$).
+
+\emph{Composition.} Let $f\colon\lensob M\to\lensob N$ and $g\colon\lensob N\to\lensob P$ both lie in $\plmfd^{\lin}$. By the coKleisli composition formula in $\plmfd$ (\cref{sec.potentialized_cokleisli}), the composite $g\circ f$ has lens part
+\[
+\outp{g\circ f}=\outp g\circ\outp f,\qquad
+\inpt{g\circ f}\colon\outp M\times\inpt P\to\inpt M,\quad(m,p)\mapsto\inpt f\bigl(m,\,\inpt g(\outp f(m),p)\bigr),
+\]
+and potential
+\[
+U_{g\circ f}(m,p)\;=\;U_g\bigl(\outp f(m),p\bigr)+U_f\bigl(m,\,\inpt g(\outp f(m),p)\bigr),
+\]
+the sum coming from the $\potd$-monoid multiplication $\mu=(+)$ on the backward $\rr$-channel. Linearity of $\outp{g\circ f}$ and $\inpt{g\circ f}$ is composition of linear maps. The argument $(\outp f(m),p)$ of $U_g$ is linear in $(m,p)$, and so is $\bigl(m,\inpt g(\outp f(m),p)\bigr)$; by \cref{lem.quadratic_functorial}, pullback of a pure quadratic by a linear map is pure quadratic, and the sum of two pure quadratics is pure quadratic, so $U_{g\circ f}$ is pure quadratic.
+
+\emph{Monoidal product.} The symmetric monoidal structure on $\plmfd$ is induced from $(\mfd,\times)$ via \cref{lem.cot_lifts_lens_potential}; on objects, $\lensob{M_1}\otimes\lensob{M_2}=\binom{\inpt{M_1}\times\inpt{M_2}}{\outp{M_1}\times\outp{M_2}}$ preserves vector-space interfaces. On morphisms $f_i=(\outp{f_i},\inpt{f_i},U_i)$ the lens components of $f_1\otimes f_2$ are $\outp{f_1}\times\outp{f_2}$ and $\inpt{f_1}\times\inpt{f_2}$ (linear from linear), and the potential is
+\[
+(U_1\oplus U_2)\bigl(\outp m_1,\outp m_2,\inpt n_1,\inpt n_2\bigr)\;=\;U_1\bigl(\outp m_1,\inpt n_1\bigr)+U_2\bigl(\outp m_2,\inpt n_2\bigr),
+\]
+each summand a pullback of a pure quadratic along a linear projection; by \cref{lem.quadratic_functorial} the sum is pure quadratic. The monoidal unit $\binom{\rr^0}{\rr^0}$ has all data trivially linear and the zero potential, hence in $\plmfd^{\lin}$.\qedhere
+\end{proof}
+
+\begin{lemma}\label{lem.action_restricts}
+The action $\rvect\times\plmfd\to\plmfd$ of \cref{lem.parameter_lens_action} restricts to an action $\rvect^{\cnst}\times\plmfd^{\lin}\to\plmfd^{\lin}$.
+\end{lemma}
+
+\begin{proof}
+\emph{On objects.} For $V\in\rvect^{\cnst}$ (so $V\in\vect$) and $\lensob X\in\plmfd^{\lin}$ (so $\outp X,\inpt X\in\vect$), the action gives the lens object $\binom{\inpt X}{V\times\outp X}$, whose interfaces $\inpt X$ and $V\times\outp X$ are both vector spaces.
+
+\emph{On morphisms.} For $u\colon V\to V'$ in $\rvect^{\cnst}$ --- a $\rvect$-isomorphism between constant-sharp objects, so in particular a linear map of vector spaces --- and $f=(\outp f,\inpt f,U)\colon\lensob c\to\lensob d$ in $\plmfd^{\lin}$, \cref{lem.parameter_lens_action} gives the lens components of $u\cdot f$ as
+\[
+\outp{u\cdot f}\colon V\times\outp c\to V'\times\outp d,\quad(v,c)\mapsto(u(v),\outp f(c)),
+\]
+\[
+\inpt{u\cdot f}\colon V\times\outp c\times\inpt d\to\inpt c,\quad(v,c,d)\mapsto\inpt f(c,d),
+\]
+both linear (the second discards $V$ via the comonoid counit). The potential of $u\cdot f$ is the pullback of $U\colon\outp c\times\inpt d\to\rr$ along the linear projection $V\times\outp c\times\inpt d\to\outp c\times\inpt d$, hence pure quadratic by \cref{lem.quadratic_functorial}.\qedhere
+\end{proof}
+
+\begin{definition}\label{def.srw_lin}
+The symmetric monoidal category $\srw^{\lin}$ is the Para construction
+\[
+\srw^{\lin}\;\coloneqq\;\para{\rvect^{\cnst}}{\plmfd^{\lin}}
+\]
+for the restricted action of \cref{lem.action_restricts}; we identify $\srw^{\lin}$ with its underlying operad.
+\end{definition}
+
+\begin{theorem}\label{thm.srw_lin_suboperad}
+The inclusions $\rvect^{\cnst}\hookrightarrow\rvect$ and $\plmfd^{\lin}\hookrightarrow\plmfd$ induce a strong symmetric monoidal embedding $\srw^{\lin}\hookrightarrow\srw$.
+\end{theorem}
+
+\begin{proof}
+Apply \cref{prop.para_square} with $F$ the inclusion $\rvect^{\cnst}\hookrightarrow\rvect$, $G$ the inclusion $\plmfd^{\lin}\hookrightarrow\plmfd$, and 2-cell $\theta=\id$ filling the action square: $F$ and $G$ are strict monoidal as sub-SMC inclusions, and by \cref{lem.action_restricts} the two composites $F(a)\cdot' G(x)$ and $G(a\cdot x)$ are literally equal, so the coherence diagrams of the action square are tautological. The proposition produces a strong symmetric monoidal functor
+\[
+\para{\rvect^{\cnst}}{\plmfd^{\lin}}\;\longrightarrow\;\para{\rvect}{\plmfd}\;=\;\potlens,
+\]
+identity on the parameter and lens components by construction. Since $F$ and $G$ are sub-SMC inclusions, this functor is injective on objects and faithful, hence an embedding. Taking underlying operads gives $\srw^{\lin}\hookrightarrow\srw$.\qedhere
+\end{proof}
+
+\begin{corollary}\label{cor.srw_lin_four_conditions}
+A multimorphism $f=\bigl((V,\sharpR_V),\binom{\inpt f}{\outp f},U\bigr)\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob Y$ in $\srw$ lies in $\srw^{\lin}$ if and only if (i) every interface $\outp{X_i},\inpt{X_i},\outp Y,\inpt Y$ is a vector space, (ii) $\outp f$ and $\inpt f$ are linear, (iii) $\sharpR_V$ is constant in $x\in V$, and (iv) $U$ is a pure quadratic form.
+\end{corollary}
+
+\begin{proof}
+Unpack \cref{def.srw_lin} against \cref{def.rvect_cnst,def.plmfd_lin}.
+\end{proof}
+
 \begin{remark}
 The following diagram depicts composition of smooth rewiring diagrams $f=(V,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$ and $g=(W,\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $V\oplus W$, forward and backward components inherited from $\lmfd$, and potential added via the monad multiplication $\mu\coloneqq(+)$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
 \[
@@ -2334,16 +2437,7 @@ recovering $\vartheta_V$ by $s\mapsto\bigl(\vartheta_V^{\mathrm{pos}}(s),\,\xi'\
 A polynomial map $\absval{F(V)}\yon^{\absval{F(V)}}\to\absval V\yon^{V^*}$ consists of a function on positions, $\vartheta_V^{\mathrm{pos}}\colon\absval{F(V)}\to\absval V$, together with, at each $s:\absval{F(V)}$, a function on directions $V^*\to\absval{F(V)}$. Since the direction-source $V^*$ does not depend on $s$, those direction-functions assemble into a single $\vartheta_V^{\mathrm{dir}}\colon\absval{F(V)}\times V^*\to\absval{F(V)}$. Naturality and monoidality of $\vartheta_V$ become the corresponding properties of the pair.
 \end{proof}
 
-\paragraph{Design space of cotangent storages.}
-A cotangent storage's effective data is its carrier $F(V)$ together with anchor and update (\cref{prop.storage_pair}); what controls the resulting dynamical regime is the reactive structure $\sharp$ on that carrier. Three independent properties of $\sharp$ each have a dynamical consequence:
-\begin{itemize}
-\item (\emph{kinematical}) $\sharp$ constant linear makes the anchor and update linear maps of vector spaces, so the dynamics functor sends the suboperad $\srw^{\mathrm{lin}}\subset\srw$ to linear endomaps of the carrier (\cref{prop.linear_stratum});
-\item (\emph{conservative}) $\sharp$ antisymmetric makes the associated continuous-time vector field tangent to the level sets of its driving function (the argument of \cref{rmk.symplectic_perpendicular} uses only antisymmetry), so the flow conserves that function; the discrete update is its Euler step (\cref{rmk.constant_inverse_mass_hamiltonian});
-\item (\emph{dissipative}) $\sharp$ symmetric positive-definite makes the associated vector field descend the gradient of its driving function (\cref{rmk.cotangent_learners}).
-\end{itemize}
-The two storages worked out below sit at two corners of this space, sharing the kinematical axis but diverging on the dynamical one. Configuration storage $\store{\conf}$ (\cref{prop.rvect_polynomial}) has carrier $V$ with $\sharp=\sharpR_V$; the gradient-descent instance takes $\sharpEuc{}$ (constant, symmetric positive-definite), placing $\store{\conf}$ in the kinematical $\cap$ dissipative corner. Phase storage $\store{\phase}$ (\cref{lem.phase_storage}) has carrier $T^*V$ with $\sharp=\sharpS_{T^*V}$ from \eqref{eqn.canonical_sharp}, which is constant in $V$ by \cref{rmk.constant_canonical_sharp} and antisymmetric by \eqref{eqn.canonical_form}, placing $\store{\phase}$ in the kinematical $\cap$ conservative corner. The two axes are independent: $\store{\phase}$ enjoys superposition because $\sharpS_{T^*V}$ is constant linear, not because it is antisymmetric, and it conserves energy because $\sharpS_{T^*V}$ is antisymmetric, not because it is constant. Mixed-symmetry $\sharp$ on $T^*V$ (Langevin / GENERIC-type) and $\sharp$-variable carriers (e.g.\ a double pendulum) are other points in the same design space; we do not work them out in this paper.
-
-We now get to our bifurcation between learning and physics: which state set the cotangent parameterization presents to $\org$. In learning, we will be storing the points of $V$, whereas in physics we will be storing the phase points of $T^*V$. These are formalized in \cref{prop.rvect_polynomial} and \cref{lem.phase_storage}.
+We now get to our bifurcation between learning and physics: which state set the cotangent parameterization presents to $\org$. In learning, we will be storing the points of $V$, whereas in physics we will be storing the phase points of $T^*V$. These are formalized in \cref{prop.rvect_polynomial} and \cref{lem.phase_storage}; both are located in a small design space of cotangent storages in \cref{sec.design_space}.
 
 The following proposition---in particular the fact that the update in \eqref{eqn.directions_sharp} is a bijection in $\xi'$ at each $x$---is the main place where we use the requirement \eqref{eqn.sharp_iso} that the reaction structure $\sharpR_x\colon V^*\to V$ need be an isomorphism for each $x:V$.
 
@@ -2381,14 +2475,6 @@ Transporting this $\tri$-comonoid structure to $\cotof{V}$ along the iso of \cre
 since both produce the codiscrete morphism with codomain $x+\sharpR_x(\xi)+\sharpR_{x+\sharpR_x(\xi)}(\xi')$. Thus $\sharpR_V$ identifies $\cotof{V}$ with the codiscrete category on $V$, with codomain map $(x,\xi)\mapsto x+\sharpR_x(\xi)$ and the $\sharpR_V$-twisted composition \eqref{eqn.twisted_composition}. In the constant case $\sharpR_x=\sharpR_0$, \eqref{eqn.twisted_composition} collapses to fiberwise addition $\xi\star\xi'=\xi+\flat(\sharpR(\xi'))=\xi+\xi'$.\qedhere
 \end{remark}
 
-\begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
-The dynamics for configuration storage recover the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}. Indeed, this behavior arises via a functor $\Phiconf{}\colon\srw\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharpR_V$ of the parameter space. For example, on Euclidean parameter spaces, we take
-\begin{equation}\label{eqn.learning_sharp}
-\sharpR_x=-\eta_{\mathrm{LR}}\sharpEuc{},
-\end{equation}
-where $\sharpEuc{}$ is the Euclidean sharp (\cref{ex.euclidean_sharp}) and $\eta_{\mathrm{LR}}>0$ is the learning rate. The minus sign is what makes the dynamics descent rather than ascent. This places gradient descent at the \emph{dissipative} corner of the design space (\cref{sec.cotangent_storages}): $\store{\conf}$ with constant symmetric $\sharpR_V$.
-\end{remark}
-
 We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$, as in \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$ rather than a point $x\in V$. Its cotangent space decomposes as
 \[
 T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
@@ -2412,7 +2498,7 @@ is a cotangent storage, the \defineTermAs{phase_space_storage}{\emph{phase-space
 $\absval{T^*\blank}\colon\rvect\to\smsetiso$ is strong symmetric monoidal because $T^*\colon\rvect\to\rvect$ is (\cref{prop.TT_monoidal}). Each factor of $\rho_V$ is natural in $\rvect$-isomorphisms and monoidal in $V$: $\theta_{T^*V}$ by \cref{prop.rvect_polynomial} applied at $T^*V$ (using the pairing-preservation equation \eqref{eqn.pairing_triangle} for $\sharpS_{T^*V}$), and $\lambda_V$ via naturality and monoidality of its components --- $\cotof{\Delta_{T^*V}}$ from \cref{lem.cot_comonoid}, $\cotof{\pi_V}$ from functoriality of $\cot$, and $\beta_V$ from \eqref{eqn.pairing_triangle} and \cref{prop.rvect_monoidal}. Hence so is $\rho_V$.
 \end{proof}
 
-The two factors of $\rho_V$ enter at separate steps of the composite \eqref{eqn.phase_storage_def} and produce separate halves of the pair-form below. The configuration storage $\theta_{T^*V}$ uses the carrier's reactive structure, which by \cref{prop.canonical_symplectic_pairing} is the canonical antisymmetric $\sharpS_{T^*V}$ of \eqref{eqn.canonical_sharp} --- the conservative-axis ingredient in the design space of \cref{sec.cotangent_storages}. The phase lift $\lambda_V$ uses the parameter sharp $\sharpR_V$ via $\beta_V$ --- the source of the kinetic drift.
+The two factors of $\rho_V$ enter at separate steps of the composite \eqref{eqn.phase_storage_def} and produce separate halves of the pair-form below. The configuration storage $\theta_{T^*V}$ uses the carrier's reactive structure, which by \cref{prop.canonical_symplectic_pairing} is the canonical antisymmetric $\sharpS_{T^*V}$ of \eqref{eqn.canonical_sharp} --- the conservative-axis ingredient in the design space of \cref{sec.design_space}. The phase lift $\lambda_V$ uses the parameter sharp $\sharpR_V$ via $\beta_V$ --- the source of the kinetic drift.
 
 \begin{proposition}[Phase storage pair-form]\label{prop.phase_storage_pair}
 Under \cref{prop.storage_pair}, the anchor and update of $\rho_V$ are
@@ -2607,34 +2693,7 @@ Its left-hand side records where the three pieces of this update come from. The 
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_V,\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharpR_x(\xi),\,\xi-\xi_V)$.
 
-\begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
-This remark justifies the Hamiltonian terminology used elsewhere in the paper. The hypotheses are written in bold; the closing paragraph locates each on its proper design-space axis.
-
-Suppose \textbf{the domain and codomain interfaces are closed}, i.e.\ $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, so that in particular $\xi_N=0$ and $\omega_M=0$ and $U\colon V\to\rr$ depends only on $x$. Then \eqref{eqn.bigtheta} gives $\xi_V=dU|_x$. If moreover \textbf{the parameter sharp is constant}, $\sharpR_x=\sharpR_0$, then \eqref{eqn.state_update} becomes
-\[
-s+\sharpS_S(dU|_x,\sharpR_0(\xi))
-=
-(x+\sharpR_0(\xi),\,\xi-dU|_x),
-\]
-the explicit Euler step for the continuous-time vector field
-\[
-\dot x=\sharpR_0(\xi),
-\qquad
-\dot\xi=-dU|_x
-\]
-on $T^*V$. In the one-dimensional mass=$m$ case this reads $\dot x=\xi/m$ and $\dot\xi=-dU|_x$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot x$ the usual momentum.
-
-When \textbf{the parameter sharp is symmetric}, in the sense that $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in V^*$, this vector field is \emph{Hamiltonian} with respect to the canonical symplectic structure on $T^*V$: it is the canonical sharp applied to the differential of
-\begin{equation}\label{eqn.hamiltonian}
-H(x,\xi)\;\coloneqq\;\tfrac12\xi(\sharpR_0(\xi))+U(x).
-\end{equation}
-Indeed, the symmetry condition and the linearity of $\sharpR_0$ give $dH|_{(x,\xi)}=(dU|_x,\sharpR_0(\xi))\in V^*\oplus V$, and applying the canonical symplectic sharp \eqref{eqn.sharp_S} recovers the vector field:
-\[
-\sharpS_S(dH|_{(x,\xi)})=(\sharpR_0(\xi),-dU|_x)=(\dot{x},\dot{\xi}).
-\]
-
-The continuous-time flow conserves $H$ by \cref{rmk.symplectic_perpendicular}, whose argument uses only antisymmetry of the carrier sharp $\sharpS_{T^*V}$ \eqref{eqn.canonical_form} --- the conservative-axis property of the design space (\cref{sec.cotangent_storages}). The closed/constant/symmetric hypotheses on the $\srw$ side play a separate role: they are what allow $U$ to be reread as the explicit kinetic-plus-potential Hamiltonian \eqref{eqn.hamiltonian}. Conservation in the continuous lift is therefore the carrier's antisymmetry, not the parameter's symmetry. The discrete update of $\Phiphase{}$ is the Euler step of this flow and does not in general conserve $H$ (\cref{rmk.euler_energy}).\qedhere
-\end{remark}
+The Hamiltonian reading of \eqref{eqn.state_update} is given in \cref{rmk.constant_inverse_mass_hamiltonian} (\cref{sec.design_space}).
 
 \begin{remark}[Euler step and energy non-conservation]\label{rmk.euler_energy}
 \Cref{eqn.state_update} can be read two ways. As the defining equation of a discrete dynamical system, it is exact: that's the perspective of \cref{sec.wave_equation}, where the recurrence \eqref{eqn.recurrence} \emph{is} the discrete wave equation we want. But as a numerical time-stepper for the corresponding continuous phase-space dynamics---Hamiltonian in the standard closed, constant inverse-mass case (\cref{rmk.constant_inverse_mass_hamiltonian})---it is not adequate over many timesteps: explicit Euler integration is not symplectic, so the simulated trajectory accumulates energy drift and diverges from the true flow. For example, on the harmonic oscillator of \cref{sec.wave_equation}, the simulated energy grows without bound for any positive step size \cite[Ch.~I]{hairer2006geometric}.
@@ -2801,6 +2860,69 @@ Thus \eqref{eqn.state_update_gradient} sends the state $x$ to $x+\sharpR_x(\xi_V
 \end{proof}
 
 Applications of $\Phiconf{}$ appear in \cref{sec.newton_warmup} (Newton's method) and \cref{sec.dl_warmup} (gradient descent and backpropagation), and applications of $\Phiphase{}$ to harmonic-oscillator particles---recovering the discrete wave equation on a chain (\cref{sec.wave_equation}) and the graph Laplacian on an arbitrary finite directed graph (\cref{sec.graph_laplacian})---follow.
+
+%--------------------------------------------------------------------
+\section{Design space of cotangent storages}\label{sec.design_space}
+%--------------------------------------------------------------------
+
+Having unpacked $\Phiphase{}$ and $\Phiconf{}$ in detail (\cref{sec.phase_dynamics,sec.configuration_dynamics}), we step back and locate them in a small design space. A cotangent storage's effective data is its carrier $F(V)$ together with anchor and update (\cref{prop.storage_pair}); what controls the resulting dynamical regime is the reactive structure $\sharp$ on that carrier. Three independent properties of $\sharp$ each have a dynamical consequence:
+\begin{itemize}
+\item (\emph{kinematical}) $\sharp$ constant linear makes the anchor and update linear maps of vector spaces, so the dynamics functor sends the suboperad $\srw^{\lin}\subset\srw$ to linear endomaps of the carrier (\cref{prop.linear_stratum});
+\item (\emph{conservative}) $\sharp$ antisymmetric makes the associated continuous-time vector field tangent to the level sets of its driving function (the argument of \cref{rmk.symplectic_perpendicular} uses only antisymmetry), so the flow conserves that function; the discrete update is its Euler step (\cref{rmk.constant_inverse_mass_hamiltonian});
+\item (\emph{dissipative}) $\sharp$ symmetric positive-definite makes the associated vector field descend the gradient of its driving function (\cref{rmk.cotangent_learners}).
+\end{itemize}
+The two storages of \cref{sec.cotangent_storages} sit at two corners of this space, sharing the kinematical axis but diverging on the dynamical one. Configuration storage $\store{\conf}$ has carrier $V$ with $\sharp=\sharpR_V$; the gradient-descent instance takes $\sharpEuc{}$ (constant, symmetric positive-definite), placing $\store{\conf}$ in the kinematical $\cap$ dissipative corner. Phase storage $\store{\phase}$ has carrier $T^*V$ with $\sharp=\sharpS_{T^*V}$ from \eqref{eqn.canonical_sharp}, which is constant in $V$ by \cref{rmk.constant_canonical_sharp} and antisymmetric by \eqref{eqn.canonical_form}, placing $\store{\phase}$ in the kinematical $\cap$ conservative corner. The two axes are independent: $\store{\phase}$ enjoys superposition because $\sharpS_{T^*V}$ is constant linear, not because it is antisymmetric, and it conserves energy because $\sharpS_{T^*V}$ is antisymmetric, not because it is constant. Mixed-symmetry $\sharp$ on $T^*V$ (Langevin / GENERIC-type) and $\sharp$-variable carriers (e.g.\ a double pendulum) are other points in the same design space; we do not work them out in this paper.
+
+\begin{proposition}[Linear stratum]\label{prop.linear_stratum}
+For any cotangent storage $\mathfrak{s}=(F,\vartheta)$ whose anchor $\vartheta_V^{\mathrm{pos}}\colon F(V)\to V$ and update $\vartheta_V^{\mathrm{dir}}\colon F(V)\times V^*\to F(V)$ are linear maps of vector spaces, the dynamics functor $\Phi_\mathfrak{s}$ sends every $0$-ary closed system $I\to I$ in $\srw^{\lin}$ to a linear endomap on the carrier $F(V)$.
+\end{proposition}
+
+\begin{proof}
+Let $f=\bigl((V,\sharpR_0),\binom{\inpt f}{\outp f},U\bigr)$ be a $0$-ary closed system in $\srw^{\lin}$, so $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the parameter sharp $\sharpR_x=\sharpR_0$ is constant linear, and $U\colon V\to\rr$ is a pure quadratic form. Since $U$ is pure quadratic, $dU|_x=Qx$ for some linear $Q\colon V\to V^*$. In the closed case, the inputs $\xi_N$, $\omega_M$ to \eqref{eqn.bigtheta} both vanish, so \eqref{eqn.bigtheta} collapses to $\xi_V=dU|_x=Qx$, linear in $x$.
+
+By \cref{prop.storage_pair}, the dynamics functor's state-update at $f$ acts on a state $s\in F(V)$ by reading off $x=\vartheta_V^{\mathrm{pos}}(s)\in V$, computing $\xi_V=Qx$, then applying the storage's update:
+\[
+s\;\longmapsto\;\vartheta_V^{\mathrm{dir}}\!\bigl(s,\,Q\,\vartheta_V^{\mathrm{pos}}(s)\bigr).
+\]
+Under the proposition's linearity hypothesis on $\vartheta_V^{\mathrm{pos}}$ and $\vartheta_V^{\mathrm{dir}}$, this is a composite of linear maps of vector spaces, hence a linear endomap on $F(V)$.\qedhere
+\end{proof}
+
+Both worked-out storages satisfy the hypothesis when $\sharpR_V$ is constant: $\store{\conf}$ has anchor $\id_V$ and update $(x,\xi')\mapsto x+\sharpR_0(\xi')$ from \eqref{eqn.directions_sharp}, giving state-update $x\mapsto x+\sharpR_0(Qx)$; $\store{\phase}$ has anchor $\pi_V$ and update $((x,\xi),\xi')\mapsto(x+\sharpR_0(\xi),\,\xi-\xi')$ from \eqref{eqn.phase_storage_update}, giving state-update $(x,\xi)\mapsto(x+\sharpR_0(\xi),\,\xi-Qx)$.
+
+\begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
+Suppose $f$ is a $0$-ary closed system in $\srw^{\lin}$, applied through $\store{\phase}$. By \cref{cor.srw_lin_four_conditions}, $\sharpR_x=\sharpR_0$ is constant and $U\colon V\to\rr$ is a pure quadratic form, so $dU|_x=Qx$ for some linear $Q\colon V\to V^*$; closedness collapses \eqref{eqn.bigtheta} to $\xi_V=dU|_x$. The state-update \eqref{eqn.state_update} becomes
+\[
+s+\sharpS_S(dU|_x,\sharpR_0(\xi))
+=
+(x+\sharpR_0(\xi),\,\xi-dU|_x),
+\]
+the explicit Euler step for the continuous-time vector field
+\[
+\dot x=\sharpR_0(\xi),
+\qquad
+\dot\xi=-dU|_x
+\]
+on $T^*V$. In the one-dimensional mass-$m$ case this reads $\dot x=\xi/m$ and $\dot\xi=-dU|_x$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot x$ the usual momentum.
+
+When the parameter sharp is moreover \emph{symmetric}, i.e.\ $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in V^*$, this vector field is \emph{Hamiltonian} with respect to the canonical symplectic structure on $T^*V$: it is the canonical sharp applied to the differential of
+\begin{equation}\label{eqn.hamiltonian}
+H(x,\xi)\;\coloneqq\;\tfrac12\xi(\sharpR_0(\xi))+U(x).
+\end{equation}
+Indeed, the symmetry condition and the linearity of $\sharpR_0$ give $dH|_{(x,\xi)}=(dU|_x,\sharpR_0(\xi))\in V^*\oplus V$, and applying the canonical symplectic sharp \eqref{eqn.sharp_S} recovers the vector field:
+\[
+\sharpS_S(dH|_{(x,\xi)})=(\sharpR_0(\xi),-dU|_x)=(\dot{x},\dot{\xi}).
+\]
+
+The continuous-time flow conserves $H$ by \cref{rmk.symplectic_perpendicular}, whose argument uses only antisymmetry of the carrier sharp $\sharpS_{T^*V}$ \eqref{eqn.canonical_form} --- the conservative-axis property of this design space. The $f\in\srw^{\lin}$-closed and parameter-symmetric hypotheses on the $\srw$ side play a separate role: they are what allow $U$ to be reread as the explicit kinetic-plus-potential Hamiltonian \eqref{eqn.hamiltonian}. Conservation in the continuous lift is therefore the carrier's antisymmetry, not the parameter's symmetry. The discrete update of $\Phiphase{}$ is the Euler step of this flow and does not in general conserve $H$ (\cref{rmk.euler_energy}).\qedhere
+\end{remark}
+
+\begin{remark}[Gradient descent as the dissipative-corner instance]\label{rmk.cotangent_learners}
+For $f\in\srw^{\lin}$ with parameter sharp $\sharpR_V$ symmetric positive-definite, applied through $\store{\conf}$, the dynamics functor $\Phiconf{}$ recovers gradient descent on $U$. On Euclidean parameter spaces, the convention absorbs the descent direction and learning rate into the sharp,
+\begin{equation}\label{eqn.learning_sharp}
+\sharpR_x=-\eta_{\mathrm{LR}}\sharpEuc{},
+\end{equation}
+with $\sharpEuc{}$ the Euclidean sharp (\cref{ex.euclidean_sharp}) and $\eta_{\mathrm{LR}}>0$ the learning rate; the minus sign makes the dynamics descent rather than ascent. This is the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}, with backpropagation arising as the lens backward pass of $\Phiconf{}(f)$ (\cref{sec.configuration_dynamics,sec.dl_warmup}).\qedhere
+\end{remark}
 
 %====================================================================
 \chapter{Applications}\label{ch.applications}
@@ -2976,7 +3098,7 @@ First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}
 
 To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in $\srw$ \eqref{eqn.para_potential_lens_maps}, we need a reactive vector space $(V,\sharpR_V)$, a smooth output map $\outp f\colon V\to\rr$, and a smooth potential $U\colon V\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharpR_x(p)\coloneqq p/m$ (independent of $x\in\rr$); we read the value $x\in\rr$ as the particle's transverse displacement from equilibrium. We take the output map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
 \[U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2,\]
-the \emph{harmonic} potential, assigning energy to the relative displacement of the particle and its neighbor.
+the \emph{harmonic} potential, assigning energy to the relative displacement of the particle and its neighbor. Thus $\Part\in\srw^{\lin}$ (\cref{cor.srw_lin_four_conditions}).
 
 \paragraph{The wiring diagram.}
 For the wiring diagram, we start in $\Lens{\finset\op}$; see \cref{ex.lens_finsetop}. The $K$-ary series composition shown in \eqref{eqn.wave_wd} corresponds to a lens $\varphi_K\colon\binom{K}{K}=\binom{1}{1}+\cdots+\binom{1}{1}\to\binom{1}{1}$ given by
@@ -3010,7 +3132,7 @@ acting per-particle on each $\rr$-summand (the inverse-mass pairing), independen
 \qqand
 U\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(x_i-x_{i-1})^2,
 \]
-with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input).
+with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input). Both $\Part$ and $\fun{wire}_K$ lie in $\srw^{\lin}$, so by closure under operadic composition (\cref{lem.plmfd_lin_smc}) so does $\fun{wire}_K(\Part,\ldots,\Part)$.
 
 \paragraph{The discrete dynamics.}
 
@@ -3171,7 +3293,7 @@ Applying $\rr^{\blank}$ (\cref{lemma.lens_pow}) gives a lens
 \[
 \rr^{\varphi_G}\colon\prod_{v\in V}\binom{\rr^{\inpt{v}}}{\rr^{\outp{v}}}\to\binom{\rr^0}{\rr^0}
 \]
-whose input map $\prod_{v}\rr^{\outp{v}}\to\prod_{v}\rr^{\inpt{v}}$ is again the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth (static) wiring diagram in $\srw$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$.
+whose input map $\prod_{v}\rr^{\outp{v}}\to\prod_{v}\rr^{\inpt{v}}$ is again the identity on $\rr^E$. As in \cref{sec.spring_first_pass}, we treat $\rr^{\varphi_G}$ as a parameter-free, potential-free smooth (static) wiring diagram in $\srw$ by taking $V'\coloneqq\rr^0$ and $U'\coloneqq 0$; hence $\rr^{\varphi_G}\in\srw^{\lin}$.
 
 \paragraph{The particle at a vertex.}
 
@@ -3189,7 +3311,7 @@ defined by:
 U_v\bigl(x,(n_e)_{e\in\inpt{v}}\bigr)\coloneqq\sum_{e\in\inpt{v}}\tfrac{\kappa_e}{2}\,(x-n_e)^2.
 \]
 \end{itemize}
-The particle $\Part$ of \cref{sec.spring_first_pass} is the case where $|\outp{v}|=|\inpt{v}|\coloneqq 1$ with $\kappa_e\coloneqq\kappa$ and $m_v\coloneqq m$ for a single $\kappa,m>0$.
+The particle $\Part$ of \cref{sec.spring_first_pass} is the case where $|\outp{v}|=|\inpt{v}|\coloneqq 1$ with $\kappa_e\coloneqq\kappa$ and $m_v\coloneqq m$ for a single $\kappa,m>0$. As for $\Part$, the same four-condition check gives $\Part_v\in\srw^{\lin}$.
 \paragraph{The composite.}
 
 Composing $\rr^{\varphi_G}$ with the family $(\Part_v)_{v\in V}$ in $\srw$ produces a $0$-ary smooth rewiring diagram
@@ -3200,7 +3322,7 @@ with composite parameter space $V_G\coloneqq\bigoplus_{v\in V}V_v=\rr^V$, consta
 \begin{equation}\label{eqn.graph_potential}
 U(\vec x)\;=\;\sum_{v\in V}U_v\bigl(x_v,(x_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(x_{\tgt(e)}-x_{\src(e)})^2.
 \end{equation}
-The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$.
+The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$. Since $\rr^{\varphi_G}$ and each $\Part_v$ lie in $\srw^{\lin}$, closure under operadic composition (\cref{lem.plmfd_lin_smc}) gives $\psi_G\in\srw^{\lin}$.
 
 \paragraph{The discrete dynamics.}
 
@@ -3251,26 +3373,10 @@ Applying $\Phiconf{}$ rather than $\Phiphase{}$ to the same $\psi_G$ \eqref{eqn.
 m_v\bigl(x_v(t+1)-x_v(t)\bigr)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
 \qquad(v\in V,\ t\in\nn),
 \]
-i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. In the design-space picture (\cref{sec.cotangent_storages}), this is the \emph{dissipative}-corner instance of the syntax $\psi_G$ --- $\Phiconf{}$ with symmetric $\sharpR_V$ --- versus the \emph{conservative}-corner instance --- $\Phiphase{}$ with antisymmetric carrier $\sharpS_{T^*V}$ --- that produced the wave equation \eqref{eqn.discrete_wave}. The choice between wave and heat dynamics on a given $\psi_G$ is a choice of storage, not of syntax.
+i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. In the design-space picture (\cref{sec.design_space}), this is the \emph{dissipative}-corner instance of the syntax $\psi_G$ --- $\Phiconf{}$ with symmetric $\sharpR_V$ --- versus the \emph{conservative}-corner instance --- $\Phiphase{}$ with antisymmetric carrier $\sharpS_{T^*V}$ --- that produced the wave equation \eqref{eqn.discrete_wave}. The choice between wave and heat dynamics on a given $\psi_G$ is a choice of storage, not of syntax.
 \end{remark}
 
-The wave equation \eqref{eqn.discrete_wave} exhibits \emph{superposition}: trajectories form a vector space, so any linear combination of solutions is again a solution. This is a kinematical property of the dynamics functor on a suboperad of $\srw$ --- it follows from constancy and linearity of the data and is independent of antisymmetry of $\sharpS_{T^*V}$.
-
-\begin{proposition}[Linear stratum]\label{prop.linear_stratum}
-Write $\srw^{\mathrm{lin}}\subset\srw$ for the suboperad whose interfaces $\outp M,\inpt M$ are vector spaces, whose maps $\inpt f$, $\outp f$ are linear, whose parameter $(V,\sharpR_V)$ has constant $\sharpR_V$, and whose potential $U$ is a pure quadratic form. For any cotangent storage $\mathfrak{s}=(F,\vartheta)$ whose anchor $\vartheta_V^{\mathrm{pos}}\colon F(V)\to V$ and update $\vartheta_V^{\mathrm{dir}}\colon F(V)\times V^*\to F(V)$ are linear maps of vector spaces, the dynamics functor $\Phi_\mathfrak{s}$ sends every $0$-ary closed system $I\to I$ in $\srw^{\mathrm{lin}}$ to a linear endomap on the carrier $F(V)$.
-\end{proposition}
-
-\begin{proof}
-Let $f=\bigl((V,\sharpR_0),\binom{\inpt f}{\outp f},U\bigr)$ be a $0$-ary closed system in $\srw^{\mathrm{lin}}$, so $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the parameter sharp $\sharpR_x=\sharpR_0$ is constant linear, and $U\colon V\to\rr$ is a pure quadratic form. Pure-quadraticity of $U$ means $dU|_x=Qx$ for some linear $Q\colon V\to V^*$. In the closed case, the inputs $\xi_N$, $\omega_M$ to \eqref{eqn.bigtheta} both vanish, so \eqref{eqn.bigtheta} collapses to $\xi_V=dU|_x=Qx$, linear in $x$.
-
-By \cref{prop.storage_pair}, the dynamics functor's state-update at $f$ acts on a state $s\in F(V)$ by reading off $x=\vartheta_V^{\mathrm{pos}}(s)\in V$, computing $\xi_V=Qx$, then applying the storage's update:
-\[
-s\;\longmapsto\;\vartheta_V^{\mathrm{dir}}\!\bigl(s,\,Q\,\vartheta_V^{\mathrm{pos}}(s)\bigr).
-\]
-Under the proposition's linearity hypothesis on $\vartheta_V^{\mathrm{pos}}$ and $\vartheta_V^{\mathrm{dir}}$, this is a composite of linear maps of vector spaces, hence a linear endomap on $F(V)$.\qedhere
-\end{proof}
-
-Both worked-out storages satisfy the hypothesis when $\sharpR_V$ is constant: $\store{\conf}$ has anchor $\id_V$ and update $(x,\xi')\mapsto x+\sharpR_0(\xi')$ from \eqref{eqn.directions_sharp}, giving state-update $x\mapsto x+\sharpR_0(Qx)$; $\store{\phase}$ has anchor $\pi_V$ and update $((x,\xi),\xi')\mapsto(x+\sharpR_0(\xi),\,\xi-\xi')$ from \eqref{eqn.phase_storage_update}, giving state-update $(x,\xi)\mapsto(x+\sharpR_0(\xi),\,\xi-Qx)$. The wave equation \eqref{eqn.discrete_wave} is the $\Phiphase{}$ case of \cref{prop.linear_stratum}; the heat equation of \cref{rmk.graph_heat} is the $\Phiconf{}$ case with $\sharpEuc$. Both exhibit superposition for the same kinematical reason --- constancy and linearity of the storage data --- despite differing on the conservative/dissipative axis.
+Both wave and heat dynamics on $\psi_G$ are instances of \cref{prop.linear_stratum}, applied through $\store{\phase}$ and $\store{\conf}$ respectively: the shared kinematical hypothesis --- $\psi_G\in\srw^{\lin}$ together with linear anchor and update at constant $\sharpR$ --- accounts for the superposition both exhibit, independent of the conservative/dissipative split.
 
 \clearpage
 \begin{landscape}
