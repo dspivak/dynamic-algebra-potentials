@@ -1,0 +1,397 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage[capitalize]{cleveref}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+\usepackage{pdflscape}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{remark}[definition]{Remark}
+
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\outp}[1]{#1^{+}}
+\newcommand{\inpt}[1]{#1^{-}}
+\newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}
+\newcommand{\cat}[1]{\mathcal{#1}}
+\newcommand{\Cat}[1]{\mathbf{#1}}
+\newcommand{\Fun}[1]{\textsf{#1}}
+\newcommand{\Lens}[1]{\Cat{Lens}_{#1}}
+\newcommand{\LensP}[2]{\Cat{Lens}_{#1}^{#2}}
+\newcommand{\op}{^{\mathrm{op}}}
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\coev}{\mathrm{coev}}
+\newcommand{\To}[1]{\xrightarrow{#1}}
+\newcommand{\ihom}[2]{[#1,#2]}
+\newcommand{\smset}{\Cat{Set}}
+\newcommand{\qqand}{\qquad\text{and}\qquad}
+\DeclareMathSymbol\fatsemi\mathop{AMSa}{"3B}
+\newcommand{\then}{\mathbin{\fatsemi}}
+
+\begin{document}
+
+\section{Monoidal promonads and their lens categories}\label{sec.promonad_theta}
+
+Throughout, let $(\cat{C},I,\otimes)$ be a symmetric monoidal closed category with internal hom $\ihom{-}{-}$, evaluation $\ev\colon\ihom{A}{B}\otimes A\to B$, and coevaluation $\coev\colon X\to\ihom{A}{A\otimes X}$.
+
+\subsection{Promonads}
+
+\begin{definition}[Promonad]\label{def.promonad}
+A \emph{promonad} on $\cat{C}$ is a profunctor $P\colon\cat{C}\op\times\cat{C}\to\smset$ equipped with
+\begin{itemize}
+\item a \emph{unit} $\eta_{A,B}\colon\cat{C}(A,B)\to P(A,B)$, natural in $A,B$, and
+\item a \emph{multiplication} $\mu_{A,C}\colon\int^{B}P(A,B)\times P(B,C)\to P(A,C)$, natural in $A,C$,
+\end{itemize}
+satisfying associativity and unit axioms. We write $q\bullet p\coloneqq\mu(p,q)$ for the composite of $p\in P(A,B)$ and $q\in P(B,C)$, so that $q\bullet p\in P(A,C)$.
+
+Equivalently, a promonad is a category $\cat{K}$ with $\mathrm{Ob}(\cat{K})=\mathrm{Ob}(\cat{C})$ and an identity-on-objects functor $J\colon\cat{C}\to\cat{K}$, where $P(A,B)=\cat{K}(A,B)$.
+\end{definition}
+
+\begin{remark}[Functorial actions]\label{rmk.functorial}
+Since $P$ is a profunctor, it has contravariant and covariant functorial actions. For $h\colon A'\to A$ in $\cat{C}$ and $p\in P(A,B)$, write $P(h,\id)(p)=p\bullet\eta(h)\in P(A',B)$ (precomposition). For $f\colon B\to B'$ and $p\in P(A,B)$, write $P(\id,f)(p)=\eta(f)\bullet p\in P(A,B')$ (postcomposition). The second equality in each case is by the unit axiom of the promonad.
+\end{remark}
+
+\subsection{Lax monoidal promonads}
+
+\begin{definition}[Lax monoidal promonad]\label{def.monoidal_promonad}
+A promonad $P$ on $(\cat{C},I,\otimes)$ is \emph{lax monoidal} if $P\colon\cat{C}\op\times\cat{C}\to\smset$ is lax monoidal with respect to the external monoidal structure $(A,B)\otimes(A',B')=(A\otimes A',B\otimes B')$ on $\cat{C}\op\times\cat{C}$ and $(\smset,1,\times)$. That is, there are natural maps
+\[
+\lambda\colon P(A,B)\times P(A',B')\to P(A\otimes A',B\otimes B')
+\qqand
+\lambda_0\colon\ast\to P(I,I)
+\]
+satisfying associativity, unit, and the following compatibility conditions:
+\begin{enumerate}
+\item \textbf{Lax-unit compatibility:} $\lambda(\eta(f),\eta(g))=\eta(f\otimes g)$ for $f\in\cat{C}(A,B)$, $g\in\cat{C}(A',B')$.
+\item \textbf{Interchange law:} $\lambda(q\bullet p,\,s\bullet r)=\lambda(q,s)\bullet\lambda(p,r)$ for $p\in P(A,B)$, $q\in P(B,C)$, $r\in P(A',B')$, $s\in P(B',C')$.
+\end{enumerate}
+Equivalently, $\cat{K}$ is a symmetric monoidal category with $J\colon\cat{C}\to\cat{K}$ strong monoidal. We write $p\mathbin{\hat\otimes} p'\coloneqq\lambda(p,p')$.
+\end{definition}
+
+\begin{remark}[Tambara structure]\label{rmk.tambara}
+A lax monoidal promonad has a derived \emph{Tambara structure}: for $p\in P(A,B)$ and any object $M$, define
+\[
+\hat{p}^M\coloneqq\lambda(\eta(\id_M),p)\in P(M\otimes A,M\otimes B).
+\]
+By lax-unit compatibility, $\widehat{\eta(f)}^M=\eta(\id_M\otimes f)$. By the interchange law, the Tambara structure is compatible with composition:
+\begin{equation}\label{eqn.tambara_compose}
+\widehat{q\bullet p}^M=\hat{q}^M\bullet\hat{p}^M.
+\end{equation}
+\end{remark}
+
+\begin{lemma}[Tambara naturality]\label{lem.tambara_nat}
+For $p\in P(A,B)$ and $\psi\colon M\to M'$ in $\cat{C}$:
+\begin{equation}\label{eqn.tambara_nat}
+P(\id,\psi\otimes\id_B)(\hat{p}^M)=P(\psi\otimes\id_A,\id)(\hat{p}^{M'}).
+\end{equation}
+Both sides lie in $P(M\otimes A,M'\otimes B)$.
+\end{lemma}
+\begin{proof}
+Both sides equal $\lambda(\eta(\psi),p)$: the left by naturality of $\lambda$ in the covariant direction, the right by naturality in the contravariant direction.
+\end{proof}
+
+\subsection{$P$-algebras}
+
+\begin{definition}[$P$-algebra]\label{def.P_alg}
+Let $P$ be a promonad on $\cat{C}$. A \emph{$P$-algebra} on an object $m\in\cat{C}$ is a natural transformation $\alpha\colon P(-,m)\Rightarrow\cat{C}(-,m)$ satisfying:
+\begin{enumerate}
+\item \textbf{Unit:} $\alpha_X(\eta(f))=f$ for every $f\colon X\to m$ in $\cat{C}$.
+\item \textbf{Associativity:} For $p\in P(X,Y)$ and $q\in P(Y,m)$,
+\begin{equation}\label{eqn.P_alg_assoc}
+\alpha_X(q\bullet p)=\alpha_X\bigl(\eta(\alpha_Y(q))\bullet p\bigr).
+\end{equation}
+\end{enumerate}
+Naturality of $\alpha$ in the first variable means: for $h\colon X'\to X$ in $\cat{C}$,
+\begin{equation}\label{eqn.alpha_nat}
+\alpha_{X'}(P(h,\id)(q))=\alpha_X(q)\circ h.
+\end{equation}
+By \cref{rmk.functorial}, the left side is $\alpha_{X'}(q\bullet\eta(h))$, and associativity with the unit axiom recovers the right side.
+\end{definition}
+
+\begin{remark}\label{rmk.assoc_push}
+By the unit axiom, the right side of \eqref{eqn.P_alg_assoc} simplifies: $\eta(\alpha_Y(q))\bullet p=P(\id,\alpha_Y(q))(p)$, the postcomposition/pushforward of $p$ along the $\cat{C}$-morphism $\alpha_Y(q)$. So associativity says:
+\[
+\alpha_X(q\bullet p)=\alpha_X\bigl(P(\id,\alpha_Y(q))(p)\bigr).
+\]
+\end{remark}
+
+\begin{definition}[Monoidal $P$-algebra]\label{def.monoidal_P_alg}
+Let $P$ be a lax monoidal promonad on $(\cat{C},I,\otimes)$ and $(m,\mathfrak{m},\mathfrak{e})$ a monoid in $\cat{C}$. A $P$-algebra $\alpha$ on $m$ is \emph{monoidal} if for all $p\in P(X,m)$, $p'\in P(X',m)$:
+\begin{align}
+\alpha_{X\otimes X'}\bigl(P(\id,\mathfrak{m})(p\mathbin{\hat\otimes} p')\bigr)
+  &=\mathfrak{m}\circ(\alpha_X(p)\otimes\alpha_{X'}(p')),\label{eqn.mon_alg_mult}\\
+\alpha_I\bigl(P(\id,\mathfrak{e})(\lambda_0)\bigr)&=\mathfrak{e}.\label{eqn.mon_alg_unit}
+\end{align}
+We call $(m,\mathfrak{m},\mathfrak{e},\alpha)$ a \emph{$P$-monoid}.
+\end{definition}
+
+\subsection{The lens category $\LensP{\cat{C}}{P}$}
+
+\begin{definition}\label{def.lensP}
+Let $P$ be a lax monoidal promonad on $(\cat{C},I,\otimes)$. The category $\LensP{\cat{C}}{P}$ has:
+\begin{itemize}
+\item \textbf{Objects:} pairs $\lensob{c}=\binom{\inpt{c}}{\outp{c}}$ where $\outp{c}$ is a comonoid in $\cat{C}$ with comultiplication $\delta_{\outp{c}}$ and counit $\varepsilon_{\outp{c}}$.
+\item \textbf{Morphisms $\lensob{c}\to\lensob{d}$:} pairs $(\outp{f},\inpt{f})$ where $\outp{f}\colon\outp{c}\to\outp{d}$ is a comonoid homomorphism and $\inpt{f}\in P(\outp{c}\otimes\inpt{d},\inpt{c})$.
+\item \textbf{Identity:} at $\lensob{c}$, the pair $(\id_{\outp{c}},\eta(\varepsilon_{\outp{c}}\otimes\id_{\inpt{c}}))$.
+\item \textbf{Composition:} given $(\outp{f},\inpt{f})\colon\lensob{c}\to\lensob{d}$ and $(\outp{g},\inpt{g})\colon\lensob{d}\to\lensob{e}$, their composite has forward part $\outp{g}\circ\outp{f}$ and backward part
+\begin{equation}\label{eqn.lens_compose}
+\inpt{f}\bullet\widehat{\inpt{g}}^{\outp{c}}\bullet\eta\bigl((\id\otimes\outp{f}\otimes\id)\circ(\delta_{\outp{c}}\otimes\id)\bigr)\;\in\;P(\outp{c}\otimes\inpt{e},\inpt{c}).
+\end{equation}
+Using \cref{rmk.functorial}, this simplifies to $\inpt{f}\bullet P\bigl((\id\otimes\outp{f}\otimes\id)\circ(\delta\otimes\id),\;\id\bigr)(\widehat{\inpt{g}}^{\outp{c}})$, i.e.\ the composite in $\cat{K}$:
+\[
+\outp{c}\otimes\inpt{e}\To{\delta\otimes\id}\outp{c}\otimes\outp{c}\otimes\inpt{e}\To{\id\otimes\outp{f}\otimes\id}\outp{c}\otimes\outp{d}\otimes\inpt{e}\To{\widehat{\inpt{g}}^{\outp{c}}}\outp{c}\otimes\inpt{d}\To{\inpt{f}}\inpt{c}
+\]
+where the first two arrows are $C$-morphisms (via $\eta$) and the last two are $\cat{K}$-morphisms.
+\end{itemize}
+When $P$ is lax monoidal, $\LensP{\cat{C}}{P}$ inherits a monoidal structure with $\lensob{c}\otimes\lensob{d}=\binom{\inpt{c}\otimes\inpt{d}}{\outp{c}\otimes\outp{d}}$.
+\end{definition}
+
+\begin{remark}
+When $P=P_{\Fun{T}}$ is the Kleisli profunctor $P_{\Fun{T}}(A,B)=\cat{C}(A,\Fun{T}B)$ of a strong monad $\Fun{T}$, the category $\LensP{\cat{C}}{P_{\Fun{T}}}$ is precisely the coKleisli category $\Lens{\cat{C}}^{\Fun{T}}$ of \cite[Prop.~3.7]{dynamic-algebra-potentials}.
+\end{remark}
+
+\subsection{Moore internalization}
+
+\begin{definition}[The map $\phi$]\label{def.phi}
+Let $(m,\alpha)$ be a $P$-algebra in monoidal closed $\cat{C}$. Write $H_X\coloneqq\ihom{\inpt{X}}{m}$ for each lens object $\lensob{X}$. Given a morphism $(\outp{f},\inpt{f})\colon\lensob{c}\to\lensob{d}$ in $\LensP{\cat{C}}{P}$, define the $\cat{C}$-morphism
+\begin{equation}\label{eqn.phi}
+\phi_f\coloneqq\alpha_{\outp{c}\otimes\inpt{d}\otimes H_c}\bigl(P(\id,\ev)(\widehat{\inpt{f}}^{H_c})\bigr)\;\colon\;\outp{c}\otimes\inpt{d}\otimes H_c\to m
+\end{equation}
+constructed in three steps:
+\begin{enumerate}
+\item \textbf{Tambara:} $\widehat{\inpt{f}}^{H_c}\in P(\outp{c}\otimes\inpt{d}\otimes H_c,\;\inpt{c}\otimes H_c)$,
+\item \textbf{Pushforward by $\ev$:} $P(\id,\ev)(\widehat{\inpt{f}}^{H_c})\in P(\outp{c}\otimes\inpt{d}\otimes H_c,\;m)$,
+\item \textbf{Drop:} apply $\alpha$ to obtain $\phi_f\colon\outp{c}\otimes\inpt{d}\otimes H_c\to m$ in $\cat{C}$.
+\end{enumerate}
+Write $\psi_f\colon\outp{c}\otimes H_c\to H_d$ for the adjoint transpose, i.e.\ $\phi_f=\ev\circ(\id_{\inpt{d}}\otimes\psi_f)$ after swapping the second and third tensor factors.
+\end{definition}
+
+\begin{definition}[Moore internalization $\Theta_m$]\label{def.Theta}
+Define $\Theta_m\colon\LensP{\cat{C}}{P}\to\cat{C}$ on objects by $\lensob{c}\mapsto\outp{c}\otimes H_c$ and on a morphism $(\outp{f},\inpt{f})\colon\lensob{c}\to\lensob{d}$ by the composite
+\begin{equation}\label{eqn.Theta_mor}
+\outp{c}\otimes H_c\To{\delta\otimes\id}\outp{c}\otimes\outp{c}\otimes H_c\To{\outp{f}\otimes\psi_f}\outp{d}\otimes H_d.
+\end{equation}
+Equivalently, writing $\coev_{\inpt{d}}'\colon X\to\ihom{\inpt{d}}{\outp{c}\otimes\inpt{d}\otimes X}$ for the coevaluation composed with the symmetry $\inpt{d}\otimes\outp{c}\cong\outp{c}\otimes\inpt{d}$ (so that the argument is $+/-$ clean):
+\begin{equation}\label{eqn.Theta_chain}
+\outp{c}\otimes H_c\To{\delta\otimes\id}{\outp{c}}^2\otimes H_c\To{\outp{f}\otimes\coev_{\inpt{d}}'}\outp{d}\otimes\ihom{\inpt{d}}{\outp{c}\otimes\inpt{d}\otimes H_c}\To{\ihom{\inpt{d}}{\phi_f}}\outp{d}\otimes H_d.
+\end{equation}
+\end{definition}
+
+\begin{remark}[Comparison with the monad case]\label{rmk.comparison}
+For a strong monad $\Fun{T}$, the map $\phi_f$ decomposes into five steps applied inside $\ihom{\inpt{d}}{-}$:
+\begin{equation}\label{eqn.monad_chain}
+\outp{c}\otimes\inpt{d}\otimes H_c\To{\inpt{f}\otimes\id}\Fun{T}\inpt{c}\otimes H_c\To{\eta\otimes\id}\Fun{T}\inpt{c}\otimes\Fun{T}H_c\To{\tau}\Fun{T}(\inpt{c}\otimes H_c)\To{\Fun{T}\ev}\Fun{T}m\To{a}m.
+\end{equation}
+For a general promonad, $\inpt{f}\in P(\outp{c}\otimes\inpt{d},\inpt{c})$ is not a $\cat{C}$-morphism, so it cannot be placed inside $\ihom{\inpt{d}}{-}$. The three-step construction of \cref{def.phi} (Tambara, pushforward, drop via $\alpha$) collapses \eqref{eqn.monad_chain} into a single $\cat{C}$-morphism $\phi_f$.
+\end{remark}
+
+
+\section{The theorem and proof plan}
+
+\begin{theorem}\label{thm.promonad_theta}
+Let $P$ be a lax monoidal promonad on a symmetric monoidal closed category $\cat{C}$, and let $(m,\mathfrak{m},\mathfrak{e},\alpha)$ be a $P$-monoid. Then $\Theta_m\colon\LensP{\cat{C}}{P}\to\cat{C}$ is a functor.
+
+If moreover $(m,\alpha)$ is a monoidal $P$-algebra, then $\Theta_m$ is lax monoidal.
+\end{theorem}
+
+\subsection{Proof plan: identity preservation}
+
+The identity at $\lensob{c}$ has $\outp{f}=\id$ and $\inpt{f}=\eta(\varepsilon\otimes\id)$. Then:
+\[
+\phi_{\id}=\alpha\bigl(P(\id,\ev)(\widehat{\eta(\varepsilon\otimes\id)}^{H_c})\bigr)=\alpha\bigl(\eta(\ev\circ((\varepsilon\otimes\id_{\inpt{c}})\otimes\id_{H_c}))\bigr)=\ev\circ(\varepsilon\otimes\id_{\inpt{c}}\otimes\id_{H_c})
+\]
+using Tambara on $\eta$ (\cref{rmk.tambara}), functoriality of $P(\id,\ev)$ on $\eta$-images, and the unit axiom of $\alpha$. Currying gives $\psi_{\id}=\varepsilon^*\colon\outp{c}\otimes H_c\to H_c$, and $\Theta_m(\id)$ reduces to $\delta\then(\id\otimes\varepsilon^*)=\id$ by the counit axiom.
+
+\subsection{Proof plan: composition preservation}\label{sec.comp}
+
+Given $P$-lenses $f\colon\lensob{c}\to\lensob{d}$ and $g\colon\lensob{d}\to\lensob{e}$, we must show $\Theta_m(g)\circ\Theta_m(f)=\Theta_m(g\circ f)$.
+
+\medskip\noindent\textbf{Step 0: Reduce to the key equation.}
+Both sides are maps $\outp{c}\otimes H_c\to\outp{e}\otimes H_e$. Using comonoid axioms (identical to the monad case, occupying the top three rows of the reference diagram on p.~\pageref{page.ref_diagram}), the equality reduces to showing that inside $\ihom{\inpt{e}}{-}$:
+\begin{equation}\label{eqn.key}
+\phi_{g\circ f}=\phi_g\circ(\id_{\outp{d}}\otimes\id_{\inpt{e}}\otimes\psi_f)
+\circ(\outp{f}\otimes\id_{\inpt{e}}\otimes\id_{H_c})
+\circ(\delta\otimes\id_{\inpt{e}}\otimes\id_{H_c}).
+\end{equation}
+The right side computes $\Theta_m(g)\circ\Theta_m(f)$ uncurried: duplicate $\outp{c}$, send one copy forward via $\outp{f}$, apply $\psi_f$ to the other copy with $H_c$ to produce $H_d$, then apply $\phi_g$ to $\outp{d}\otimes\inpt{e}\otimes H_d$.
+
+Using $\outp{f}$ a comonoid morphism and absorbing the comonoid moves, the right side simplifies to:
+\begin{equation}\label{eqn.key_simple}
+\phi_g\circ(\id_{\outp{d}\otimes\inpt{e}}\otimes\psi_f)
+\end{equation}
+composed with the appropriate comonoid-and-$\outp{f}$ rearrangement. So the essential content is:
+\begin{equation}\label{eqn.essential}
+\boxed{\alpha\bigl(\ev_*(\widehat{\inpt{(g\circ f)}}^{H_c})\bigr)=\phi_g\circ(\id\otimes\psi_f)}
+\end{equation}
+where $\inpt{(g\circ f)}=\inpt{f}\bullet\widehat{\inpt{g}}^{\outp{c}}\bullet\eta(\text{comonoid})$ is the composite backward map from \eqref{eqn.lens_compose}, and the right side is the uncurried composition of the individual $\phi$'s (modulo the comonoid rearrangement).
+
+\medskip\noindent\textbf{Step 1: Decompose using Tambara--composition compatibility.}
+By \eqref{eqn.tambara_compose}, the Tambara of a $\mu$-composite is the composite of Tambara-ed parts:
+\[
+\widehat{\inpt{(g\circ f)}}^{H_c}=\widehat{\inpt{f}}^{H_c}\bullet\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}\bullet\eta(\text{comonoid}\otimes\id_{H_c}).
+\]
+After absorbing the $\eta$-factor and pushing forward by $\ev$:
+\[
+\ev_*(\widehat{\inpt{(g\circ f)}}^{H_c})=\ev_*(\widehat{\inpt{f}}^{H_c})\bullet\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}\bullet\eta(\ldots)
+\]
+where $\ev_*(\widehat{\inpt{f}}^{H_c})\in P(\outp{c}\otimes\inpt{d}\otimes H_c,m)$ and $\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}\in P(\outp{c}\otimes\outp{d}\otimes\inpt{e}\otimes H_c,\outp{c}\otimes\inpt{d}\otimes H_c)$.
+
+\medskip\noindent\textbf{Step 2: Apply the algebra axiom.}
+By \eqref{eqn.P_alg_assoc} with $q=\ev_*(\widehat{\inpt{f}}^{H_c})$ and $p$ the remaining composite:
+\[
+\alpha\bigl(\ev_*(\widehat{\inpt{f}}^{H_c})\bullet p\bigr)=\alpha\bigl(P(\id,\phi_f)(p)\bigr)
+\]
+where $\phi_f=\alpha(q)\colon\outp{c}\otimes\inpt{d}\otimes H_c\to m$. This peels off $\inpt{f}$ and replaces it with its $\alpha$-dropped version $\phi_f$.
+
+\medskip\noindent\textbf{Step 3: Apply Tambara naturality.}
+The remaining element $P(\id,\phi_f)(p)$ involves $\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}$ pushed forward by $\phi_f\colon\outp{c}\otimes\inpt{d}\otimes H_c\to m$. Writing $\phi_f=\ev\circ(\id_{\inpt{d}}\otimes\psi_f)$ (by definition of $\psi_f$), the pushforward factors as:
+\[
+P(\id,\phi_f)=P(\id,\ev)\circ P(\id,\id_{\inpt{d}}\otimes\psi_f).
+\]
+Now $\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}$ is $\inpt{g}$ Tambara-ed twice (first with $\outp{c}$, then with $H_c$); by Tambara associativity, this equals $\widehat{\inpt{g}}^{\outp{c}\otimes H_c}$: the single Tambara of $\inpt{g}\in P(\outp{d}\otimes\inpt{e},\inpt{d})$ with $\outp{c}\otimes H_c$.
+
+The codomain after this Tambara is $\inpt{d}\otimes\outp{c}\otimes H_c$. Pushing forward by $\id_{\inpt{d}}\otimes\psi_f\colon\inpt{d}\otimes\outp{c}\otimes H_c\to\inpt{d}\otimes H_d$ and applying \textbf{Tambara naturality} (\cref{lem.tambara_nat}) with $\psi=\psi_f\colon\outp{c}\otimes H_c\to H_d$:
+\begin{equation}\label{eqn.swap}
+P(\id,\id_{\inpt{d}}\otimes\psi_f)(\widehat{\inpt{g}}^{\outp{c}\otimes H_c})=P(\psi_f\otimes\id_{\outp{d}\otimes\inpt{e}},\id)(\widehat{\inpt{g}}^{H_d}).
+\end{equation}
+This swaps $\psi_f$ from the covariant (codomain) slot to the contravariant (domain) slot.
+
+\medskip\noindent\textbf{Step 4: Apply naturality of $\alpha$.}
+After pushing forward by $\ev$ (which acts on the codomain and hence commutes with the contravariant $P(\psi_f\otimes\id,\id)$):
+\[
+P(\id,\phi_f)(\widehat{\inpt{g}}^{\outp{c}\otimes H_c})=P(\psi_f\otimes\id,\id)\bigl(\ev_*(\widehat{\inpt{g}}^{H_d})\bigr).
+\]
+Applying $\alpha$ and using \eqref{eqn.alpha_nat}:
+\[
+\alpha\bigl(P(\psi_f\otimes\id,\id)(\ev_*(\widehat{\inpt{g}}^{H_d}))\bigr)=\alpha\bigl(\ev_*(\widehat{\inpt{g}}^{H_d})\bigr)\circ(\psi_f\otimes\id)=\phi_g\circ(\psi_f\otimes\id).
+\]
+This is the right side of \eqref{eqn.essential} (modulo the comonoid rearrangement absorbed in Step~0), completing the proof.\qed
+
+\subsection{Summary of proof ingredients}
+
+\begin{center}
+\begin{tabular}{lll}
+\textbf{Step} & \textbf{Uses} & \textbf{Monad analogue}\\
+\hline
+0 & comonoid axioms, $\outp{f}$ comonoid hom & same (rows 1--3 of diagram)\\
+1 & Tambara--$\mu$ compatibility \eqref{eqn.tambara_compose} & functoriality of $\sigma$\\
+2 & $P$-algebra associativity \eqref{eqn.P_alg_assoc} & $a\circ\mu=a\circ\Fun{T}a$\\
+3 & Tambara naturality \eqref{eqn.tambara_nat} & naturality of $\sigma$ in first arg\\
+4 & naturality of $\alpha$ \eqref{eqn.alpha_nat} & naturality of $a$\\
+\end{tabular}
+\end{center}
+
+\subsection{The collapsed diagram}
+
+The composition proof can be arranged as a diagram of the same general shape as the monad reference diagram, but with columns 4--8 (the $\inpt{f}$, $\eta$, $\tau$, $\Fun{T}\ev$, $\alpha$ columns) collapsed into a single column $\ihom{\inpt{d}}{\phi_f}$. Schematically, each row of the collapsed diagram has four nodes:
+\[
+\outp{x}\,\outp{y}\,H_z\quad\to\quad\outp{x}\,\outp{y}\,\outp{y}\,H_z\quad\to\quad\outp{x}\,\outp{z}\,\outp{y}\,H_z\quad\to\quad \outp{x}\,\outp{z}\ihom{\inpt{z}}{\outp{y}\inpt{z}H_z}\quad\to\quad\outp{x}\,\outp{z}\,H_z
+\]
+with steps $\delta$, $\outp{?}$, $\coev'$, $\ihom{\inpt{z}}{\phi_{?}}$. The commutativity of each square in the collapsed diagram follows from the reasons in the table above.
+
+\bigskip
+\hrule
+\bigskip
+
+\section{Reference: monad proof diagram}\label{page.ref_diagram}
+
+The following diagram is reproduced from the main paper. It proves functoriality of $\Theta_z\colon\Lens{\cat{C}}^{\Fun{T}}\to\cat{C}$ for a strong monad $\Fun{T}$ and $\Fun{T}$-algebra $(z,\alpha)$. Write $H_X=\ihom{\inpt{X}}{z}$ and use juxtaposition for $\otimes$, $X$ for $\inpt{X}$.
+
+\begin{landscape}
+\thispagestyle{empty}
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzcd}[column sep=0.4em, row sep=1em, every label/.append style={font=\tiny}, font=\tiny, ampersand replacement=\&]
+\outp c H_c
+  \ar[r, "{\delta}"]
+  \ar[d, "{\delta}"']
+\& \outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\delta}"']
+\& \outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\delta}"']
+\& \outp d[d,\outp c d H_c] \ar[r, "{\inpt f}"] \ar[d, "{\delta}"']
+\& \outp d[d,\Fun T(c)H_c] \ar[r, "{\eta}"] \ar[d, "{\delta}"']
+\& \outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\delta}"']
+\& \outp d[d,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\delta}"']
+\& \outp d[d,\Fun T(z)] \ar[r, "{\alpha}"] \ar[d, "{\delta}"']
+\& \outp d H_d \ar[d, "{\delta}"] \\
+\outp c\outp c H_c \ar[d, "{\outp f}"'] \ar[r, "{\delta}"]
+\& \outp c\outp c\outp c H_c \ar[r, "{\outp f\outp f}"] \ar[d, "{\outp f}"']
+\& \outp d\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d[d,\outp c d H_c] \ar[r, "{\inpt f}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d[d,\Fun T(c)H_c] \ar[r, "{\eta}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d[d,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d[d,\Fun T(z)] \ar[r, "{\alpha}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d H_d \ar[d, "{\outp g}"] \\
+\outp d\outp c H_c \ar[d, "{\outp g}"'] \ar[r, "{\delta}"]
+\& \outp d\outp c\outp c H_c \ar[r, "{\outp g\outp f}"]
+\& \outp e\outp d\outp c H_c \ar[r, "{\coev_d}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d[d,\outp c d H_c] \ar[r, "{\inpt f}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d[d,\Fun T(c)H_c] \ar[r, "{\eta}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d[d,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d[d,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d[d,\Fun T(z)] \ar[r, "{\alpha}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d H_d \ar[d, "{\coev_e}"] \\
+\outp e\outp c H_c \ar[dd, "{\coev_e}"']
+\&\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\coev_d}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\outp c d H_c]] \ar[r, "{\inpt f}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(c)H_c]] \ar[r, "{\eta}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\tau}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(cH_c)]] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e[d,\Fun T(z)]] \ar[r, "{\alpha}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp d e H_d] \ar[d, "{\inpt g}"] \\
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)H_c] \ar[d, "{\eta}"'] \ar[dddd, out=200, in=150, equal]
+\& \outp e[e,\outp c\Fun T(d)H_c] \ar[r, "{\coev_d}"] \ar[d, "{\eta}"] \ar[l, "{\eta}"]
+\& \outp e[e,\Fun T(d)[d,\outp c d H_c]] \ar[r, "{\inpt f}"] \ar[d, "{\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(c)H_c]] \ar[r, "{\eta}"] \ar[d, "{\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(c)\Fun T(H_c)]] \ar[r, "{\tau}"] \ar[d, "{\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(cH_c)]] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\eta}"']
+\& \outp e[e,\Fun T(d)[d,\Fun T(z)]] \ar[r, "{\alpha}"] \ar[d, "{\eta}"']
+\& \outp e[e,\Fun T(d)H_d] \ar[d, "{\eta}"] \\
+\outp e[e,\outp c e H_c] \ar[d, "{\delta}"']
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)\Fun T(H_c)] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(\outp c d)\Fun T(H_c)] \ar[r, "{\Fun T(\coev_d)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\outp c d H_c])] \ar[r, "{\Fun T(\inpt f)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(c)H_c])] \ar[r, "{\Fun T(\eta)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(c)\Fun T(H_c)])] \ar[r, "{\Fun T(\tau)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(cH_c)])] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T([d,\Fun T(z)])] \ar[r, "{\Fun T(\alpha)}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(d)\Fun T(H_d)] \ar[d, "{\tau}"] \\
+\outp e[e,\outp c\outp c e H_c] \ar[d, "{\outp f}"']
+\&\& \outp e[e,\Fun T(\outp c d H_c)] \ar[r, "{\Fun T(\coev_d)}"] \ar[dr, equal]
+\& \outp e[e,\Fun T(d[d,\outp c d H_c])] \ar[r, "{\Fun T(\inpt f)}"] \ar[d, "{\Fun T(\ev)}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(c)H_c])] \ar[r, "{\Fun T(\eta)}"] \ar[d, "{\Fun T(\ev)}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(c)\Fun T(H_c)])] \ar[r, "{\Fun T(\tau)}"] \ar[d, "{\Fun T(\ev)}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(cH_c)])] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\Fun T(\ev)}"']
+\& \outp e[e,\Fun T(d[d,\Fun T(z)])] \ar[r, "{\Fun T(\alpha)}"] \ar[d, "{\Fun T(\ev)}"']
+\& \outp e[e,\Fun T(dH_d)] \ar[d, "{\Fun T(\ev)}"] \\
+\outp e[e,\outp d e\outp c H_c] \ar[d, "{\inpt g}"']
+\&\&
+\& \outp e[e,\Fun T(\outp c d H_c)] \ar[r, "{\Fun T(\inpt f)}"]
+\& \outp e[e,\Fun T(\Fun T(c)H_c)] \ar[r, "{\Fun T(\eta)}"]
+\& \outp e[e,\Fun T(\Fun T(c)\Fun T(H_c))] \ar[r, "{\Fun T(\tau)}"]
+\& \outp e[e,\Fun T(\Fun T(cH_c))] \ar[r, "{\Fun T(\ev)}"] \ar[d, "{\mu}"']
+\& \outp e[e,\Fun T(\Fun T(z))] \ar[r, "{\Fun T(\alpha)}"] \ar[d, "{\mu}"']
+\& \outp e[e,\Fun T(z)] \ar[d, "{\alpha}"] \\
+\outp e[e,\outp c\Fun T(d)H_c] \ar[r, "{\eta}"]
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)H_c] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(\outp c d)H_c] \ar[r, "{\Fun T(\inpt f)}"]
+\& \outp e[e,\Fun T(\Fun T(c))H_c] \ar[r, "{\mu}"]
+\& \outp e[e,\Fun T(c)H_c] \ar[r, "{\eta}"]
+\& \outp e[e,\Fun T(c)\Fun T(H_c)] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(cH_c)] \ar[r, "{\Fun T(\ev)}"]
+\& \outp e[e,\Fun T(z)] \ar[r, "{\alpha}"]
+\& \outp e H_e
+\end{tikzcd}
+}
+\end{center}
+\end{landscape}
+
+\noindent To obtain the promonad proof, collapse columns 4--8 into a single column $\ihom{d}{\phi_f}$. The top three rows (comonoid axioms) remain unchanged. Rows 4--9 collapse via the four steps of \cref{sec.comp}: the algebra axiom replaces the $\mu$/$\Fun{T}\alpha$ square (bottom-right of the diagram), Tambara naturality replaces the $\sigma$-naturality squares (rows 5--6), and naturality of $\alpha$ replaces the naturality-of-$a$ squares (right column).
+
+\end{document}

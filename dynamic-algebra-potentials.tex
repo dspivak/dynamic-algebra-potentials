@@ -407,6 +407,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\para}[3][]{\Para_{#2}^{#1}(#3)}
 \trackTerm{\rnla}{rnla}{\Cat{RNLA}}
 \trackTerm{\rvect}{rvect}{\Cat{RVect}}
+\trackTerm{\vectQ}{vectQ}{\Cat{Vect}^Q}
 \trackTermSymbol{Lens}{\Cat{Lens}}
 \newcommand{\Lens}[1]{\termref{Lens}{\termraw{Lens}}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
@@ -2167,56 +2168,66 @@ We write $\defineTerm{srw}$ for its underlying operad. From this point on we wor
 
 Multimorphisms in $\srw$ are called \emph{smooth rewiring diagrams}. When the parameter is the trivial reactive vector space $\rr^0$, we call such a multimorphism a \emph{smooth (static) wiring diagram}; when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$, we call it a \emph{closed system}.
 
-It will be useful to single out the sub-operad of $\srw$ on which both sides of the Para construction $\srw=\para{\rvect}{\plmfd}$ are linear. The parameter side is the sub-SMC $\rvect^{\cnst}\subseteq\rvect$ of \cref{def.rvect_cnst}; we now define its lens-and-potential counterpart $\plmfd^{\lin}\subseteq\plmfd$, check that the action of \cref{lem.parameter_lens_action} restricts, and combine via the same Para construction.
+It will be useful to single out the sub-operad of $\srw$ on which both sides of the Para construction $\srw=\para{\rvect}{\plmfd}$ are linear. The parameter side is the sub-SMC $\rvect^{\cnst}\subseteq\rvect$ of \cref{def.rvect_cnst}; we now construct the lens-and-potential counterpart $\plmfd^{\lin}$ via a small refinement of $\vect$ that absorbs the quadratic potential into the backward leg of a lens-style construction.
 
-\begin{definition}\label{def.plmfd_lin}
-Let $\plmfd^{\lin}\subseteq\plmfd$ be the sub-SMC on lens objects $\lensob M$ with $\outp M,\inpt M\in\vect$, and on morphisms $f=\bigl(\binom{\inpt f}{\outp f},U\bigr)\colon\lensob M\to\lensob N$ with $\outp f$ and $\inpt f$ linear and $U\colon\outp M\times\inpt N\to\rr$ a quadratic form.
-\end{definition}
+Let $\defineTerm{vectQ}$ be the category with vector spaces as objects, and as morphisms $V\to W$ pairs $(L,q)$ with $L\in\vect(V,W)$ linear and $q\in\quadf(V)$ a quadratic form (\cref{lem.quadratic_functorial}). Composition is
+\begin{equation}\label{eqn.vectQ_comp}
+(L',q')\circ(L,q)\;\coloneqq\;\bigl(L'\circ L,\;q+q'\circ L\bigr),
+\end{equation}
+identity is $(\id_V,0)$. This is well-defined and associative because pullback of a quadratic form along a linear map is quadratic and the sum of two quadratics is quadratic (\cref{lem.quadratic_functorial}).
 
-The sub-SMC claims for both definitions hinge on the functorial fact about quadratic forms recorded in \cref{lem.quadratic_functorial}.
-
-\begin{lemma}\label{lem.plmfd_lin_smc}
-$\plmfd^{\lin}\subseteq\plmfd$ is a sub-SMC.
+\begin{lemma}\label{lem.vectQ_smc}
+$\vectQ$ is symmetric monoidal with $V\otimes W\coloneqq V\oplus W$ on objects and
+\[
+(L_1,q_1)\otimes(L_2,q_2)\;\coloneqq\;\bigl(L_1\oplus L_2,\;q_1\boxplus q_2\bigr),\qquad (q_1\boxplus q_2)(v_1,v_2)\coloneqq q_1(v_1)+q_2(v_2)
+\]
+on morphisms. The functor $\iota\colon\vect\to\vectQ$, $L\mapsto(L,0)$, is strong symmetric monoidal and identity-on-objects.
 \end{lemma}
 
 \begin{proof}
-We verify closure under identity, composition, and monoidal product.
+Functoriality of $\otimes$ and the SMC axioms accumulate quadratics by linear pullback and addition, both closures of \cref{lem.quadratic_functorial}; the linear parts inherit from $(\vect,\oplus)$. The inclusion $\iota$ sends linear maps to morphisms with zero quadratic part, which is preserved by all SMC structure maps.
+\end{proof}
 
-\emph{Identity.} The identity at $\lensob M$ in $\plmfd$ is $\bigl(\id_{\outp M},\id_{\inpt M},0\bigr)$; the lens components are linear and the zero potential is quadratic (take $q\equiv 0$).
-
-\emph{Composition.} Let $f\colon\lensob M\to\lensob N$ and $g\colon\lensob N\to\lensob P$ both lie in $\plmfd^{\lin}$. By the coKleisli composition formula in $\plmfd$ (\cref{sec.potentialized_cokleisli}), the composite $g\circ f$ has lens part
+\begin{definition}\label{def.plmfd_lin}
+$\plmfd^{\lin}$ is the symmetric monoidal category with objects lens objects $\lensob M=(\inpt M,\outp M)$ in $\vect$ and morphisms $\lensob M\to\lensob N$ triples $(\outp f,\inpt f,U_f)$ with
 \[
+\outp f\in\vect(\outp M,\outp N),\quad
+\inpt f\in\vect\bigl(\outp M\oplus\inpt N,\,\inpt M\bigr),\quad
+U_f\in\quadf(\outp M\oplus\inpt N),
+\]
+the pair $(\inpt f,U_f)\in\vectQ(\outp M\oplus\inpt N,\inpt M)$ together giving the backward leg in $\vectQ$. Composition is by the standard lens-composition formula, with the diagonal $\Delta_{\outp M}\in\vect$ pushed along $\iota$ before chaining backward parts in $\vectQ$; tensor is $\lensob{M_1}\otimes\lensob{M_2}\coloneqq\binom{\inpt{M_1}\oplus\inpt{M_2}}{\outp{M_1}\oplus\outp{M_2}}$ with componentwise structure on morphisms.
+\end{definition}
+
+We call $U_f$ the \emph{potential} of $f$.
+
+\begin{lemma}\label{lem.plmfd_lin_smc}
+Composition along $f\colon\lensob M\to\lensob N$ and $g\colon\lensob N\to\lensob P$ in $\plmfd^{\lin}$ has lens part
+\begin{equation}\label{eqn.plmfd_lin_lens}
 \outp{g\circ f}=\outp g\circ\outp f,\qquad
-\inpt{g\circ f}\colon\outp M\times\inpt P\to\inpt M,\quad(m,p)\mapsto\inpt f\bigl(m,\,\inpt g(\outp f(m),p)\bigr),
-\]
+\inpt{g\circ f}(m,p)=\inpt f\bigl(m,\,\inpt g(\outp f(m),p)\bigr),
+\end{equation}
 and potential
-\[
-U_{g\circ f}(m,p)\;=\;U_g\bigl(\outp f(m),p\bigr)+U_f\bigl(m,\,\inpt g(\outp f(m),p)\bigr),
-\]
-the sum coming from the $\potd$-monoid multiplication $\mu=(+)$ on the backward $\rr$-channel. Linearity of $\outp{g\circ f}$ and $\inpt{g\circ f}$ is composition of linear maps. The argument $(\outp f(m),p)$ of $U_g$ is linear in $(m,p)$, and so is $\bigl(m,\inpt g(\outp f(m),p)\bigr)$; by \cref{lem.quadratic_functorial}, pullback of a quadratic by a linear map is quadratic, and the sum of two quadratics is quadratic, so $U_{g\circ f}$ is quadratic.
+\begin{equation}\label{eqn.plmfd_lin_pot}
+U_{g\circ f}(m,p)\;=\;U_g\bigl(\outp f(m),p\bigr)\,+\,U_f\bigl(m,\,\inpt g(\outp f(m),p)\bigr).
+\end{equation}
+Regarding linear maps as smooth and quadratic forms as smooth $\rr$-valued functions defines a strong symmetric monoidal embedding $\plmfd^{\lin}\hookrightarrow\plmfd$.
+\end{lemma}
 
-\emph{Monoidal product.} The symmetric monoidal structure on $\plmfd$ is induced from $(\mfd,\times)$ via \cref{lem.cot_lifts_lens_potential}; on objects, $\lensob{M_1}\otimes\lensob{M_2}=\binom{\inpt{M_1}\times\inpt{M_2}}{\outp{M_1}\times\outp{M_2}}$ preserves vector-space interfaces. On morphisms $f_i=(\outp{f_i},\inpt{f_i},U_i)$ the lens components of $f_1\otimes f_2$ are $\outp{f_1}\times\outp{f_2}$ and $\inpt{f_1}\times\inpt{f_2}$ (linear from linear), and the potential is
-\[
-(U_1\oplus U_2)\bigl(\outp m_1,\outp m_2,\inpt n_1,\inpt n_2\bigr)\;=\;U_1\bigl(\outp m_1,\inpt n_1\bigr)+U_2\bigl(\outp m_2,\inpt n_2\bigr),
-\]
-each summand a pullback of a quadratic along a linear projection; by \cref{lem.quadratic_functorial} the sum is quadratic. The monoidal unit $\binom{\rr^0}{\rr^0}$ has all data trivially linear and the zero potential, hence in $\plmfd^{\lin}$.\qedhere
+\begin{proof}
+The lens part is composition of linear maps. The potential is the quadratic component of $(\inpt f,U_f)\circ\bigl((\outp f\oplus\id,0)\then(\id\oplus(\inpt g,U_g))\bigr)$ in $\vectQ$, computed by \eqref{eqn.vectQ_comp} with $\iota(\outp f)=(\outp f,0)$ contributing nothing to the quadratic; this gives \eqref{eqn.plmfd_lin_pot}. The formulas \eqref{eqn.plmfd_lin_lens}--\eqref{eqn.plmfd_lin_pot} are precisely the coKleisli composition in $\plmfd=\Lens(\mfd)^{(\rr\times\blank)}$ along the inclusion $\vect\hookrightarrow\mfd$, so the assignment is functorial. It is identity on lens objects and faithful on morphisms, and monoidal structures match by construction.
 \end{proof}
 
 \begin{lemma}\label{lem.action_restricts}
-The action $\rvect\times\plmfd\to\plmfd$ of \cref{lem.parameter_lens_action} restricts to an action $\rvect^{\cnst}\times\plmfd^{\lin}\to\plmfd^{\lin}$.
+The action $\rvect\times\plmfd\to\plmfd$ of \cref{lem.parameter_lens_action} restricts along $\plmfd^{\lin}\hookrightarrow\plmfd$ to an action $\rvect^{\cnst}\times\plmfd^{\lin}\to\plmfd^{\lin}$.
 \end{lemma}
 
 \begin{proof}
-\emph{On objects.} For $V\in\rvect^{\cnst}$ (so $V\in\vect$) and $\lensob X\in\plmfd^{\lin}$ (so $\outp X,\inpt X\in\vect$), the action gives the lens object $\binom{\inpt X}{V\times\outp X}$, whose interfaces $\inpt X$ and $V\times\outp X$ are both vector spaces.
-
-\emph{On morphisms.} For $u\colon V\to V'$ in $\rvect^{\cnst}$ --- a $\rvect$-isomorphism between constant-sharp objects, so in particular a linear map of vector spaces --- and $f=(\outp f,\inpt f,U)\colon\lensob c\to\lensob d$ in $\plmfd^{\lin}$, \cref{lem.parameter_lens_action} gives the lens components of $u\cdot f$ as
+For $V\in\rvect^{\cnst}$ and $\lensob c\in\plmfd^{\lin}$, the lens object $\binom{\inpt c}{V\oplus\outp c}$ has vector-space interfaces. For $u\colon(V,\sharpR)\to(V',\sharpR')$ in $\rvect^{\cnst}$ (in particular a linear map) and $f=(\outp f,\inpt f,U_f)$ in $\plmfd^{\lin}$, \cref{lem.parameter_lens_action} gives lens components
 \[
-\outp{u\cdot f}\colon V\times\outp c\to V'\times\outp d,\quad(v,c)\mapsto(u(v),\outp f(c)),
+\outp{u\cdot f}\colon(v,c)\mapsto(u(v),\outp f(c)),\qquad
+\inpt{u\cdot f}\colon V\oplus\outp c\oplus\inpt d\To{\pi}\outp c\oplus\inpt d\To{(\inpt f,U_f)}\inpt c,
 \]
-\[
-\inpt{u\cdot f}\colon V\times\outp c\times\inpt d\to\inpt c,\quad(v,c,d)\mapsto\inpt f(c,d),
-\]
-both linear (the second discards $V$ via the comonoid counit). The potential of $u\cdot f$ is the pullback of $U\colon\outp c\times\inpt d\to\rr$ along the linear projection $V\times\outp c\times\inpt d\to\outp c\times\inpt d$, hence quadratic by \cref{lem.quadratic_functorial}.\qedhere
+where $\pi$ is the linear projection. Both lens components are linear, and the backward composite is in $\vectQ$ by \cref{lem.vectQ_smc}, so its quadratic part---the pullback $U_f\circ\pi$---is quadratic; hence $u\cdot f\in\plmfd^{\lin}$.\qedhere
 \end{proof}
 
 \begin{definition}\label{def.srw_lin}
@@ -2228,15 +2239,15 @@ for the restricted action of \cref{lem.action_restricts}; we identify $\srwlin$ 
 \end{definition}
 
 \begin{theorem}\label{thm.srw_lin_suboperad}
-The inclusions $\rvect^{\cnst}\inj\rvect$ and $\plmfd^{\lin}\inj\plmfd$ induce a strong symmetric monoidal embedding $\srwlin\inj\srw$.
+The inclusion $\rvect^{\cnst}\inj\rvect$ and the embedding $\plmfd^{\lin}\inj\plmfd$ of \cref{lem.plmfd_lin_smc} induce a strong symmetric monoidal embedding $\srwlin\inj\srw$.
 \end{theorem}
 
 \begin{proof}
-Apply \cref{prop.para_square} with $F$ the inclusion $\rvect^{\cnst}\inj\rvect$, $G$ the inclusion $\plmfd^{\lin}\inj\plmfd$, and 2-cell $\theta=\id$ filling the action square: $F$ and $G$ are strict monoidal as sub-SMC inclusions, and by \cref{lem.action_restricts} the two composites $F(a)\cdot' G(x)$ and $G(a\cdot x)$ are literally equal, so the coherence diagrams of the action square are tautological. The proposition produces a strong symmetric monoidal functor
+Apply \cref{prop.para_square} with $F$ the inclusion $\rvect^{\cnst}\inj\rvect$, $G$ the embedding $\plmfd^{\lin}\inj\plmfd$ of \cref{lem.plmfd_lin_smc}, and 2-cell $\theta=\id$ filling the action square: $F$ is strict monoidal and $G$ is strong monoidal, both identity on objects and faithful, and by \cref{lem.action_restricts} the two composites $F(a)\cdot' G(x)$ and $G(a\cdot x)$ are equal on the nose, so the coherence diagrams of the action square are tautological. The proposition produces a strong symmetric monoidal functor
 \[
 \para{\rvect^{\cnst}}{\plmfd^{\lin}}\;\longrightarrow\;\para{\rvect}{\plmfd}\;=\;\potlens,
 \]
-identity on the parameter and lens components by construction. Since $F$ and $G$ are sub-SMC inclusions, this functor is injective on objects and faithful, hence an embedding. Taking underlying operads gives $\srwlin\inj\srw$.\qedhere
+identity on the parameter and lens components by construction. Since $F$ and $G$ are identity-on-objects and faithful, this functor is injective on objects and faithful, hence an embedding. Taking underlying operads gives $\srwlin\inj\srw$.\qedhere
 \end{proof}
 
 \begin{corollary}\label{cor.srw_lin_four_conditions}
@@ -3431,7 +3442,7 @@ acting per-particle on each $\rr$-summand (the inverse-mass pairing), independen
 \qqand
 U\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(x_i-x_{i-1})^2,
 \]
-with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input). Both $\Part$ and $\fun{wire}_K$ lie in $\srwlin$, so by closure under operadic composition (\cref{lem.plmfd_lin_smc}) so does $\fun{wire}_K(\Part,\ldots,\Part)$.
+with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input). Both $\Part$ and $\fun{wire}_K$ lie in $\srwlin$, so by closure under operadic composition (\cref{thm.srw_lin_suboperad}) so does $\fun{wire}_K(\Part,\ldots,\Part)$.
 
 \paragraph{The discrete dynamics.}
 
@@ -3621,7 +3632,7 @@ with composite parameter space $V_G\coloneqq\bigoplus_{v\in V}V_v=\rr^V$, consta
 \begin{equation}\label{eqn.graph_potential}
 U(\vec x)\;=\;\sum_{v\in V}U_v\bigl(x_v,(x_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(x_{\tgt(e)}-x_{\src(e)})^2.
 \end{equation}
-The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$. Since $\rr^{\varphi_G}$ and each $\Part_v$ lie in $\srwlin$, closure under operadic composition (\cref{lem.plmfd_lin_smc}) gives $\psi_G\in\srwlin$.
+The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in V$; the second equality uses the partition $E=\bigsqcup_{v\in V}\inpt{v}$. Since $\rr^{\varphi_G}$ and each $\Part_v$ lie in $\srwlin$, closure under operadic composition (\cref{thm.srw_lin_suboperad}) gives $\psi_G\in\srwlin$.
 
 \paragraph{The discrete dynamics.}
 
