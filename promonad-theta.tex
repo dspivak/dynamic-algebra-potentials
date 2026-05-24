@@ -74,21 +74,21 @@ satisfying associativity, unit, and the following compatibility conditions:
 Equivalently, $\cat{K}$ is a symmetric monoidal category with $J\colon\cat{C}\to\cat{K}$ strong monoidal. We write $p\mathbin{\hat\otimes} p'\coloneqq\lambda(p,p')$.
 \end{definition}
 
-\begin{remark}[Tambara structure]\label{rmk.tambara}
-A lax monoidal promonad has a derived \emph{Tambara structure}: for $p\in P(A,B)$ and any object $M$, define
+\begin{remark}[Strength]\label{rmk.tambara}
+A lax monoidal promonad has a derived \emph{strength}: for $p\in P(A,B)$ and any object $M$,
 \[
-\hat{p}^M\coloneqq\lambda(\eta(\id_M),p)\in P(M\otimes A,M\otimes B).
+\lambda(\eta(\id_M),p)\in P(M\otimes A,M\otimes B).
 \]
-By lax-unit compatibility, $\widehat{\eta(f)}^M=\eta(\id_M\otimes f)$. By the interchange law, the Tambara structure is compatible with composition:
+By lax-unit compatibility, $\lambda(\eta(\id_M),\eta(f))=\eta(\id_M\otimes f)$. By the interchange law, $\lambda(\eta(\id_M),-)$ preserves composition:
 \begin{equation}\label{eqn.tambara_compose}
-\widehat{q\bullet p}^M=\hat{q}^M\bullet\hat{p}^M.
+\lambda(\eta(\id_M),q\bullet p)=\lambda(\eta(\id_M),q)\bullet\lambda(\eta(\id_M),p).
 \end{equation}
 \end{remark}
 
-\begin{lemma}[Tambara naturality]\label{lem.tambara_nat}
+\begin{lemma}[Naturality of $\lambda(\eta(\id),-)$]\label{lem.tambara_nat}
 For $p\in P(A,B)$ and $\psi\colon M\to M'$ in $\cat{C}$:
 \begin{equation}\label{eqn.tambara_nat}
-P(\id,\psi\otimes\id_B)(\hat{p}^M)=P(\psi\otimes\id_A,\id)(\hat{p}^{M'}).
+P(\id,\psi\otimes\id_B)\bigl(\lambda(\eta(\id_M),p)\bigr)=P(\psi\otimes\id_A,\id)\bigl(\lambda(\eta(\id_{M'}),p)\bigr).
 \end{equation}
 Both sides lie in $P(M\otimes A,M'\otimes B)$.
 \end{lemma}
@@ -141,11 +141,11 @@ Let $P$ be a lax monoidal promonad on $(\cat{C},I,\otimes)$. The category $\Lens
 \item \textbf{Identity:} at $\lensob{c}$, the pair $(\id_{\outp{c}},\eta(\varepsilon_{\outp{c}}\otimes\id_{\inpt{c}}))$.
 \item \textbf{Composition:} given $(\outp{f},\inpt{f})\colon\lensob{c}\to\lensob{d}$ and $(\outp{g},\inpt{g})\colon\lensob{d}\to\lensob{e}$, their composite has forward part $\outp{g}\circ\outp{f}$ and backward part
 \begin{equation}\label{eqn.lens_compose}
-\inpt{f}\bullet\widehat{\inpt{g}}^{\outp{c}}\bullet\eta\bigl((\id\otimes\outp{f}\otimes\id)\circ(\delta_{\outp{c}}\otimes\id)\bigr)\;\in\;P(\outp{c}\otimes\inpt{e},\inpt{c}).
+\inpt{f}\bullet\lambda(\eta(\id_{\outp{c}}),\inpt{g})\bullet\eta\bigl((\id\otimes\outp{f}\otimes\id)\circ(\delta_{\outp{c}}\otimes\id)\bigr)\;\in\;P(\outp{c}\otimes\inpt{e},\inpt{c}).
 \end{equation}
-Using \cref{rmk.functorial}, this simplifies to $\inpt{f}\bullet P\bigl((\id\otimes\outp{f}\otimes\id)\circ(\delta\otimes\id),\;\id\bigr)(\widehat{\inpt{g}}^{\outp{c}})$, i.e.\ the composite in $\cat{K}$:
+Using \cref{rmk.functorial}, this simplifies to $\inpt{f}\bullet P\bigl((\id\otimes\outp{f}\otimes\id)\circ(\delta\otimes\id),\;\id\bigr)\bigl(\lambda(\eta(\id_{\outp{c}}),\inpt{g})\bigr)$, i.e.\ the composite in $\cat{K}$:
 \[
-\outp{c}\otimes\inpt{e}\To{\delta\otimes\id}\outp{c}\otimes\outp{c}\otimes\inpt{e}\To{\id\otimes\outp{f}\otimes\id}\outp{c}\otimes\outp{d}\otimes\inpt{e}\To{\widehat{\inpt{g}}^{\outp{c}}}\outp{c}\otimes\inpt{d}\To{\inpt{f}}\inpt{c}
+\outp{c}\otimes\inpt{e}\To{\delta\otimes\id}\outp{c}\otimes\outp{c}\otimes\inpt{e}\To{\id\otimes\outp{f}\otimes\id}\outp{c}\otimes\outp{d}\otimes\inpt{e}\To{\lambda(\eta(\id_{\outp{c}}),\inpt{g})}\outp{c}\otimes\inpt{d}\To{\inpt{f}}\inpt{c}
 \]
 where the first two arrows are $C$-morphisms (via $\eta$) and the last two are $\cat{K}$-morphisms.
 \end{itemize}
@@ -161,12 +161,12 @@ When $P=P_{\Fun{T}}$ is the Kleisli profunctor $P_{\Fun{T}}(A,B)=\cat{C}(A,\Fun{
 \begin{definition}[The map $\phi$]\label{def.phi}
 Let $(m,\alpha)$ be a $P$-algebra in monoidal closed $\cat{C}$. Write $H_X\coloneqq\ihom{\inpt{X}}{m}$ for each lens object $\lensob{X}$. Given a morphism $(\outp{f},\inpt{f})\colon\lensob{c}\to\lensob{d}$ in $\LensP{\cat{C}}{P}$, define the $\cat{C}$-morphism
 \begin{equation}\label{eqn.phi}
-\phi_f\coloneqq\alpha_{\outp{c}\otimes\inpt{d}\otimes H_c}\bigl(P(\id,\ev)(\widehat{\inpt{f}}^{H_c})\bigr)\;\colon\;\outp{c}\otimes\inpt{d}\otimes H_c\to m
+\phi_f\coloneqq\alpha_{\outp{c}\otimes\inpt{d}\otimes H_c}\bigl(P(\id,\ev)\bigl(\lambda(\eta(\id_{H_c}),\inpt{f})\bigr)\bigr)\;\colon\;\outp{c}\otimes\inpt{d}\otimes H_c\to m
 \end{equation}
 constructed in three steps:
 \begin{enumerate}
-\item \textbf{Tambara:} $\widehat{\inpt{f}}^{H_c}\in P(\outp{c}\otimes\inpt{d}\otimes H_c,\;\inpt{c}\otimes H_c)$,
-\item \textbf{Pushforward by $\ev$:} $P(\id,\ev)(\widehat{\inpt{f}}^{H_c})\in P(\outp{c}\otimes\inpt{d}\otimes H_c,\;m)$,
+\item \textbf{Strength:} $\lambda(\eta(\id_{H_c}),\inpt{f})\in P(\outp{c}\otimes\inpt{d}\otimes H_c,\;\inpt{c}\otimes H_c)$,
+\item \textbf{Pushforward by $\ev$:} $P(\id,\ev)\bigl(\lambda(\eta(\id_{H_c}),\inpt{f})\bigr)\in P(\outp{c}\otimes\inpt{d}\otimes H_c,\;m)$,
 \item \textbf{Drop:} apply $\alpha$ to obtain $\phi_f\colon\outp{c}\otimes\inpt{d}\otimes H_c\to m$ in $\cat{C}$.
 \end{enumerate}
 Write $\psi_f\colon\outp{c}\otimes H_c\to H_d$ for the adjoint transpose, i.e.\ $\phi_f=\ev\circ(\id_{\inpt{d}}\otimes\psi_f)$ after swapping the second and third tensor factors.
@@ -200,100 +200,88 @@ Let $P$ be a lax monoidal promonad on a symmetric monoidal closed category $\cat
 If moreover $(m,\alpha)$ is a monoidal $P$-algebra, then $\Theta_m$ is lax monoidal.
 \end{theorem}
 
-\subsection{Proof plan: identity preservation}
-
-The identity at $\lensob{c}$ has $\outp{f}=\id$ and $\inpt{f}=\eta(\varepsilon\otimes\id)$. Then:
-\[
-\phi_{\id}=\alpha\bigl(P(\id,\ev)(\widehat{\eta(\varepsilon\otimes\id)}^{H_c})\bigr)=\alpha\bigl(\eta(\ev\circ((\varepsilon\otimes\id_{\inpt{c}})\otimes\id_{H_c}))\bigr)=\ev\circ(\varepsilon\otimes\id_{\inpt{c}}\otimes\id_{H_c})
-\]
-using Tambara on $\eta$ (\cref{rmk.tambara}), functoriality of $P(\id,\ev)$ on $\eta$-images, and the unit axiom of $\alpha$. Currying gives $\psi_{\id}=\varepsilon^*\colon\outp{c}\otimes H_c\to H_c$, and $\Theta_m(\id)$ reduces to $\delta\then(\id\otimes\varepsilon^*)=\id$ by the counit axiom.
-
-\subsection{Proof plan: composition preservation}\label{sec.comp}
-
-Given $P$-lenses $f\colon\lensob{c}\to\lensob{d}$ and $g\colon\lensob{d}\to\lensob{e}$, we must show $\Theta_m(g)\circ\Theta_m(f)=\Theta_m(g\circ f)$.
-
-\medskip\noindent\textbf{Step 0: Reduce to the key equation.}
-Both sides are maps $\outp{c}\otimes H_c\to\outp{e}\otimes H_e$. Using comonoid axioms (identical to the monad case, occupying the top three rows of the reference diagram on p.~\pageref{page.ref_diagram}), the equality reduces to showing that inside $\ihom{\inpt{e}}{-}$:
-\begin{equation}\label{eqn.key}
-\phi_{g\circ f}=\phi_g\circ(\id_{\outp{d}}\otimes\id_{\inpt{e}}\otimes\psi_f)
-\circ(\outp{f}\otimes\id_{\inpt{e}}\otimes\id_{H_c})
-\circ(\delta\otimes\id_{\inpt{e}}\otimes\id_{H_c}).
+\begin{lemma}[$\psi$ composition]\label{lem.psi_compose}
+Let $f\colon\lensob{c}\to\lensob{d}$ and $g\colon\lensob{d}\to\lensob{e}$ be morphisms in $\LensP{\cat{C}}{P}$, with $\psi_f$ and $\psi_g$ as in \cref{def.phi}. Then
+\begin{equation}\label{eqn.psi_compose}
+\psi_{g\circ f}=\psi_g\circ(\outp{f}\otimes\psi_f)\circ(\delta_{\outp{c}}\otimes\id_{H_c}).
 \end{equation}
-The right side computes $\Theta_m(g)\circ\Theta_m(f)$ uncurried: duplicate $\outp{c}$, send one copy forward via $\outp{f}$, apply $\psi_f$ to the other copy with $H_c$ to produce $H_d$, then apply $\phi_g$ to $\outp{d}\otimes\inpt{e}\otimes H_d$.
+\end{lemma}
 
-Using $\outp{f}$ a comonoid morphism and absorbing the comonoid moves, the right side simplifies to:
-\begin{equation}\label{eqn.key_simple}
-\phi_g\circ(\id_{\outp{d}\otimes\inpt{e}}\otimes\psi_f)
-\end{equation}
-composed with the appropriate comonoid-and-$\outp{f}$ rearrangement. So the essential content is:
-\begin{equation}\label{eqn.essential}
-\boxed{\alpha\bigl(\ev_*(\widehat{\inpt{(g\circ f)}}^{H_c})\bigr)=\phi_g\circ(\id\otimes\psi_f)}
-\end{equation}
-where $\inpt{(g\circ f)}=\inpt{f}\bullet\widehat{\inpt{g}}^{\outp{c}}\bullet\eta(\text{comonoid})$ is the composite backward map from \eqref{eqn.lens_compose}, and the right side is the uncurried composition of the individual $\phi$'s (modulo the comonoid rearrangement).
-
-\medskip\noindent\textbf{Step 1: Decompose using Tambara--composition compatibility.}
-By \eqref{eqn.tambara_compose}, the Tambara of a $\mu$-composite is the composite of Tambara-ed parts:
+\begin{proof}
+Write $\mathrm{cm}\coloneqq(\id_{\outp{c}}\otimes\outp{f}\otimes\id_{\inpt{e}})\circ(\delta_{\outp{c}}\otimes\id_{\inpt{e}})$. Both $\cat{K}$-composites from $(\outp{c}\otimes H_c)\otimes\outp{d}\otimes\inpt{e}$ to $m$ in the following diagram have the same $\alpha$-image:
 \[
-\widehat{\inpt{(g\circ f)}}^{H_c}=\widehat{\inpt{f}}^{H_c}\bullet\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}\bullet\eta(\text{comonoid}\otimes\id_{H_c}).
+\begin{tikzcd}[column sep=3em, row sep=2.5em, every label/.append style={font=\scriptsize}, ampersand replacement=\&]
+(\outp{c}\otimes H_c)\otimes\outp{d}\otimes\inpt{e}
+  \ar[r, "{\lambda(\eta(\id_{\outp{c}\otimes H_c}),\,\inpt{g})}"]
+  \ar[d, "{\psi_f\otimes\id}"']
+\& (\outp{c}\otimes H_c)\otimes\inpt{d}
+  \ar[r, "{\lambda(\eta(\id_{H_c}),\,\inpt{f})}"]
+  \ar[d, "{\psi_f\otimes\id}"]
+\& \inpt{c}\otimes H_c
+  \ar[r, "{\eta(\ev)}"]
+\& m
+  \ar[d, equal]
+\\
+H_d\otimes\outp{d}\otimes\inpt{e}
+  \ar[r, "{\lambda(\eta(\id_{H_d}),\,\inpt{g})}"']
+\& H_d\otimes\inpt{d}
+  \ar[rr, "{\eta(\ev)}"']
+\&\& m
+\end{tikzcd}
 \]
-After absorbing the $\eta$-factor and pushing forward by $\ev$:
+Left tile: $\lambda$-naturality (\cref{lem.tambara_nat}). Right tile: definition of $\phi_f$ ($\alpha$-associativity, \cref{rmk.assoc_push}).
+
+Precomposing with $\eta(\mathrm{cm}\otimes\id_{H_c})$ and applying $\alpha$: the top path gives $\phi_{g\circ f}$ by the interchange law \eqref{eqn.tambara_compose}; the bottom path gives $\phi_g\circ(\psi_f\otimes\id)\circ(\mathrm{cm}\otimes\id_{H_c})$ by $\alpha$-naturality \eqref{eqn.alpha_nat}. Currying with respect to $\inpt{e}$ yields \eqref{eqn.psi_compose}.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm.promonad_theta}: identity]
+The identity at $\lensob{c}$ has $\outp{f}=\id$ and $\inpt{f}=\eta(\varepsilon\otimes\id_{\inpt{c}})$.
+\begin{align}
+\phi_{\id}
+&=\alpha\bigl(P(\id,\ev)\bigl(\lambda(\eta(\id_{H_c}),\eta(\varepsilon\otimes\id_{\inpt{c}}))\bigr)\bigr)
+&&\text{definition}\\
+&=\alpha\bigl(P(\id,\ev)\bigl(\eta(\id_{H_c}\otimes\varepsilon\otimes\id_{\inpt{c}})\bigr)\bigr)
+&&\text{lax-unit (\cref{def.monoidal_promonad}(1))}\\
+&=\alpha\bigl(\eta(\ev\circ(\varepsilon\otimes\id_{\inpt{c}}\otimes\id_{H_c}))\bigr)
+&&\text{functoriality of }\eta\\
+&=\ev\circ(\varepsilon\otimes\id_{\inpt{c}}\otimes\id_{H_c})
+&&\alpha\text{-unit (\cref{def.P_alg}(1))}
+\end{align}
+Currying gives $\psi_{\id}=\varepsilon^*\colon\outp{c}\otimes H_c\to H_c$. Then $\Theta_m(\id)=(\id\otimes\varepsilon^*)\circ(\delta\otimes\id)=\id$ by the counit axiom.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm.promonad_theta}: composition]
+Given $f\colon\lensob{c}\to\lensob{d}$ and $g\colon\lensob{d}\to\lensob{e}$, we must show $\Theta_m(g)\circ\Theta_m(f)=\Theta_m(g\circ f)$. The top-right boundary of the following diagram is $\Theta_m(g)\circ\Theta_m(f)$; the left-bottom boundary is $\Theta_m(g\circ f)$, with $\psi_{g\circ f}$ decomposed via \cref{lem.psi_compose}. We write juxtaposition for $\otimes$.
 \[
-\ev_*(\widehat{\inpt{(g\circ f)}}^{H_c})=\ev_*(\widehat{\inpt{f}}^{H_c})\bullet\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}\bullet\eta(\ldots)
+\resizebox{\linewidth}{!}{%
+\begin{tikzcd}[column sep=1.8em, row sep=1.8em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
+\outp c H_c
+  \ar[r, "{\delta}"]
+  \ar[d, "{\delta}"']
+\& \outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\delta}"']
+\& \outp d\outp c H_c \ar[r, "{\psi_f}"] \ar[d, "{\delta}"']
+\& \outp d H_d \ar[d, "{\delta}"]
+\\
+\outp c\outp c H_c \ar[d, "{\outp f}"'] \ar[r, "{\delta}"]
+\& \outp c\outp c\outp c H_c \ar[r, "{\outp f\outp f}"] \ar[d, "{\outp f}"']
+\& \outp d\outp d\outp c H_c \ar[r, "{\psi_f}"] \ar[d, "{\outp g}"']
+\& \outp d\outp d H_d \ar[d, "{\outp g}"]
+\\
+\outp d\outp c H_c \ar[d, "{\outp g}"'] \ar[r, "{\delta}"]
+\& \outp d\outp c\outp c H_c \ar[r, "{\outp g\outp f}"] \ar[d, "{\outp g}"']
+\& \outp e\outp d\outp c H_c \ar[r, "{\psi_f}"] \ar[d, equal]
+\& \outp e\outp d H_d \ar[d, equal]
+\\
+\outp e\outp c H_c \ar[r, "{\delta}"]
+\& \outp e\outp c\outp c H_c \ar[r, "{\outp f}"]
+\& \outp e\outp d\outp c H_c \ar[r, "{\psi_f}"]
+\& \outp e\outp d H_d \ar[r, "{\psi_g}"]
+\& \outp e H_e
+\end{tikzcd}
+}
 \]
-where $\ev_*(\widehat{\inpt{f}}^{H_c})\in P(\outp{c}\otimes\inpt{d}\otimes H_c,m)$ and $\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}\in P(\outp{c}\otimes\outp{d}\otimes\inpt{e}\otimes H_c,\outp{c}\otimes\inpt{d}\otimes H_c)$.
-
-\medskip\noindent\textbf{Step 2: Apply the algebra axiom.}
-By \eqref{eqn.P_alg_assoc} with $q=\ev_*(\widehat{\inpt{f}}^{H_c})$ and $p$ the remaining composite:
-\[
-\alpha\bigl(\ev_*(\widehat{\inpt{f}}^{H_c})\bullet p\bigr)=\alpha\bigl(P(\id,\phi_f)(p)\bigr)
-\]
-where $\phi_f=\alpha(q)\colon\outp{c}\otimes\inpt{d}\otimes H_c\to m$. This peels off $\inpt{f}$ and replaces it with its $\alpha$-dropped version $\phi_f$.
-
-\medskip\noindent\textbf{Step 3: Apply Tambara naturality.}
-The remaining element $P(\id,\phi_f)(p)$ involves $\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}$ pushed forward by $\phi_f\colon\outp{c}\otimes\inpt{d}\otimes H_c\to m$. Writing $\phi_f=\ev\circ(\id_{\inpt{d}}\otimes\psi_f)$ (by definition of $\psi_f$), the pushforward factors as:
-\[
-P(\id,\phi_f)=P(\id,\ev)\circ P(\id,\id_{\inpt{d}}\otimes\psi_f).
-\]
-Now $\widehat{\widehat{\inpt{g}}^{\outp{c}}}^{H_c}$ is $\inpt{g}$ Tambara-ed twice (first with $\outp{c}$, then with $H_c$); by Tambara associativity, this equals $\widehat{\inpt{g}}^{\outp{c}\otimes H_c}$: the single Tambara of $\inpt{g}\in P(\outp{d}\otimes\inpt{e},\inpt{d})$ with $\outp{c}\otimes H_c$.
-
-The codomain after this Tambara is $\inpt{d}\otimes\outp{c}\otimes H_c$. Pushing forward by $\id_{\inpt{d}}\otimes\psi_f\colon\inpt{d}\otimes\outp{c}\otimes H_c\to\inpt{d}\otimes H_d$ and applying \textbf{Tambara naturality} (\cref{lem.tambara_nat}) with $\psi=\psi_f\colon\outp{c}\otimes H_c\to H_d$:
-\begin{equation}\label{eqn.swap}
-P(\id,\id_{\inpt{d}}\otimes\psi_f)(\widehat{\inpt{g}}^{\outp{c}\otimes H_c})=P(\psi_f\otimes\id_{\outp{d}\otimes\inpt{e}},\id)(\widehat{\inpt{g}}^{H_d}).
-\end{equation}
-This swaps $\psi_f$ from the covariant (codomain) slot to the contravariant (domain) slot.
-
-\medskip\noindent\textbf{Step 4: Apply naturality of $\alpha$.}
-After pushing forward by $\ev$ (which acts on the codomain and hence commutes with the contravariant $P(\psi_f\otimes\id,\id)$):
-\[
-P(\id,\phi_f)(\widehat{\inpt{g}}^{\outp{c}\otimes H_c})=P(\psi_f\otimes\id,\id)\bigl(\ev_*(\widehat{\inpt{g}}^{H_d})\bigr).
-\]
-Applying $\alpha$ and using \eqref{eqn.alpha_nat}:
-\[
-\alpha\bigl(P(\psi_f\otimes\id,\id)(\ev_*(\widehat{\inpt{g}}^{H_d}))\bigr)=\alpha\bigl(\ev_*(\widehat{\inpt{g}}^{H_d})\bigr)\circ(\psi_f\otimes\id)=\phi_g\circ(\psi_f\otimes\id).
-\]
-This is the right side of \eqref{eqn.essential} (modulo the comonoid rearrangement absorbed in Step~0), completing the proof.\qed
-
-\subsection{Summary of proof ingredients}
-
-\begin{center}
-\begin{tabular}{lll}
-\textbf{Step} & \textbf{Uses} & \textbf{Monad analogue}\\
-\hline
-0 & comonoid axioms, $\outp{f}$ comonoid hom & same (rows 1--3 of diagram)\\
-1 & Tambara--$\mu$ compatibility \eqref{eqn.tambara_compose} & functoriality of $\sigma$\\
-2 & $P$-algebra associativity \eqref{eqn.P_alg_assoc} & $a\circ\mu=a\circ\Fun{T}a$\\
-3 & Tambara naturality \eqref{eqn.tambara_nat} & naturality of $\sigma$ in first arg\\
-4 & naturality of $\alpha$ \eqref{eqn.alpha_nat} & naturality of $a$\\
-\end{tabular}
-\end{center}
-
-\subsection{The collapsed diagram}
-
-The composition proof can be arranged as a diagram of the same general shape as the monad reference diagram, but with columns 4--8 (the $\inpt{f}$, $\eta$, $\tau$, $\Fun{T}\ev$, $\alpha$ columns) collapsed into a single column $\ihom{\inpt{d}}{\phi_f}$. Schematically, each row of the collapsed diagram has four nodes:
-\[
-\outp{x}\,\outp{y}\,H_z\quad\to\quad\outp{x}\,\outp{y}\,\outp{y}\,H_z\quad\to\quad\outp{x}\,\outp{z}\,\outp{y}\,H_z\quad\to\quad \outp{x}\,\outp{z}\ihom{\inpt{z}}{\outp{y}\inpt{z}H_z}\quad\to\quad\outp{x}\,\outp{z}\,H_z
-\]
-with steps $\delta$, $\outp{?}$, $\coev'$, $\ihom{\inpt{z}}{\phi_{?}}$. The commutativity of each square in the collapsed diagram follows from the reasons in the table above.
+Every tile commutes by functoriality of $\otimes$ (operations on disjoint tensor factors), coassociativity of $\delta_{\outp{c}}$, or the comonoid-homomorphism property of $\outp{f}$.
+\end{proof}
 
 \bigskip
 \hrule
@@ -390,6 +378,63 @@ The following diagram is reproduced from the main paper. It proves functoriality
 \end{tikzcd}
 }
 \end{center}
+
+\medskip
+
+The curved equality on the left splits the open region into two parts, and it suffices to show each commutes. The left-hand square below shows that the two maps $\outp d\otimes\outp c\otimes[\inpt c,z]\to\outp e\otimes[\inpt e,\Fun T(\outp c)\otimes \Fun T(d)\otimes[\inpt c,z]]$ agree, and the right-hand square shows that the two maps $\outp e\otimes[\inpt e,\Fun T(\outp c)\otimes\Fun T(d)\otimes [\inpt c,z]]\to\outp e\otimes [\inpt e,\Fun T(\inpt c\otimes [\inpt c,z])]$ agree.
+
+\noindent\begin{minipage}{0.48\linewidth}
+\[
+\resizebox{\linewidth}{!}{%
+\begin{tikzcd}[column sep=1em, row sep=1em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
+\outp d\outp c H_c
+  \ar[r, "{\delta}"]
+  \ar[d, "{\outp g}"']
+\& \outp d\outp c\outp c H_c \ar[r, "{\outp g}"] \ar[d, "{\outp g}"']
+\& \outp e\outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\outp f}"']
+\& \outp e\outp d\outp c H_c \ar[d, "{\coev_e}"] \\
+\outp e\outp c H_c \ar[r, "{\delta}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp c\outp c H_c \ar[r, "{\outp f}"] \ar[d, "{\coev_e}"']
+\& \outp e\outp d\outp c H_c \ar[r, "{\coev_e}"] \ar[d, "{\coev_e}"']
+\& \outp e[e,\outp d e\outp c H_c] \ar[d, "{\inpt g}"] \\
+\outp e[e,\outp c e H_c] \ar[r, "{\delta}"] \ar[d, "{\delta}"']
+\& \outp e[e,\outp c\outp c e H_c] \ar[r, "{\outp f}"] \ar[d, "{\outp f}"']
+\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\inpt g}"] \ar[d, "{\inpt g}"']
+\& \outp e[e,\outp c\Fun T(d)H_c] \ar[d, "{\eta}"] \\
+\outp e[e,\outp c\outp c e H_c] \ar[r, "{\outp f}"]
+\& \outp e[e,\outp d e\outp c H_c] \ar[r, "{\inpt g}"]
+\& \outp e[e,\outp c\Fun T(d)H_c] \ar[r, "{\eta}"]
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)H_c]
+\end{tikzcd}
+}
+\]
+\end{minipage}\hfill
+\begin{minipage}{0.5\linewidth}
+\[
+\resizebox{\linewidth}{!}{%
+\begin{tikzcd}[column sep=1em, row sep=1em, every label/.append style={font=\tiny}, font=\scriptsize, ampersand replacement=\&]
+\outp e[e,\Fun T(\outp c)\Fun T(d)H_c]
+  \ar[r, "{\eta}"]
+  \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(\outp c)\Fun T(d)\Fun T(H_c)] \ar[r, "{\tau}"] \ar[d, "{\tau}"']
+\& \outp e[e,\Fun T(\outp c d)\Fun T(H_c)] \ar[r, "{\tau}"]
+\& \outp e[e,\Fun T(\outp c d H_c)] \ar[d, "{\Fun T(\inpt f)}"] \\
+\outp e[e,\Fun T(\outp c d)H_c] \ar[r, "{\eta}"] \ar[dd, "{\Fun T(\inpt f)}"']
+\& \outp e[e,\Fun T(\outp c d)\Fun T(H_c)] \ar[urr, "{\tau}"] \ar[d, "{\Fun T(\inpt f)}"']
+\&\& \outp e[e,\Fun T(\Fun T(c)H_c)] \ar[d, "{\Fun T(\eta)}"] \\
+\& \outp e[e,\Fun T(\Fun T(c))\Fun T(H_c)] \ar[urr, "{\tau}"] \ar[dd, "{\mu}"'] \ar[r, "{\Fun T(\eta)}"']
+\& \outp e[e,\Fun T(\Fun T(c))\Fun T(\Fun T(H_c))] \ar[r, "{\tau}"] \ar[d, "{\mu}"']
+\& \outp e[e,\Fun T(\Fun T(c)\Fun T(H_c))] \ar[d, "{\Fun T(\tau)}"] \\
+\outp e[e,\Fun T(\Fun T(c))H_c] \ar[ur, "{\eta}"] \ar[d, "{\mu}"']
+\&\& \outp e[e,\Fun T(c)\Fun T(\Fun T(H_c))] \ar[dl, "{\mu}"]
+\& \outp e[e,\Fun T(\Fun T(cH_c))] \ar[d, "{\mu}"] \\
+\outp e[e,\Fun T(c)H_c] \ar[r, "{\eta}"]
+\& \outp e[e,\Fun T(c)\Fun T(H_c)] \ar[rr, "{\tau}"]
+\&\& \outp e[e,\Fun T(cH_c)]
+\end{tikzcd}
+}
+\]
+\end{minipage}
 \end{landscape}
 
 \noindent To obtain the promonad proof, collapse columns 4--8 into a single column $\ihom{d}{\phi_f}$. The top three rows (comonoid axioms) remain unchanged. Rows 4--9 collapse via the four steps of \cref{sec.comp}: the algebra axiom replaces the $\mu$/$\Fun{T}\alpha$ square (bottom-right of the diagram), Tambara naturality replaces the $\sigma$-naturality squares (rows 5--6), and naturality of $\alpha$ replaces the naturality-of-$a$ squares (right column).
