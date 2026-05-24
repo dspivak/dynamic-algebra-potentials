@@ -158,6 +158,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \theoremstyle{definition}
 \newtheorem{definitionx}{Definition}[section]
+\crefname{definitionx}{Definition}{Definitions}
 
 \newaliascnt{examplex}{definitionx}
 \newtheorem{examplex}[examplex]{Example}
@@ -300,7 +301,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
   \newcommand{#1}{\termref{#2}{\termraw{#2}}}%
 }
 \NewDocumentCommand{\defineTerm}{m}{\notsafe{\hypertarget{term.#1}{\termraw{#1}}}}
-\NewDocumentCommand{\defineTermAs}{m m}{\notsafe{\hypertarget{term.#1}{#2}}}
 \makeatother
 % To disable semantic notation links, replace the \termref line above with:
 % \DeclareRobustCommand{\termref}[2]{\notsafe{#2}}
@@ -316,6 +316,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \renewcommand{\Mapsto}[1]{\xmapsto{#1}}
 \newcommand{\from}{\leftarrow}
 \newcommand{\From}[1]{\xleftarrow{#1}}
+\newcommand{\inj}{\hookrightarrow}
 \newcommand{\surj}{\twoheadrightarrow}
 \renewcommand{\iff}{\Leftrightarrow}
 \newcommand{\card}{\,^{\#}}
@@ -725,7 +726,7 @@ naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from com
 
 The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$; it is a (nonsymmetric) monoidal structure with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
 \begin{align*}
-p\defineTermAs{tri}{\mathbin{\termraw{tri}}} q&=
+p\hypertarget{term.tri}{\mathbin{\termraw{tri}}} q&=
 \sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
 \sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
 \end{align*}
@@ -745,7 +746,7 @@ c[i]\coloneqq\sum_{j:c(1)}\cat{C}(i,j).
 \]
 The counit $\varepsilon\colon c\to\yon$ assigns an identity morphism $\id_i:c[i]$ at each object $i$. The comultiplication $\delta\colon c\to c\tri c$ assigns codomains and composition: given an object $i$ and a morphism $f:c[i]$, the on-positions component of $\delta$ returns $\cod(f):c(1)$, and given a further morphism $g:c[\cod(f)]$, the on-directions component returns the composite $g\circ f:c[i]$. The comonoid laws guarantee that $\cod(\id_i)=i$, that composition is unital, that $\cod(g\circ f)=\cod(g)$, and that composition is associative, i.e. that $(c,\epsilon,\delta)$ indeed can be identified with a category.
 
-\begin{proposition}[Polynomial comonads are categories {\cite{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
+\begin{proposition}[Polynomial comonads are categories {\cite[\S 3.2]{ahman2016directed}; see also \cite{niu2025polynomial}}]\label{prop.comonads_cats}
 The above correspondence defines an isomorphism between polynomial comonads and small categories.
 \end{proposition}
 
@@ -1218,7 +1219,7 @@ This section reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoi
 
 
 \subsection{Lenses}\label{sec.lenses}
-We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence,spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
+We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. An object is a pair $\lensob{c}$ in which $\outp c$ carries a comonoid structure $(\varepsilon_{\outp c},\delta_{\outp c})$. A morphism $f\colon\lensob{c}\to\lensob{d}$ consists of a pair of maps $f=\binom{\inpt f}{\outp f}$ where
 \begin{equation*}
 \outp f\colon \outp c\to\outp d
 \qqand
@@ -1600,7 +1601,7 @@ Let $(\cat{C},I,\otimes, [-,-])$ be a symmetric monoidal closed category. There 
 %\]
 %\end{proof}
 
-We call $\Theta$ the \defineTermAs{moore_internalization}{\emph{Moore internalization}} functor, as justified by \cref{ex.moore}.
+We call $\Theta$ the \emph{Moore internalization} functor, as justified by \cref{ex.moore}.
 
 \begin{example}\label{ex.moore}
 The functor $\Lens{\blank\yon}\colon\Lens{\smset}\to\Lens{\poly}$ from \eqref{eqn.lens_yon} sends lenses $\binom{A}{B}$ in $\smset$ to lenses $\binom{A\yon}{B\yon}$ in $\poly$. Applying $\Theta$ one obtains:%
@@ -1964,11 +1965,11 @@ A \emph{reactive vector space} is a finite-dimensional real vector space $V$ tog
 \begin{equation}\label{eqn.sharp_iso}
 \sharpR_V\colon V\to\Iso(V^*,V),
 \end{equation}
-the \defineTermAs{sharp_map}{\emph{sharp}} map, where we write $\sharpR_x\coloneqq\sharpR_V(x)\colon V^*\To{\cong}V$ for each $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the non-degenerate, vector-space case.}%
+the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_x\coloneqq\sharpR_V(x)\colon V^*\To{\cong}V$ for each $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the non-degenerate, vector-space case.}%
 \footnote{
 Equivalently, $\sharpR_V$ is a smooth bundle isomorphism $T^*V\To{\cong}TV$ over $V$, under the canonical identifications $T_xV\cong V$ and $T^*_xV\cong V^*$. It will be more convenient to use the above form.
 }
-Its pointwise inverse $\flat_x\coloneqq\sharpR_x\inv\colon V\to V^*$ is the \defineTermAs{flat_map}{\emph{flat}} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
+Its pointwise inverse $\flat_x\coloneqq\sharpR_x\inv\colon V\to V^*$ is the \emph{flat} map at $x$, and the corresponding nondegenerate bilinear form on $V$, the \emph{pairing at $x$}, is
 \begin{equation*}
 \pairing{v,v'}_x\coloneqq\flat_x(v)(v')\colon V\otimes V\to\rr.
 \end{equation*}
@@ -1997,15 +1998,15 @@ A pointwise direct sum of smooth sections of linear isomorphisms is again such a
 \end{proof}
 
 \begin{proposition}\label{prop.rvect_smc_action}
-The composite $\rvect\to\vect\hookrightarrow\mfd$ is strong symmetric monoidal, so $\rvect$ acts on $\mfd$ via $((V,\sharpR_V),M)\mapsto V\times M$.
+The composite $\rvect\to\vect\inj\mfd$ is strong symmetric monoidal, so $\rvect$ acts on $\mfd$ via $((V,\sharpR_V),M)\mapsto V\times M$.
 \end{proposition}
 
 \begin{proof}
-The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\vect$); the inclusion $\vect\hookrightarrow\mfd$ preserves products.\qedhere
+The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\vect$); the inclusion $\vect\inj\mfd$ preserves products.\qedhere
 \end{proof}
 
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
-For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ is a reactive vector space under the \defineTermAs{canonical_symplectic_pairing}{\emph{canonical symplectic pairing}}: at every basepoint $w\in V\oplus V^*$,
+For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ is a reactive vector space under the \emph{canonical symplectic pairing}: at every basepoint $w\in V\oplus V^*$,
 \begin{equation}\label{eqn.canonical_form}
 \pairing{(x,\xi),(x',\xi')}_{w} \;=\; \xi'(x)-\xi(x').
 \end{equation}
@@ -2138,7 +2139,7 @@ A map in $\plmfd$ is a tuple $f=\big(\binom{\inpt f}{\outp f},U\big)\colon\lenso
 \inpt f\colon\outp M\times\inpt N\to\inpt M,\qquad
 U\colon\outp M\times\inpt N\to\rr.
 \]
-We call such maps \defineTermAs{potentialized_manifold_lens}{\emph{potentialized manifold lenses}}.
+We call such maps \emph{potentialized manifold lenses}.
 A map $\lensob p\to\lensob q$ in $\plpoly$ is a pair
 \[
 \outp f\colon\outp p\to\outp q,\qquad
@@ -2176,7 +2177,7 @@ Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In othe
 \begin{remark}[General form]\label{rmk.alpha_general}
 \Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cotof{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$.
 
-As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables~\cite{Spivak2023lotteries}, which underlies (the monad of) the operad of simplices~\cite{leinster2021entropy}. For $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
+As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables (called $\mathrm{lott}$ in~\cite{Spivak2023lotteries}), which underlies (the monad of) the operad of simplices~\cite[Ch.~12]{leinster2021entropy}. For $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\lie g^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
 \end{remark}
 
 The role of $\rr$ throughout \cref{sec.potentialized_lenses} is to act as the recipient of \emph{potentials}: specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
@@ -2231,7 +2232,7 @@ The symmetric monoidal category $\potlens$ is defined by
 \qedhere\]
 \end{definition}
 
-Morphisms in $\potlens$, and more generally multimorphisms in its underlying operad, are called \defineTermAs{smooth_rewiring_diagram}{\emph{smooth rewiring diagrams}}.
+Morphisms in $\potlens$, and more generally multimorphisms in its underlying operad, are called \emph{smooth rewiring diagrams}.
 
 \begin{remark}
 The following diagram depicts composition of smooth rewiring diagrams $f=(V,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$ and $g=(W,\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $V\oplus W$, forward and backward components inherited from $\lmfd$, and potential added via the monad multiplication $\mu\coloneqq(+)$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
@@ -2452,7 +2453,7 @@ We now get to our bifurcation between learning and physics: which state set the 
 The following proposition---in particular the fact that \eqref{eqn.directions_sharp} is a bijection---is the main place where we use the requirement \eqref{eqn.sharp_iso} that the reaction structure $\sharpR_x\colon V^*\to V$ need be an isomorphism for each $x:V$.
 
 \begin{proposition}\label{prop.rvect_polynomial}
-There is a cotangent storage, which we call \defineTermAs{configuration_storage}{\emph{configuration storage}}, given by
+There is a cotangent storage, which we call \emph{configuration storage}, given by
 \[\store{\conf}\coloneqq(\absval{\blank},\theta)\]
 where $\absval{\blank}\colon\rvect\to\smsetiso$ sends a reactive vector space to its underlying set of points $V\mapsto \absval{V}$ and where $\theta_V\colon V\yon^V\To{\cong}\cotof{V}$ is the polynomial map, natural in $V:\rvect$, which is identity on positions and, given on directions at $x\in V$ by the exponential \eqref{eqn.flow_cot}
 \begin{equation}\label{eqn.directions_sharp}
@@ -2500,7 +2501,7 @@ T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
 using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
 
 \begin{definition}[Legendre projection]\label{def.legendre_projection}
-Let $(V,\sharpR)$ be a reactive vector space. The \defineTermAs{legendre_projection}{\emph{Legendre projection}} $\defineTerm{rho}_V\colon\cotof{T^*V}\to\cotof{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
+Let $(V,\sharpR)$ be a reactive vector space. The \emph{Legendre projection} $\defineTerm{rho}_V\colon\cotof{T^*V}\to\cotof{V}$ is given on positions by $(x,\xi)\mapsto x$, and for each $(x,\xi)$ given on directions by
 \[
 T^*_xV\cong V^*\To{\xi_V\mapsto(\xi_V,\,\sharpR_x(\xi))}V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
 \qedhere
@@ -2513,7 +2514,7 @@ Thus, at a phase point $(x,\xi)$, the Legendre projection sends a covector $\xi_
 This gives us a second storage in the sense of \cref{def.cotangent_storage}.
 
 \begin{lemma}\label{lem.phase_storage}
-There is a cotangent storage, which we call \defineTermAs{phase_space_storage}{\emph{phase-space storage}}, given by
+There is a cotangent storage, which we call \emph{phase-space storage}, given by
 \[
 \store{\phase}\coloneqq\bigl(\absval{T^*\blank},\,\rho\circ\theta_{T^*\blank}\bigr).
 \]
@@ -2603,7 +2604,7 @@ Define $\Phi_{\mathfrak{s}}$ to be the composite of the normal lax monoidal func
 \[
 \potlens\To{\Phi'}
 \para{\cot}{\poly}\To{\Psi_{\mathfrak{s}}}
-\org_\cong\hookrightarrow\org.
+\org_\cong\inj\org.
 \]
 
 For the second statement, \cref{prop.storage_to_org} gives a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\mathfrak{s}}\Rightarrow\Psi_{\mathfrak{s}'}$; whiskering with $\Phi'$ yields the desired $\Phi_\alpha\coloneqq\Psi_\alpha*\Phi'\colon\Phi_{\mathfrak{s}}\Rightarrow\Phi_{\mathfrak{s}'}$.\qedhere
@@ -2889,7 +2890,7 @@ These maps are natural in vector-space isomorphisms and submersion lenses, and m
 \[
 \para{\vect_\cong}{\Cat{SLens}}\to\para{\smsetiso}{\poly}.
 \]
-Composing with the identification $\para{\smsetiso}{\poly}\cong\org_\cong$ of \cref{prop.org_as_para} and the inclusion $\org_\cong\hookrightarrow\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(V, r, u,\alpha)$ to the coalgebra with state set $V$ whose action is
+Composing with the identification $\para{\smsetiso}{\poly}\cong\org_\cong$ of \cref{prop.org_as_para} and the inclusion $\org_\cong\inj\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(V, r, u,\alpha)$ to the coalgebra with state set $V$ whose action is
 \[
 x\longmapsto b\longmapsto
 \left(
@@ -2956,7 +2957,7 @@ one step of \emph{Newton's method} for finding a critical point of $\ell$. Wheth
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
 %--------------------------------------------------------------------
 
-By \emph{deep learning} we mean the training of an artificial neural network. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf{}$ yields a normal lax symmetric monoidal functor
+By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation~\cite{rumelhart1986learning}. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf{}$ yields a normal lax symmetric monoidal functor
 \[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\potlens\To{\Phiconf{}}\org,\]
 whose composite we denote $\lrn$. One could say that training a neural network is a case of our configuration dynamics construction, in the case that input manifolds and potentials are trivial: $\inpt M=\rr^0$ and $U=0$.
 
