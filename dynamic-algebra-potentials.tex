@@ -2030,12 +2030,8 @@ For naturality at a $\rvect$-isomorphism $\phi\colon V\to W$, the on-positions s
 The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, which is the sharp-equivariance condition \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V_2}=\sharpR_{V_1}\oplus\sharpR_{V_2}$ (\cref{prop.rvect_monoidal}).\qedhere
 \end{proof}
 
-\begin{remark}[Generalization to manifolds with connection]\label{rmk.rmfdc_generalization}
-Reactive vector spaces are the flat case of \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a} $\nabla_M\colon\Gamma(TM)\times\Gamma(TM)\to\Gamma(TM)$, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$ as in \cref{def.rvect}. The exponential \eqref{eqn.flow_cot} generalizes to
-\[
-\exp_M\colon T^*M\to M,\qquad (m,\xi)\mapsto\exp^{\nabla_M}_m(\sharpR_m(\xi)),
-\]
-with $\exp^{\nabla_M}_m\colon T_mM\to M$ the geodesic exponential; on flat $V$ this recovers \eqref{eqn.flow_cot} exactly. Completeness of $\nabla_M$ ensures global definedness. We conjecture that replacing $\rvect$ by $\defineTerm{rmfdc}$ extends every use of $\rvect$ in this paper, with the Euler step $x+\sharpR_x(\xi)$ replaced by the geodesic flow. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection, with no nilpotency needed). A careful treatment is left to future work.
+\begin{remark}[Generalization to manifolds]\label{rmk.rmfdc_generalization}
+The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
 \end{remark}
 
 \subsection{Cotangent endofunctor}\label{sec.TT}
@@ -2362,7 +2358,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 
 \subsection{Lifts}\label{sec.cotangent_lifts}
 
-Looking ahead, the dynamics functor construction (\cref{thm.functor}) will produce, from any $\srw$-morphism with parameter $V:\rvect$, a $\cotof{V}$-parameterized polynomial map. The natural transformation $\theta_V\colon\Store(\absval{V})\to\cotof{V}$ of \cref{prop.rvect_polynomial} presents this as an $\org$-morphism with state set $\absval{V}$, but other state sets are possible. A \emph{lift} chooses a carrier functor $\Fun V$ landing in $\rvect$---giving state set $S=\absval{\Fun V(V)}$---and a map $\cotof{\Fun V(V)}\to\cotof{V}$ through which the parameterization factors. Different carriers produce qualitatively different dynamics.
+Looking ahead, the dynamics functor construction (\cref{thm.functor}) will produce, from any $\srw$-morphism with parameter $V:\rvect$, a $\cotof{V}$-parameterized polynomial map. The natural transformation $\theta_V\colon\Store(\absval{V})\to\cotof{V}$ of \cref{prop.rvect_polynomial} already converts this to an $\org$-morphism with state set $\absval{V}$: informally, $\theta$ presents each cotangent parameter as a store polynomial, and store polynomials are coalgebras (\cref{prop.coalg_as_poly_map}). A \emph{lift} replaces $\theta$ with an alternative presentation through a different carrier, producing a different state set and qualitatively different dynamics.
 
 \begin{definition}[$G$-lift]\label{def.lift}
 Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a strong symmetric monoidal functor. A \emph{$G$-lift} is a pair $\defineTerm{lift}=(\Fun V,\ell)$, where $\Fun V\colon\cat A\to\rvect$ is a strong symmetric monoidal functor (the \emph{carrier}) and $\ell\colon\cot\circ\Fun V\Rightarrow G$ is a monoidal natural transformation in $\poly$.
@@ -2377,6 +2373,8 @@ Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a stro
 
 A \emph{morphism} $\alpha\colon(\Fun V,\ell)\to(\Fun V',\ell')$ of $G$-lifts is a monoidal natural transformation $\alpha\colon\Fun V\Rightarrow\Fun V'$ in $\rvect$ such that $\ell'\circ\cot(\alpha)=\ell$. We denote this category by $\defineTerm{Stor}_G$.
 \end{definition}
+
+Composing $\ell$ with $\theta_{\Fun V(\blank)}$ from \cref{prop.rvect_polynomial} yields a monoidal natural transformation $s\coloneqq\ell\circ\theta_{\Fun V(\blank)}\colon\Store\circ\absval{\Fun V(\blank)}\Rightarrow G$; this is the composite that drives the dynamics.
 
 \begin{proposition}\label{prop.lift_to_org}
 Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a strong symmetric monoidal functor. There is a functor
@@ -2424,7 +2422,7 @@ The category of \emph{cotangent lifts} is $\defineTerm{cotstor}\coloneqq\Stor{\c
 Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cotof{V}\otimes p$ induced by $\cot\circ\inc$. Applying \cref{prop.lift_to_org} at $\cat A=\rvect$, $G=\cot\circ\inc$, every cotangent lift $\lift$ induces a normal lax symmetric monoidal functor
 \[\Psi_{\lift}\colon\para{\cot}{\poly}\to\org_\cong.\]
 
-The \emph{configuration lift} is $\defineTerm{lift_conf}\coloneqq(\inc,\,\id)$, the cotangent lift with carrier $\inc\colon\rvect\to\rvect$ and identity lift map; its associated $\theta_V$ is from \cref{prop.rvect_polynomial}.
+The \emph{configuration lift} is $\defineTerm{lift_conf}\coloneqq(\id,\,\id)$, the cotangent lift with carrier $\id\colon\rvect\to\rvect$ and identity lift map; its associated $\theta_V$ is from \cref{prop.rvect_polynomial}.
 
 \begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
 The dynamics for the configuration lift recover the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}. Indeed, this behavior arises via a functor $\Phiconf{}\colon\srw\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharpR_V$ of the parameter space. For example, on Euclidean parameter spaces, we take
