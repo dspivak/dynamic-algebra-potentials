@@ -284,7 +284,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \DeclareMathOperator{\Aut}{Aut}
 \DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\Iso}{Iso}
-\DeclareMathOperator{\Lin}{Lin}
 \DeclareMathOperator{\Mor}{Mor}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\cod}{cod}
@@ -1920,9 +1919,9 @@ We will eventually define $\srw$ as the operad underlying $\para{\rvect}{\plmfd}
 A reactive vector space is a finite-dimensional real vector space $V$ equipped with a smooth bundle map $T^*V\to TV$, turning covectors into tangent vectors that serve as state updates.
 
 \begin{definition}\label{def.rvect}
-A \emph{reactive vector space} is a finite-dimensional real vector space $V$ together with a smooth section
+A \emph{reactive vector space} is a finite-dimensional real vector space $V$ together with a smooth map
 \begin{equation}\label{eqn.sharp}
-\sharpR_V\colon V\to\Lin(V^*,V),
+\sharpR_V\colon V\to\vect(V^*,V),
 \end{equation}
 the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_x\coloneqq\sharpR_V(x)\colon V^*\to V$ for each $x\in V$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case.}%
 \footnote{
@@ -1942,14 +1941,14 @@ In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwi
 \end{definition}
 
 \begin{proposition}\label{prop.rvect_monoidal}
-Direct sum gives $\rvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space as unit and direct-sum sharp
+Direct sum gives $\rvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space as unit and direct-sum sharp $\sharpR_{V\oplus W}$ given by
 \begin{equation}\label{eqn.directsum_sharp}
-\sharpR_{V\oplus W}\coloneqq\sharpR_V\oplus\sharpR_W.
+\sharpR_{(v,w)}\coloneqq\sharpR_v\oplus\sharpR_w\colon V^*\oplus W^*\to V\oplus W.
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-A pointwise direct sum of smooth sections of linear maps is again such a section. Sharp-equivariance \eqref{eqn.pairing_triangle} is preserved by direct sums, and coherence is inherited from $(\vect,0,\oplus)$.\qedhere
+A pointwise direct sum of smooth maps is again smooth. Sharp-equivariance \eqref{eqn.pairing_triangle} is preserved by direct sums, and coherence is inherited from $(\vect,0,\oplus)$.\qedhere
 \end{proof}
 
 \begin{proposition}\label{prop.rvect_smc_action}
@@ -1965,14 +1964,14 @@ For any finite-dimensional vector space $V:\vect$, the direct sum $V\oplus V^*$ 
 \begin{equation}\label{eqn.canonical_form}
 \pairing{(x,\xi),(x',\xi')}_{w} \;=\; \xi'(x)-\xi(x').
 \end{equation}
-The right-hand side does not depend on $w$, so the section is constant.
+The right-hand side does not depend on $w$, so the map is constant.
 \end{proposition}
 
 \begin{proof}
 The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in V^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in V$, hence $\xi=0$.\qedhere
 \end{proof}
 
-For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is the constant section
+For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is the constant map
 \begin{equation}\label{eqn.canonical_sharp}
 \defineTerm{sharp_symp}_{V\oplus V^*}\colon V^*\oplus V\to V\oplus V^*,\qquad(\xi,x)\mapsto(x,-\xi).
 \end{equation}
@@ -2068,7 +2067,7 @@ both sides are independent of $w$ by constancy of the canonical symplectic pairi
 \end{proof}
 
 \begin{remark}[Constancy of $\sharpS_{T^*V}$]\label{rmk.constant_canonical_sharp}
-The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharpR_V$, so $\sharpS_{V\oplus V^*}$ is the constant section \eqref{eqn.canonical_sharp} even when $\sharpR_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{V\oplus V^*}$, regardless of any variation in $\sharpR_V$. However, $\sharpR_V$ is not discarded by the framework: it appears in the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
+The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharpR_V$, so $\sharpS_{V\oplus V^*}$ is the constant map \eqref{eqn.canonical_sharp} even when $\sharpR_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{V\oplus V^*}$, regardless of any variation in $\sharpR_V$. However, $\sharpR_V$ is not discarded by the framework: it appears in the exponential $\exp_V\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
 \qedhere
 \end{remark}
 
@@ -2889,7 +2888,7 @@ We now unfold this construction in coordinates, taking the source and target man
 \par}
 
 \paragraph{A parameterized map as a smooth rewiring diagram.}
-Let $F\colon V\times\rr^m\to\rr^n$ be a smooth parameterized map, thought of as a feedforward neural network with parameter space $(V,\sharpR_V):\rvect$---i.e., $V$ comes equipped with a smooth section $\sharpR_V\colon V\to\Lin(V^*,V)$ (\cref{def.rvect}), whose value $\sharpR_x\colon V^*\to V$ at $x\in V$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a $\srw$-morphism
+Let $F\colon V\times\rr^m\to\rr^n$ be a smooth parameterized map, thought of as a feedforward neural network with parameter space $(V,\sharpR_V):\rvect$---i.e., $V$ comes equipped with a smooth map $\sharpR_V\colon V\to\vect(V^*,V)$ (\cref{def.rvect}), whose value $\sharpR_x\colon V^*\to V$ at $x\in V$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a $\srw$-morphism
 \[
 f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}
 \]
