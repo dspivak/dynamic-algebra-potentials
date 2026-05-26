@@ -574,16 +574,17 @@ The passage from lenses to polynomial coalgebras is mediated by a functor we cal
 
 Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is how the reactive parameter $V$ and the carrier $S$ of the coalgebra relate. For example, in Hamiltonian dynamics, we not only store the data of position---which affects the current moment's dynamics---but also a momentum, which affects the next's. We package this relationship as a \emph{lift}: a choice of carrier $S$, depending functorially on $V$, together with how the smooth data reads the current state and updates to the next. Each lift $\lift$ gives a dynamics functor $\Phi_{\lift}\colon\srw\to\org$.
 
-Thus the lift is where the dynamical regime gets decided: one smooth rewiring diagram fed through different lifts can produce qualitatively different behaviors. We work out two sorts of lift. We show that the \emph{configuration lift} ($S\coloneqq V$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\srw$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. We also show that the \emph{phase lift} ($S\coloneqq T^*V$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. On that same graph syntax---same parameters, same potentials---the configuration lift recovers the discrete heat equation (\cref{rmk.graph_heat}): one diagram on which the two lifts yield energy-conserving vs.\ energy-dissipating semantics. This is the sense in which smooth rewiring diagrams are syntax.
+Thus the lift is where the dynamical regime gets decided: one smooth rewiring diagram fed through different lifts can produce qualitatively different behaviors. We work out two sorts of lift. We show that the \emph{configuration lift} ($S\coloneqq V$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\srw$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
+We also show that the \emph{phase lift} ($S\coloneqq T^*V$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. With the same graph wiring and potential but the opposite-sign reaction, the configuration lift gives the corresponding discrete heat equation (\cref{rmk.graph_heat}). This is the sense in which smooth rewiring diagrams are syntax.
 
-The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; everything else---polynomial functors, lenses, the Para construction, the bicategory $\org$---is reviewed in \cref{ch.background}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background chapter reviews polynomial functors, the Para construction, and the bicategory $\org$, while lenses are reviewed where they first enter in \cref{sec.lenses_general}. The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
 
 %--------------------------------------------------------------------
 \section{Relation to open energy-driven systems}\label{sec.related_cls}
 %--------------------------------------------------------------------
 
-The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci2024organizing} (hereafter CLS), which identifies the reactive structure $T^*X\to TX$ in both Hamiltonian mechanics and gradient descent and builds a functorial semantics
+The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci2024organizing} (hereafter CLS), which identifies the reaction $T^*X\to TX$ in both Hamiltonian mechanics and gradient descent and builds a functorial semantics
 \[
 \mathbf{OpenErg}\To{T^*}\mathbf{OpenODE}\To{\mathrm{collapse}}\mathbf{COrg}
 \]
@@ -655,7 +656,7 @@ We fix some typographic conventions. We denote generic categories using calligra
 
 For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$ is clickable.
 
-We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. If a set has a unique element, we often denote it $\defineTerm{bang}$, e.g.\ $\bang\colon \emptyset\to A$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
+We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. We write $\defineTerm{bang}$ for a unique map when the domain and codomain make it clear, e.g.\ the unique map $\emptyset\to A$ or the unique map $X\to\rr^0$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
 We reserve $\eta$ and $\mu$ for monad units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
 
@@ -672,7 +673,7 @@ In this section we fix the differential-geometric notation used throughout the p
 
 We work in the cartesian category $(\defineTerm{mfd},\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, we write $TM$ and $T_mM$ for the tangent bundle and the tangent space at $m$, and we write $T^*M$ and $T^*_mM$ for the cotangent bundle and the cotangent space at $m$.
 
-The tangent and cotangent functors $T,T^*\colon\mfd\to\mfd$ preserve products, so $T(M\times N)\cong TM\times TN$ and $T^*(M\times N)\cong T^*M\times T^*N$; in particular
+The tangent functor $T\colon\mfd\to\mfd$ preserves products, and the cotangent-bundle assignment (which is not functorial) does so on objects: $T(M\times N)\cong TM\times TN$ and $T^*(M\times N)\cong T^*M\times T^*N$; in particular
 \begin{equation}\label{eqn.T_products}
 T_{(m,n)}(M\times N)\cong T_mM\oplus T_nN
 \qqand
@@ -2039,7 +2040,7 @@ For a reactive vector space $(V,\sharpR_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
 T^*V\coloneqq V\oplus V^*.
 \end{equation}
-Under the inclusion functor $\inc\colon\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this commutes with the taking the cotangent bundle of $V$ as a manifold.
+Under the inclusion functor $\inc\colon\vect\to\mfd$ and the global-chart identifications \eqref{eqn.tangent_vec}, this agrees with taking the cotangent bundle of $V$ as a manifold.
 
 It is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
@@ -2303,7 +2304,7 @@ Finally, the general smooth rewiring diagrams are multimorphisms in $\srw$: the 
 \chapter{Smooth rewiring dynamics}\label{ch.potential_driven_dynamics}
 %====================================================================
 
-This chapter constructs the dynamics functors $\srw\to\org$ promised in the introduction. \Cref{sec.lift_semantics} introduces \emph{lifts}, the device that converts a $\cotof{V}$-parameterized polynomial map into an ordinary coalgebra in $\org$. It also singles out the two cotangent lifts used in this paper---configuration and phase---built using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then proves the main theorem of the paper, \cref{thm.functor}: each cotangent lift induces an operad functor $\Phi\colon\srw\to\org$. \Cref{sec.phase_dynamics,sec.configuration_dynamics} unpack the differential geometry underlying $\Phiphase{}$ and $\Phiconf{}$ in full detail.
+This chapter constructs the dynamics functors $\srw\to\org$ promised in the introduction. \Cref{sec.lift_semantics} introduces \emph{lifts}, the device that converts a $\cotof{V}$-parameterized polynomial map into an ordinary coalgebra in $\org$. It also singles out the two cotangent lifts used in this paper---configuration and phase---the latter using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then proves the main theorem of the paper, \cref{thm.functor}: each cotangent lift induces an operad functor $\Phi\colon\srw\to\org$. \Cref{sec.phase_dynamics,sec.configuration_dynamics} unpack the differential geometry underlying $\Phiphase{}$ and $\Phiconf{}$ in full detail.
 
 %--------------------------------------------------------------------
 \section{Lift semantics}\label{sec.lift_semantics}
@@ -2443,15 +2444,18 @@ The construction uses one additional ingredient beyond the configuration lift $\
 So on positions, $\lambda_V$ sends $(x,\xi)$ to $x$, and on directions at $(x,\xi)$ it sends $\xi'\in V^*$ back to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$.
 
 \begin{lemma}[Phase lift]\label{lem.phase_lift}
-The composite
+The maps $\lambda_V$ of \eqref{eqn.phase_lift_decomp} form a cotangent lift, which we call the \emph{phase lift}
+\[
+\lift_{\phase}\coloneqq(T^*,\,\lambda).
+\]
+The store presentation used by the induced $\org$-semantics is the composite
 \begin{equation}\label{eqn.phase_lift_def}
-\rho_V\;\coloneqq\;\lambda_V\circ\theta_{T^*V}\;\colon\;\Store(\absval{T^*V})\To[\cong]{\theta_{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof V
+\defineTerm{rho}_V\;\coloneqq\;\lambda_V\circ\theta_{T^*V}\;\colon\;\Store(\absval{T^*V})\To[\cong]{\theta_{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof V.
 \end{equation}
-is a cotangent lift, which we call the \emph{phase lift} $\lift_{\phase}\coloneqq(T^*,\,\defineTerm{rho})$.
 \end{lemma}
 
 \begin{proof}
-$\absval{T^*\blank}\colon\rvect\to\smsetiso$ is strong symmetric monoidal because $T^*\colon\rvect\to\rvect$ is (\cref{prop.TT_monoidal}). Each factor of $\rho_V$ is natural in $\rvect$-isomorphisms and monoidal in $V$: $\theta_{T^*V}$ by \cref{prop.rvect_polynomial} applied at $T^*V$ (using sharp-equivariance \eqref{eqn.pairing_triangle} for $\sharpS_{T^*V}$), and $\lambda_V$ via naturality and monoidality of its components --- $\cotof{\Delta_{T^*V}}$ from \cref{lem.cot_comonoid}, $\cotof{\pi_V}$ from functoriality of $\cot$, and $\beta_V$ from \eqref{eqn.pairing_triangle} and \cref{prop.rvect_monoidal}. Hence so is $\rho_V$.
+$T^*\colon\rvect\to\rvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}. The maps $\lambda_V$ are natural in $\rvect$-isomorphisms and monoidal in $V$ by naturality and monoidality of their components: $\cotof{\Delta_{T^*V}}$ from \cref{lem.cot_comonoid}, $\cotof{\pi_V}$ from functoriality of $\cot$, and $\beta_V$ from \eqref{eqn.pairing_triangle} and \cref{prop.rvect_monoidal}. Hence $(T^*,\lambda)$ is a cotangent lift. The final displayed composite is just the store presentation obtained by composing this lift map with $\theta_{T^*V}$ from \cref{prop.rvect_polynomial}.
 \end{proof}
 
 Using the standing trivialization $T^*_xV\cong V^*$ from \eqref{eqn.tangent_vec}, the $\poly$ morphism $\rho_V\colon(V\oplus V^*)\yon^{V\oplus V^*}\to V\yon^{V^*}$ sends $(x,\xi)\mapsto x$ on positions, and on directions is given by
@@ -2554,7 +2558,7 @@ where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power. The 
 \]
 and also equips $\org^{(K)}$ with a $\otimes$-monoidal structure.
 
-For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q\tri S$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q_1[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q_2[j_2]$, updates the state. We conjecture that this is exactly the kind of process needed for multi-step integrators, though we do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q\tri S$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q[j_2]$, updates the state. We conjecture that this is exactly the kind of process needed for multi-step integrators, though we do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 %--------------------------------------------------------------------
@@ -2563,7 +2567,7 @@ For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q
 
 For the phase lift, the functor $\Psi_{\lift_{\phase}}$ presents a $\cotof{V}$-parameter by the store polynomial on $S\coloneqq\absval{T^*V}$:
 \[
-S\yon^S\To{\theta_{T^*V}}\cotof{T^*V}\To{\rho_V}\cotof{V}.
+S\yon^S\To{\theta_{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof{V}.
 \]
 A state consists of a position and a momentum $(x,\xi)\in T^*V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $(x+\sharpR_x(\xi),\,\xi-\xi')$
  by \eqref{eqn.phase_lift_update}. But the majority of what takes place under $\Phi_\lift$ is still compressed within the $\Phi'$ factor from \cref{lem.potlens_to_para_poly}. So we now unpack $\Phiphase{}$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
@@ -3287,12 +3291,12 @@ and collecting the position terms on the left yields \eqref{eqn.graph_laplacian_
 \end{proof}
 
 \begin{remark}[Heat equation as the dissipative-corner instance]\label{rmk.graph_heat}
-Applying $\Phiconf{}$ rather than $\Phiphase{}$ to the same $\psi_G$ \eqref{eqn.psi_graph_lap} recovers the discrete \emph{heat} equation on $G$. The state set is now $V_G=\rr^V$ (no momentum), and using the composite sharp $\sharpR_{\vec x}(\vec p)=(p_v/m_v)_v$ together with the same $\xi_{V_G}=L_G\vec x$ from \eqref{eqn.graph_laplacian}, the update $\vec x(t+1)=\vec x(t)-\sharpR_{\vec x(t)}(\xi_{V_G})$ reads component-wise as
+Applying $\Phiconf{}$ rather than $\Phiphase{}$ to the same graph wiring and potential, but with the opposite-sign reaction $\sharpR^{\mathrm{heat}}_{\vec x}(\vec p)\coloneqq-(p_v/m_v)_v$, recovers the discrete \emph{heat} equation on $G$. The state set is now $V_G=\rr^V$ (no momentum), and using the same $\xi_{V_G}=L_G\vec x$ from \eqref{eqn.graph_laplacian}, the update $\vec x(t+1)=\vec x(t)+\sharpR^{\mathrm{heat}}_{\vec x(t)}(\xi_{V_G})$ reads component-wise as
 \[
 m_v\bigl(x_v(t+1)-x_v(t)\bigr)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
 \qquad(v\in V,\ t\in\nn),
 \]
-i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. This is one diagram on which the two lifts yield qualitatively different dynamics: $\Phiphase{}$ with antisymmetric carrier $\sharpS_{T^*V}$ produces energy-conserving wave dynamics, while $\Phiconf{}$ with symmetric positive-definite $\sharpR_V$ produces energy-dissipating heat dynamics. The choice between wave and heat on a given $\psi_G$ is a choice of lift, not of syntax.
+i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. Thus the phase lift with the positive inverse-mass reaction gives wave dynamics, while the configuration lift with the opposite-sign reaction gives heat dynamics on the same graph wiring and potential.
 \end{remark}
 
 Both wave and heat dynamics on $\psi_G$ exhibit superposition: both $\Phiphase{}(\psi_G)$ and $\Phiconf{}(\psi_G)$ are linear endomaps on their respective state spaces. This is because $\psi_G$ has constant sharp, linear output map, vacuous input map, and quadratic potential---conditions that force the resulting state-update map to be linear for either lift. The conservative/dissipative split between $\lift_{\phase}$ and $\lift_{\conf}$ is orthogonal to this: superposition comes from the uniformity of $\psi_G$, not from the antisymmetry or symmetry of the carrier's $\sharp$.
