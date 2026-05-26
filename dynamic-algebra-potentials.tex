@@ -1992,10 +1992,10 @@ A finite-dimensional real vector space $V$ equipped with an inner product---a sy
 the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon V\to V^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, where ``descent'' corresponds to scaling the sharp by a negative \emph{learning rate}; see \eqref{eqn.learning_sharp}.\qedhere
 \end{example}
 
-The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the bundle map%
-\footnote{Strictly speaking, what we denote $\exp_V$ is the composite $V\oplus V^*\To{\id\oplus\sharpR}V\oplus V\to V$ of $\sharpR$ with the genuine exponential. We combine them for brevity.}
+The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the map%
+\footnote{Strictly speaking, what we denote $\exp_V$ is the composite $T^*V\To{\id\oplus\sharpR}V\oplus V\to V$ of $\sharpR$ with the genuine exponential. We combine them for brevity.}
 \begin{equation}\label{eqn.flow_cot}
-\exp_V\colon V\oplus V^*\to V,\qquad (x,\xi)\longmapsto x+\sharpR_x(\xi),
+\exp_V\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharpR_x(\xi),
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the sharp-equivariance condition \eqref{eqn.pairing_triangle}.
 
@@ -2015,7 +2015,7 @@ T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharpR_x}V\To{x+\blank}V,
 \qquad
 \xi\longmapsto x+\sharpR_x(\xi).
 \end{equation}
-We write $\theta_V^{\mathrm{pos}}\coloneqq\id_{\absval V}$ for the on-positions component and $\theta_V^{\mathrm{dir}}(x,\xi)\coloneqq x+\sharpR_x(\xi)$ for the on-directions component. When $\sharpR$ is nondegenerate, $\theta_V$ is an isomorphism.
+When $\sharpR$ is nondegenerate, $\theta_V$ is an isomorphism.
 \end{proposition}
 
 \begin{proof}
@@ -2276,14 +2276,14 @@ The following diagram depicts composition of smooth rewiring diagrams $f=(V,\out
 \section{Smooth rewiring diagrams}\label{sec.W_choice}
 %--------------------------------------------------------------------
 
-We can now settle the choice of composition syntax $\cat{W}$, which we deferred at the end of \cref{sec.wd_operads}: we take it to be $\srw$. Thus a smooth rewiring diagram $f\colon\lensob{X_1}\otimes\cdots\otimes\lensob{X_K}\to\lensob{Y}$ has the form $f=\left((V,\sharpR_V),\binom{\inpt f}{\outp f},U\right)$, namely a reactive vector space $(V,\sharpR_V):\rvect$ called the \emph{parameter space}, smooth maps
+We can now settle the choice of composition syntax $\cat{W}$, which we deferred at the end of \cref{sec.wd_operads}: we take it to be $\srw$. Thus a smooth rewiring diagram $f\colon\lensob{M_1}\otimes\cdots\otimes\lensob{M_K}\to\lensob{N}$ has the form $f=\left((V,\sharpR_V),\binom{\inpt f}{\outp f},U\right)$, namely a reactive vector space $(V,\sharpR_V):\rvect$ called the \emph{parameter space}, smooth maps
 \begin{equation}\label{eqn.plens_map}
-\outp f\colon V\times\prod_{i=1}^K\outp X_i\to\outp Y,\qquad
-\inpt f\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\prod_{i=1}^K\inpt X_i,
+\outp f\colon V\times\prod_{i=1}^K\outp M_i\to\outp N,\qquad
+\inpt f\colon V\times\prod_{i=1}^K\outp M_i\times\inpt N\to\prod_{i=1}^K\inpt M_i,
 \end{equation}
 called the \emph{output map} and the \emph{input map}, and a smooth function called the \emph{potential}:
 \begin{equation}\label{eqn.plens_potential}
-U\colon V\times\prod_{i=1}^K\outp X_i\times\inpt Y\to\rr.
+U\colon V\times\prod_{i=1}^K\outp M_i\times\inpt N\to\rr.
 \end{equation}
 
 There is a chain of functors
@@ -2357,48 +2357,46 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 
 \subsection{Lifts}\label{sec.cotangent_lifts}
 
-Looking ahead, the dynamics functor construction (\cref{thm.functor}) will produce, from any $\srw$-morphism with parameter $V:\rvect$, a $\cotof{V}$-parameterized polynomial map. The natural transformation $\theta_V\colon\Store(\absval{V})\to\cotof{V}$ of \cref{prop.rvect_polynomial} already converts this to an $\org$-morphism with state set $\absval{V}$: informally, $\theta$ presents each cotangent parameter as a store polynomial, and store polynomials are coalgebras (\cref{prop.coalg_as_poly_map}). A \emph{lift} replaces $\theta$ with an alternative presentation through a different carrier, producing a different state set and qualitatively different dynamics.
+Looking ahead, the dynamics functor construction (\cref{thm.functor}) will produce, from any $\srw$-morphism with parameter $V:\rvect$, a $\cotof{V}$-parameterized polynomial map. The natural transformation $\theta_V\colon\Store(\absval{V})\to\cotof{V}$ of \cref{prop.rvect_polynomial} converts this to an $\org$-morphism with state set $\absval{V}$ via \cref{prop.coalg_as_poly_map}. A \emph{cotangent lift} allows us to generalize this construction, e.g.\ to involve more memory---such as momentum---in the state update.
 
 \begin{definition}[$G$-lift]\label{def.lift}
-Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a strong symmetric monoidal functor. A \emph{$G$-lift} is a pair $\defineTerm{lift}=(\Fun V,\ell)$, where $\Fun V\colon\cat A\to\rvect$ is a strong symmetric monoidal functor (the \emph{carrier}) and $\ell\colon\cot\circ\Fun V\Rightarrow G$ is a monoidal natural transformation in $\poly$.
+Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a strong symmetric monoidal functor. A \emph{$G$-lift} is a pair $\defineTerm{lift}=(\Fun S,\ell)$, where $\Fun S\colon\cat A\to\rvect$ is a strong symmetric monoidal functor (the \emph{carrier}) and $\ell\colon\cot\circ\Fun S\Rightarrow G$ is a monoidal natural transformation in $\poly$.
 \[
 \begin{tikzcd}[column sep=60pt]
-	\cat A\ar[d, dashed, "\Fun V"']\ar[r, "G", ""' name=top]&
+	\cat A\ar[d, dashed, "\Fun S"']\ar[r, "G", ""' name=top]&
 	\poly\\
 	\rvect\ar[ur, bend right=10pt, "\cot"', ""{name=diag}]
 	\arrow[from=diag-|top, to=top, Rightarrow, "\ell"]
 \end{tikzcd}
 \]
 
-A \emph{morphism} $\alpha\colon(\Fun V,\ell)\to(\Fun V',\ell')$ of $G$-lifts is a monoidal natural transformation $\alpha\colon\Fun V\Rightarrow\Fun V'$ in $\rvect$ such that $\ell'\circ\cot(\alpha)=\ell$. We denote this category by $\defineTerm{Stor}_G$.
+A \emph{morphism} $\alpha\colon(\Fun S,\ell)\to(\Fun S',\ell')$ of $G$-lifts is a monoidal natural transformation $\alpha\colon\Fun S\Rightarrow\Fun S'$ in $\rvect$ such that $\ell'\circ\cot(\alpha)=\ell$. We denote this category by $\defineTerm{Stor}_G$.
 \end{definition}
-
-Composing $\ell$ with $\theta_{\Fun V(\blank)}$ from \cref{prop.rvect_polynomial} yields a monoidal natural transformation $s\coloneqq\ell\circ\theta_{\Fun V(\blank)}\colon\Store\circ\absval{\Fun V(\blank)}\Rightarrow G$; this is the composite that drives the dynamics.
 
 \begin{proposition}\label{prop.lift_to_org}
 Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a strong symmetric monoidal functor. There is a functor
 \[\Psi_{\blank}\colon\Stor{G}\to\bbsmc(\para{G}{\poly},\org_\cong).\]
-That is, every $G$-lift $\lift=(\Fun V,\ell)$ induces a normal lax symmetric monoidal functor
+That is, every $G$-lift $\lift=(\Fun S,\ell)$ induces a normal lax symmetric monoidal functor
 \[\Psi_{\lift}\colon\para{G}{\poly}\to\org_\cong,\]
 and every $\alpha\colon\lift\to\lift'$ induces a monoidal pseudonatural transformation $\Psi_\alpha\colon\Psi_{\lift}\Rightarrow\Psi_{\lift'}$.
 \end{proposition}
 
 \begin{proof}
-Write $\lift=(\Fun V,\ell)$. Set $F\coloneqq\absval{\Fun V(\blank)}\colon\cat A\to\smsetiso$ and let
+Write $\lift=(\Fun S,\ell)$. Set $F\coloneqq\absval{\Fun S(\blank)}\colon\cat A\to\smsetiso$ and let
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong
 \]
-be the functor of \cref{lem.poly_to_org}. The natural transformation $\theta_{\Fun V(\blank)}\colon\Store\circ F\to\cot\circ\Fun V$ from \cref{prop.rvect_polynomial} composes with $\ell\colon\cot\circ\Fun V\Rightarrow G$ to give a monoidal natural transformation $s\coloneqq\ell\circ\theta_{\Fun V(\blank)}\colon\Store\circ F\Rightarrow G$. By \cref{prop.para_strong_induced,prop.para_square}, this induces a strong symmetric monoidal functor
+be the functor of \cref{lem.poly_to_org}. The natural transformation $\theta_{\Fun S(\blank)}\colon\Store\circ F\to\cot\circ\Fun S$ from \cref{prop.rvect_polynomial} composes with $\ell\colon\cot\circ\Fun S\Rightarrow G$ to give a monoidal natural transformation $s\coloneqq\ell\circ\theta_{\Fun S(\blank)}\colon\Store\circ F\Rightarrow G$. By \cref{prop.para_strong_induced,prop.para_square}, this induces a strong symmetric monoidal functor
 \[
 \Para^{s}\colon\para{G}{\poly}\to\para{\Store\circ F}{\poly}.
 \]
 Define $\Psi_{\lift}\coloneqq D_F\circ\Para^{s}$, which is normal lax monoidal because $\Para^{s}$ is strong and $D_F$ is normal lax monoidal by \cref{lem.poly_to_org}.
 
-For $\alpha\colon\lift\to\lift'=(\Fun V',\ell')$, we have $\absval{\alpha}\colon F\Rightarrow F'\coloneqq\absval{\Fun V'(\blank)}$. Applying \cref{prop.para_square} with two identity functors and the 2-cell given by the monoidal natural transformation $\Store(\absval{\alpha})\colon\Store\circ F\Rightarrow\Store\circ F'$ yields a functor
+For $\alpha\colon\lift\to\lift'=(\Fun S',\ell')$, we have $\absval{\alpha}\colon F\Rightarrow F'\coloneqq\absval{\Fun S'(\blank)}$. Applying \cref{prop.para_square} with two identity functors and the 2-cell given by the monoidal natural transformation $\Store(\absval{\alpha})\colon\Store\circ F\Rightarrow\Store\circ F'$ yields a functor
 \[
 \Para^{\Store(\absval\alpha)}\colon\para{\Store\circ F'}{\poly}\to\para{\Store\circ F}{\poly}.
 \]
-Write $s'\coloneqq\ell'\circ\theta_{\Fun V'(\blank)}$. Since $\id_{\cat A}$ is strict monoidal, both $\Para^{s'}$ and $\Para^{\Store(\absval\alpha)}$ are strict by \cref{prop.para_square}, and their composite is precomposition with $s'\circ\Store(\absval\alpha)\colon\Store\circ F\Rightarrow G$. The lift-morphism condition $\ell'\circ\cot(\alpha)=\ell$ together with naturality of $\theta$ gives $s'\circ\Store(\absval\alpha)=s$, hence $\Para^{\Store(\absval\alpha)}\circ\Para^{s'}=\Para^{s}$. The components $\absval{\alpha}_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\Para^{\Store(\absval\alpha)}\Rightarrow D_{F'}$; precomposing with $\Para^{s'}$ gives $\Psi_\alpha$,
+Write $s'\coloneqq\ell'\circ\theta_{\Fun S'(\blank)}$. Since $\id_{\cat A}$ is strict monoidal, both $\Para^{s'}$ and $\Para^{\Store(\absval\alpha)}$ are strict by \cref{prop.para_square}, and their composite is precomposition with $s'\circ\Store(\absval\alpha)\colon\Store\circ F\Rightarrow G$. The lift-morphism condition $\ell'\circ\cot(\alpha)=\ell$ together with naturality of $\theta$ gives $s'\circ\Store(\absval\alpha)=s$, hence $\Para^{\Store(\absval\alpha)}\circ\Para^{s'}=\Para^{s}$. The components $\absval{\alpha}_V\colon F(V)\to F'(V)$ give a monoidal pseudonatural transformation $D_F\circ\Para^{\Store(\absval\alpha)}\Rightarrow D_{F'}$; precomposing with $\Para^{s'}$ gives $\Psi_\alpha$,
 \[
 \begin{tikzcd}[column sep=60pt]
 	\para{G}{\poly}\ar[r, "\Para^{s}"]\ar[d, "\Para^{s'}"']&
@@ -2415,13 +2413,13 @@ Recall the inclusion
   $\rvect\To{\inc}\mfd\To{\cot}\poly$ from \cref{prop.rvect_smc_action,def.cot}.
 
 \begin{definition}[Cotangent lift]\label{def.cotangent_lift}
-The category of \emph{cotangent lifts} is $\defineTerm{cotstor}\coloneqq\Stor{\cot\circ\inc}$. Explicitly, a cotangent lift is a pair $(\Fun V,\ell)$ where $\Fun V\colon\rvect\to\rvect$ is a strong symmetric monoidal functor (the carrier) and $\ell\colon\cot\circ\Fun V\Rightarrow\cot\circ\inc$ is a monoidal natural transformation.
+The category of \emph{cotangent lifts} is $\defineTerm{cotstor}\coloneqq\Stor{\cot\circ\inc}$. Explicitly, a cotangent lift is a pair $(\Fun S,\ell)$ where $\Fun S\colon\rvect\to\rvect$ is a strong symmetric monoidal functor (the carrier) and $\ell\colon\cot\circ\Fun S\Rightarrow\cot\circ\inc$ is a monoidal natural transformation. 
+
+The \emph{configuration lift} is $\defineTerm{lift_conf}\coloneqq(\id,\,\id)$, whose carrier is $\id\colon\rvect\to\rvect$ and whose lift map is also the identity.
 \end{definition}
 
 Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cotof{V}\otimes p$ induced by $\cot\circ\inc$. Applying \cref{prop.lift_to_org} at $\cat A=\rvect$, $G=\cot\circ\inc$, every cotangent lift $\lift$ induces a normal lax symmetric monoidal functor
 \[\Psi_{\lift}\colon\para{\cot}{\poly}\to\org_\cong.\]
-
-The \emph{configuration lift} is $\defineTerm{lift_conf}\coloneqq(\id,\,\id)$, the cotangent lift with carrier $\id\colon\rvect\to\rvect$ and identity lift map; its associated $\theta_V$ is from \cref{prop.rvect_polynomial}.
 
 \begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
 The dynamics for the configuration lift recover the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}. Indeed, this behavior arises via a functor $\Phiconf{}\colon\srw\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharpR_V$ of the parameter space. For example, on Euclidean parameter spaces, we take
@@ -2442,32 +2440,32 @@ The construction uses one additional ingredient beyond the configuration lift $\
 \lambda_V\;\colon\;\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\beta_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}.
 \end{equation}
 
+So on positions, $\lambda_V$ sends $(x,\xi)$ to $x$, and on directions at $(x,\xi)$ it sends $\xi'\in V^*$ back to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$.
+
 \begin{lemma}[Phase lift]\label{lem.phase_lift}
 The composite
 \begin{equation}\label{eqn.phase_lift_def}
 \rho_V\;\coloneqq\;\lambda_V\circ\theta_{T^*V}\;\colon\;\Store(\absval{T^*V})\To[\cong]{\theta_{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof V
 \end{equation}
-is a cotangent lift, the \emph{phase lift} $\lift_{\phase}\coloneqq(\absval{T^*\blank},\,\defineTerm{rho})$.
+is a cotangent lift, which we call the \emph{phase lift} $\lift_{\phase}\coloneqq(T^*,\,\defineTerm{rho})$.
 \end{lemma}
 
 \begin{proof}
 $\absval{T^*\blank}\colon\rvect\to\smsetiso$ is strong symmetric monoidal because $T^*\colon\rvect\to\rvect$ is (\cref{prop.TT_monoidal}). Each factor of $\rho_V$ is natural in $\rvect$-isomorphisms and monoidal in $V$: $\theta_{T^*V}$ by \cref{prop.rvect_polynomial} applied at $T^*V$ (using sharp-equivariance \eqref{eqn.pairing_triangle} for $\sharpS_{T^*V}$), and $\lambda_V$ via naturality and monoidality of its components --- $\cotof{\Delta_{T^*V}}$ from \cref{lem.cot_comonoid}, $\cotof{\pi_V}$ from functoriality of $\cot$, and $\beta_V$ from \eqref{eqn.pairing_triangle} and \cref{prop.rvect_monoidal}. Hence so is $\rho_V$.
 \end{proof}
 
-The two factors of $\rho_V$ enter at separate steps of the composite \eqref{eqn.phase_lift_def} and produce separate halves of the pair-form below. The configuration lift $\theta_{T^*V}$ uses the carrier's reactive structure, which by \cref{prop.canonical_symplectic_pairing} is the canonical antisymmetric $\sharpS_{T^*V}$ of \eqref{eqn.canonical_sharp}. The phase lift $\lambda_V$ uses the parameter sharp $\sharpR_V$ via $\beta_V$ --- the source of the kinetic drift.
-
-Unpacking $\rho_V$ under \cref{prop.rvect_polynomial}, and using the standing trivialization $T^*_xV\cong V^*$ from \eqref{eqn.tangent_vec}, its position component is $\pi_V$, while a direction $\xi'\in V^*$ at $x=\pi_V(x,\xi)$ is sent backward to the store direction
+Using the standing trivialization $T^*_xV\cong V^*$ from \eqref{eqn.tangent_vec}, the $\poly$ morphism $\rho_V\colon(V\oplus V^*)\yon^{V\oplus V^*}\to V\yon^{V^*}$ sends $(x,\xi)\mapsto x$ on positions, and on directions is given by
 \begin{equation}\label{eqn.phase_lift_update}
 \absval{T^*V}\times V^*\to\absval{T^*V},\qquad
 ((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,\xi-\xi').
 \end{equation}
-For the position component, $\theta_{T^*V}$ is the identity from \eqref{eqn.directions_sharp} and $\lambda_V$ acts as $\cotof{\pi_V}$ from \eqref{eqn.phase_lift_decomp}. For the backward direction formula at $(x,\xi)$, $\lambda_V$ sends $\xi'\in V^*$ to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ --- cotangent pullback along $\pi_V$ summed with $\beta_V(x,\xi)$ via $\cotof{\Delta_{T^*V}}$, using \eqref{eqn.kinetic_one_form}. Then $\theta_{T^*V}$ adds $\sharpS_{T^*V}(\xi',\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi')$ from \eqref{eqn.canonical_sharp} to $(x,\xi)$, giving $(x+\sharpR_x(\xi),\,\xi-\xi')$ as displayed.
+Indeed, for the position component, $\theta_{T^*V}$ is the identity from \eqref{eqn.directions_sharp} and $\lambda_V$ acts as $\cotof{\pi_V}$ from \eqref{eqn.phase_lift_decomp}. For the backward direction formula at $(x,\xi)$, $\lambda_V$ sends $\xi'\in V^*$ to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ --- cotangent pullback along $\pi_V$ summed with the kinetics $\beta_V(x,\xi)$ \eqref{eqn.kinetic_one_form} via $\cotof{\Delta_{T^*V}}$. Then $\theta_{T^*V}$ adds the symplectic $\sharpS_{T^*V}(\xi',\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi')$ from \eqref{eqn.canonical_sharp} to $(x,\xi)$, giving $(x+\sharpR_x(\xi),\,\xi-\xi')$ as displayed.
 
 %--------------------------------------------------------------------
 \section{The dynamics functor}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
 
-The smooth rewiring diagrams of \cref{sec.W_choice} become smooth rewiring dynamics by first internalizing them as parameterized polynomial maps and then applying a cotangent lift.
+The smooth rewiring diagrams of \cref{sec.W_choice} become smooth rewiring dynamics by first internalizing them as parameterized polynomial maps and then applying a cotangent lift. We begin with a preliminary construction of a functor called $\Phi'$ which will be folded into our main functor of interest $\Phi$ in \cref{thm.functor}.
 
 \begin{lemma}\label{lem.potlens_to_para_poly}
 There is a normal lax symmetric monoidal functor
@@ -2483,38 +2481,42 @@ By \cref{def.potlens}, $\srw$ is the underlying operad of $\para{\rvect}{\plmfd}
 \para{\rvect}{\plmfd}\To{\para{\rvect}{\Lens\cot}}
 \para{\rvect}{\plpoly}\To{\para{\rvect}{\Theta_{\potd}}}
 \para{\cot}{\poly}.
+\qedhere
 \]
 \end{proof}
+
 The functor $\Phi'$ acts on objects by
 \[\Phi'\lensob{M}\coloneqq\cotof{\outp{M}}\otimes\ihom{\cotof{\inpt{M}},\yon}.\] 
-And $\Phi'$ sends a smooth rewiring diagram as in \eqref{eqn.plens_map} and \eqref{eqn.plens_potential} to a $\cotof{V}$-parameterized polynomial map of the form
-\[
+And $\Phi'$ sends a smooth rewiring diagram
+\[\left((V,\sharpR_V),\binom{\inpt f}{\outp f},U\right)\colon\lensob{M_1}\otimes\cdots\otimes\lensob{M_K}\to\lensob{N}\]
+as in \eqref{eqn.plens_map} and \eqref{eqn.plens_potential} to a $\cotof{V}$-parameterized polynomial map of the form
+\begin{equation}\label{eqn.to_be_rearranged}
 \cotof{V}\otimes
-\Phi'\lensob{X_1}\otimes\cdots\otimes\Phi'\lensob{X_K}
+\Phi'\lensob{M_1}\otimes\cdots\otimes\Phi'\lensob{M_K}
 \to
-\Phi'\lensob{Y}.
-\]
-This is the bulk of the construction. Our main functor of interest $\Phi_{\lift}$, which depends on a cotangent lift $\lift$ (see \cref{def.cotangent_lift}), acts the same on objects:
+\Phi'\lensob{N}.
+\end{equation}
+This is the bulk of the construction. Our main functor of interest $\Phi_{\lift}$, which depends on a cotangent lift $\lift=(\Fun S,\ell)$ (see \cref{def.cotangent_lift}), acts the same as $\Phi'$ does on objects:
 \[\Phi_{\lift}\lensob{M}=\Phi'\lensob{M}.\]
-What \cref{thm.functor} does is to first rearrange to
+What \cref{thm.functor} does is to first rearrange \eqref{eqn.to_be_rearranged} to
 \[
 \cotof{V}\to
 \left[
-  \Phi_\lift\lensob{X_1}\otimes\cdots\otimes\Phi_\lift\lensob{X_K},
-  \Phi_\lift\lensob{Y}
+  \Phi_\lift\lensob{M_1}\otimes\cdots\otimes\Phi_\lift\lensob{M_K},
+  \Phi_\lift\lensob{N}
 \right],
 \]
-then use $\lift$ to turn the $\cotof{V}$ into something of the form $S\yon^S$ for some set $S$, and finally, to unfold that to a coalgebra
+then use $\lift$ to replace the $\cotof{V}$ with something of the form $S\yon^S$ for $S=\absval{\Fun{S}(V)}$, and finally, to unfold that to a coalgebra via \cref{prop.coalg_as_poly_map}
 \[
 S\to\left[
-  \Phi_\lift\lensob{X_1}\otimes\cdots\otimes\Phi_\lift\lensob{X_K},
-  \Phi_\lift\lensob{Y}
-\right](S)
+  \Phi_\lift\lensob{M_1}\otimes\cdots\otimes\Phi_\lift\lensob{M_K},
+  \Phi_\lift\lensob{N}
+\right](S).
 \]
 The precise relationship between $S$ and $V$ will depend on the cotangent lift: in our two main cases of interest it is the configuration space $\absval{V}$ and the phase space $\absval{T^*V}$; see \eqref{eqn.our_phis}.
 
 \begin{theorem}\label{thm.functor}
-For every cotangent lift $\lift=(\Fun V,\ell)$, there is an operad functor
+For every cotangent lift $\lift=(\Fun S,\ell)$, there is an operad functor
 \[
 \Phi_{\lift}\colon\srw\to\org.
 \]
@@ -2546,13 +2548,13 @@ For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\o
 \[
 \org^{(K)}(p,q)\coloneqq\ihom{p,q}^{\tri K}\coalg,
 \]
-where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power. The normal duoidal interchange \eqref{eqn.duoidal} gives composition
+where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power. The normal duoidal interchange \eqref{eqn.duoidal} gives composition in $\org^{(K)}$,
 \[
 \ihom{p,q}^{\tri K}\otimes\ihom{q,r}^{\tri K}\too\bigl(\ihom{p,q}\otimes\ihom{q,r}\bigr)^{\tri K}\too\ihom{p,r}^{\tri K},
 \]
-and equips $\org^{(K)}$ with a $\otimes$-monoidal structure.
+and also equips $\org^{(K)}$ with a $\otimes$-monoidal structure.
 
-For example, a coalgebra of the form $S\to q\tri q\tri S$ takes every state, outputs a position $j_1:q(1)$ and, for every input direction $e_1:q_1[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q_2[j_2]$, updates the state. We conjecture that this is exactly the kind of process needed for multi-step integrators, though we do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q\tri S$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q_1[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q_2[j_2]$, updates the state. We conjecture that this is exactly the kind of process needed for multi-step integrators, though we do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 %--------------------------------------------------------------------
@@ -2568,7 +2570,9 @@ A state consists of a position and a momentum $(x,\xi)\in T^*V$, and an incoming
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
-for the set of (not-necessarily continuous) \emph{covector fields} on $M$. The category $\poly$ remembers only the underlying sets of positions and directions, not their topology, so we take all set-theoretic sections. A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
+for the set of (not-necessarily continuous) \emph{covector fields} on $M$.%
+\footnote{We take all set-theoretic sections because the category $\poly$ remembers only the underlying sets of positions and directions, not their topology.} 
+A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
 
 \paragraph{The action of $\Phiphase{}$ on objects.}
 The functor $\Phiphase{}$ acts on objects as follows:
