@@ -2979,7 +2979,7 @@ The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$,
 \section{The wave equation}\label{sec.wave_equation}
 %--------------------------------------------------------------------
 
-We illustrate $\Phiphase{}\colon\srw\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth rewiring diagram $\Part\colon I\to\boxob$ and arrange particles into a chain as a $K$-ary smooth (static) wiring diagram $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$, then illustrate functoriality of $\Phiphase{}$ by computing the wave equation in two different ways. In \cref{sec.spring_first_pass} we compose the particles and the wiring in $\srw$, apply $\Phiphase{}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we instead apply $\Phiphase{}$ to the particle and wiring separately and compose the resulting coalgebras in $\org$; the result is the same.
+We illustrate $\Phiphase{}\colon\srw\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth rewiring diagram $\Part\colon I\to\boxob$ and arrange particles into a chain as a $K$-ary smooth (static) wiring diagram $\fun{wire}_K\colon\boxob\tpow{K}\to\boxob$, and then audit the computation via functoriality. In \cref{sec.spring_first_pass} we compose the particles and the wiring in $\srw$, apply $\Phiphase{}$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we apply $\Phiphase{}$ to the particle and wiring separately, compose the resulting coalgebras in $\org$, and verify term-by-term agreement as a check on signs, indices, and routing.
 
 That is, we begin with a single particle whose state is a transverse displacement and momentum, which we put in a ``box'' that delivers the displacement to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the displacements of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -3018,7 +3018,7 @@ We will work in the full suboperad of $\srw$ (in the sense of \cref{sec.wd_opera
 \]
 for varying $n$. Note that $\boxob\tpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
 
-We give the derivation in two passes. In the first pass, we describe the particle and the wiring in $\srw$, compose them there, and apply $\Phiphase{}$ to the resulting $0$-ary smooth rewiring diagram to read off the dynamics. In the second pass, by operad-functoriality of $\Phiphase{}$, we instead apply $\Phiphase{}$ to the particle and to the wiring separately, then compose in $\org$; the result is the same.
+We derive the wave equation, then audit the derivation via functoriality. First, we describe the particle and the wiring in $\srw$, compose them there, and apply $\Phiphase{}$ to the resulting $0$-ary smooth rewiring diagram to read off the dynamics. Then, as a bookkeeping check, we apply $\Phiphase{}$ to the particle and to the wiring separately, compose in $\org$, and verify that the same coalgebra is obtained.
 
 \subsection{First pass: composing in \texorpdfstring{$\srw$}{SRW}}\label{sec.spring_first_pass}
 
@@ -3139,13 +3139,13 @@ recovers the discrete wave equation \eqref{eqn.discrete_wave}.
 This is the calculation of \eqref{eqn.state_update_explicit}: writing the state as a function of time and eliminating the momenta gives \eqref{eqn.discrete_wave}.
 \end{proof}
 
-\subsection{Second pass: composing in \texorpdfstring{$\org$}{Org}}\label{sec.spring_second_pass}
+\subsection{Functoriality audit: composing in \texorpdfstring{$\org$}{Org}}\label{sec.spring_second_pass}
 
-We have now recovered the wave equation by connecting $K$-many particles together in $\srw$, sending the result to $\org$ and investigating the discrete dynamical system (the $(\cotof{\rr}\otimes[\cotof{\rr},\yon])$-coalgebra) as a function of time. This is the left-hand side below, which agrees with the right-hand side by operad-functoriality of $\Phiphase{}$:
+The wave equation was derived in \cref{sec.spring_first_pass}; operad-functoriality of $\Phiphase{}$ forces equality of the two sides below:
 \[
 \Phiphase{}\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phiphase{}(\fun{wire}_K)\bigl(\Phiphase{}(\Part),\ldots,\Phiphase{}(\Part)\bigr),
 \]
-which is the $K$-ary composite, taken in $\org$, of $K$ copies of the single-particle dynamical system $\Phiphase{}(\Part)$ wired together via $\Phiphase{}(\fun{wire}_K)$. Although the equality above already determines the result, we work out this second composite explicitly as a check on the formula.
+We now work out the right-hand side term by term---applying $\Phiphase{}$ to the particle and to the wiring separately, then composing in $\org$---as an explicit check on signs, indices, and the routing of inputs through the formulas.
 
 \paragraph{The particle dynamics.}
 
@@ -3192,7 +3192,7 @@ Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
 \end{equation*}
 When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the threading goes as follows. 
 
-Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_N$, and $(x_{\fun{prev}})_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x))$. This is exactly the same as \eqref{eqn.potlens_composite_final}, verifying the functor and auditing the validity of the formulas in this case.
+Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_N$, and $(x_{\fun{prev}})_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x))$. This is exactly \eqref{eqn.potlens_composite_final}: the two routes through the functoriality square agree term by term, confirming the signs, indices, and covector-field evaluations in the formulas above.
 
 \section{Graph Laplacian on a directed graph}\label{sec.graph_laplacian}
 
