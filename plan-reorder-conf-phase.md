@@ -501,31 +501,40 @@ same label, just in a later position.
 
 Before declaring the task complete, verify each item:
 
-- [ ] Every displayed equation in both sections has a `\label`.
-- [ ] Every "as in" or "exactly as" phrase cites a specific `\eqref`
+- [x] Every displayed equation in both sections has a `\label`.
+- [x] Every "as in" or "exactly as" phrase cites a specific `\eqref`
       or `\cref`, not just a vague reference.
-- [ ] The two footnotes from eqn.omegaprime and eqn.bigtheta appear
+- [x] The two footnotes from eqn.omegaprime and eqn.bigtheta appear
       in the configuration section (where they are now defined).
-- [ ] The note "$\omega_N(\inpt n)=\xi_{\inpt N}$" (by
+      (lines 2620, 2635 — both before sec.phase_dynamics at 2756)
+- [x] The note "$\omega_N(\inpt n)=\xi_{\inpt N}$" (by
       \eqref{eqn.omegaprime}) appears in the configuration section.
-- [ ] The new phase section's deferral paragraph cites all four
+      (line 2636)
+- [x] The new phase section's deferral paragraph cites all four
       shared equations by label: \eqref{eqn.outpn},
       \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta}.
-- [ ] The new phase section's deferral paragraph explains WHY the
+      (lines 2764 and 2788)
+- [x] The new phase section's deferral paragraph explains WHY the
       shared formulas carry over: cites \eqref{eqn.phase_lift_decomp}
       and states "the formulas depend on $x$ alone."
-- [ ] rmk.euler_energy's reference to \cref{sec.configuration_dynamics}
+      (line 2788)
+- [x] rmk.euler_energy's reference to \cref{sec.configuration_dynamics}
       is now a backward reference (conf precedes phase). Verify no
       wording implies it is forward.
-- [ ] No equation label is defined in two places.
-- [ ] No equation label is referenced before it is defined, unless
+      (rmk.euler_energy at line 2826; conf section at 2565)
+- [x] No equation label is defined in two places.
+      (verified by Python script — 0 duplicates)
+- [x] No equation label is referenced before it is defined, unless
       it is a deliberate forward reference via \cref that will resolve.
-- [ ] The terse summary in each section indexes every equation label
+- [x] The terse summary in each section indexes every equation label
       it uses.
-- [ ] prop.euler_submersion_lenses remains in the configuration
+      (conf terse at 2662; phase terse at 2848)
+- [x] prop.euler_submersion_lenses remains in the configuration
       section and all its internal \eqref and \cref references resolve.
-- [ ] pdflatex compiles without "undefined reference" warnings for any
+      (line 2666, before phase section)
+- [x] pdflatex compiles without "undefined reference" warnings for any
       label in the replaced range.
+      (2 passes clean; only pre-existing font/amsthm warnings)
 
 ---
 
@@ -535,4 +544,12 @@ Before declaring the task complete, verify each item:
 
 | # | What | Old location | New location | Wording change? | Rationale |
 |---|------|-------------|-------------|-----------------|-----------|
-| | | | | | |
+| 1 | sec.configuration_dynamics header + body | 2707–2847 | 2564–2753 | Intro: "analog of Φ_phase" → "simpler of the two"; lift pres: deleted "as in sec.phase_dynamics", replaced with conf-first phrasing | Conf now comes first |
+| 2 | sec.phase_dynamics header + body | 2564–2705 | 2755–2848 | Deleted full derivation of outpn/omegaprime/inptm/bigtheta; replaced with deferral paragraph citing conf eqns by label; deleted eqn.para_potential_lens_maps display (now in conf) | Phase defers to conf for shared formulas |
+| 3 | Shared equations (Phi_on_obs, outpn, omegaprime, inptm, bigtheta, para_potential_lens_maps) | phase section | conf section | Φ_phase → Φ_conf ×~14; s→x in "Given a state", "(s,a)"→"(x,a)" | These formulas depend on x alone; now live in conf |
+| 4 | eqn.state_update_gradient + explanation | conf 2737–2740 | conf 2643–2646 | None (verbatim) | Moved with conf section |
+| 5 | prop.euler_submersion_lenses | conf 2760–2845 | conf 2665–2751 | None (verbatim) | Moved with conf section |
+| 6 | Bridging sentence | conf 2847 | 2753 | None (verbatim) | Moved with conf section |
+| 7 | \cref order (line 632) | sec.phase,sec.conf | sec.conf,sec.phase | None | Match document order |
+| 8 | \Cref order (line 2307) | sec.phase,sec.conf; Φ_phase,Φ_conf | sec.conf,sec.phase; Φ_conf,Φ_phase | Swapped functor names to match | Match document order |
+| 9 | Phase-lift display arrow | \rho_V (d808ffa) → \lambda_V (042c706) | kept \lambda_V | Codex fix preserved: arrow is the lift map λ_V, not the composite ρ_V | Mathematical correction from 042c706 |
