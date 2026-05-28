@@ -119,8 +119,8 @@ specializing to the monoidal-1-form case `\omega\colon T^*V\to T^*T^*V` when
 |---|---|---|
 | Generic section of `T^*` | `\omega` | also names the induced nat. trans.; covers covector fields on any `M` |
 | Kinetic 1-form | `\beta` | the `\sharpR`-packaging on `T^*V` |
-| Dissipation 1-form | `\omega^\nu` | parameterized by friction `\nu` |
-| **Forbidden for 1-forms** | `\gamma`, `\alpha` | `\gamma` used elsewhere as a generic nat. trans. |
+| Dissipation 1-form | `\zeta` | base form `\zeta_V(x,\xi)=(\xi,0)`; the friction-`c` form is the scalar multiple `c\,\zeta` |
+| **Forbidden for 1-forms** | `\gamma`, `\alpha`, bare `\omega` for dissipation | `\gamma` used elsewhere as a generic nat. trans.; bare `\omega` is the *generic* 1-form and collides with the specific dissipation form |
 
 Search hints: `"1-form"`, `"one[- ]form"`, `\\Rightarrow\\yon`,
 `T^*V\\to T^*\\(T^*V\\)`, `\\colon T^*`.
@@ -140,9 +140,9 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Friction / damping coefficient | `\nu \in [0,1]` | $\nu=0$ undamped, $\nu=1$ fully damped |
+| Friction / damping coefficient | `c \in [0,1]` | `c=0` undamped, `c=1` fully damped; the `c` of `m\ddot x+c\dot x+kx=0`. Roman, not Greek (a `[0,1]` fraction). Same letter as the generic real scalar in `prop.one_forms_monoid`, so `c\,\zeta` reads as an instance of `c\,\omega`. **Forbidden:** `\nu` (former symbol, now retired) |
 | Learning rate | `\eta_{\mathrm{LR}}` | never bare `\eta` (reserved, see below) |
-| Generic real scalar | `\lambda`, `t` | `t` for time/index |
+| Generic real scalar | `c`, `t` | `c\in\rr` for scalar multiplication (e.g. `prop.one_forms_monoid`); the damping coefficient is the `[0,1]` specialization of this same `c`. `t` for time/index. (`\lambda` is taken — dual-pairing element at `eqn.canonical_dual_sum`.) |
 | Potential | `U\colon V\to\rr` | also `U\colon X\to\rr` for general state space |
 
 Search hints: `"friction"`, `"decay"`, `"damping"`, `"dissipat"`,
