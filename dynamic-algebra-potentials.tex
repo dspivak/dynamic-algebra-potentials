@@ -784,7 +784,7 @@ Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, t
 making the required diagrams commute. See \cite{aguiar2010monoidal,niu2025polynomial} for details.
 
 \begin{definition}[The store comonad]\label{ex.store}
-For any set $S$, define $\defineTerm{Store}(S)\coloneqq S\yon^S$. It arises as the comonad associated to the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$. That is, it comes with maps $\epsilon\colon S\yon^S\to\yon$ and $\delta\colon S\yon^S\to S\yon^S\tri S\yon^S$.
+For any set $S$, define $\defineTerm{Store}(S)\coloneqq S\yon^S$. It arises as the comonad associated to the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$.
 \end{definition}
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec.coalgebras}
@@ -796,7 +796,7 @@ f_1\colon S\to p(1),\qquad
 \end{equation}
 where $f_1(s)$ returns a position and $\bk{f}{s}\colon p[f_1(s)]\to S$ returns a state-update function---from directions to new states---for each $s:S$. Given a state $s:S$, we call $r_s\coloneqq f_1(s):p(1)$ its \emph{readout} position and $\bk{f}{s}\colon p[r_s]\to S$ its \emph{update} function, sending each direction $d:p[r_s]$ to a new state $s_d\coloneqq\bk{f}{s}(d)$.
 
-When $p=A\yon^B$ then a $p$-coalgebra $S\to AS^B$ is equivalently a readout function $S\to A$ and an update function $S\times B\to S$, which is independent of the readout. But in general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$.
+When $p=B\yon^A$ then a $p$-coalgebra $S\to B\times S^A$ is equivalently a readout function $S\to B$ and an update function $S\times A\to S$, which is independent of the readout. Such a coalgebra is called an $(A,B)$-\emph{Moore machine}~\cite{moore1956gedanken}. In general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$, so could be called a \emph{dependent} Moore machine.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[f_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
