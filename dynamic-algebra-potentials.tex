@@ -550,7 +550,7 @@ Because $\poly$ is monoidal closed, such maps are equivalently the positions of 
 \[
 w\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,q},
 \]
-so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the rewiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $\beta\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to q$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
+so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the rewiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to q$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
 
 %--------------------------------------------------------------------
 \section{From smooth data to dynamics}\label{sec.intro_smooth_to_dynamics}
@@ -668,7 +668,7 @@ For convenience in the electronic version, many recurring pieces of notation are
 
 We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. We write $\defineTerm{bang}$ for a unique map when the domain and codomain make it clear, e.g.\ the unique map $\emptyset\to A$ or the unique map $X\to\rr^0$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
-We reserve $\eta$ and $\mu$ for monad units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
+We reserve $\eta$ and $\mu$ for units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
 
 We sometimes refer to a $(2,1)$-category simply as a category. More precisely, its homs are groupoids and composition is associative and unital up to coherent isomorphism.
 
@@ -854,7 +854,7 @@ Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection 
 	p
 \end{tikzcd}
 \]
-The first commutes iff $f'_1\circ g=f_1$ and $g\circ f^\sharp_s=f'^\sharp_{g(s)}$ for all $s:S$; the second iff $\phi'_1\circ g=\phi_1$ and $\phi^\sharp_s=g\inv\circ\phi'^\sharp_{g(s)}$. These coincide under the established bijection $\phi_\blank=f_\blank$.\qedhere
+The first commutes iff $f'_1\circ g=f_1$ and $g\circ\bk{f}{s}=\bk{f'}{g(s)}$ for all $s:S$; the second iff $\phi'_1\circ g=\phi_1$ and $\bk{\phi}{s}=g\inv\circ\bk{\phi'}{g(s)}$. These coincide under the established bijection $\phi_\blank=f_\blank$.\qedhere
 \end{proof}
 
 \begin{example}[$\yon$-coalgebras and trajectories]\label{ex.y_coalgebra_trajectory}
@@ -1201,11 +1201,11 @@ The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 
 
 We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. Its objects are polynomials $\ob\org=\ob\poly$, and for polynomials $p,q$ the hom-category is
 \[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
-Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,\beta\colon S\to\ihom{p,q}\tri S)$. We regard it as an interaction, regarding $p$ as an \emph{internal} interface and $q$ as an \emph{external} one: and at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
+Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,f\colon S\to\ihom{p,q}\tri S)$. We regard it as an interaction, regarding $p$ as an \emph{internal} interface and $q$ as an \emph{external} one: and at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
 \[
 \smset(S,\ihom{p,q}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
 \]
-We refer to $S$ as the \emph{state set}; a morphism $(S,\beta)\to(S',\beta')$ in $\ihom{p,q}\coalg$ is a function $f\colon S\to S'$ such that $(\ihom{p,q}\tri f)\circ\beta=\beta'\circ f$. Concisely, we denote the function $\beta$ by
+We refer to $S$ as the \emph{state set}; a morphism $(S,f)\to(S',f')$ in $\ihom{p,q}\coalg$ is a function $g\colon S\to S'$ such that $(\ihom{p,q}\tri g)\circ f=f'\circ g$. Concisely, we denote the function $f$ by
 \begin{equation*}
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
 \end{equation*}
@@ -2001,28 +2001,7 @@ The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the map%
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_V(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the sharp-equivariance condition \eqref{eqn.pairing_triangle}.
 
-The same datum $\sharpR_x(\xi)\in V$ admits a second packaging---used later in the phase lift \eqref{eqn.phase_lift_decomp}---as a 1-form on $T^*V$, equivalently a $\poly$-morphism to $\yon$. The \emph{kinetic 1-form} of $(V,\sharpR_V)$ is
-\begin{equation}\label{eqn.kinetic_one_form}
-\beta_V\colon\cotof{T^*V}\to\yon,\qquad
-(x,\xi)\mapsto(0,\sharpR_x(\xi))
-\end{equation}
-using the identification $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ from \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. Equivalently, $\beta_V$ is the section $T^*V\to T^*(T^*V)$, $(x,\xi)\mapsto(0,\sharpR_x(\xi))$. The name reflects that, when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).
-
-Note that $T^*$ is a strong monoidal endofunctor on $(\rvect,0,\oplus)$.
-
-\begin{definition}\label{def.monoidal_one_form}
-A \emph{monoidal 1-form on $T^*$} is a smooth family of sections $\omega_V\colon T^*V\to T^*(T^*V)$, natural in $\rvect$-isomorphisms, that decomposes over direct sums: $\omega_{V\oplus W}=\omega_V\oplus\omega_W$. In other words, letting $\pi\colon T^*\circ T^*\Rightarrow T^*$ denote the bundle projection, $\omega\colon T^*\Rightarrow T^*\circ T^*$ is a monoidal section of $\pi$.
-\end{definition}
-
-\begin{lemma}\label{lem.beta_monoidal}
-The kinetic 1-form $\beta$ \eqref{eqn.kinetic_one_form} is a monoidal 1-form on $T^*$.
-\end{lemma}
-
-\begin{proof}
-Naturality follows from sharp-equivariance \eqref{eqn.pairing_triangle}. Decomposition over $\oplus$ holds because $\sharpR_{V\oplus W}=\sharpR_V\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).\qedhere
-\end{proof}
-
-The sharp also induces a canonical polynomial map from the store comonad to the cotangent polynomial. This will be used later (\cref{sec.cotangent_lifts}) to present cotangent-parameterized maps as coalgebras.
+The sharp also induces a canonical polynomial map from the store comonad to the cotangent polynomial. This will be used later (in \cref{sec.cotangent_lifts}) to present cotangent-parameterized maps as coalgebras.
 
 \begin{proposition}\label{prop.rvect_polynomial}
 There is a monoidal natural transformation $\defineTerm{thetaV}_V\colon\Store(\absval{V})\to\cotof{V}$ in $\poly$, given on positions by the identity and on directions at $x\in V$ by
@@ -2098,6 +2077,72 @@ The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comp
 \end{equation*}
 It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(V_1\oplus V_2)$ sends $(\xi_1,\xi_2,x_1,x_2)\mapsto(x_1,x_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $\sigma$ gives $(\xi_1,x_1,\xi_2,x_2)\mapsto(x_1,-\xi_1,x_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*V_1}\oplus\sharpS_{T^*V_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
 \end{proof}
+
+\begin{lemma}\label{lem.TT_projection_diagonal_monoidal}
+The bundle projections and diagonals are smooth maps
+\[
+\pi_V\colon T^*V\to V,
+\qquad
+\Delta_{T^*V}\colon T^*V\to T^*V\times T^*V,
+\]
+which form monoidal natural transformations as follows between functors $\rvect\to\mfd$:
+\[
+\pi\colon\inc\circ T^*\Rightarrow\inc,\qquad
+\Delta_{T^*}\colon\inc\circ T^*\Rightarrow(\inc\circ T^*)\times(\inc\circ T^*).
+\]
+\end{lemma}
+
+\begin{proof}
+For $\pi$, naturality in $\phi\colon V\To{\cong} W$ is the identity $\pi_W\circ T^*\phi=\phi\circ\pi_V$, and monoidality is the identity $\pi_{V\oplus W}=\pi_V\times\pi_W$ under the product comparisons $T^*(V\oplus W)\cong T^*V\times T^*W$ and $V\oplus W\cong V\times W$. Diagonals are natural, and $\Delta_{T^*(V\oplus W)}=\Delta_{T^*V}\times\Delta_{T^*W}$ under $T^*(V\oplus W)\cong T^*V\times T^*W$.\qedhere
+\end{proof}
+
+Whiskering $\pi$ by $T^*$ we obtain a monoidal natural transformation
+\begin{equation}\label{eqn.pi_whiskered}
+\pi_{T^*}\colon\inc\circ T^*\circ T^*\Rightarrow\inc\circ T^*,\qquad (\pi_{T^*})_V=\pi_{T^*V}\colon T^*(T^*V)\to T^*V.
+\end{equation}
+
+Alongside the exponential \eqref{eqn.flow_cot}, the reaction datum $\sharpR_x(\xi)$ admits a second packaging as a 1-form on $T^*V$, used later in the phase lift \eqref{eqn.phase_lift_def}. We first give the abstract notion.
+
+\begin{definition}\label{def.monoidal_one_form}
+A \emph{monoidal 1-form on $T^*$} is a smooth family of sections $\omega_V\colon T^*V\to T^*(T^*V)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{V\oplus W}=\omega_V\oplus\omega_W$. In other words, $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ is a monoidal section of the bundle projection $\pi_{T^*V}\colon T^*(T^*V)\to T^*V$, from \eqref{eqn.pi_whiskered}.
+\end{definition}
+
+\begin{example}[Kinetic 1-form]\label{ex.kinetic_one_form}
+The \emph{kinetic 1-form} of $(V,\sharpR_V)$ is the section
+\begin{equation}\label{eqn.kinetic_one_form}
+\beta_V\colon T^*V\to T^*(T^*V),\qquad
+(x,\xi)\mapsto(0,\sharpR_x(\xi)),
+\end{equation}
+using the identification $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ from \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. The name reflects that, when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}). It is a monoidal 1-form on $T^*$: naturality follows from sharp-equivariance \eqref{eqn.pairing_triangle}, and monoidality holds because $\sharpR_{V\oplus W}=\sharpR_V\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
+
+Geometrically, $\beta$ packages the same datum as $\exp$: indeed, there is an equality of bundle maps $\sharp=d\pi_V\circ\sharpS_{T^*V}\circ\beta_V$, and the Euler step of $\sharp$ on $V$ is $\exp_V$ \eqref{eqn.flow_cot}.
+\end{example}
+
+More generally, when a 1-form $\omega(x,\xi)=(a,b)$ is fed through the symplectic sharp $\sharpS_{T^*V}$ and added to the state---as it will be under the phase lift \eqref{eqn.phase_lift_def} below---it contributes $(+b,-a)$ to the update, since $\sharpS$ swaps coordinates and negates the second \eqref{eqn.canonical_sharp}. Thus the $V$-component of $\omega$ drives position and the $V^*$-component drives momentum with a sign flip: the kinetic 1-form ends up adding velocity $\sharp(\xi)$ to position, and the next example ends up dissipating momentum by $-\nu\xi$.
+
+\begin{example}[Dissipation 1-form]\label{ex.dissipation_one_form}
+For $\nu\in[0,1]$, the \emph{dissipation 1-form} is the section
+\begin{equation}\label{eqn.dissipation_one_form}
+\omega^\nu_V\colon T^*V\to T^*(T^*V),\qquad
+(x,\xi)\mapsto(\nu\xi,\,0).
+\end{equation}
+It is a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of scalar multiplication.
+\end{example}
+
+\begin{lemma}\label{lem.one_form_to_poly}
+Every monoidal 1-form $\omega$ on $T^*$ induces a monoidal natural transformation
+\[
+\omega\colon \cot\circ T^*\Rightarrow\yon .
+\]
+\end{lemma}
+
+\begin{proof}
+A section $\omega\colon M\to T^*M$ defines a polynomial map $\cotof{M}\to\yon$ whose position map is unique and whose backward map at $m$ is the function $1\to T^*_mM$ selecting $\omega(m)$. Applying this at $M=T^*V$ gives the components $\omega_V\colon\cotof{T^*V}\to\yon$. Naturality and monoidality are exactly the naturality and monoidality over $\oplus$ in \cref{def.monoidal_one_form}.%
+\footnote{A monoidal natural transformation $\omega\colon\cot\circ T^*\to\yon$ may not be a monoidal 1-form because the former does not enforce smoothness, whereas the latter does.}
+\qedhere
+\end{proof}
+
+Note that we abuse notation, denoting the induced natural transformation by the same symbol as the 1-form. For example, $\beta\colon\cot\circ T^*\Rightarrow\yon$ has components $\beta_V\colon\cotof{T^*V}\to\yon$ whose backward map at $(x,\xi)$ selects $(0,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$, and likewise $\omega^\nu\colon\cot\circ T^*\Rightarrow\yon$ selects $(\nu\xi,0)$ at $(x,\xi)$. We will see in \cref{prop.one_form_lift,thm.functor} that every monoidal 1-form on $T^*$ defines a semantics $\srw\to\org$. 
 
 %--------------------------------------------------------------------
 \section{Potentialized manifold lenses}\label{sec.potentialized_lenses}
@@ -2364,9 +2409,11 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 \Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
-\subsection{Lifts}\label{sec.cotangent_lifts}
+\subsection{Cotangent lifts}\label{sec.cotangent_lifts}
 
 Looking ahead, the dynamics functor construction (\cref{thm.functor}) will produce, from any $\srw$-morphism with parameter $V:\rvect$, a $\cotof{V}$-parameterized polynomial map. The natural transformation $\thetaV{V}\colon\Store(\absval{V})\to\cotof{V}$ of \cref{prop.rvect_polynomial} converts this to an $\org$-morphism with state set $\absval{V}$ via \cref{prop.coalg_as_poly_map}. A \emph{cotangent lift} allows us to generalize this construction, e.g.\ to involve more memory---such as momentum---in the state update.
+
+In what follows we write $\cot\colon\rvect\to\poly$ for the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$.
 
 \begin{definition}[$G$-lift]\label{def.lift}
 Let $\cat A$ be a symmetric monoidal category and $G\colon\cat A\to\poly$ a strong symmetric monoidal functor. A \emph{$G$-lift} is a pair $\defineTerm{lift}=(\Fun S,\ell)$, where $\Fun S\colon\cat A\to\rvect$ is a strong symmetric monoidal functor (the \emph{carrier}) and $\ell\colon\cot\circ\Fun S\Rightarrow G$ is a monoidal natural transformation in $\poly$.
@@ -2426,16 +2473,16 @@ Since $\id_{\cat A}$ is strict monoidal, both $\Para^{\upd_{\lift'}}$ and $\Para
 \]
 \end{proof}
 
-Recall the inclusion
-  $\rvect\To{\inc}\mfd\To{\cot}\poly$ from \cref{prop.rvect_smc_action,def.cot}.
-
 \begin{definition}[Cotangent lift]\label{def.cotangent_lift}
-The category of \emph{cotangent lifts} is $\defineTerm{cotstor}\coloneqq\Stor{\cot\circ\inc}$. Explicitly, a cotangent lift is a pair $(\Fun S,\ell)$ where $\Fun S\colon\rvect\to\rvect$ is a strong symmetric monoidal functor (the carrier) and $\ell\colon\cot\circ\Fun S\Rightarrow\cot\circ\inc$ is a monoidal natural transformation. 
+The category of \emph{cotangent lifts} is $\defineTerm{cotstor}\coloneqq\Stor{\cot}$. Explicitly, a cotangent lift is a pair $(\Fun S,\ell)$ where $\Fun S\colon\rvect\to\rvect$ is a strong symmetric monoidal functor (the carrier) and $\ell\colon\cot\circ\Fun S\Rightarrow\cot$ is a monoidal natural transformation. Its update map \eqref{eqn.update_map} specializes to
+\[
+\upd_{\lift,V}\;=\;\ell_V\circ\thetaV{\Fun S(V)}\;\colon\;\Store(\absval{\Fun S(V)})\to\cotof V.
+\]
 
 The \emph{configuration lift} is $\defineTerm{lift_conf}\coloneqq(\id,\,\id)$, whose carrier is $\id\colon\rvect\to\rvect$ and whose lift map is also the identity.
 \end{definition}
 
-Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cotof{V}\otimes p$ induced by $\cot\circ\inc$. Applying \cref{prop.lift_to_org} at $\cat A=\rvect$, $G=\cot\circ\inc$, every cotangent lift $\lift$ induces a normal lax symmetric monoidal functor
+Let $\para{\cot}{\poly}$ denote the Para construction for the action $V\cdot p\coloneqq\cotof{V}\otimes p$ induced by $\cot$. Applying \cref{prop.lift_to_org} at $\cat A=\rvect$, $G=\cot$, every cotangent lift $\lift$ induces a normal lax symmetric monoidal functor
 \[\PsiLift{\lift}\colon\para{\cot}{\poly}\to\org_\cong.\]
 
 \begin{remark}[Gradient-based learning]\label{rmk.cotangent_learners}
@@ -2446,80 +2493,71 @@ The dynamics for the configuration lift recover the gradient-based learning beha
 where $\sharpEuc{}$ is the Euclidean sharp (\cref{ex.euclidean_sharp}) and $\eta_{\mathrm{LR}}>0$ is the learning rate. The minus sign is what makes the dynamics descent rather than ascent.
 \end{remark}
 
+Recall the notion of monoidal one form from \cref{def.monoidal_one_form,lem.one_form_to_poly}.
+
 \begin{proposition}\label{prop.one_form_lift}
-Let $\alpha$ be a monoidal 1-form on $T^*$ (\cref{def.monoidal_one_form}). Let $\pi_V\colon T^*V\to V$ be the bundle projection and $\cotof{\Delta_{T^*V}}$ the $\otimes$-comultiplication of \cref{lem.cot_comonoid}. The composite
+Given a monoidal 1-form $\omega\colon\cotof{T^*}\to\yon$, define $\ell(\omega)\colon\cot\circ T^*\Rightarrow\cot$ as the composite
 \begin{equation}\label{eqn.one_form_lift}
-\lambda^\alpha_V\;\colon\;\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\alpha_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}
+\ell(\omega)_V\;\colon\;\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\omega_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}.
 \end{equation}
-defines a cotangent lift $(T^*,\,\lambda^\alpha)$.
+Thus $\omega$ induces a cotangent lift
+\[
+\mathrm{Lift}(\omega)\coloneqq(T^*,\,\ell(\omega)),
+\]
+Using the decomposition $T^*_{(x,\xi)}(T^*V)\cong V^*\oplus V$ and writing
+\[
+\omega_V(x,\xi)=\bigl(a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr),
+\]
+the update map of $\mathrm{Lift}(\omega)$ sends $(x,\xi)\mapsto x$ on positions, and on directions is
+\begin{equation}\label{eqn.one_form_lift_update}
+\absval{T^*V}\times V^*\to\absval{T^*V},\qquad
+((x,\xi),\xi')\mapsto\bigl(x+b_\omega(x,\xi),\,\xi-\xi'-a_\omega(x,\xi)\bigr).
+\end{equation}
 \end{proposition}
 
 \begin{proof}
-$T^*\colon\rvect\to\rvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}. The maps $\lambda^\alpha_V$ are natural in $\rvect$-isomorphisms and monoidal in $V$ by naturality and monoidality of their components: $\cotof{\Delta_{T^*V}}$ from \cref{lem.cot_comonoid}, $\cotof{\pi_V}$ from functoriality of $\cot$, and $\alpha_V$ by the monoidal 1-form condition.\qedhere
+$T^*\colon\rvect\to\rvect$ is strong symmetric monoidal by \cref{prop.TT_monoidal}. By \cref{lem.TT_projection_diagonal_monoidal}, after applying the strong monoidal functor $\cot$ (\cref{prop.cot_monoidal}), $\cotof{\pi_V}$ and $\cotof{\Delta_{T^*V}}$ are monoidal natural transformations. Since $\omega_V$ is monoidal natural by \cref{lem.one_form_to_poly}, so is the composite $\ell(\omega)$; hence, $\mathrm{Lift}(\omega)$ is a cotangent lift.
+
+For the update formula, the backward map of $\ell(\omega)_V$ at $(x,\xi)$ sends $\xi'\in V^*$ to $(\xi',0)+\omega_V(x,\xi)=(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi))$. Then $\thetaV{T^*V}$ adds the symplectic sharp
+\[
+\sharpS_{T^*V}\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)
+=\bigl(b_\omega(x,\xi),\,-\xi'-a_\omega(x,\xi)\bigr)
+\]
+to $(x,\xi)$, giving \eqref{eqn.one_form_lift_update}.\qedhere
 \end{proof}
 
-We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$, as in \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$ rather than a point $x\in V$. Its cotangent space decomposes as
-\[
-T^*_{(x,\xi)}(T^*V)\cong T^*_xV\oplus T^*_\xi(V^*)\cong V^*\oplus V,
-\]
-using \eqref{eqn.T_products}, \eqref{eqn.tangent_vec}, and \eqref{eqn.TT_def}.
+We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$ \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$. Recall the kinetic 1-form $\beta_V(x,\xi)=(0,\sharpR_x(\xi))$ from \eqref{eqn.kinetic_one_form}.
 
-Applying \cref{prop.one_form_lift} to the kinetic 1-form $\beta$ (\cref{lem.beta_monoidal}), define the \emph{phase lift map} $\lambda_V\coloneqq\lambda^\beta_V$:
-\begin{equation}\label{eqn.phase_lift_decomp}
-\lambda_V\;\colon\;\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\cotof{\pi_V}\,\otimes\,\beta_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}.
-\end{equation}
-
-So on positions, $\lambda_V$ sends $(x,\xi)$ to $x$, and on directions at $(x,\xi)$ it sends $\xi'\in V^*$ back to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$.
-
-\begin{lemma}[Phase lift]\label{lem.phase_lift}
-The maps $\lambda_V$ of \eqref{eqn.phase_lift_decomp} form a cotangent lift, which we call the \emph{phase lift}
-\[
-\lift_{\phase}\coloneqq(T^*,\,\lambda).
-\]
-The update map \eqref{eqn.update_map} is
+The \emph{phase lift} is the image of the kinetic 1-form under \cref{prop.one_form_lift}:
 \begin{equation}\label{eqn.phase_lift_def}
-\upd_{\lift_{\phase},V}\;=\;\lambda_V\circ\thetaV{T^*V}\;\colon\;\Store(\absval{T^*V})\To[\cong]{\thetaV{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof V.
+\lift_{\phase}\coloneqq\mathrm{Lift}(\beta)=(T^*,\,\ell(\beta)).
 \end{equation}
-\end{lemma}
-
-\begin{proof}
-The kinetic 1-form $\beta$ is a monoidal 1-form on $T^*$ by \cref{lem.beta_monoidal}, so \cref{prop.one_form_lift} gives a cotangent lift. The update map is the composite of \cref{def.lift}.\qedhere
-\end{proof}
-
-Using the standing trivialization $T^*_xV\cong V^*$ from \eqref{eqn.tangent_vec}, the update map $\upd_{\lift_{\phase},V}\colon(V\oplus V^*)\yon^{V\oplus V^*}\to V\yon^{V^*}$ sends $(x,\xi)\mapsto x$ on positions, and on directions is given by
+The update map $\upd_{\lift_{\phase},V}\colon(V\oplus V^*)\yon^{V\oplus V^*}\to V\yon^{V^*}$ from  \eqref{eqn.one_form_lift_update} sends $(x,\xi)\mapsto x$ on positions, and on directions is
 \begin{equation}\label{eqn.phase_lift_update}
 \absval{T^*V}\times V^*\to\absval{T^*V},\qquad
 ((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,\xi-\xi').
 \end{equation}
-Indeed, for the position component, $\thetaV{T^*V}$ is the identity from \eqref{eqn.directions_sharp} and $\lambda_V$ acts as $\cotof{\pi_V}$ from \eqref{eqn.phase_lift_decomp}. For the backward direction formula at $(x,\xi)$, $\lambda_V$ sends $\xi'\in V^*$ to $(\xi',\sharpR_x(\xi))\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ --- cotangent pullback along $\pi_V$ summed with the kinetics $\beta_V(x,\xi)$ \eqref{eqn.kinetic_one_form} via $\cotof{\Delta_{T^*V}}$. Then $\thetaV{T^*V}$ adds the symplectic $\sharpS_{T^*V}(\xi',\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi')$ from \eqref{eqn.canonical_sharp} to $(x,\xi)$, giving $(x+\sharpR_x(\xi),\,\xi-\xi')$ as displayed.
+Its position component $x\mapsto x+\sharpR_x(\xi)$ is $\exp_V$ \eqref{eqn.flow_cot}.
 
-\paragraph{Dissipative variant.}
-For $\nu\in[0,1]$, define the \emph{dissipation 1-form} $\gamma^\nu_V\colon\cotof{T^*V}\to\yon$ by
-\begin{equation}\label{eqn.dissipation_one_form}
-\gamma^\nu_V(x,\xi)\coloneqq\bigl((1-\nu)\xi,\,0\bigr)\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V).
+Recall the dissipation 1-form $\omega^\nu$ from \cref{ex.dissipation_one_form}; since both $\beta$ and $\omega^\nu$ are monoidal 1-forms, so is $\beta+\omega^\nu$. The \emph{dissipative phase lift} is
+\begin{equation}\label{eqn.diss_phase_lift_def}
+\lift^\nu_{\phase}\coloneqq\mathrm{Lift}(\beta+\omega^\nu)=(T^*,\,\ell(\beta+\omega^\nu)).
 \end{equation}
-Using the $\otimes$-comultiplication on $\cot$ from \cref{lem.cot_comonoid}, define the \emph{dissipative phase lift map} $\lambda^\nu_V$ as the composite
-\begin{equation}\label{eqn.diss_phase_lift_decomp}
-\lambda^\nu_V\;\colon\;\cotof{T^*V}\To{\cotof{\Delta_{T^*V}}}\cotof{T^*V}\otimes\cotof{T^*V}\To{\lambda_V\,\otimes\,\gamma^\nu_V}\cotof{V}\otimes\yon\To{\cong}\cotof{V}.
-\end{equation}
-
-\begin{lemma}[Dissipative phase lift]\label{lem.diss_phase_lift}
-For each $\nu\in[0,1]$, the pair $\lift^\nu_{\phase}\coloneqq(T^*,\,\lambda^\nu)$ is a cotangent lift. At $\nu=1$ it recovers $\lift_{\phase}$. The update map \eqref{eqn.update_map} sends $(x,\xi)\mapsto x$ on positions, and on directions is given by
+At $\nu=0$ it recovers $\lift_{\phase}$. Since
+\[
+(\beta+\omega^\nu)_V(x,\xi)=\bigl(\nu\xi,\,\sharpR_x(\xi)\bigr),
+\]
+\eqref{eqn.one_form_lift_update} gives the update map
 \begin{equation}\label{eqn.diss_phase_lift_update}
-((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,\nu\xi-\xi').
+((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,(1-\nu)\xi-\xi').
 \end{equation}
-\end{lemma}
-
-\begin{proof}
-The dissipation 1-form $\gamma^\nu$ is a monoidal 1-form on $T^*$ (\cref{def.monoidal_one_form}) by linearity and decomposition of scalar multiplication over $\oplus$; hence $\beta+\gamma^\nu$ is a monoidal 1-form, and by coassociativity of $\cotof{\Delta}$ the displayed composite equals $\lambda^{\beta+\gamma^\nu}$ from \cref{prop.one_form_lift}, so $(T^*,\lambda^\nu)$ is a cotangent lift. For the update rule, fiberwise addition (\cref{lem.cot_comonoid}) combines the backward contribution $(\xi',\sharpR_x(\xi))$ from $\lambda_V$ \eqref{eqn.phase_lift_decomp} with $((1-\nu)\xi,0)$ from $\gamma^\nu_V$, yielding $(\xi'+(1-\nu)\xi,\,\sharpR_x(\xi))$. Then $\thetaV{T^*V}$ \eqref{eqn.update_map} adds $\sharpS_{T^*V}(\xi'+(1-\nu)\xi,\,\sharpR_x(\xi))=(\sharpR_x(\xi),\,-\xi'-(1-\nu)\xi)$ by \eqref{eqn.canonical_sharp}, producing $(x+\sharpR_x(\xi),\,\nu\xi-\xi')$.
-\end{proof}
 
 \begin{conjecture}[Heavy-ball method]\label{conj.heavy_ball}
 For a potential $U\colon V\to\rr$ and constant sharp $\sharpR_0=\eta_{\mathrm{LR}}\sharpEuc{}$, substituting $\xi'=dU|_x$ in \eqref{eqn.diss_phase_lift_update} gives
 \[
-(x,\xi)\longmapsto\bigl(x+\eta_{\mathrm{LR}}\sharpEuc{}(\xi),\;\nu\xi-dU|_x\bigr),
+(x,\xi)\longmapsto\bigl(x+\eta_{\mathrm{LR}}\sharpEuc{}(\xi),\;(1-\nu)\xi-dU|_x\bigr),
 \]
-which recovers the heavy-ball method with learning rate $\eta_{\mathrm{LR}}$ and decay $\nu$.
+which recovers the heavy-ball method with learning rate $\eta_{\mathrm{LR}}$ and friction $\nu$.
 \end{conjecture}
 
 %--------------------------------------------------------------------
@@ -2595,7 +2633,7 @@ Define $\Phi_{\lift}$ to be the composite of the normal lax monoidal functors be
 For the second statement, \cref{prop.lift_to_org} gives a monoidal pseudonatural transformation $\PsiLift{\alpha}\colon\PsiLift{\lift}\Rightarrow\PsiLift{\lift'}$; whiskering with $\Phi'$ yields the desired $\Phi_\alpha\coloneqq\PsiLift{\alpha}*\Phi'\colon\Phi_{\lift}\Rightarrow\Phi_{\lift'}$.\qedhere
 \end{proof}
 
-Let $\lift_{\conf}$ and $\lift_{\phase}$ be the configuration and phase lifts of \cref{def.cotangent_lift,lem.phase_lift}. Our main two functors of interest are:
+Let $\lift_{\conf}$ be the configuration lift of \cref{def.cotangent_lift}, and let $\lift_{\phase}$ be the phase lift \eqref{eqn.phase_lift_def}. Our main two functors of interest are:
 \begin{equation}\label{eqn.our_phis}
 \defineTerm{Phiconf}\coloneqq\Phi_{\lift_{\conf}}
 \qqand
@@ -2809,12 +2847,12 @@ Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) 
 
 We remind the reader of \cref{warn.prime}: primes (e.g.\ $\xi', x'$) never denote derivatives in this paper.
 
-Recall from \cref{thm.functor} that $\Phiphase=\PsiLift{\lift_{\phase}}\circ\Phi'$. The functor $\PsiLift{\lift_{\phase}}$ replaces a $\cotof{V}$-parameter via the update map $\upd_{\lift_{\phase},V}=\lambda_V\circ\thetaV{T^*V}$ \eqref{eqn.phase_lift_def} on state set $S\coloneqq\absval{T^*V}$:
+Recall from \cref{thm.functor} that $\Phiphase=\PsiLift{\lift_{\phase}}\circ\Phi'$. The functor $\PsiLift{\lift_{\phase}}$ replaces a $\cotof{V}$-parameter via the phase-lift update map \eqref{eqn.phase_lift_update} on state set $S\coloneqq\absval{T^*V}$:
 \[
-S\yon^S\To{\thetaV{T^*V}}\cotof{T^*V}\To{\lambda_V}\cotof{V}.
+S\yon^S\To{\thetaV{T^*V}}\cotof{T^*V}\To{\ell(\beta)_V}\cotof{V}.
 \]
 A state consists of a position and a momentum $(x,\xi)\in T^*V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $(x+\sharpR_x(\xi),\,\xi-\xi')$
- by \eqref{eqn.phase_lift_update}. The readout and backward pass of the coalgebra $\Phiphase(V,\sharpR_V,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $x$, and the phase lift maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_lift_decomp}. What changes is the state space and the state update; we unpack it all below.
+ by \eqref{eqn.phase_lift_update}. The readout and backward pass of the coalgebra $\Phiphase(V,\sharpR_V,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $x$, and the phase lift maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_lift_update}. What changes is the state space and the state update; we unpack it all below.
 
 \paragraph{The action of $\Phiphase$ on objects.}
 The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case.
@@ -2838,13 +2876,13 @@ We now unpack the coalgebra function itself,
 S\To{\Phiphase(V,\sharpR_V,f)}
 \left[\Phiphase\lensob M,\Phiphase\lensob N\right]\tri S.
 \]
-Given a state $s\coloneqq(x,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(V,\sharpR_V,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_V,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $x$ alone, and the phase lift maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_lift_decomp}. The only difference is in the state update: starting from $s=(x,\xi)$, the state is updated to
+Given a state $s\coloneqq(x,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(V,\sharpR_V,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_V,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $x$ alone, and the phase lift maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_lift_update}. The only difference is in the state update: starting from $s=(x,\xi)$, the state is updated to
 \begin{equation}\label{eqn.state_update}
 s+\sharpS_S(\xi_V,\sharpR_x(\xi))=\bigl(x+\sharpR_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
 We will now break down \cref{eqn.state_update}, which is the phase lift \eqref{eqn.phase_lift_update} with the substitution $\xi'=\xi_V$.
 
-Its left-hand side records where the three pieces of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharpR_x(\xi))\in T^*_sS$ comes from the phase lift \eqref{eqn.phase_lift_decomp} at $(x,\xi)$. 
+Its left-hand side records where the three pieces of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*V$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*V$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_V$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_V,\sharpR_x(\xi))\in T^*_sS$ comes from the kinetic 1-form \eqref{eqn.kinetic_one_form} at $(x,\xi)$.
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_V,\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi_V)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharpR_x(\xi),\,\xi-\xi_V)$.
 
@@ -2931,31 +2969,31 @@ In this concluding chapter we illustrate the two dynamics functors on four concr
 
 A \emph{scalar} in a symmetric monoidal category is an endomorphism of the monoidal unit $I$; monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\potlens$ representing $\srw$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(V,\sharpR_V)$ and a potential $U\colon V\to\rr$. Newton's method for finding critical points of a potential is such a scalar. Under $\Phiconf$, it determines a scalar in $\org$, i.e.\ a discrete dynamical system $V\to[\yon,\yon]\tri V=V$. 
 
-Let $\ell\colon V\to\rr$ be a smooth map on a finite-dimensional real vector space $V$. Its derivative $d\ell\colon V\to V^*$ is a smooth map sending $x\in V$ to the gradient covector $d\ell|_x\in V^*$, and the derivative of $d\ell$ at $x$ is itself a linear map
+Let $U\colon V\to\rr$ be a smooth map on a finite-dimensional real vector space $V$. Its derivative $dU\colon V\to V^*$ is a smooth map sending $x\in V$ to the gradient covector $dU|_x\in V^*$, and the derivative of $dU$ at $x$ is itself a linear map
 \begin{equation*}
-T_x(d\ell)\colon V\to V^*,
+T_x(dU)\colon V\to V^*,
 \end{equation*}
-called the \emph{Hessian} of $\ell$ at $x$. In a basis $e_1,\ldots,e_n$ of $V$, the linear map $T_x(d\ell)$ is given by the matrix of second partial derivatives
+called the \emph{Hessian} of $U$ at $x$. In a basis $e_1,\ldots,e_n$ of $V$, the linear map $T_x(dU)$ is given by the matrix of second partial derivatives
 \[
-\bigl(T_x(d\ell)\bigr)_{ij}=\partial_i\partial_j\ell(x),
+\bigl(T_x(dU)\bigr)_{ij}=\partial_i\partial_j U(x),
 \]
-which is symmetric by equality of mixed partials. Newton's method requires this matrix to have full rank at every $x\in V$, so that $T_x(d\ell)$ is an isomorphism. This gives a nondegenerate reactive vector space (\cref{def.rvect}): put
+which is symmetric by equality of mixed partials. Newton's method requires this matrix to have full rank at every $x\in V$, so that $T_x(dU)$ is an isomorphism. This gives a nondegenerate reactive vector space (\cref{def.rvect}): put
 \[
-\sharpR_x\coloneqq-\bigl(T_x(d\ell)\bigr)^{-1}\colon V^*\To{\cong}V,
+\sharpR_x\coloneqq-\bigl(T_x(dU)\bigr)^{-1}\colon V^*\To{\cong}V,
 \]
 so $(V,\sharpR_V)\in\rvect$.
 
 So we now have a scalar in $\srw$
 \[
-\bigl((V,\sharpR_V),\ \outp f=\bang,\ \inpt f=\bang,\ U=\ell\bigr)\colon I\to I
+\bigl((V,\sharpR_V),\ \outp f=\bang,\ \inpt f=\bang,\ U\bigr)\colon I\to I
 \]
-with potential $\ell$.
+with potential $U$.
 
-Applying $\Phiconf$ to $(V,\sharpR_V,\bang,\bang,\ell)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU=d\ell|_x$, and the state update \eqref{eqn.state_update_gradient} reads
+Applying $\Phiconf$ to $(V,\sharpR_V,\bang,\bang,U)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU|_x$, and the state update \eqref{eqn.state_update_gradient} reads
 \[
-x\longmapsto x+\sharpR_x(d\ell|_x)=x-\bigl(T_x(d\ell)\bigr)^{-1}(d\ell|_x),
+x\longmapsto x+\sharpR_x(dU|_x)=x-\bigl(T_x(dU)\bigr)^{-1}(dU|_x),
 \]
-one step of \emph{Newton's method} for finding a critical point of $\ell$. The reactive structure $\sharpR_x=-\bigl(T_x(d\ell)\bigr)^{-1}$ locally approximates $\ell$ by a quadratic and jumps to that quadratic's critical point; for an exactly quadratic $\ell$, one step suffices to reach that critical point, which could be a maximum, minimum, or saddle. By contrast, gradient descent uses $\sharpR=-\epsilon\,\id$ and always moves downhill, so it can only find minima. Whether or not Newton's method converges to a critical point is a separate question.
+one step of \emph{Newton's method} for finding a critical point of $U$. The reactive structure $\sharpR_x=-\bigl(T_x(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic and jumps to that quadratic's critical point; for an exactly quadratic $U$, one step suffices to reach that critical point, which could be a maximum, minimum, or saddle. By contrast, gradient descent uses $\sharpR=-\epsilon\,\id$ and always moves downhill, so it can only find minima. Whether or not Newton's method converges to a critical point is a separate question.
 
 %--------------------------------------------------------------------
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
@@ -3024,28 +3062,28 @@ Altogether, suppressing the unique $\rr^0$-components, the coalgebra is
 where $(\xi_V,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
 
 \paragraph{Losses and backpropagation.}
-The zero-potential condition does not mean there is no learning signal; it means the learning signal is supplied as an external cotangent direction. If $\xi=d\ell|_{F(x,z)}$ for a loss $\ell\colon\rr^n\to\rr$, then by the chain rule
+The zero-potential condition does not mean there is no learning signal; it means the learning signal is supplied as an external cotangent direction. If $\xi=dU|_{F(x,z)}$ for a loss $U\colon\rr^n\to\rr$, then by the chain rule
 \[
-d(\ell\circ F)|_{(x,z)}=(T_{(x,z)}F)^\top d\ell|_{F(x,z)}=(\xi_V,\xi_M).
+d(U\circ F)|_{(x,z)}=(T_{(x,z)}F)^\top dU|_{F(x,z)}=(\xi_V,\xi_M).
 \]
-Thus $\xi_V=d_x(\ell(F(\blank,z)))$ is the parameter-gradient covector, while $\xi_M=d_z(\ell(F(x,\blank)))$ is the covector propagated backward to the previous interface, if any. For a composite network, this repeated production of the covector $\xi_M$ is the usual backpropagated gradient signal. On Euclidean parameter spaces, for the constant sharp \eqref{eqn.learning_sharp}, \eqref{eqn.dl_gradient_update} is vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$. This presupposes a single fixed loss $\ell$ applied at every step; in actual training, $\ell$ varies per datum (typically through a label), and the source of $z$ varies too. We package both as a single coalgebra next.
+Thus $\xi_V=d_x(U(F(\blank,z)))$ is the parameter-gradient covector, while $\xi_M=d_z(U(F(x,\blank)))$ is the covector propagated backward to the previous interface, if any. For a composite network, this repeated production of the covector $\xi_M$ is the usual backpropagated gradient signal. On Euclidean parameter spaces, for the constant sharp \eqref{eqn.learning_sharp}, \eqref{eqn.dl_gradient_update} is vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$. This presupposes a single fixed loss $U$ applied at every step; in actual training, $U$ varies per datum (typically through a label), and the source of $z$ varies too. We package both as a single coalgebra next.
 
 \paragraph{Training data as an environment.}
-The preceding discussion focuses on $\xi=d\ell|_{F(x,z)}$ for a single fixed loss function $\ell\colon\rr^n\to\rr$ and a single input $z\in\rr^m$. Genuine training involves a stream of such pairs, which we package as an $\org$-map $\delta_{\mathrm{gen}}\colon\yon\to\Phiconf\binom{\rr^n}{\rr^m}$, i.e.\ a coalgebra on
+The preceding discussion focuses on $\xi=dU|_{F(x,z)}$ for a single fixed loss function $U\colon\rr^n\to\rr$ and a single input $z\in\rr^m$. Genuine training involves a stream of such pairs, which we package as an $\org$-map $f_{\mathrm{gen}}\colon\yon\to\Phiconf\binom{\rr^n}{\rr^m}$, i.e.\ a coalgebra on
 \[
 \cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}
 \]
-whose positions are pairs $(z,\omega)\in\rr^m\times\Omega(\rr^n)$: an input point together with a covector field on the output (typically $\omega=d\ell$ for some per-datum loss $\ell\colon\rr^n\to\rr$). Such a coalgebra is, in general, not just a stream of $(z,\omega)$'s, but can branch after each step based on a pair $(\xi_M,y)\in T^*_z\rr^m\times\rr^n$. These are exactly what the network gives back when we wire it in, below: $y=F(x,z)$ is the predicted output and $\xi_M$ is the backpropagated input-gradient. So the training-data block emits $(z,\omega)$ and may transition based on what the network replies, namely the prediction $y$ and the backpropagated input-gradient $\xi_M$. When the transition of the data generator depends on these replies, the data presented to the model-in-training is adapted to that model's behavior; when it ignores them, the data presentation is simply an externally specified supervised stream.
+whose positions are pairs $(z,\omega)\in\rr^m\times\Omega(\rr^n)$: an input point together with a covector field on the output (typically $\omega=dU$ for some per-datum loss $U\colon\rr^n\to\rr$). Such a coalgebra is, in general, not just a stream of $(z,\omega)$'s, but can branch after each step based on a pair $(\xi_M,y)\in T^*_z\rr^m\times\rr^n$. These are exactly what the network gives back when we wire it in, below: $y=F(x,z)$ is the predicted output and $\xi_M$ is the backpropagated input-gradient. So the training-data block emits $(z,\omega)$ and may transition based on what the network replies, namely the prediction $y$ and the backpropagated input-gradient $\xi_M$. When the transition of the data generator depends on these replies, the data presented to the model-in-training is adapted to that model's behavior; when it ignores them, the data presentation is simply an externally specified supervised stream.
 
-We can combine $\delta_{\mathrm{gen}}$ with the network $\lrn(F)\colon\cotof{\rr^m}\to\cotof{\rr^n}$ from \eqref{eqn.lrn} and \eqref{eqn.model_map} as follows. By closedness of $\org$ (\cref{rmk.org_closed}), $\lrn(F)$ corresponds equivalently to a map
+We can combine $f_{\mathrm{gen}}$ with the network $\lrn(F)\colon\cotof{\rr^m}\to\cotof{\rr^n}$ from \eqref{eqn.lrn} and \eqref{eqn.model_map} as follows. By closedness of $\org$ (\cref{rmk.org_closed}), $\lrn(F)$ corresponds equivalently to a map
 \[
 \overline{\lrn(F)}\colon\yon\to[\cotof{\rr^m},\cotof{\rr^n}]
 \]
-in $\org$. Tensoring with $\delta_{\mathrm{gen}}$ and applying the two evaluation pairings of $\poly$ closes the system:
+in $\org$. Tensoring with $f_{\mathrm{gen}}$ and applying the two evaluation pairings of $\poly$ closes the system:
 \[
-\yon\To{\delta_{\mathrm{gen}}\otimes\overline{\lrn(F)}}\bigl(\cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}\bigr)\otimes[\cotof{\rr^m},\cotof{\rr^n}]\To{\ev_1}\cotof{\rr^n}\otimes\ihom{\cotof{\rr^n},\yon}\To{\ev_2}\yon.
+\yon\To{f_{\mathrm{gen}}\otimes\overline{\lrn(F)}}\bigl(\cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}\bigr)\otimes[\cotof{\rr^m},\cotof{\rr^n}]\To{\ev_1}\cotof{\rr^n}\otimes\ihom{\cotof{\rr^n},\yon}\To{\ev_2}\yon.
 \]
-The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$, where $V_{\mathrm{gen}}$ is the carrier of $\delta_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $V\times V_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in V$ and dataset state $s\in V_{\mathrm{gen}}$: $\delta_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cotof{\rr^m}$ (carrying $z$) with $[\cotof{\rr^m},\cotof{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cotof{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cotof{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x+\sharpR_x(\xi_V)$, and advance $\delta_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
+The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$, where $V_{\mathrm{gen}}$ is the carrier of $f_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $V\times V_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in V$ and dataset state $s\in V_{\mathrm{gen}}$: $f_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cotof{\rr^m}$ (carrying $z$) with $[\cotof{\rr^m},\cotof{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cotof{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cotof{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x+\sharpR_x(\xi_V)$, and advance $f_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
 
 
 
