@@ -723,7 +723,7 @@ We will not use $f'$ notation to mean derivatives; ``priming'' a symbol (such as
 \end{warning}
 
 %--------------------------------------------------------------------
-\section{Polynomial functors, coalgebras, and \texorpdfstring{$\org$}{Org}}\label{sec.poly_dynamic_bg}
+\section{Polynomial functors, coalgebras, and $\mathbb{O}\Cat{rg}$}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
 This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the substitution product and the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), the monoidal bicategory $\org$ of polynomial coalgebras (\cref{sec.org}), and the encoding of cotangent bundles as polynomials (\cref{sec.cot}) that bridges this setup to the differential geometry of \cref{sec.manifolds_notation}.
@@ -877,6 +877,8 @@ We refer to $S$ as the \emph{state set}; a morphism $(S,f)\to(S',f')$ in $\ihom{
 \begin{equation*}
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
 \end{equation*}
+
+In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,q}\cong q$, a morphism $\yon\to q$ in $\org$ is precisely a $q$-coalgebra.
 
 We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
 \[
@@ -2446,14 +2448,14 @@ Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a stro
 	\arrow[from=diag-|top, to=top, Rightarrow, "\upd"]
 \end{tikzcd}
 \]
-where $\Fun S\colon\cat A\to\smsetiso$, the \emph{state space}, is a strong symmetric monoidal functor and $\defineTerm{upd}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{update}, is a monoidal natural transformation.
+where $\Fun S\colon\cat A\to\smsetiso$, the \emph{state space}, is a strong symmetric monoidal functor and $\defineTerm{upd}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{update map}, is a monoidal natural transformation.
 
 A \emph{morphism} $\beta\colon\intg\to\intg'$ of $p$-integrators, where $\intg'=(\Fun{S'},\upd')$, is a monoidal natural transformation $\beta\colon\Fun S\Rightarrow\Fun S'$ such that $\upd'\circ\Store(\beta)=\upd$. We write $\defineTerm{Intgr}_p$ for the category of $p$-integrators.
 \end{definition}
 
 By \cref{prop.coalg_as_poly_map}, the component $\upd_a\colon\Store(\Fun S(a))\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S(a)$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
 
-We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration, phase, and dissipative---are numerical integrators of explicit-Euler type, namely Euler on configuration space, its phase-space analogue, and the damped variant. They differ in both pieces of data: the state space $\Fun S$ (configuration versus phase space) and the update $\upd$ (for the phase variants, the choice of driving monoidal 1-form).
+We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration, phase, and dissipative---are numerical integrators of explicit-Euler type, namely Euler on configuration space, a phase-space analogue, and a dissipative variant. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$ (e.g.\ amount of friction).
 
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. There is a functor
