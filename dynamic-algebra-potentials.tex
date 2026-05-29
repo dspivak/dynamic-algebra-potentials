@@ -363,7 +363,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\finset}{\Cat{Fin}}
 \newcommand{\smset}{\Cat{Set}}
 \newcommand{\smsetiso}{\smset_\cong}
-\newcommand{\smcat}{\Cat{Cat}}
+\newcommand{\smcat}{\mathbb{C}\Cat{at}}
 \newcommand{\bbsmc}{\mathbb{S}\Cat{MC}_{\mathrm{lax,nml}}}
 \newcommand{\vect}{\Cat{Vect}}
 
@@ -465,7 +465,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \font\MnSyCfont=MnSymbolC10
 \newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
-\newcommand{\blank}{\notsafe{\mathord{\hspace{1pt}\smallsquare\hspace{1pt}}}}
+\newcommand{\blank}{\notsafe{\mathord{\hspace{.6pt}\smallsquare\hspace{1.1pt}}}}
 
 \newcommand{\thanksAFOSR}[1]{This material is based upon work supported by the Air Force Office of Scientific Research under award number #1}
 
@@ -2466,7 +2466,7 @@ and every morphism $\beta\colon\intg\to\intg'$ induces a monoidal pseudonatural 
 \end{proposition}
 
 \begin{proof}
-Write $\Fun S$ for the state space of $\intg$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a functor
+Write $\Fun S$ for the state space of $\intg$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
 \[
 D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\org_\cong.
 \]
@@ -2474,7 +2474,7 @@ By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Stor
 \[
 \Para_{\cat A}^{\upd}\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
 \]
-Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd}$; it is normal lax monoidal because $\Para_{\cat A}^{\upd}$ is strong and $D_{\Fun S}$ is normal lax monoidal by \cref{lem.poly_to_org}.
+Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd}$; it is normal lax monoidal because $\Para_{\cat A}^{\upd}$ is strong.
 
 For a morphism $\beta\colon\intg\to\intg'$, with state spaces $\Fun S$ and $\Fun S'$, applying \cref{prop.para_square} with two identity functors and the 2-cell $\Store(\beta)\colon\Store\circ\Fun S\Rightarrow\Store\circ\Fun S'$ yields a functor
 \[
@@ -2948,13 +2948,12 @@ For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\o
 \[
 \org^{(K)}(p,q)\coloneqq\ihom{p,q}^{\tri K}\coalg,
 \]
-where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power. The normal duoidal interchange \eqref{eqn.duoidal} gives composition in $\org^{(K)}$,
-\[
-\ihom{p,q}^{\tri K}\otimes\ihom{q,r}^{\tri K}\too\bigl(\ihom{p,q}\otimes\ihom{q,r}\bigr)^{\tri K}\too\ihom{p,r}^{\tri K},
-\]
-and also equips $\org^{(K)}$ with a $\otimes$-monoidal structure.
+where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power.%
+\footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\org^C$ with objects given by $\ob\cat{P}$ and $\org^C(p,p')\coloneqq C([p,p'])$. Then $\org$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\org^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\tri K}}\poly\To{\blank\coalg}\smcat$.
+}
+For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q\tri S$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q[j_2]$, updates the state. 
 
-For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q\tri S$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q[j_2]$, updates the state. We conjecture that this is exactly the kind of process needed for multi-step integrators, though we do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+We conjecture that by using a modified definition of integrator (\cref{def.integrator}) with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\tri K}$, one again obtains an operad functor $\srwd\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 

@@ -136,6 +136,20 @@ Search hints: `"1-form"`, `"one[- ]form"`, `\\Rightarrow\\yon`,
 Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 `\\to\\ihom`, every `\\colon S\\to` in the file.
 
+### Integrators & dynamics functors
+
+| Sort | Symbol(s) | Notes |
+|---|---|---|
+| Parameter interface | `p` | strong monoidal functor `\cat A\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat A`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* in this section are `q` |
+| State space | `\Fun S` | strong monoidal functor `\cat A\to\smsetiso`; `\Fun S(a)` is the state set |
+| Integrator | `\intg` (renders `\mathfrak{i}`) | the pair `\intg=(\Fun S,\upd)` (`def.integrator`) — the object the construction runs on. Instances: `\intg_\theta` (configuration, `\Fun S=\absval\blank`), `\intg_\beta` (phase), `\intg_\omega` (from 1-form `\omega`), `\intg_{\beta+c\zeta}` (dissipative) |
+| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\theta` (configuration), `\upd_\beta` (phase), `\upd_\omega`, `\upd_{\beta+c\zeta}`. The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
+| Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
+| Dynamics functor | `\Phi_\intg`, `\Phi'` | `\Phi_\intg\colon\srw\to\org`; `\Phi'` the syntax→`\para\cot\poly` factor. Named: `\Phiconf=\Phi_{\intg_\theta}`, `\Phiphase=\Phi_{\intg_\beta}` |
+| Category of integrators | `\Intgr_p` | |
+
+Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\upd`, `\\Fun S`, `\\Psisem`, `\\Phi_`.
+
 ### Scalars and parameters
 
 | Sort | Symbol(s) | Notes |
@@ -172,7 +186,7 @@ Search hints: `"friction"`, `"decay"`, `"damping"`, `"dissipat"`,
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Generic polynomial | `p`, `q` | |
+| Generic polynomial | `p`, `q` | the parameter-interface functor is *also* `p` (a poly-valued functor `\cat A\to\poly`, `p_a:\poly`); see §"Integrators & dynamics functors". Generic polynomial *objects* in the integrator section are `q`, to avoid clash |
 | Position set | `p(1)` | |
 | Directions at `i` | `p[i]` | |
 | Cotangent polynomial | `\cotof{M}` | from `\cot\colon\mfd\to\poly` |
