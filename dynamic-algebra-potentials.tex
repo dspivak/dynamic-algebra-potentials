@@ -1,13 +1,14 @@
 \documentclass[11pt, oneside, article]{memoir}
 
 
+\linespread{1.15}\selectfont % set leading before the layout, so it is computed on the real \baselineskip
 \settrims{0pt}{0pt} % page and stock same size
-\settypeblocksize{*}{35.9pc}{*} % {height}{width}{ratio}
+\settypeblocksize{*}{35.3pc}{*} % {height}{width}{ratio}
 \setlrmargins{*}{*}{1} % {spine}{edge}{ratio}
-\setulmarginsandblock{.98in}{.98in}{*} % height of typeblock computed
-\setheadfoot{\onelineskip}{2\onelineskip} % {headheight}{footskip}
+\setulmarginsandblock{0.85in}{0.85in}{*} % top fixed; [lines] grows the bottom margin
+\setheadfoot{\onelineskip}{2.66\onelineskip} % {headheight}{footskip}
 \setheaderspaces{*}{1.5\onelineskip}{*} % {headdrop}{headsep}{ratio}
-\checkandfixthelayout
+\checkandfixthelayout[lines] % round textheight to a whole number of lines
 
 % Running headers: chapter on left, section on right
 \makepagestyle{dap}
@@ -474,7 +475,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 %----Changeable document parameters----%
 
-\linespread{1.15}
+% \linespread is set at the top, before \checkandfixthelayout, so it also drives the page layout
 %\allowdisplaybreaks
 \setsecnumdepth{subsection}
 \settocdepth{section}
@@ -656,7 +657,7 @@ Thanks to Lukas Barth, Scott Viteri, David Jaz Myers, and Jake Araujo-Simon for 
 \chapter{Background}\label{ch.background}
 %====================================================================
 
-This chapter collects the background required for this paper. We first fix the differential-geometric notation. Then we recall polynomial functors and polynomial coalgebras. Finally we review wiring-diagram operads, the Para construction, and the monoidal bicategory $\org$, which together provide the compositional setting used in the rest of the paper.
+This chapter collects the background required for this paper. We first fix our typographic conventions and the differential-geometric notation. Then we recall polynomial functors and polynomial coalgebras. Finally we review wiring-diagram operads, the Para construction, and the monoidal bicategory $\org$, which together provide the compositional setting used in the rest of the paper.
 
 %--------------------------------------------------------------------
 \section{Notational conventions}\label{sec.prelim}
@@ -676,7 +677,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \footnote{That is, the functor $\Cat{SMC}_{\tn{lax}}\to\Cat{Opd}$ is fully faithful.}
 
 %--------------------------------------------------------------------
-\section{Smooth manifolds}\label{sec.manifolds_notation}
+\section{Smooth-manifold notation}\label{sec.manifolds_notation}
 %--------------------------------------------------------------------
 
 In this section we fix the differential-geometric notation used throughout the paper.
@@ -725,7 +726,7 @@ We will not use $f'$ notation to mean derivatives; ``priming'' a symbol (such as
 \end{warning}
 
 %--------------------------------------------------------------------
-\section{Polynomial functors, comonads, and coalgebras}\label{sec.poly_dynamic_bg}
+\section{Polynomial functors and coalgebras}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
 This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the substitution product and the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the encoding of cotangent bundles as polynomials (\cref{sec.cot}) that bridges this setup to the differential geometry of \cref{sec.manifolds_notation}.
@@ -970,7 +971,7 @@ It is well known that strong monoidal functors preserve monoids, comonoids, and 
 
 
 %--------------------------------------------------------------------
-\section{Compositional dynamics}\label{sec.dynamic_structures}
+\section{Categorical background for compositional dynamics}\label{sec.dynamic_structures}
 %--------------------------------------------------------------------
 
 This section gathers three pieces of categorical background used in the rest of the paper. Wiring-diagram operads (\cref{sec.wd_operads}) exemplify how operads can be used as a composition syntax for category-like structures; our
@@ -1772,14 +1773,14 @@ H_c\otimes \outp c \otimes \outp d\otimes\inpt e\To{\coev_d}[\inpt d,H_c\otimes 
 \] 
 and $\psi_{g\circ f}$ and this composite are respectively the left-bottom and top-right paths in the following diagram; we suppress~$\otimes$ and write $c$ for~$\inpt{c}$, $d$ for~$\inpt{d}$, and $e$ for~$\inpt{e}$:
 \[
-\begin{tikzcd}[column sep=1.2em, row sep=1.2em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
+\begin{tikzcd}[column sep=1.1em, row sep=1.2em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
 H_c\outp c\outp d e
   \ar[r, "{\coev}"]
   \ar[d, "{\inpt g}"']
-\& {[d,H_c\outp c d]}\outp d e
+\&[5pt] {[d,H_c\outp c d]}\outp d e
   \ar[r, "{\inpt f}"]
   \ar[d, "{\inpt g}"']
-\& {[d,H_c\Fun T(c)]}\outp d e
+\&[-5pt] {[d,H_c\Fun T(c)]}\outp d e
   \ar[r, "{\sigma}"]
   \ar[d, "{\inpt g}"']
 \& {[d,\Fun T(H_c c)]}\outp d e
@@ -1788,7 +1789,7 @@ H_c\outp c\outp d e
 \& {[d,\Fun Tz]}\outp d e
   \ar[r, "{\alpha}"]
   \ar[d, "{\inpt g}"']
-\& H_d\outp d e
+\&[-5pt] H_d\outp d e
   \ar[d, "{\inpt g}"]
 \\
 H_c\outp c\Fun T(d)
@@ -1914,7 +1915,7 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 \section{Reactive vector spaces and the cotangent endofunctor}\label{sec.rvect}
 %--------------------------------------------------------------------
 
-We will eventually define $\srw$ as the operad underlying $\para{\rvect}{\plmfd}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$.
+We will eventually define $\srw$ as the operad underlying $\para{\rvect}{\plmfd}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$ and introduces \emph{monoidal 1-forms} on $T^*$, including the kinetic and dissipation 1-forms used to build the phase lift.
 
 \begin{notation}\label{not.rvect_polynomials}
 Going forward we lighten notation in two ways. First, we will denote to the underlying set $\absval V:\smset$ of a finite-dimensional vector space $V:\vect$ simply by $V$; in particular $\Store(V)=V\yon^V$. Second, we will denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
@@ -2035,7 +2036,7 @@ The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, wh
 The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
 \end{remark}
 
-\subsection{Cotangent endofunctor}\label{sec.TT}
+\subsection{The cotangent endofunctor and monoidal 1-forms}\label{sec.TT}
 
 For a reactive vector space $(V,\sharpR_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
@@ -2208,7 +2209,7 @@ The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong
 Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal by \cref{prop.cot_monoidal}) and the monad morphism $\cotof{\rr\times\blank}\Rightarrow\cotof{\rr}\otimes\cotof{\blank}$ supplied by \cref{lemma.monoid_to_monad}.
 \end{proof}
 
-\subsection{The potential monoid \texorpdfstring{$\potd$}{d}}\label{sec.potential_algebra}
+\subsection{The potential algebra \texorpdfstring{$\potd$}{d}}\label{sec.potential_algebra}
 
 In \cref{lem.Theta_poly_potential} we will apply the Moore internalization from \cref{thm.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cotof{\rr}\to\yon$ is extra data.
 
@@ -2555,7 +2556,7 @@ The update map $\upd_{\lift_{\phase},V}\colon(V\oplus V^*)\yon^{V\oplus V^*}\to 
 Its position component $x\mapsto x+\sharpR_x(\xi)$ is $\exp_V$ \eqref{eqn.flow_cot}.
 
 %--------------------------------------------------------------------
-\section{The dynamics functor}\label{sec.dynamics_functor}
+\section{The dynamics functors}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
 
 The smooth rewiring diagrams of \cref{sec.forming_potlens} become smooth rewiring dynamics by first internalizing them as parameterized polynomial maps and then applying a cotangent lift. We begin with a preliminary construction of a functor called $\Phi'$ which will be folded into our main functor of interest $\Phi$ in \cref{thm.functor}.
@@ -3449,7 +3450,7 @@ The operad $\srw$ of smooth rewiring diagrams provides a single compositional sy
 
 Moreover, the two lifts interact with the neural-network example in a suggestive way. Applying $\Phiconf$ to the parameterized map $F\colon V\times\rr^m\to\rr^n$ of \cref{sec.dl_warmup} recovers gradient descent; we expect that applying $\Phiphase$ to the same $\srw$-morphism, with a constant inverse-mass sharp $\sharpR_x(p)=\frac{1}{m}p$, yields momentum-based weight dynamics---the undamped heavy-ball method---placing standard and momentum-based training as two categorical lifts of the same smooth rewiring syntax, just as the wave and heat equations arise as two lifts of the same graph wiring (\cref{rmk.graph_heat}).
 
-Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond flat parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-step (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, substituting the stochastic polynomial $\mathrm{rand}$ for $\yon$ in the potential monoid (\cref{rmk.alpha_general}) would give stochastic update rules, opening a path toward compositional stochastic dynamics.
+Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond flat parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-step (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Substituting the stochastic polynomial $\mathrm{rand}$ for $\yon$ in the potential monoid (\cref{rmk.alpha_general}) would give stochastic update rules, opening a path toward compositional stochastic dynamics. Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\srw^{\tn{lin}}\ss\srw$ by restricting to constant sharps, linear lens maps, and quadratic potentials. 
 
 \printbibliography
 
