@@ -464,8 +464,14 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\sharpS}{\termref{sharp_symp}{\termraw{sharpS}}}
 
 \font\MnSyCfont=MnSymbolC10
-\newcommand{\smallsquare}{\mbox{\MnSyCfont\symbol{"68}}}
-\newcommand{\blank}{\notsafe{\mathord{\hspace{.6pt}\smallsquare\hspace{1.1pt}}}}
+\font\MnSyCfonts=MnSymbolC7
+\font\MnSyCfontss=MnSymbolC5
+\newcommand{\smallsquare}{\mathchoice
+  {\mbox{\MnSyCfont\symbol{"68}}}%
+  {\mbox{\MnSyCfont\symbol{"68}}}%
+  {\mbox{\MnSyCfonts\symbol{"68}}}%
+  {\mbox{\MnSyCfontss\symbol{"68}}}}
+\newcommand{\blank}{\notsafe{\mathord{\mkern1mu\smallsquare\mkern2mu}}}
 
 \newcommand{\thanksAFOSR}[1]{This material is based upon work supported by the Air Force Office of Scientific Research under award number #1}
 
@@ -2434,7 +2440,7 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 
 \subsection{Integrators}\label{sec.integrators}
 
-Looking ahead, the dynamics functor construction (\cref{thm.functor}) will produce, from any $\srwd$-morphism $f$ with parameter $V:\rvect$, a $\cotof{V}$-parameterized polynomial map $\Phi'(f)$. To turn such a map into a coalgebra we must say how a state reads out as a parameter and how an incoming covector updates it; we package this as an \emph{integrator}. The simplest one is already at hand: the natural transformation $\thetaV{V}\colon\Store(\absval{V})\to\cotof{V}$ of \cref{prop.rvect_polynomial} converts the map $\Phi'(f)$ into an $\org$-morphism with state set $\absval{V}$ via \cref{prop.coalg_as_poly_map}. A general integrator allows more memory---such as momentum---in the state update.
+Looking ahead, \cref{lem.potlens_to_para_poly} will assemble our constructions so far into maps of the form $\cotof{V}\otimes p\to q$, or equivalently $\cotof{V}\to[p,q]$. Our goal in this section is to turn them into $[p,q]$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{V}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
 In what follows we write $\cot\colon\rvect\to\poly$ for the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$.
 
@@ -2460,13 +2466,12 @@ We call $\intg$ an \emph{integrator} for what its instances turn out to be. Inde
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. There is a functor
 \[\Psisem{\blank}\colon\Intgr{p}\to\bbsmc(\para{p}{\poly},\org_\cong).\]
-That is, every $p$-integrator $\intg=(\Fun S,\upd)$ induces a normal lax symmetric monoidal functor
-\[\Psisem{\intg}\colon\para{p}{\poly}\to\org_\cong,\]
-and every morphism $\beta\colon\intg\to\intg'$ induces a monoidal pseudonatural transformation $\Psisem{\beta}\colon\Psisem{\intg}\Rightarrow\Psisem{\intg'}$.
 \end{proposition}
 
 \begin{proof}
-Write $\Fun S$ for the state space of $\intg$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
+We need to show that every $p$-integrator $\intg=(\Fun S,\upd)$ induces a normal lax symmetric monoidal functor
+\[\Psisem{\intg}\colon\para{p}{\poly}\to\org_\cong,\]
+and every morphism $\beta\colon\intg\to\intg'$ induces a monoidal pseudonatural transformation $\Psisem{\beta}\colon\Psisem{\intg}\Rightarrow\Psisem{\intg'}$. Write $\Fun S$ for the state space of $\intg$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
 \[
 D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\org_\cong.
 \]
@@ -2496,7 +2501,8 @@ Since $\id_{\cat A}$ is strict monoidal, both $\Para_{\cat A}^{\upd'}$ and $\Par
 We specialize to $\cat A=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $V\cdot q\coloneqq\cotof{V}\otimes q$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\org_\cong.\]
 
-The \emph{configuration integrator} $\intg_\theta\coloneqq(\absval{\blank},\theta)$ has state space $\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{prop.rvect_polynomial},
+The \emph{configuration integrator} $\intg_\theta\coloneqq(\absval{\blank},\theta)$ has state space 
+$\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{prop.rvect_polynomial},
 \begin{equation}\label{eqn.conf_integrator}
 \thetaV{V}\colon\Store(\absval V)\to\cotof V .
 \end{equation}
