@@ -609,9 +609,9 @@ The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci202
 \]
  from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\org$. A first difference is that our semantics $\Phiconf,\Phiphase\colon\srwd\to\org$ is discrete-time, rather than continuous.
 
-However, neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(V,\sharpR_V,w,E)$ where
+However, neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(\rv V,w,E)$ where
 \[
-(V,\sharpR_V):\rvect,\qquad
+\rv V:\rvect,\qquad
 w\colon V\times M\to N,\qquad
 E\colon V\times M\to\rr.
 \]
@@ -2009,7 +2009,11 @@ A finite-dimensional real vector space $V$ equipped with an inner product---a sy
 \begin{equation*}
 \defineTerm{sharpEuc}\colon V^*\To{\cong}V,
 \end{equation*}
-the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon V\to V^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, where ``descent'' corresponds to scaling the sharp by a negative \emph{learning rate}; see \eqref{eqn.learning_sharp}.\qedhere
+the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon V\to V^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, where ``descent'' corresponds to scaling the sharp by a negative \emph{learning rate} $\eta_{\mathrm{LR}}>0$:
+\begin{equation}\label{eqn.learning_sharp}
+\sharpR_x=-\eta_{\mathrm{LR}}\sharpEuc{}.
+\end{equation}
+The minus sign is what makes the dynamics descent rather than ascent.\qedhere
 \end{example}
 
 The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the map%
@@ -2130,7 +2134,7 @@ Under pointwise addition and scalar multiplication, the monoidal 1-forms on $T^*
 \end{proposition}
 
 \begin{proof}
-Each fiber $T^*_{(x,\xi)}(T^*V)\cong V^*\oplus V$ is a real vector space, so given monoidal 1-forms $\omega,\omega'$ and a scalar $c\in\rr$ we may set $(\omega+\omega')_V(x,\xi)\coloneqq\omega_V(x,\xi)+\omega'_V(x,\xi)$ and $(c\,\omega)_V(x,\xi)\coloneqq c\,\omega_V(x,\xi)$, the operations taken in that fiber. It is clearly monoidal, e.g.\
+Each fiber $T^*_{(x,\xi)}(T^*V)\cong V^*\oplus V$ is a real vector space, so given monoidal 1-forms $\omega,\omega'$ and a scalar $c\in\rr$ we may set $(\omega+\omega')_V(x,\xi)\coloneqq\omega_V(x,\xi)+\omega'_V(x,\xi)$ and $(c\,\omega)_V(x,\xi)\coloneqq c\,\omega_V(x,\xi)$, the operations taken in that fiber. These are again smooth, natural in $\rvect$-isomorphisms (which act linearly on each fiber), and monoidal, e.g.\
 \[
 (\omega+\omega')_{V\oplus W}=\omega_{V\oplus W}+\omega'_{V\oplus W}=(\omega_V\oplus\omega_W)+(\omega'_V\oplus\omega'_W)=(\omega+\omega')_V\oplus(\omega+\omega')_W.
 \qedhere\]
@@ -2186,10 +2190,7 @@ Under pointwise addition and scalar multiplication, the monoidal readouts on $T^
 \end{proposition}
 
 \begin{proof}
-Each $V$ is a real vector space, so for readouts $\chi,\chi'$ and a scalar $c\in\rr$ the pointwise maps $(\chi+\chi')_V(x,\xi)\coloneqq\chi_V(x,\xi)+\chi'_V(x,\xi)$ and $(c\,\chi)_V(x,\xi)\coloneqq c\,\chi_V(x,\xi)$ again land in $V$. They are smooth; natural in $\rvect$-isomorphisms because $\rvect$-morphisms $\phi$ are linear, so $\phi\circ(\chi_V+c\chi'_V)=\phi\circ\chi_V+c\phi\circ\chi'_V$; and monoidal because $\oplus$ distributes over these operations, e.g.
-\[
-(\chi+\chi')_{V\oplus W}=(\chi_V\oplus\chi_W)+(\chi'_V\oplus\chi'_W)=(\chi+\chi')_V\oplus(\chi+\chi')_W.
-\qedhere\]
+The pointwise argument of \cref{prop.one_forms_monoid} applies verbatim, with values in $V$ in place of the fiber $V^*\oplus V$.
 \end{proof}
 
 \begin{lemma}\label{lem.readout_examples}
@@ -2558,14 +2559,6 @@ $\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{pr
 \end{equation}
 Its state set is the configuration space $\absval V$, and an incoming covector $\xi\in V^*$ updates the state by $x\mapsto x+\sharpR_x(\xi)$ \eqref{eqn.directions_sharp}.
 
-\begin{remark}[Gradient-based learning]\label{rmk.gradient_learning}
-The dynamics for the configuration integrator recover the gradient-based learning behavior underlying the deep learning dynamic prop of~\cite{shapiro2022dynamic}. Indeed, this behavior arises via a functor $\Phiconf\colon\srwd\to\org$, which we will define in \cref{thm.functor} (and unpack in \cref{sec.configuration_dynamics}); the learning rate is absorbed into the sharp $\sharpR_V$ of the parameter space. For example, on Euclidean parameter spaces, we take
-\begin{equation}\label{eqn.learning_sharp}
-\sharpR_x=-\eta_{\mathrm{LR}}\sharpEuc{},
-\end{equation}
-where $\sharpEuc{}$ is the Euclidean sharp (\cref{ex.euclidean_sharp}) and $\eta_{\mathrm{LR}}>0$ is the learning rate. The minus sign is what makes the dynamics descent rather than ascent.
-\end{remark}
-
 We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$ \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$.
 
 Recall the induced monoidal natural transformations $\omega\colon\cot\circ T^*\Rightarrow\yon$ and $\chi\colon\cot\circ T^*\Rightarrow\cot$ of \cref{lem.one_form_to_poly,lem.readout_to_poly}.
@@ -2755,7 +2748,7 @@ we denote its points by $x\in S=|V|$. The state update below uses the (possibly 
 
 We now unpack the coalgebra function itself,
 \[
-S\To{\Phiconf(V,\sharpR_V,f)}
+S\To{\Phiconf(\rv V,f)}
 \left[\Phiconf\lensob M,\Phiconf\lensob N\right]\tri S.
 \]
 Given a state $x\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point using $\outp{f}$ from \eqref{eqn.para_potential_lens_maps}:
@@ -2773,7 +2766,7 @@ b\coloneqq\bigl(\outp n,\,\omega_N\bigr)\;\in\;\outp N\times\Omega(\inpt N).
 \]
 
 
-Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiconf\lensob N[b]$, the coalgebra function $\Phiconf(V,\sharpR_V,f)$ at $(x,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
+Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiconf\lensob N[b]$, the coalgebra function $\Phiconf(\rv V,f)$ at $(x,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
 \begin{equation}\label{eqn.inptm}
 \inpt m\coloneqq\inpt f(x,\outp m,\inpt n)
 \end{equation}
@@ -2797,7 +2790,7 @@ which is the on-directions component of $\thetaV{\rv V}$ \eqref{eqn.directions_s
 
 All in all, one could tersely denote the coalgebra map as follows:
 \[
-\Phiconf(V,\sharpR_V,f)\colon
+\Phiconf(\rv V,f)\colon
 x\mapsto
 (\outp m,\omega_M)\mapsto
 \Big(
@@ -2887,17 +2880,17 @@ a'\longmapsto\bigl(\alpha(x,b,a'),\,x+u(x,b,a')\bigr)
 
 The functor $\cat S\to\mathbf{COrg}$ is more straightforward: an $\cat S$-morphism is a vector space $V$ together with a lens $(TV\surj V)\otimes p\to p'$, hence a $\mathbf{COrg}$ morphism with state manifold $V$. It is identity-on-objects, hence wide.
 
-For $\cat{R}$ we take the category $\cat R$ from \cref{sec.related_cls}. We define $\cat R\to\cat S$ on objects by $M\mapsto T^*M\surj M$. On morphisms, send $(V,\sharpR_V,w,E)\colon M\to N$ to the $\cat S$-morphism with parameter space $V$, readout $r\coloneqq w$, and for the rest of the data write
+For $\cat{R}$ we take the category $\cat R$ from \cref{sec.related_cls}. We define $\cat R\to\cat S$ on objects by $M\mapsto T^*M\surj M$. On morphisms, send $(\rv V,w,E)\colon M\to N$ to the $\cat S$-morphism with parameter space $V$, readout $r\coloneqq w$, and for the rest of the data write
 \[
 dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
 \]
 and set $\alpha(x,m,\xi_N)\coloneqq\xi_M$ and $u(x,m,\xi_N)\coloneqq\sharpR_x(\xi_V)$. Functoriality follows from the chain rule.
 
-The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\srwd$, the morphism $(V,\sharpR_V,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
+The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\srwd$, the morphism $(\rv V,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
 dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M).
 \]
-Thus \eqref{eqn.state_update_gradient} sends the state $x$ to $x+\sharpR_x(\xi_V)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(V,\sharpR_V,w,E)$ in $\cat S$. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
+Thus \eqref{eqn.state_update_gradient} sends the state $x$ to $x+\sharpR_x(\xi_V)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(\rv V,w,E)$ in $\cat S$. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
 \end{proof}
 
 Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) and \cref{sec.dl_warmup} (gradient descent and backpropagation).
@@ -2913,7 +2906,7 @@ Recall from \cref{thm.functor} that $\Phiphase=\Psisem{\intg_\beta}\circ\Phi'$. 
 S\yon^S\To{\upd_\beta}\cotof{V}.
 \]
 A state consists of a position and a momentum $(x,\xi)\in T^*V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $(x+\sharpR_x(\xi),\,\xi-\xi')$
- by \eqref{eqn.phase_update}. The readout and backward pass of the coalgebra $\Phiphase(V,\sharpR_V,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $x$, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
+ by \eqref{eqn.phase_update}. The readout and backward pass of the coalgebra $\Phiphase(\rv V,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $x$, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
 
 \paragraph{The action of $\Phiphase$ on objects.}
 The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case.
@@ -2934,10 +2927,10 @@ specializing \eqref{eqn.canonical_sharp}.
 
 We now unpack the coalgebra function itself,
 \[
-S\To{\Phiphase(V,\sharpR_V,f)}
+S\To{\Phiphase(\rv V,f)}
 \left[\Phiphase\lensob M,\Phiphase\lensob N\right]\tri S.
 \]
-Given a state $s\coloneqq(x,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(V,\sharpR_V,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_V,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $x$ alone, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(x,\xi)$, the state is updated to
+Given a state $s\coloneqq(x,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(\rv V,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_V,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $x$ alone, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(x,\xi)$, the state is updated to
 \begin{equation}\label{eqn.state_update}
 s+\sharpS_S(\xi_V,\sharpR_x(\xi))=\bigl(x+\sharpR_x(\xi),\,\xi-\xi_V\bigr).
 \end{equation}
@@ -2949,7 +2942,7 @@ The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.ca
 
 All in all, one could tersely denote the coalgebra map as follows:
 \begin{multline*}
-\Phiphase(V,\sharpR_V,f)\colon
+\Phiphase(\rv V,f)\colon
 (x,\xi)\mapsto
 (\outp m,\omega_M)\mapsto
 \Big(
@@ -3050,7 +3043,7 @@ So we now have a scalar in $\srwd$
 \]
 with potential $U$.
 
-Applying $\Phiconf$ to $(V,\sharpR_V,\bang,\bang,U)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU|_x$, and the state update \eqref{eqn.state_update_gradient} reads
+Applying $\Phiconf$ to $(\rv V,\bang,\bang,U)$ gives a coalgebra carried by state set $\absval V$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU|_x$, and the state update \eqref{eqn.state_update_gradient} reads
 \[
 x\longmapsto x+\sharpR_x(dU|_x)=x-\bigl(T_x(dU)\bigr)^{-1}(dU|_x),
 \]
