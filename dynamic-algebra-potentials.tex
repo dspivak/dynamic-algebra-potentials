@@ -2177,31 +2177,31 @@ Note that we abuse notation, denoting the induced natural transformation by the 
 
 Where a 1-form feeds the backward pass, the following notion sets the position the forward pass reads.
 
-\begin{definition}\label{def.monoidal_displacement}
-A \emph{monoidal displacement on $T^*$} is a monoidal natural transformation $\chi\colon\inc\circ T^*\Rightarrow\inc$: a smooth family $\chi_V\colon T^*V\to V$, natural in $\rvect$-isomorphisms and monoidal over direct sums, $\chi_{V\oplus W}=\chi_V\oplus\chi_W$.
+\begin{definition}\label{def.monoidal_readout}
+A \emph{monoidal readout on $T^*$} is a monoidal natural transformation $\chi\colon\inc\circ T^*\Rightarrow\inc$: a family of smooth maps $\chi_V\colon T^*V\to V$, natural in $\rvect$-isomorphisms and monoidal over direct sums, $\chi_{V\oplus W}=\chi_V\oplus\chi_W$.
 \end{definition}
 
-\begin{proposition}\label{prop.displacements_vector_space}
-Under pointwise addition and scalar multiplication, the monoidal displacements on $T^*$ form a real vector space.
+\begin{proposition}\label{prop.readouts_vector_space}
+Under pointwise addition and scalar multiplication, the monoidal readouts on $T^*$ form a real vector space.
 \end{proposition}
 
 \begin{proof}
-Each $V$ is a real vector space, so for displacements $\chi,\chi'$ and a scalar $c\in\rr$ the pointwise maps $(\chi+\chi')_V(x,\xi)\coloneqq\chi_V(x,\xi)+\chi'_V(x,\xi)$ and $(c\,\chi)_V(x,\xi)\coloneqq c\,\chi_V(x,\xi)$ again land in $V$. They are smooth; natural in $\rvect$-isomorphisms because $\rvect$-morphisms $\phi$ are linear, so $\phi\circ(\chi_V+c\chi'_V)=\phi\circ\chi_V+c\phi\circ\chi'_V$; and monoidal because $\oplus$ distributes over these operations, e.g.
+Each $V$ is a real vector space, so for readouts $\chi,\chi'$ and a scalar $c\in\rr$ the pointwise maps $(\chi+\chi')_V(x,\xi)\coloneqq\chi_V(x,\xi)+\chi'_V(x,\xi)$ and $(c\,\chi)_V(x,\xi)\coloneqq c\,\chi_V(x,\xi)$ again land in $V$. They are smooth; natural in $\rvect$-isomorphisms because $\rvect$-morphisms $\phi$ are linear, so $\phi\circ(\chi_V+c\chi'_V)=\phi\circ\chi_V+c\phi\circ\chi'_V$; and monoidal because $\oplus$ distributes over these operations, e.g.
 \[
 (\chi+\chi')_{V\oplus W}=(\chi_V\oplus\chi_W)+(\chi'_V\oplus\chi'_W)=(\chi+\chi')_V\oplus(\chi+\chi')_W.
 \qedhere\]
 \end{proof}
 
-\begin{lemma}\label{lem.displacement_examples}
-The projection $\pi$ and the exponential $\exp$ \eqref{eqn.flow_cot} are monoidal displacements, as is the \emph{$\alpha$-step} $\exp^\alpha_V(x,\xi)\coloneqq x+\alpha\,\sharpR_x(\xi)$ for any $\alpha\in\rr$, which interpolates them.
+\begin{lemma}\label{lem.readout_examples}
+The projection $\pi$ and the exponential $\exp$ \eqref{eqn.flow_cot} are monoidal readouts, as is the \emph{$\alpha$-step} $\exp^\alpha_V(x,\xi)\coloneqq x+\alpha\,\sharpR_x(\xi)$ for any $\alpha\in\rr$, which interpolates them.
 \end{lemma}
 
 \begin{proof}
-The projection $\pi$ is a monoidal displacement by \cref{lem.TT_projection_diagonal_monoidal}, and the exponential $\exp_{\rv V}(x,\xi)=x+\sharpR_x(\xi)$ is monoidal by linearity and sharp-equivariance \eqref{eqn.pairing_triangle}. The $\alpha$-step $\exp^\alpha=(1-\alpha)\,\pi+\alpha\,\exp$ is then a monoidal displacement by \cref{prop.displacements_vector_space}.
+The projection $\pi$ is a monoidal readout by \cref{lem.TT_projection_diagonal_monoidal}, and the exponential $\exp_{\rv V}(x,\xi)=x+\sharpR_x(\xi)$ is monoidal by linearity and sharp-equivariance \eqref{eqn.pairing_triangle}. The $\alpha$-step $\exp^\alpha=(1-\alpha)\,\pi+\alpha\,\exp$ is then a monoidal readout by \cref{prop.readouts_vector_space}.
 \end{proof}
 
-\begin{lemma}\label{lem.displacement_to_poly}
-Every monoidal displacement $\chi$ on $T^*$ induces a monoidal natural transformation
+\begin{lemma}\label{lem.readout_to_poly}
+Every monoidal readout $\chi$ on $T^*$ induces a monoidal natural transformation
 \[
 \chi\colon \cot\circ T^*\Rightarrow\cot ,
 \]
@@ -2211,9 +2211,9 @@ with on-positions $\chi_V$ and on-directions the injection $\xi'\mapsto(\xi',0)$
 \begin{proof}
 At each $V$, the on-positions $\chi_V\colon T^*V\to V$ and the backward maps $\xi'\mapsto(\xi',0)$, from $V^*$ to $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$, constitute a polynomial map $\cotof{T^*V}\to\cotof{V}$.
 
-For naturality at an $\rvect$-isomorphism $\phi\colon V\to W$, compare $\cotof{\phi}\circ\chi_V$ with $\chi_W\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\chi_V$ and $\chi_W\circ T^*\phi$, equal because $\chi$ is natural (\cref{def.monoidal_displacement}). On directions at $(x,\xi)$, a covector $\zeta'\in W^*$ pulls back along both maps to $(\phi^*\zeta',0)$.
+For naturality at an $\rvect$-isomorphism $\phi\colon V\to W$, compare $\cotof{\phi}\circ\chi_V$ with $\chi_W\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\chi_V$ and $\chi_W\circ T^*\phi$, equal because $\chi$ is natural (\cref{def.monoidal_readout}). On directions at $(x,\xi)$, a covector $\zeta'\in W^*$ pulls back along both maps to $(\phi^*\zeta',0)$.
 
-For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ since $\chi$ is a monoidal displacement (\cref{def.monoidal_displacement}), and on directions the inclusion $V^*\oplus W^*\to(V^*\oplus V)\oplus(W^*\oplus W)$ is the direct sum of those for $V$ and $W$.
+For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ since $\chi$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $V^*\oplus W^*\to(V^*\oplus V)\oplus(W^*\oplus W)$ is the direct sum of those for $V$ and $W$.
 \end{proof}
 
 %--------------------------------------------------------------------
@@ -2568,10 +2568,10 @@ where $\sharpEuc{}$ is the Euclidean sharp (\cref{ex.euclidean_sharp}) and $\eta
 
 We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$ \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$.
 
-Recall the induced monoidal natural transformations $\omega\colon\cot\circ T^*\Rightarrow\yon$ and $\chi\colon\cot\circ T^*\Rightarrow\cot$ of \cref{lem.one_form_to_poly,lem.displacement_to_poly}.
+Recall the induced monoidal natural transformations $\omega\colon\cot\circ T^*\Rightarrow\yon$ and $\chi\colon\cot\circ T^*\Rightarrow\cot$ of \cref{lem.one_form_to_poly,lem.readout_to_poly}.
 
 \begin{definition}\label{def.one_form_lift}
-For a monoidal 1-form $\omega$ and a monoidal displacement $\chi$, define $\intg_{\chi,\omega}\coloneqq(\Fun S,\upd_{\chi,\omega})$ with state space the phase space $\Fun S\coloneqq\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the composite
+For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define $\intg_{\chi,\omega}\coloneqq(\Fun S,\upd_{\chi,\omega})$ with state space the phase space $\Fun S\coloneqq\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the composite
 \[
 \begin{tikzcd}[column sep=2.5em]
 \Store\circ\Fun{S}
@@ -2588,7 +2588,7 @@ For a monoidal 1-form $\omega$ and a monoidal displacement $\chi$, define $\intg
 \]
 For the projection $\chi=\pi$, where $\pi(x,\xi)=x$, we write $\intg_\omega\coloneqq\intg_{\pi,\omega}$.
 \end{definition}
-\cref{def.one_form_lift} indeed defines an integrator because the state space $\Fun S=\absval{T^*\blank}$ is the composite of strong monoidal functors, hence strong monoidal, and each arrow of the composite is a monoidal natural transformation: $\thetaV{T^*\blank}$ by \cref{prop.rvect_polynomial}, $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, and $\chi,\omega$ by \cref{lem.displacement_to_poly,lem.one_form_to_poly}. 
+\cref{def.one_form_lift} indeed defines an integrator because the state space $\Fun S=\absval{T^*\blank}$ is the composite of strong monoidal functors, hence strong monoidal, and each arrow of the composite is a monoidal natural transformation: $\thetaV{T^*\blank}$ by \cref{prop.rvect_polynomial}, $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, and $\chi,\omega$ by \cref{lem.readout_to_poly,lem.one_form_to_poly}. 
 
 
 \begin{proposition}\label{prop.one_form_lift}
@@ -3146,33 +3146,12 @@ in $\org$. Tensoring with $f_{\mathrm{gen}}$ and applying the two evaluation pai
 \]
 The result is a $\yon$-coalgebra on $\absval{V}\times\absval{V_{\mathrm{gen}}}$, where $V_{\mathrm{gen}}$ is the carrier of $f_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $V\times V_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in V$ and dataset state $s\in V_{\mathrm{gen}}$: $f_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cotof{\rr^m}$ (carrying $z$) with $[\cotof{\rr^m},\cotof{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cotof{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cotof{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x+\sharpR_x(\xi_V)$, and advance $f_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
 
-\paragraph{Momentum and the heavy-ball method.}
-Applying the phase integrator rather than the configuration integrator to the same neural-network data conjecturally turns gradient descent into momentum-based training. Recall the dissipation 1-form $\zeta$ from \cref{ex.dissipation_one_form}; for a damping coefficient $c\in[0,1]$, since $\beta$ and $\zeta$ are monoidal 1-forms, so is $\beta+c\,\zeta$ (\cref{prop.one_forms_monoid}). The \emph{dissipative phase integrator} is the case $\chi=\pi$, $\omega=\beta+c\,\zeta$ of \cref{def.one_form_lift},
+\paragraph{Momentum via damping.}
+The same machinery accommodates damping. Since $\beta$ and $\zeta$ (\cref{ex.kinetic_one_form,ex.dissipation_one_form}) are monoidal 1-forms, so is $\beta+c\,\zeta$ for a damping coefficient $c\in[0,1]$ (\cref{prop.one_forms_monoid}); the resulting \emph{dissipative phase integrator} $\intg_{\pi,\beta+c\,\zeta}$ has update map
 \[
-\intg_{\pi,\beta+c\,\zeta}=(\absval{T^*\blank},\upd_{\beta+c\,\zeta}).
+((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,(1-c)\xi-\xi'),
 \]
-At $c=0$ it recovers the phase integrator $\intg_\beta$. Adding the components of \eqref{eqn.kinetic_one_form} and \eqref{eqn.dissipation} fiberwise, the $V$-component is
-\[
-(\beta+c\,\zeta)_V(x,\xi)=\bigl(0,\sharpR_x(\xi)\bigr)+c\,(\xi,0)=\bigl(c\xi,\,\sharpR_x(\xi)\bigr).
-\]
-Thus \cref{prop.one_form_lift} says that the update map for $\intg_{\pi,\beta+c\,\zeta}$ is given by
-\begin{equation}\label{eqn.diss_phase_update}
-((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,(1-c)\xi-\xi').
-\end{equation}
-
-For a potential $U\colon V\to\rr$ and constant sharp $\sharpR_x=\sharpR_0=\eta_{\mathrm{LR}}\sharpEuc{}$, substituting $\xi'=dU|_x$ in \eqref{eqn.diss_phase_update} gives
-\[
-(x,\xi)\longmapsto\bigl(x+\eta_{\mathrm{LR}}\sharpEuc{}(\xi),\;(1-c)\xi-dU|_x\bigr).
-\]
-To compare with the classical form, eliminate the momentum. Writing the iterates as $(x_k,\xi_k)$ and setting $u_k\coloneqq x_{k+1}-x_k=\eta_{\mathrm{LR}}\sharpEuc(\xi_k)$, applying $\eta_{\mathrm{LR}}\sharpEuc$ to the momentum line $\xi_{k+1}=(1-c)\xi_k-dU|_{x_k}$ gives the second-order recurrence
-\[
-x_{k+2}-x_{k+1}=(1-c)\,(x_{k+1}-x_k)-\eta_{\mathrm{LR}}\,\nabla U(x_k),
-\qquad
-\nabla U\coloneqq\sharpEuc\,dU.
-\]
-This is the heavy-ball method~\cite{polyak1964momentum} with learning rate $\eta_{\mathrm{LR}}$ and momentum coefficient $1-c$, with one caveat: the gradient is evaluated at the previous iterate $x_k$, whereas Polyak's recurrence evaluates it at $x_{k+1}$. The one-step lag is exactly the explicit-Euler ordering of \eqref{eqn.diss_phase_update}, which updates position and momentum simultaneously from the current state (\cref{rmk.euler_energy}); updating the momentum first and feeding the new momentum into the position---the symplectic-Euler ordering---removes the lag and recovers Polyak's recurrence verbatim. The displacement $\chi=\pi$ of \cref{def.one_form_lift} is what reads the gradient at the stored position $x$.
-
-If instead of $\intg_{\pi,\beta+c\,\zeta}$ we use $\intg_{\exp^\alpha,\beta+c\,\zeta}$, where $\exp^\alpha$ is the monoidal displacement from \cref{lem.displacement_examples}, the parameter is sampled at the ``extrapolated point'' $x+\alpha\,\sharpR_x(\xi)$ rather than at $x$. Reading the gradient at a lookahead point is the defining move of Nesterov's accelerated gradient \cite{nesterov1983method}, but the match is not exact as stated: $\exp^\alpha$ shears \emph{both} the readout and the backward map, whereas Nesterov shears only the point at which the gradient is read. Recovering Nesterov on the nose requires decoupling the two---a displacement that extrapolates the readout to $x+\alpha\,\sharpR_x(\xi)$ while keeping the backward map that of the projection $\pi$---which is not a single monoidal displacement in the sense of \cref{def.one_form_lift}. We leave the precise correspondence to the reader.\qedhere
+recovering the phase integrator $\intg_\beta$ at $c=0$. Fed the gradient signal $\xi'=dU|_x$, this is a damped, momentum-style update, of the kind underlying classical momentum methods such as the heavy-ball method~\cite{polyak1964momentum}; reading the gradient at an extrapolated point via a lookahead readout $\exp^\alpha$ (\cref{lem.readout_examples}) is similarly reminiscent of Nesterov's accelerated gradient~\cite{nesterov1983method}. We do not pin down the precise correspondences.
 
 %--------------------------------------------------------------------
 \section{The wave equation}\label{sec.wave_equation}
