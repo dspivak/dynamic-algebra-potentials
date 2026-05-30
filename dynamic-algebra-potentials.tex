@@ -1917,10 +1917,10 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 \end{proof}
 
 %--------------------------------------------------------------------
-\section{Reactive vector spaces and the cotangent endofunctor}\label{sec.rvect}
+\section{Reactive vector spaces}\label{sec.rvect}
 %--------------------------------------------------------------------
 
-We will eventually define $\srwd$ as the operad underlying $\para{\rvect}{\plmfd}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$ and introduces the two pieces of phase-space data that build the phase integrator---\emph{monoidal 1-forms} (including the kinetic and dissipation 1-forms) and \emph{monoidal readouts}---together with their combination into a single update.
+We will eventually define $\srwd$ as the operad underlying $\para{\rvect}{\plmfd}$. Here we define the parameterizing category $\rvect$---whose objects encode the data to turn covectors into vectors---a symplectic example $T^*V$, and the exponential $\exp_V$ that performs the Euler update.
 
 \begin{notation}\label{not.rvect_polynomials}
 Going forward we lighten notation in two ways. First, we will denote to the underlying set $\absval V:\smset$ of a finite-dimensional vector space $V:\vect$ simply by $V$; in particular $\Store(V)=V\yon^V$. Second, we will denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
@@ -1928,8 +1928,6 @@ Going forward we lighten notation in two ways. First, we will denote to the unde
 \cotof V=V\yon^{V^*}\qqand\cotof{T^*V}=(V\oplus V^*)\yon^{V^*\oplus V}.
 \]
 \end{notation}
-
-\subsection{Reactive vector spaces}\label{sec.rvect_def}
 
 A reactive vector space is a finite-dimensional real vector space $V$ equipped with a smooth bundle map $T^*V\to TV$, turning covectors into tangent vectors that serve as state updates.
 
@@ -2019,196 +2017,6 @@ The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the map%
 \exp_{\rv V}\colon T^*V\to V,\qquad (x,\xi)\longmapsto x+\sharpR_x(\xi),
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_{\rv V}(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the sharp-equivariance condition \eqref{eqn.pairing_triangle}.
-
-\subsection{The cotangent endofunctor}\label{sec.TT}
-
-For a reactive vector space $(V,\sharpR_V):\rvect$, define
-\begin{equation}\label{eqn.TT_def}
-T^*V\coloneqq V\oplus V^*.
-\end{equation}
-This agrees with taking the cotangent bundle of $V$ as a manifold.
-
-It is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
-For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
-\begin{equation}\label{eqn.TT_phi}
-T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
-\end{equation}
-
-\begin{proposition}\label{prop.TT_endofunctors}
-Equipping $T^*V$ with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, the assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\rvect\to\rvect$.
-\end{proposition}
-
-\begin{proof}
-If $\phi\colon V\to W$ is a linear isomorphism so is $T^*\phi$. Functoriality is obvious. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in V.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
-\begin{equation}\label{eqn.dualeval}
-(\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v).
-\end{equation}
-To verify sharp-equivariance \eqref{eqn.pairing_triangle}, we equivalently check pairing-preservation (both pairings are nondegenerate). Fix any basepoint $w\in T^*V$ and calculate
-\begin{align*}
-\pairing{T^*\phi(x_1,\xi_1),T^*\phi(x_2,\xi_2)}_{T^*\phi(w)}
-&= (\psi\xi_2)(\phi x_1)-(\psi\xi_1)(\phi x_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
-&= \xi_2(x_1)-\xi_1(x_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(x_1,\xi_1),(x_2,\xi_2)}_{w} && \text{[\eqref{eqn.canonical_form}]};
-\end{align*}
-both sides are independent of $w$ by constancy of the canonical symplectic pairing.
-\end{proof}
-
-\begin{remark}[Constancy of $\sharpS_{T^*V}$]\label{rmk.constant_canonical_sharp}
-The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharpR_V$, so $\sharpS_{V\oplus V^*}$ is the constant map \eqref{eqn.canonical_sharp} even when $\sharpR_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{V\oplus V^*}$, regardless of any variation in $\sharpR_V$. However, $\sharpR_V$ is not discarded by the framework: it appears in the exponential $\exp_{\rv V}\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
-\qedhere
-\end{remark}
-
-\begin{proposition}\label{prop.TT_monoidal}
-The endofunctor $T^*\colon\rvect\to\rvect$ is strong symmetric monoidal with respect to $(0,\oplus)$.
-\end{proposition}
-
-\begin{proof}
-The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comparison is the swap
-\begin{equation*}
-\sigma\colon T^*(V_1\oplus V_2)\To{\cong}T^*V_1\oplus T^*V_2,\quad ((x_1,x_2),(\xi_1,\xi_2))\mapsto((x_1,\xi_1),(x_2,\xi_2)).
-\end{equation*}
-It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(V_1\oplus V_2)$ sends $(\xi_1,\xi_2,x_1,x_2)\mapsto(x_1,x_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $\sigma$ gives $(\xi_1,x_1,\xi_2,x_2)\mapsto(x_1,-\xi_1,x_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*V_1}\oplus\sharpS_{T^*V_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
-\end{proof}
-
-\begin{lemma}\label{lem.TT_projection_diagonal_monoidal}
-The bundle projections and diagonals are smooth maps
-\[
-\pi_V\colon T^*V\to V,
-\qquad
-\Delta_{T^*V}\colon T^*V\to T^*V\times T^*V,
-\]
-which form monoidal natural transformations as follows between functors $\rvect\to\mfd$:
-\[
-\pi\colon\inc\circ T^*\Rightarrow\inc,\qquad
-\Delta_{T^*}\colon\inc\circ T^*\Rightarrow(\inc\circ T^*)\times(\inc\circ T^*).
-\]
-\end{lemma}
-
-\begin{proof}
-For $\pi$, naturality in $\phi\colon V\To{\cong} W$ is the identity $\pi_W\circ T^*\phi=\phi\circ\pi_V$, and monoidality is the identity $\pi_{V\oplus W}=\pi_V\times\pi_W$ under the product comparisons $T^*(V\oplus W)\cong T^*V\times T^*W$ and $V\oplus W\cong V\times W$. Diagonals are natural, and $\Delta_{T^*(V\oplus W)}=\Delta_{T^*V}\times\Delta_{T^*W}$ under $T^*(V\oplus W)\cong T^*V\times T^*W$.\qedhere
-\end{proof}
-
-Whiskering $\pi$ by $T^*$ we obtain a monoidal natural transformation
-\begin{equation}\label{eqn.pi_whiskered}
-\pi_{T^*}\colon\inc\circ T^*\circ T^*\Rightarrow\inc\circ T^*,\qquad (\pi_{T^*})_V=\pi_{T^*V}\colon T^*(T^*V)\to T^*V.
-\end{equation}
-
-Alongside the exponential \eqref{eqn.flow_cot}, the reaction datum $\sharpR_x(\xi)$ admits a second packaging as a 1-form on $T^*V$, used later in the phase integrator \eqref{eqn.phase_integrator}. We first give the abstract notion.
-
-\begin{definition}\label{def.monoidal_one_form}
-A \emph{monoidal 1-form on $T^*$} is a smooth family of sections $\omega_V\colon T^*V\to T^*(T^*V)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{V\oplus W}=\omega_V\oplus\omega_W$. In other words, $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ is a monoidal section of the bundle projection $\pi_{T^*V}\colon T^*(T^*V)\to T^*V$, from \eqref{eqn.pi_whiskered}.
-\end{definition}
-
-\begin{proposition}\label{prop.one_forms_monoid}
-Under pointwise addition and scalar multiplication, the monoidal 1-forms on $T^*$ form a real vector space.
-\end{proposition}
-
-\begin{proof}
-Each fiber $T^*_{(x,\xi)}(T^*V)\cong V^*\oplus V$ is a real vector space, so given monoidal 1-forms $\omega,\omega'$ and a scalar $c\in\rr$ we may set $(\omega+\omega')_V(x,\xi)\coloneqq\omega_V(x,\xi)+\omega'_V(x,\xi)$ and $(c\,\omega)_V(x,\xi)\coloneqq c\,\omega_V(x,\xi)$, the operations taken in that fiber. These are again smooth, natural in $\rvect$-isomorphisms (which act linearly on each fiber), and monoidal, e.g.\
-\[
-(\omega+\omega')_{V\oplus W}=\omega_{V\oplus W}+\omega'_{V\oplus W}=(\omega_V\oplus\omega_W)+(\omega'_V\oplus\omega'_W)=(\omega+\omega')_V\oplus(\omega+\omega')_W.
-\qedhere\]
-\end{proof}
-
-\begin{example}[Kinetic 1-form]\label{ex.kinetic_one_form}
-The \emph{kinetic 1-form} of $(V,\sharpR_V)$ is the section
-\begin{equation}\label{eqn.kinetic_one_form}
-\defineTerm{beta_kin}_V\colon T^*V\to T^*(T^*V),\qquad
-(x,\xi)\mapsto(0,\sharpR_x(\xi)),
-\end{equation}
-using the identification $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ from \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.%
-\footnote{We borrow the name from physics: when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).}
-It is a monoidal 1-form on $T^*$: naturality follows from sharp-equivariance \eqref{eqn.pairing_triangle}, and monoidality holds because $\sharpR_{V\oplus W}=\sharpR_V\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
-
-Geometrically, $\beta$ packages the same datum as $\exp$: indeed, there is an equality of bundle maps $\sharp=d\pi_V\circ\sharpS_{T^*V}\circ\beta_V$, and the Euler step of $\sharp$ on $V$ is $\exp_{\rv V}$ \eqref{eqn.flow_cot}.
-\end{example}
-
-More generally, when a 1-form $\omega(x,\xi)=(a,b)$ is fed through the symplectic sharp $\sharpS_{T^*V}$ and added to the state---as it will be under the phase integrator \eqref{eqn.phase_integrator} below---it contributes $(+b,-a)$ to the update, since $\sharpS$ swaps coordinates and negates the second \eqref{eqn.canonical_sharp}. Thus the $V$-component of $\omega$ drives position and the $V^*$-component drives momentum with a sign flip: the kinetic 1-form ends up adding velocity $\sharp(\xi)$ to position, and the next example ends up dissipating momentum by $-c\xi$.
-
-\begin{example}[Dissipation 1-form]\label{ex.dissipation_one_form}
-The \emph{dissipation 1-form} is the section
-\begin{equation}\label{eqn.dissipation}
-\zeta_V\colon T^*V\to T^*(T^*V),\qquad
-(x,\xi)\mapsto(\xi,\,0),
-\end{equation}
-a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of the momentum coordinate. For a \emph{damping coefficient} $c\in[0,1]$, the scalar multiple $c\,\zeta$ is again a monoidal 1-form (\cref{prop.one_forms_monoid}); it dissipates a fraction $c$ of the momentum at each step.
-\end{example}
-
-\begin{lemma}\label{lem.one_form_to_poly}
-Every monoidal 1-form $\omega$ on $T^*$ induces a monoidal natural transformation
-\[
-\omega\colon \cot\circ T^*\Rightarrow\yon .
-\]
-\end{lemma}
-
-\begin{proof}
-A section $\omega\colon M\to T^*M$ defines a polynomial map $\cotof{M}\to\yon$ whose position map is unique and whose backward map at $m$ is the function $1\to T^*_mM$ selecting $\omega(m)$. Applying this at $M=T^*V$ gives the components $\omega_V\colon\cotof{T^*V}\to\yon$. Naturality and monoidality are exactly the naturality and monoidality over $\oplus$ in \cref{def.monoidal_one_form}.%
-\footnote{A monoidal natural transformation $\omega\colon\cot\circ T^*\to\yon$ may not be a monoidal 1-form because the former does not enforce smoothness, whereas the latter does.}
-\qedhere
-\end{proof}
-
-Note that we abuse notation, denoting the induced natural transformation by the same symbol as the 1-form. For example, $\beta\colon\cot\circ T^*\Rightarrow\yon$ has components $\beta_V\colon\cotof{T^*V}\to\yon$ whose backward map at $(x,\xi)$ selects $(0,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$, and likewise $\zeta\colon\cot\circ T^*\Rightarrow\yon$ selects $(\xi,0)$ at $(x,\xi)$. We will see in \cref{def.one_form_lift,thm.functor} that every monoidal 1-form on $T^*$ defines a semantics $\srwd\to\org$. 
-
-Where a 1-form feeds the backward pass, the following notion sets the position the forward pass reads.
-
-\begin{definition}\label{def.monoidal_readout}
-A \emph{monoidal readout on $T^*$} is a monoidal natural transformation $\chi\colon\inc\circ T^*\Rightarrow\inc$: a family of smooth maps $\chi_V\colon T^*V\to V$, natural in $\rvect$-isomorphisms and monoidal over direct sums, $\chi_{V\oplus W}=\chi_V\oplus\chi_W$.
-\end{definition}
-
-\begin{proposition}\label{prop.readouts_vector_space}
-Under pointwise addition and scalar multiplication, the monoidal readouts on $T^*$ form a real vector space.
-\end{proposition}
-
-\begin{proof}
-The pointwise argument of \cref{prop.one_forms_monoid} applies verbatim, with values in $V$ in place of the fiber $V^*\oplus V$.
-\end{proof}
-
-\begin{lemma}\label{lem.readout_examples}
-The projection $\pi$ and the exponential $\exp$ \eqref{eqn.flow_cot} are monoidal readouts, as is the \emph{$\alpha$-step} $\exp^\alpha_V(x,\xi)\coloneqq x+\alpha\,\sharpR_x(\xi)$ for any $\alpha\in\rr$, which interpolates them.
-\end{lemma}
-
-\begin{proof}
-The projection $\pi$ is a monoidal readout by \cref{lem.TT_projection_diagonal_monoidal}, and the exponential $\exp_{\rv V}(x,\xi)=x+\sharpR_x(\xi)$ is monoidal by linearity and sharp-equivariance \eqref{eqn.pairing_triangle}. The $\alpha$-step $\exp^\alpha=(1-\alpha)\,\pi+\alpha\,\exp$ is then a monoidal readout by \cref{prop.readouts_vector_space}.
-\end{proof}
-
-\begin{lemma}\label{lem.readout_to_poly}
-Every monoidal readout $\chi$ on $T^*$ induces a monoidal natural transformation
-\[
-\chi\colon \cot\circ T^*\Rightarrow\cot ,
-\]
-with on-positions $\chi_V$ and on-directions the injection $\xi'\mapsto(\xi',0)$.
-\end{lemma}
-
-\begin{proof}
-At each $V$, the on-positions $\chi_V\colon T^*V\to V$ and the backward maps $\xi'\mapsto(\xi',0)$, from $V^*$ to $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$, constitute a polynomial map $\cotof{T^*V}\to\cotof{V}$.
-
-For naturality at an $\rvect$-isomorphism $\phi\colon V\to W$, compare $\cotof{\phi}\circ\chi_V$ with $\chi_W\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\chi_V$ and $\chi_W\circ T^*\phi$, equal because $\chi$ is natural (\cref{def.monoidal_readout}). On directions at $(x,\xi)$, a covector $\zeta'\in W^*$ pulls back along both maps to $(\phi^*\zeta',0)$.
-
-For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ since $\chi$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $V^*\oplus W^*\to(V^*\oplus V)\oplus(W^*\oplus W)$ is the direct sum of those for $V$ and $W$.
-\end{proof}
-
-The following lemma combines monoidal readouts and 1-forms into a package we will use later.
-
-\begin{lemma}\label{lem.combined_update}
-A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $u_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
-\[
-\begin{tikzcd}[column sep=2.5em]
-\cot\circ T^*
-  \ar[rrr, bend left=12, "u_{\chi,\omega}"]
-  \ar[r, "\cotof{\Delta_{T^*\blank}}"']
-& (\cot\circ T^*)\otimes(\cot\circ T^*)
-  \ar[r, "\chi\otimes\omega"']
-& \cot\otimes\yon
-  \ar[r, "\cong"']
-& \cot.
-\end{tikzcd}
-\]
-On positions $u_{\chi,\omega}$ is $\chi_V$; on directions at $(x,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)$.
-\end{lemma}
-
-\begin{proof}
-Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, the readout $\chi$ by \cref{lem.readout_to_poly}, the 1-form $\omega$ by \cref{lem.one_form_to_poly}, and the unitor $\cot\otimes\yon\cong\cot$ because $\yon$ is the monoidal unit. On positions, $\cotof{\Delta_{T^*\blank}}$ is the diagonal and $\chi\otimes\omega$ applies $\chi_V$ in the first factor while $\omega$ lands in $\yon$, so the composite reads out $\chi_V$. On directions at $(x,\xi)$, a covector $\xi'\in V^*$ pulls back through $\chi\otimes\omega$ to $(\xi',0)$ and $\omega_V(x,\xi)$ in the two factors, which the diagonal adds.
-\end{proof}
 
 %--------------------------------------------------------------------
 \section{Potentialized manifold lenses}\label{sec.potentialized_lenses}
@@ -2435,7 +2243,7 @@ This chapter constructs the dynamics functors $\srwd\to\org$ promised in the int
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-In \cref{sec.org_as_para} we show how to repackage $\org_\cong$ as a Para construction over the store action of $\smsetiso$ on $\poly$. \Cref{sec.integrators} then introduces \emph{integrators} and singles out the two used in this paper: the configuration integrator $\intg_\theta$ and the phase integrator $\intg_\beta$.
+In \cref{sec.org_as_para} we repackage $\org_\cong$ as a Para construction over the store action of $\smsetiso$ on $\poly$. \Cref{sec.integrators} introduces \emph{integrators}, the device that turns an update map into a semantics, and builds the configuration integrator $\intg_\theta$. \Cref{sec.TT} then develops the cotangent endofunctor and the phase integrator $\intg_\beta$.
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
 
@@ -2556,9 +2364,197 @@ $\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{pr
 \end{equation}
 Its state set is the configuration space $\absval V$, and an incoming covector $\xi\in V^*$ updates the state by $x\mapsto x+\sharpR_x(\xi)$ \eqref{eqn.directions_sharp}.
 
-We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V=V\oplus V^*$ \eqref{eqn.TT_def}, with \emph{position} $x$ and \emph{momentum} $\xi$.
+\subsection{The cotangent endofunctor and the phase integrator}\label{sec.TT}
 
-Recall the induced monoidal natural transformations $\omega\colon\cot\circ T^*\Rightarrow\yon$ and $\chi\colon\cot\circ T^*\Rightarrow\cot$ of \cref{lem.one_form_to_poly,lem.readout_to_poly}.
+We now turn to physics, where the stored state is a phase point $(x,\xi)$ in the phase space $T^*V=V\oplus V^*$, with \emph{position} $x$ and \emph{momentum} $\xi$.
+
+For a reactive vector space $(V,\sharpR_V):\rvect$, define
+\begin{equation}\label{eqn.TT_def}
+T^*V\coloneqq V\oplus V^*.
+\end{equation}
+This agrees with taking the cotangent bundle of $V$ as a manifold.
+
+It is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
+For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
+\begin{equation}\label{eqn.TT_phi}
+T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
+\end{equation}
+
+\begin{proposition}\label{prop.TT_endofunctors}
+Equipping $T^*V$ with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, the assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\rvect\to\rvect$.
+\end{proposition}
+
+\begin{proof}
+If $\phi\colon V\to W$ is a linear isomorphism so is $T^*\phi$. Functoriality is obvious. Writing $\psi\coloneqq(\phi^*)\inv\colon V^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in V.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{V^*}$, we note that
+\begin{equation}\label{eqn.dualeval}
+(\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v).
+\end{equation}
+To verify sharp-equivariance \eqref{eqn.pairing_triangle}, we equivalently check pairing-preservation (both pairings are nondegenerate). Fix any basepoint $w\in T^*V$ and calculate
+\begin{align*}
+\pairing{T^*\phi(x_1,\xi_1),T^*\phi(x_2,\xi_2)}_{T^*\phi(w)}
+&= (\psi\xi_2)(\phi x_1)-(\psi\xi_1)(\phi x_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
+&= \xi_2(x_1)-\xi_1(x_2) && \text{[\eqref{eqn.dualeval}]}\\
+&= \pairing{(x_1,\xi_1),(x_2,\xi_2)}_{w} && \text{[\eqref{eqn.canonical_form}]};
+\end{align*}
+both sides are independent of $w$ by constancy of the canonical symplectic pairing.
+\end{proof}
+
+\begin{remark}[Constancy of $\sharpS_{T^*V}$]\label{rmk.constant_canonical_sharp}
+The canonical symplectic pairing depends only on the underlying vector space $V$, not on $\sharpR_V$, so $\sharpS_{V\oplus V^*}$ is the constant map \eqref{eqn.canonical_sharp} even when $\sharpR_V$ varies on $V$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{V\oplus V^*}$, regardless of any variation in $\sharpR_V$. However, $\sharpR_V$ is not discarded by the framework: it appears in the exponential $\exp_{\rv V}\colon T^*V\to V$ of \eqref{eqn.flow_cot}.
+\qedhere
+\end{remark}
+
+\begin{proposition}\label{prop.TT_monoidal}
+The endofunctor $T^*\colon\rvect\to\rvect$ is strong symmetric monoidal with respect to $(0,\oplus)$.
+\end{proposition}
+
+\begin{proof}
+The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comparison is the swap
+\begin{equation*}
+\sigma\colon T^*(V_1\oplus V_2)\To{\cong}T^*V_1\oplus T^*V_2,\quad ((x_1,x_2),(\xi_1,\xi_2))\mapsto((x_1,\xi_1),(x_2,\xi_2)).
+\end{equation*}
+It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(V_1\oplus V_2)$ sends $(\xi_1,\xi_2,x_1,x_2)\mapsto(x_1,x_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $\sigma$ gives $(\xi_1,x_1,\xi_2,x_2)\mapsto(x_1,-\xi_1,x_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*V_1}\oplus\sharpS_{T^*V_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
+\end{proof}
+
+\begin{lemma}\label{lem.TT_projection_diagonal_monoidal}
+The bundle projections and diagonals are smooth maps
+\[
+\pi_V\colon T^*V\to V,
+\qquad
+\Delta_{T^*V}\colon T^*V\to T^*V\times T^*V,
+\]
+which form monoidal natural transformations as follows between functors $\rvect\to\mfd$:
+\[
+\pi\colon\inc\circ T^*\Rightarrow\inc,\qquad
+\Delta_{T^*}\colon\inc\circ T^*\Rightarrow(\inc\circ T^*)\times(\inc\circ T^*).
+\]
+\end{lemma}
+
+\begin{proof}
+For $\pi$, naturality in $\phi\colon V\To{\cong} W$ is the identity $\pi_W\circ T^*\phi=\phi\circ\pi_V$, and monoidality is the identity $\pi_{V\oplus W}=\pi_V\times\pi_W$ under the product comparisons $T^*(V\oplus W)\cong T^*V\times T^*W$ and $V\oplus W\cong V\times W$. Diagonals are natural, and $\Delta_{T^*(V\oplus W)}=\Delta_{T^*V}\times\Delta_{T^*W}$ under $T^*(V\oplus W)\cong T^*V\times T^*W$.\qedhere
+\end{proof}
+
+Whiskering $\pi$ by $T^*$ we obtain a monoidal natural transformation
+\begin{equation}\label{eqn.pi_whiskered}
+\pi_{T^*}\colon\inc\circ T^*\circ T^*\Rightarrow\inc\circ T^*,\qquad (\pi_{T^*})_V=\pi_{T^*V}\colon T^*(T^*V)\to T^*V.
+\end{equation}
+
+Alongside the exponential \eqref{eqn.flow_cot}, the reaction datum $\sharpR_x(\xi)$ admits a second packaging as a 1-form on $T^*V$, used later in the phase integrator \eqref{eqn.phase_integrator}. We first give the abstract notion.
+
+\begin{definition}\label{def.monoidal_one_form}
+A \emph{monoidal 1-form on $T^*$} is a smooth family of sections $\omega_V\colon T^*V\to T^*(T^*V)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{V\oplus W}=\omega_V\oplus\omega_W$. In other words, $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ is a monoidal section of the bundle projection $\pi_{T^*V}\colon T^*(T^*V)\to T^*V$, from \eqref{eqn.pi_whiskered}.
+\end{definition}
+
+\begin{proposition}\label{prop.one_forms_monoid}
+Under pointwise addition and scalar multiplication, the monoidal 1-forms on $T^*$ form a real vector space.
+\end{proposition}
+
+\begin{proof}
+Each fiber $T^*_{(x,\xi)}(T^*V)\cong V^*\oplus V$ is a real vector space, so given monoidal 1-forms $\omega,\omega'$ and a scalar $c\in\rr$ we may set $(\omega+\omega')_V(x,\xi)\coloneqq\omega_V(x,\xi)+\omega'_V(x,\xi)$ and $(c\,\omega)_V(x,\xi)\coloneqq c\,\omega_V(x,\xi)$, the operations taken in that fiber. These are again smooth, natural in $\rvect$-isomorphisms (which act linearly on each fiber), and monoidal, e.g.\
+\[
+(\omega+\omega')_{V\oplus W}=\omega_{V\oplus W}+\omega'_{V\oplus W}=(\omega_V\oplus\omega_W)+(\omega'_V\oplus\omega'_W)=(\omega+\omega')_V\oplus(\omega+\omega')_W.
+\qedhere\]
+\end{proof}
+
+\begin{example}[Kinetic 1-form]\label{ex.kinetic_one_form}
+The \emph{kinetic 1-form} of $(V,\sharpR_V)$ is the section
+\begin{equation}\label{eqn.kinetic_one_form}
+\defineTerm{beta_kin}_V\colon T^*V\to T^*(T^*V),\qquad
+(x,\xi)\mapsto(0,\sharpR_x(\xi)),
+\end{equation}
+using the identification $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$ from \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.%
+\footnote{We borrow the name from physics: when $\sharpR$ is constant and symmetric, $\beta_V$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).}
+It is a monoidal 1-form on $T^*$: naturality follows from sharp-equivariance \eqref{eqn.pairing_triangle}, and monoidality holds because $\sharpR_{V\oplus W}=\sharpR_V\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
+
+Geometrically, $\beta$ packages the same datum as $\exp$: indeed, there is an equality of bundle maps $\sharp=d\pi_V\circ\sharpS_{T^*V}\circ\beta_V$, and the Euler step of $\sharp$ on $V$ is $\exp_{\rv V}$ \eqref{eqn.flow_cot}.
+\end{example}
+
+More generally, when a 1-form $\omega(x,\xi)=(a,b)$ is fed through the symplectic sharp $\sharpS_{T^*V}$ and added to the state---as it will be under the phase integrator \eqref{eqn.phase_integrator} below---it contributes $(+b,-a)$ to the update, since $\sharpS$ swaps coordinates and negates the second \eqref{eqn.canonical_sharp}. Thus the $V$-component of $\omega$ drives position and the $V^*$-component drives momentum with a sign flip: the kinetic 1-form ends up adding velocity $\sharp(\xi)$ to position, and the next example ends up dissipating momentum by $-c\xi$.
+
+\begin{example}[Dissipation 1-form]\label{ex.dissipation_one_form}
+The \emph{dissipation 1-form} is the section
+\begin{equation}\label{eqn.dissipation}
+\zeta_V\colon T^*V\to T^*(T^*V),\qquad
+(x,\xi)\mapsto(\xi,\,0),
+\end{equation}
+a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of the momentum coordinate. For a \emph{damping coefficient} $c\in[0,1]$, the scalar multiple $c\,\zeta$ is again a monoidal 1-form (\cref{prop.one_forms_monoid}); it dissipates a fraction $c$ of the momentum at each step.
+\end{example}
+
+\begin{lemma}\label{lem.one_form_to_poly}
+Every monoidal 1-form $\omega$ on $T^*$ induces a monoidal natural transformation
+\[
+\omega\colon \cot\circ T^*\Rightarrow\yon .
+\]
+\end{lemma}
+
+\begin{proof}
+A section $\omega\colon M\to T^*M$ defines a polynomial map $\cotof{M}\to\yon$ whose position map is unique and whose backward map at $m$ is the function $1\to T^*_mM$ selecting $\omega(m)$. Applying this at $M=T^*V$ gives the components $\omega_V\colon\cotof{T^*V}\to\yon$. Naturality and monoidality are exactly the naturality and monoidality over $\oplus$ in \cref{def.monoidal_one_form}.%
+\footnote{A monoidal natural transformation $\omega\colon\cot\circ T^*\to\yon$ may not be a monoidal 1-form because the former does not enforce smoothness, whereas the latter does.}
+\qedhere
+\end{proof}
+
+Note that we abuse notation, denoting the induced natural transformation by the same symbol as the 1-form. For example, $\beta\colon\cot\circ T^*\Rightarrow\yon$ has components $\beta_V\colon\cotof{T^*V}\to\yon$ whose backward map at $(x,\xi)$ selects $(0,\sharpR_x(\xi))\in T^*_{(x,\xi)}(T^*V)$, and likewise $\zeta\colon\cot\circ T^*\Rightarrow\yon$ selects $(\xi,0)$ at $(x,\xi)$. We will see in \cref{def.one_form_lift,thm.functor} that every monoidal 1-form on $T^*$ defines a semantics $\srwd\to\org$. 
+
+Where a 1-form feeds the backward pass, the following notion sets the position the forward pass reads.
+
+\begin{definition}\label{def.monoidal_readout}
+A \emph{monoidal readout on $T^*$} is a monoidal natural transformation $\chi\colon\inc\circ T^*\Rightarrow\inc$: a family of smooth maps $\chi_V\colon T^*V\to V$, natural in $\rvect$-isomorphisms and monoidal over direct sums, $\chi_{V\oplus W}=\chi_V\oplus\chi_W$.
+\end{definition}
+
+\begin{proposition}\label{prop.readouts_vector_space}
+Under pointwise addition and scalar multiplication, the monoidal readouts on $T^*$ form a real vector space.
+\end{proposition}
+
+\begin{proof}
+The pointwise argument of \cref{prop.one_forms_monoid} applies verbatim, with values in $V$ in place of the fiber $V^*\oplus V$.
+\end{proof}
+
+\begin{lemma}\label{lem.readout_examples}
+The projection $\pi$ and the exponential $\exp$ \eqref{eqn.flow_cot} are monoidal readouts, as is the \emph{$\alpha$-step} $\exp^\alpha_V(x,\xi)\coloneqq x+\alpha\,\sharpR_x(\xi)$ for any $\alpha\in\rr$, which interpolates them.
+\end{lemma}
+
+\begin{proof}
+The projection $\pi$ is a monoidal readout by \cref{lem.TT_projection_diagonal_monoidal}, and the exponential $\exp_{\rv V}(x,\xi)=x+\sharpR_x(\xi)$ is monoidal by linearity and sharp-equivariance \eqref{eqn.pairing_triangle}. The $\alpha$-step $\exp^\alpha=(1-\alpha)\,\pi+\alpha\,\exp$ is then a monoidal readout by \cref{prop.readouts_vector_space}.
+\end{proof}
+
+\begin{lemma}\label{lem.readout_to_poly}
+Every monoidal readout $\chi$ on $T^*$ induces a monoidal natural transformation
+\[
+\chi\colon \cot\circ T^*\Rightarrow\cot ,
+\]
+with on-positions $\chi_V$ and on-directions the injection $\xi'\mapsto(\xi',0)$.
+\end{lemma}
+
+\begin{proof}
+At each $V$, the on-positions $\chi_V\colon T^*V\to V$ and the backward maps $\xi'\mapsto(\xi',0)$, from $V^*$ to $V^*\oplus V\cong T^*_{(x,\xi)}(T^*V)$, constitute a polynomial map $\cotof{T^*V}\to\cotof{V}$.
+
+For naturality at an $\rvect$-isomorphism $\phi\colon V\to W$, compare $\cotof{\phi}\circ\chi_V$ with $\chi_W\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\chi_V$ and $\chi_W\circ T^*\phi$, equal because $\chi$ is natural (\cref{def.monoidal_readout}). On directions at $(x,\xi)$, a covector $\zeta'\in W^*$ pulls back along both maps to $(\phi^*\zeta',0)$.
+
+For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ since $\chi$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $V^*\oplus W^*\to(V^*\oplus V)\oplus(W^*\oplus W)$ is the direct sum of those for $V$ and $W$.
+\end{proof}
+
+The following lemma combines monoidal readouts and 1-forms into a package we will use later.
+
+\begin{lemma}\label{lem.combined_update}
+A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $u_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
+\[
+\begin{tikzcd}[column sep=2.5em]
+\cot\circ T^*
+  \ar[rrr, bend left=12, "u_{\chi,\omega}"]
+  \ar[r, "\cotof{\Delta_{T^*\blank}}"']
+& (\cot\circ T^*)\otimes(\cot\circ T^*)
+  \ar[r, "\chi\otimes\omega"']
+& \cot\otimes\yon
+  \ar[r, "\cong"']
+& \cot.
+\end{tikzcd}
+\]
+On positions $u_{\chi,\omega}$ is $\chi_V$; on directions at $(x,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)$.
+\end{lemma}
+
+\begin{proof}
+Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, the readout $\chi$ by \cref{lem.readout_to_poly}, the 1-form $\omega$ by \cref{lem.one_form_to_poly}, and the unitor $\cot\otimes\yon\cong\cot$ because $\yon$ is the monoidal unit. On positions, $\cotof{\Delta_{T^*\blank}}$ is the diagonal and $\chi\otimes\omega$ applies $\chi_V$ in the first factor while $\omega$ lands in $\yon$, so the composite reads out $\chi_V$. On directions at $(x,\xi)$, a covector $\xi'\in V^*$ pulls back through $\chi\otimes\omega$ to $(\xi',0)$ and $\omega_V(x,\xi)$ in the two factors, which the diagonal adds.
+\end{proof}
 
 \begin{definition}\label{def.one_form_lift}
 For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define an integrator $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $u_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
