@@ -2243,7 +2243,7 @@ This chapter constructs the dynamics functors $\srwd\to\org$ promised in the int
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-In \cref{sec.org_as_para} we repackage $\org_\cong$ as a Para construction over the store action of $\smsetiso$ on $\poly$. \Cref{sec.integrators} introduces \emph{integrators}, the device that turns an update map into a semantics, and builds the configuration integrator $\intg_\theta$. \Cref{sec.TT} then develops the cotangent endofunctor and the phase integrator $\intg_\beta$.
+In \cref{sec.org_as_para} we repackage $\org_\cong$ as a Para construction over the store action of $\smsetiso$ on $\poly$. \Cref{sec.integrators} introduces \emph{integrators}, the device that turns an update map into a semantics, and builds the configuration integrator $\intg_\theta$. \Cref{sec.TT} develops the cotangent endofunctor and \cref{sec.phase_integrators} uses it to build the phase integrator $\intg_\beta$.
 
 \subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
 
@@ -2364,7 +2364,7 @@ $\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{pr
 \end{equation}
 Its state set is the configuration space $\absval V$, and an incoming covector $\xi\in V^*$ updates the state by $x\mapsto x+\sharpR_x(\xi)$ \eqref{eqn.directions_sharp}.
 
-\subsection{The cotangent endofunctor and the phase integrator}\label{sec.TT}
+\subsection{The cotangent endofunctor}\label{sec.TT}
 
 We now turn to physics, where the stored state is a phase point $(x,\xi)$ in the phase space $T^*V=V\oplus V^*$, with \emph{position} $x$ and \emph{momentum} $\xi$.
 
@@ -2555,6 +2555,8 @@ On positions $u_{\chi,\omega}$ is $\chi_V$; on directions at $(x,\xi)$ it sends 
 \begin{proof}
 Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, the readout $\chi$ by \cref{lem.readout_to_poly}, the 1-form $\omega$ by \cref{lem.one_form_to_poly}, and the unitor $\cot\otimes\yon\cong\cot$ because $\yon$ is the monoidal unit. On positions, $\cotof{\Delta_{T^*\blank}}$ is the diagonal and $\chi\otimes\omega$ applies $\chi_V$ in the first factor while $\omega$ lands in $\yon$, so the composite reads out $\chi_V$. On directions at $(x,\xi)$, a covector $\xi'\in V^*$ pulls back through $\chi\otimes\omega$ to $(\xi',0)$ and $\omega_V(x,\xi)$ in the two factors, which the diagonal adds.
 \end{proof}
+
+\subsection{Phase-space integrators}\label{sec.phase_integrators}
 
 \begin{definition}\label{def.one_form_lift}
 For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define an integrator $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $u_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
