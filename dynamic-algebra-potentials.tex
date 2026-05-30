@@ -1954,7 +1954,7 @@ Restricting to isomorphisms (making $\rvect$ a groupoid) is essential for our de
 }
 In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwise pairing-preservation: $\pairing{\phi v,\phi v'}_{\phi(x)}=\pairing{v,v'}_x$.
 
-We use the bold form to emphasize that a construction depends on the sharp---most visibly the exponential $\exp_{\rv V}$ \eqref{eqn.flow_cot} and the update $\thetaV{\rv V}$ (\cref{prop.rvect_polynomial}). Where the sharp is understood, or is the canonical one (as on $T^*V$, \cref{prop.canonical_symplectic_pairing}), we abuse notation and write simply $V$ for $\rv V$.
+Where the sharp is understood, or is the canonical one (as on $T^*V$, \cref{prop.canonical_symplectic_pairing}), we abuse notation and write simply $V$ for $\rv V$.
 \end{definition}
 
 \begin{proposition}\label{prop.rvect_monoidal}
@@ -2020,34 +2020,7 @@ The \emph{exponential} of a reactive vector space $(V,\sharpR_V)$ is the map%
 \end{equation}
 which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xV\cong V$. In the constant case $\sharpR_x=\sharpR_0$, $\exp_{\rv V}(x,\xi)$ coincides with the time-$1$ flow from $x$ of the constant left-invariant vector field $\sharpR_0(\xi)$. It is natural in $\rvect$-isomorphisms by linearity and the sharp-equivariance condition \eqref{eqn.pairing_triangle}.
 
-The sharp also induces a canonical polynomial map from the store comonad to the cotangent polynomial. This will be used later (in \cref{sec.integrators}) to present cotangent-parameterized maps as coalgebras.
-
-\begin{proposition}\label{prop.rvect_polynomial}
-There is a monoidal natural transformation $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ whose component $\defineTerm{thetaV}_{\rv V}\colon\Store(\absval{V})\to\cotof{V}$ at $\rv V=(V,\sharpR_V)$ is the polynomial map given on positions by the identity and on directions at $x\in V$ by
-\begin{equation}\label{eqn.directions_sharp}
-T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharpR_x}V\To{x+\blank}V,
-\qquad
-\xi\longmapsto x+\sharpR_x(\xi).
-\end{equation}
-When $\sharpR$ is nondegenerate, $\thetaV{\rv V}$ is an isomorphism.
-\end{proposition}
-
-\begin{proof}
-On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so we can take the on-positions component of $\thetaV{\rv V}$ to be the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of the linear map $\sharpR_x$ with translation by $x$, giving a well-defined polynomial map $\Store(\absval{V})\to\cotof{V}$. When $\sharpR_x$ is an isomorphism for all $x$, the on-directions component is a bijection, so $\thetaV{\rv V}$ is an isomorphism in $\poly$.
-
-For naturality at a $\rvect$-isomorphism $\phi\colon\rv V\to\rv W$, the on-positions square commutes by definition. On directions at $x:V$, we must check that the two backward composites $T^*_{\phi(x)}W\to V$ agree:
-\begin{align*}
-\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharpR_x}\;\sharpR_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharpR_x(\phi^*\xi), && \text{[$\thetaV{\rv V}\circ\cotof{\phi}$]}\\
-\xi\;&\Mapsto{\sharpR_{\phi(x)}}\;\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharpR_{\phi(x)}\xi) && \text{[$\Store(\phi)\circ\thetaV{\rv W}$]}.
-\end{align*}
-The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, which is the sharp-equivariance condition \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V_2}=\sharpR_{V_1}\oplus\sharpR_{V_2}$ (\cref{prop.rvect_monoidal}).\qedhere
-\end{proof}
-
-\begin{remark}[Generalization to manifolds]\label{rmk.rmfdc_generalization}
-The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
-\end{remark}
-
-\subsection{The cotangent endofunctor: readouts and 1-forms}\label{sec.TT}
+\subsection{The cotangent endofunctor}\label{sec.TT}
 
 For a reactive vector space $(V,\sharpR_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
@@ -2214,10 +2187,10 @@ For naturality at an $\rvect$-isomorphism $\phi\colon V\to W$, compare $\cotof{\
 For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ since $\chi$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $V^*\oplus W^*\to(V^*\oplus V)\oplus(W^*\oplus W)$ is the direct sum of those for $V$ and $W$.
 \end{proof}
 
-A readout and a 1-form together carry everything a phase-space update needs: the position to expose and the covector to inject. They assemble into a single natural transformation.
+The following lemma combines monoidal readouts and 1-forms into a package we will use later.
 
 \begin{lemma}\label{lem.combined_update}
-A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $u_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, the composite
+A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $u_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
 \[
 \begin{tikzcd}[column sep=2.5em]
 \cot\circ T^*
@@ -2551,7 +2524,32 @@ Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd
 We specialize to $\cat A=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $V\cdot q\coloneqq\cotof{V}\otimes q$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\org_\cong.\]
 
-The \emph{configuration integrator} $\intg_\theta\coloneqq(\absval{\blank},\theta)$ has state space 
+\begin{proposition}\label{prop.rvect_polynomial}
+There is a monoidal natural transformation $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ whose component $\defineTerm{thetaV}_{\rv V}\colon\Store(\absval{V})\to\cotof{V}$ at $\rv V=(V,\sharpR_V)$ is the polynomial map given on positions by the identity and on directions at $x\in V$ by
+\begin{equation}\label{eqn.directions_sharp}
+T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharpR_x}V\To{x+\blank}V,
+\qquad
+\xi\longmapsto x+\sharpR_x(\xi).
+\end{equation}
+When $\sharpR$ is nondegenerate, $\thetaV{\rv V}$ is an isomorphism.
+\end{proposition}
+
+\begin{proof}
+On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $V$ to its underlying set, so we can take the on-positions component of $\thetaV{\rv V}$ to be the identity. At each $x\in V$, \eqref{eqn.directions_sharp} is the composite of the linear map $\sharpR_x$ with translation by $x$, giving a well-defined polynomial map $\Store(\absval{V})\to\cotof{V}$. When $\sharpR_x$ is an isomorphism for all $x$, the on-directions component is a bijection, so $\thetaV{\rv V}$ is an isomorphism in $\poly$.
+
+For naturality at a $\rvect$-isomorphism $\phi\colon\rv V\to\rv W$, the on-positions square commutes by definition. On directions at $x:V$, we must check that the two backward composites $T^*_{\phi(x)}W\to V$ agree:
+\begin{align*}
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharpR_x}\;\sharpR_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharpR_x(\phi^*\xi), && \text{[$\thetaV{\rv V}\circ\cotof{\phi}$]}\\
+\xi\;&\Mapsto{\sharpR_{\phi(x)}}\;\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharpR_{\phi(x)}\xi) && \text{[$\Store(\phi)\circ\thetaV{\rv W}$]}.
+\end{align*}
+The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, which is the sharp-equivariance condition \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharpR_{V_1\oplus V_2}=\sharpR_{V_1}\oplus\sharpR_{V_2}$ (\cref{prop.rvect_monoidal}).\qedhere
+\end{proof}
+
+\begin{remark}[Generalization to manifolds]\label{rmk.rmfdc_generalization}
+The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
+\end{remark}
+
+The \emph{configuration integrator} $\intg_\theta\coloneqq(\absval{\blank},\theta)$ has state space
 $\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{prop.rvect_polynomial},
 \begin{equation}\label{eqn.conf_integrator}
 \thetaV{\rv V}\colon\Store(\absval V)\to\cotof V .
@@ -2563,7 +2561,7 @@ We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V
 Recall the induced monoidal natural transformations $\omega\colon\cot\circ T^*\Rightarrow\yon$ and $\chi\colon\cot\circ T^*\Rightarrow\cot$ of \cref{lem.one_form_to_poly,lem.readout_to_poly}.
 
 \begin{definition}\label{def.one_form_lift}
-For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $u_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
+For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define an integrator $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $u_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
 \[
 \upd_{\chi,\omega}\colon\quad
 \Store\circ\absval{T^*\blank}
