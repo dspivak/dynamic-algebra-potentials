@@ -425,8 +425,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\tpow}[1]{^{\otimes #1}}
 \trackTerm{\potlens}{potlens}{\mathbb{P}\Cat{PLens}}
 \trackTerm{\srwd}{srwd}{\mathbb{S}\Cat{rWD}}
-\trackTermSymbol{Intgr}{\Cat{Intgr}}
-\newcommand{\Intgr}[1]{\termref{Intgr}{\termraw{Intgr}}_{#1}}
 \trackTerm{\Para}{Para}{\mathbb{P}\Cat{ara}}
 \newcommand{\para}[3][]{\Para_{#2}^{#1}(#3)}
 \trackTerm{\rmfdc}{rmfdc}{\Cat{RMfdC}}
@@ -2474,7 +2472,6 @@ Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \]
-Moreover, a monoidal natural transformation $\alpha\colon F\Rightarrow F'$ induces a monoidal pseudonatural transformation $D_\alpha\colon D_F\circ\Para_{\cat A}^{\Store(\alpha)}\Rightarrow D_{F'}$.
 \end{lemma}
 
 \begin{proof}
@@ -2506,8 +2503,6 @@ Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a stro
 \end{tikzcd}
 \]
 where $\Fun S\colon\cat A\to\smsetiso$, the \emph{state space}, is a strong symmetric monoidal functor and $\defineTerm{upd}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{update map}, is a monoidal natural transformation.
-
-A \emph{morphism} $\gamma\colon\intg\to\intg'$ of $p$-integrators, where $\intg'=(\Fun{S'},\upd')$, is a monoidal natural transformation $\gamma\colon\Fun S\Rightarrow\Fun S'$ such that $\upd'\circ\Store(\gamma)=\upd$. We write $\defineTerm{Intgr}_p$ for the category of $p$-integrators.
 \end{definition}
 
 By \cref{prop.coalg_as_poly_map}, the component $\upd_a\colon\Store(\Fun S(a))\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S(a)$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
@@ -2515,14 +2510,12 @@ By \cref{prop.coalg_as_poly_map}, the component $\upd_a\colon\Store(\Fun S(a))\t
 We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration, phase, and dissipative---are numerical integrators of explicit-Euler type, namely Euler on configuration space, a phase-space analogue, and a dissipative variant. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$ (e.g.\ amount of friction).
 
 \begin{proposition}\label{prop.integrator_to_org}
-Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. There is a functor
-\[\Psisem{\blank}\colon\Intgr{p}\to\bbsmc(\para{p}{\poly},\org_\cong).\]
+Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
+\[\Psisem{\intg}\colon\para{p}{\poly}\to\org_\cong.\]
 \end{proposition}
 
 \begin{proof}
-We need to show that every $p$-integrator $\intg=(\Fun S,\upd)$ induces a normal lax symmetric monoidal functor
-\[\Psisem{\intg}\colon\para{p}{\poly}\to\org_\cong,\]
-and every morphism $\gamma\colon\intg\to\intg'$ induces a monoidal pseudonatural transformation $\Psisem{\gamma}\colon\Psisem{\intg}\Rightarrow\Psisem{\intg'}$. Write $\Fun S$ for the state space of $\intg$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
+Write $\Fun S$ for the state space of $\intg=(\Fun S,\upd)$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
 \[
 D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\org_\cong.
 \]
@@ -2531,22 +2524,6 @@ By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Stor
 \Para_{\cat A}^{\upd}\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
 \]
 Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd}$; it is normal lax monoidal because $\Para_{\cat A}^{\upd}$ is strong.
-
-For a morphism $\gamma\colon\intg\to\intg'$, with state spaces $\Fun S$ and $\Fun S'$, applying \cref{prop.para_square} with two identity functors and the 2-cell $\Store(\gamma)\colon\Store\circ\Fun S\Rightarrow\Store\circ\Fun S'$ yields a functor
-\[
-\Para_{\cat A}^{\Store(\gamma)}\colon\para{\Store\circ\Fun S'}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
-\]
-Since $\id_{\cat A}$ is strict monoidal, both $\Para_{\cat A}^{\upd'}$ and $\Para_{\cat A}^{\Store(\gamma)}$ are strict by \cref{prop.para_square}, and their composite is precomposition with $\upd'\circ\Store(\gamma)\colon\Store\circ\Fun S\Rightarrow p$. The morphism condition $\upd'\circ\Store(\gamma)=\upd$ gives $\Para_{\cat A}^{\Store(\gamma)}\circ\Para_{\cat A}^{\upd'}=\Para_{\cat A}^{\upd}$. The components $\gamma_a\colon\Fun S(a)\to\Fun S'(a)$ give a monoidal pseudonatural transformation $D_{\Fun S}\circ\Para_{\cat A}^{\Store(\gamma)}\Rightarrow D_{\Fun S'}$; precomposing with $\Para_{\cat A}^{\upd'}$ gives $\Psisem{\gamma}$:
-\[
-\begin{tikzcd}[column sep=60pt]
-	\para{p}{\poly}\ar[r, "\Para_{\cat A}^{\upd}"]\ar[d, "\Para_{\cat A}^{\upd'}"']&
-	\para{\Store\circ\Fun S}{\poly}\ar[d, "D_{\Fun S}"]\\
-	\para{\Store\circ\Fun S'}{\poly}\ar[r, "D_{\Fun S'}"', pos=.7, ""{name=bot}]\ar[ur, "\Para_{\cat A}^{\Store(\gamma)}" description, ""'{name=diag}]&
-	\org_\cong
-	\arrow[from=diag-|bot, to=bot, Rightarrow, "D_{\gamma}"]
-\end{tikzcd}
-\qedhere
-\]
 \end{proof}
 
 We specialize to $\cat A=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $V\cdot q\coloneqq\cotof{V}\otimes q$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
@@ -2672,9 +2649,8 @@ Constructing a precise relationship between $S$ and $V$ is precisely the role of
 \begin{theorem}\label{thm.functor}
 Every $\cot$-integrator $\intg$ induces an operad functor
 \[
-\Phi_{\intg}\colon\srwd\to\org,
+\Phi_{\intg}\colon\srwd\to\org.
 \]
-and a morphism $\gamma\colon\intg\to\intg'$ of integrators induces a monoidal pseudonatural transformation $\Phi_\gamma\colon\Phi_{\intg}\Rightarrow\Phi_{\intg'}$.
 \end{theorem}
 
 \begin{proof}
@@ -2683,8 +2659,8 @@ Define $\Phi_{\intg}$ to be the composite of the normal lax monoidal functors be
 \srwd\To{\Phi'}
 \para{\cot}{\poly}\To{\Psisem{\intg}}
 \org_\cong\inj\org.
+\qedhere
 \]
-For the second statement, \cref{prop.integrator_to_org} gives a monoidal pseudonatural transformation $\Psisem{\gamma}\colon\Psisem{\intg}\Rightarrow\Psisem{\intg'}$; whiskering with $\Phi'$ yields $\Phi_\gamma\coloneqq\Psisem{\gamma}*\Phi'$.\qedhere
 \end{proof}
 
 Write $\intg_\theta$ \eqref{eqn.conf_integrator} for the configuration integrator and $\intg_\beta$ \eqref{eqn.phase_integrator} for the phase integrator. Our main two functors of interest are:
