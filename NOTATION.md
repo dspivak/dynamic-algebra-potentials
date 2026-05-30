@@ -184,8 +184,6 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 | Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\theta` (configuration), `\upd_{\chi,\omega}` (`def.one_form_lift`, with `\upd_\omega:=\upd_{\pi,\omega}`), `\upd_\beta` (phase), `\upd_{\beta+c\zeta}` (dissipative). The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
 | Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
 | Dynamics functor | `\Phi_\intg`, `\Phi'` | `\Phi_\intg\colon\srw\to\org`; `\Phi'` the syntax→`\para\cot\poly` factor. Named: `\Phiconf=\Phi_{\intg_\theta}`, `\Phiphase=\Phi_{\intg_\beta}` |
-| Category of integrators | `\Intgr_p` | |
-| Morphism of integrators | `\gamma` | a monoidal nat. trans. `\gamma\colon\Fun S\Rightarrow\Fun S'` with `\upd'\circ\Store(\gamma)=\upd` (`def.integrator`); induces `\Psisem{\gamma}`, `\Phi_\gamma`. The generic-nat.-trans. symbol (same sort as `\gamma` in `prop.lens_functoriality`); **not** `\beta` (that is the kinetic 1-form — former overload, retired) |
 
 Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\upd`, `\\Fun S`, `\\Psisem`, `\\Phi_`.
 

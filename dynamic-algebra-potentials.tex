@@ -364,7 +364,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\smset}{\Cat{Set}}
 \newcommand{\smsetiso}{\smset_\cong}
 \newcommand{\smcat}{\mathbb{C}\Cat{at}}
-\newcommand{\bbsmc}{\mathbb{S}\Cat{MC}_{\mathrm{lax,nml}}}
 \newcommand{\vect}{\Cat{Vect}}
 
 \newcommand{\List}{\Fun{List}}
@@ -1921,7 +1920,7 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 \section{Reactive vector spaces and the cotangent endofunctor}\label{sec.rvect}
 %--------------------------------------------------------------------
 
-We will eventually define $\srwd$ as the operad underlying $\para{\rvect}{\plmfd}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$ and introduces \emph{monoidal 1-forms} on $T^*$, including the kinetic and dissipation 1-forms used to build the phase integrator.
+We will eventually define $\srwd$ as the operad underlying $\para{\rvect}{\plmfd}$; in \cref{sec.rvect_def} we define the parameterizing category $\rvect$ (whose objects encode the data to turn covectors into vectors), a symplectic example $T^*V$, and the exponential $\exp_V$ that will be used to perform the Euler update. \cref{sec.TT} packages $T^*$ as a strong monoidal endofunctor of $\rvect$ and introduces the two pieces of phase-space data that build the phase integrator---\emph{monoidal 1-forms} (including the kinetic and dissipation 1-forms) and \emph{monoidal readouts}---together with their combination into a single update.
 
 \begin{notation}\label{not.rvect_polynomials}
 Going forward we lighten notation in two ways. First, we will denote to the underlying set $\absval V:\smset$ of a finite-dimensional vector space $V:\vect$ simply by $V$; in particular $\Store(V)=V\yon^V$. Second, we will denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
@@ -2048,7 +2047,7 @@ The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, wh
 The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
 \end{remark}
 
-\subsection{The cotangent endofunctor and monoidal 1-forms}\label{sec.TT}
+\subsection{The cotangent endofunctor: readouts and 1-forms}\label{sec.TT}
 
 For a reactive vector space $(V,\sharpR_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
@@ -2213,6 +2212,29 @@ At each $V$, the on-positions $\chi_V\colon T^*V\to V$ and the backward maps $\x
 For naturality at an $\rvect$-isomorphism $\phi\colon V\to W$, compare $\cotof{\phi}\circ\chi_V$ with $\chi_W\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\chi_V$ and $\chi_W\circ T^*\phi$, equal because $\chi$ is natural (\cref{def.monoidal_readout}). On directions at $(x,\xi)$, a covector $\zeta'\in W^*$ pulls back along both maps to $(\phi^*\zeta',0)$.
 
 For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ since $\chi$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $V^*\oplus W^*\to(V^*\oplus V)\oplus(W^*\oplus W)$ is the direct sum of those for $V$ and $W$.
+\end{proof}
+
+A readout and a 1-form together carry everything a phase-space update needs: the position to expose and the covector to inject. They assemble into a single natural transformation.
+
+\begin{lemma}\label{lem.combined_update}
+A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $u_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, the composite
+\[
+\begin{tikzcd}[column sep=2.5em]
+\cot\circ T^*
+  \ar[rrr, bend left=12, "u_{\chi,\omega}"]
+  \ar[r, "\cotof{\Delta_{T^*\blank}}"']
+& (\cot\circ T^*)\otimes(\cot\circ T^*)
+  \ar[r, "\chi\otimes\omega"']
+& \cot\otimes\yon
+  \ar[r, "\cong"']
+& \cot.
+\end{tikzcd}
+\]
+On positions $u_{\chi,\omega}$ is $\chi_V$; on directions at $(x,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)$.
+\end{lemma}
+
+\begin{proof}
+Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, the readout $\chi$ by \cref{lem.readout_to_poly}, the 1-form $\omega$ by \cref{lem.one_form_to_poly}, and the unitor $\cot\otimes\yon\cong\cot$ because $\yon$ is the monoidal unit. On positions, $\cotof{\Delta_{T^*\blank}}$ is the diagonal and $\chi\otimes\omega$ applies $\chi_V$ in the first factor while $\omega$ lands in $\yon$, so the composite reads out $\chi_V$. On directions at $(x,\xi)$, a covector $\xi'\in V^*$ pulls back through $\chi\otimes\omega$ to $(\xi',0)$ and $\omega_V(x,\xi)$ in the two factors, which the diagonal adds.
 \end{proof}
 
 %--------------------------------------------------------------------
@@ -2541,24 +2563,18 @@ We now turn to physics, where the stored state is a phase point $(x,\xi)\in T^*V
 Recall the induced monoidal natural transformations $\omega\colon\cot\circ T^*\Rightarrow\yon$ and $\chi\colon\cot\circ T^*\Rightarrow\cot$ of \cref{lem.one_form_to_poly,lem.readout_to_poly}.
 
 \begin{definition}\label{def.one_form_lift}
-For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define $\intg_{\chi,\omega}\coloneqq(\Fun S,\upd_{\chi,\omega})$ with state space the phase space $\Fun S\coloneqq\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the composite
+For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $u_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
 \[
-\begin{tikzcd}[column sep=2.5em]
-\Store\circ\Fun{S}
-  \ar[rrrr, dashed, bend left=12, "\upd_{\chi,\omega}"]
-  \ar[r, "\thetaV{T^*\blank}"']
-& \cot\circ T^*
-  \ar[r, "\cotof{\Delta_{T^*\blank}}"']
-&[15pt] (\cot\circ T^*)\otimes(\cot\circ T^*)
-  \ar[r, "\chi\otimes\omega"']
-& \cot\otimes\yon
-  \ar[r, "\cong"']
-&[-5pt] \cot
-\end{tikzcd}
+\upd_{\chi,\omega}\colon\quad
+\Store\circ\absval{T^*\blank}
+\To{\thetaV{T^*\blank}}
+\cot\circ T^*
+\To{u_{\chi,\omega}}
+\cot.
 \]
 For the projection $\chi=\pi$, where $\pi(x,\xi)=x$, we write $\intg_\omega\coloneqq\intg_{\pi,\omega}$.
 \end{definition}
-\cref{def.one_form_lift} indeed defines an integrator because the state space $\Fun S=\absval{T^*\blank}$ is the composite of strong monoidal functors, hence strong monoidal, and each arrow of the composite is a monoidal natural transformation: $\thetaV{T^*\blank}$ by \cref{prop.rvect_polynomial}, $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, and $\chi,\omega$ by \cref{lem.readout_to_poly,lem.one_form_to_poly}. 
+This is an integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors, hence strong monoidal; $\thetaV{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}, and $u_{\chi,\omega}$ by \cref{lem.combined_update}.
 
 
 \begin{proposition}\label{prop.one_form_lift}
@@ -2570,11 +2586,7 @@ Writing $\omega_V(x,\xi)=\bigl(a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)\in V^*\op
 \end{proposition}
 
 \begin{proof}
-On positions the composite reads out $\chi_V$: the legs $\thetaV{T^*\blank}$ and the unitor $\cong$ are the identity there, $\cotof{\Delta_{T^*\blank}}$ is the diagonal, and $\chi\otimes\omega$ applies $\chi_V$ in the first factor while $\omega$ lands in $\yon$. On directions at $(x,\xi)$, a covector $\xi'\in V^*$ pulls back through $\chi\otimes\omega$ to $(\xi',0)$ and $\omega_V(x,\xi)$ in the two factors, which $\cotof{\Delta_{T^*\blank}}$ adds,
-\[
-(\xi',0)+\omega_V(x,\xi)=\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)\in V^*\oplus V,
-\]
-and $\thetaV{T^*V}$ then adds to the state $(x,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of this covector \eqref{eqn.directions_sharp},
+By \cref{lem.combined_update}, $u_{\chi,\omega}$ sends $(x,\xi)\mapsto\chi_V(x,\xi)$ on positions and, on directions, $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)=\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)$. Precomposing with $\thetaV{T^*V}$ leaves positions unchanged and, on directions, adds to the state $(x,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of that covector \eqref{eqn.directions_sharp},
 \[
 \sharpS_{T^*V}\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)=\bigl(b_\omega(x,\xi),\,-\xi'-a_\omega(x,\xi)\bigr),
 \]
