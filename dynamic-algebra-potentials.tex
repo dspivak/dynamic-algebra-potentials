@@ -2333,7 +2333,7 @@ We specialize to $\cat A=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for 
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\org_\cong.\]
 
 \begin{proposition}\label{prop.rvect_polynomial}
-There is a monoidal natural transformation $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ whose component $\defineTerm{thetaV}_{\rv V}\colon\Store(\absval{V})\to\cotof{V}$ at $\rv V=(V,\sharpR_V)$ is the polynomial map given on positions by the identity and on directions at $x\in V$ by
+There is a monoidal natural transformation $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ of functors $\rvect\to\poly$ whose component $\defineTerm{thetaV}_{\rv V}\colon\Store(\absval{V})\to\cotof{V}$ at $\rv V=(V,\sharpR_V)$ is the polynomial map given on positions by the identity and on directions at $x\in V$ by
 \begin{equation}\label{eqn.directions_sharp}
 T^*_xV\To{\eqref{eqn.tangent_vec}}V^*\To{\sharpR_x}V\To{x+\blank}V,
 \qquad
@@ -2358,7 +2358,7 @@ The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the m
 \end{remark}
 
 The \emph{configuration integrator} $\intg_\theta\coloneqq(\absval{\blank},\theta)$ has state space
-$\absval{\blank}$; its update $\theta$ is the natural transformation of \cref{prop.rvect_polynomial},
+$V\mapsto\absval{V}$; its update $\theta$ is the natural transformation of \cref{prop.rvect_polynomial},
 \begin{equation}\label{eqn.conf_integrator}
 \thetaV{\rv V}\colon\Store(\absval V)\to\cotof V .
 \end{equation}
@@ -2366,17 +2366,28 @@ Its state set is the configuration space $\absval V$, and an incoming covector $
 
 \subsection{The cotangent endofunctor}\label{sec.TT}
 
-We now turn to a physics-based semantics, wherein the stored state is a point $(x,\xi)$ in the phase space $T^*V=V\oplus V^*$, with \emph{position} $x$ and \emph{momentum} $\xi$.
-
+We now turn to a physics-based semantics. We consider integrators of the form
+\[
+\begin{tikzcd}[column sep=60pt]
+	\rvect\ar[d, equal]\ar[r, "\Fun S", ""' name=top]&
+	\smsetiso\ar[d, "\Store"]\\
+	\rvect\ar[r, "\cot"', ""{name=bot}]&
+	\poly
+	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\upd"]
+\end{tikzcd}
+\]
 For a reactive vector space $(V,\sharpR_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
 T^*V\coloneqq V\oplus V^*.
 \end{equation}
-This agrees with taking the cotangent bundle of $V$ as a manifold. It is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
+This agrees with taking the cotangent bundle of $V$ as a manifold. Thus for these integrators, the stored state is a point $(x,\xi)$ in the phase space $T^*V=V\oplus V^*$, with \emph{position} $x$ and \emph{momentum} $\xi$.
+
+The cotangent bundle is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
 \begin{equation}\label{eqn.TT_phi}
 T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
 \end{equation}
+
 
 \begin{proposition}\label{prop.TT_endofunctors}
 Equipping $T^*V$ with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}, the assignments \eqref{eqn.TT_def}, \eqref{eqn.TT_phi} define an endofunctor $T^*\colon\rvect\to\rvect$.
@@ -2437,7 +2448,7 @@ Whiskering $\pi$ by $T^*$ we obtain a monoidal natural transformation
 \pi_{T^*}\colon\inc\circ T^*\circ T^*\Rightarrow\inc\circ T^*,\qquad (\pi_{T^*})_V=\pi_{T^*V}\colon T^*(T^*V)\to T^*V.
 \end{equation}
 
-The reaction datum $\sharpR_x(\xi)$ admits a second packaging, alongside the exponential \eqref{eqn.flow_cot}, as a 1-form on $T^*V$. We first give the abstract notion.
+Next we discuss two sources of integrators. 
 
 \begin{definition}\label{def.monoidal_one_form}
 A \emph{monoidal 1-form on $T^*$} is a smooth family of sections $\omega_V\colon T^*V\to T^*(T^*V)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{V\oplus W}=\omega_V\oplus\omega_W$. In other words, $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ is a monoidal section of the bundle projection $\pi_{T^*V}\colon T^*(T^*V)\to T^*V$, from \eqref{eqn.pi_whiskered}.
