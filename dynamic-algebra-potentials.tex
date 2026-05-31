@@ -2369,7 +2369,7 @@ Its state set is the configuration space $\absval V$, and an incoming covector $
 We now turn to a physics-based semantics. We consider integrators of the form
 \[
 \begin{tikzcd}[column sep=60pt]
-	\rvect\ar[d, equal]\ar[r, "\Fun S", ""' name=top]&
+	\rvect\ar[d, equal]\ar[r, "\absval{T^*\blank}", ""' name=top]&
 	\smsetiso\ar[d, "\Store"]\\
 	\rvect\ar[r, "\cot"', ""{name=bot}]&
 	\poly
@@ -2380,7 +2380,7 @@ For a reactive vector space $(V,\sharpR_V):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
 T^*V\coloneqq V\oplus V^*.
 \end{equation}
-This agrees with taking the cotangent bundle of $V$ as a manifold. Thus for these integrators, the stored state is a point $(x,\xi)$ in the phase space $T^*V=V\oplus V^*$, with \emph{position} $x$ and \emph{momentum} $\xi$.
+This agrees with taking the cotangent bundle of $V$ as a manifold. Thus for these integrators, the stored state is a point $(x,\xi)$ in the phase space $T^*V=V\oplus V^*$, with \emph{position} $x$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. Then we will turn to finding sources of $\upd$.
 
 The cotangent bundle is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon V\To{\cong} W$, define
@@ -2545,11 +2545,11 @@ For $\oplus$-monoidality, on positions $\chi_{V\oplus W}=\chi_V\oplus\chi_W$ sin
 The following lemma combines monoidal readouts and 1-forms into a package we will use later.
 
 \begin{lemma}\label{lem.combined_update}
-A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $u_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
+A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $\nu_{\chi,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
 \[
 \begin{tikzcd}[column sep=2.5em]
 \cot\circ T^*
-  \ar[rrr, bend left=12, "u_{\chi,\omega}"]
+  \ar[rrr, bend left=12, "\nu_{\chi,\omega}"]
   \ar[r, "\cotof{\Delta_{T^*\blank}}"']
 & (\cot\circ T^*)\otimes(\cot\circ T^*)
   \ar[r, "\chi\otimes\omega"']
@@ -2558,7 +2558,7 @@ A monoidal readout $\chi$ and a monoidal 1-form $\omega$ combine into a monoidal
 & \cot.
 \end{tikzcd}
 \]
-On positions $u_{\chi,\omega}$ is $\chi_V$; on directions at $(x,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)$.
+On positions $\nu_{\chi,\omega}$ is $\chi_V$; on directions at $(x,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)$.
 \end{lemma}
 
 \begin{proof}
@@ -2568,18 +2568,18 @@ Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by
 \subsection{Phase-space integrators}\label{sec.phase_integrators}
 
 \begin{definition}\label{def.one_form_lift}
-For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define an integrator $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $u_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
+For a monoidal 1-form $\omega$ and a monoidal readout $\chi$, define an integrator $\intg_{\chi,\omega}\coloneqq(\absval{T^*\blank},\upd_{\chi,\omega})$ with state space the phase space $\absval{T^*\blank}$ and update $\upd_{\chi,\omega}$ the combined transformation $\nu_{\chi,\omega}$ of \cref{lem.combined_update} precomposed with $\thetaV{T^*\blank}$:
 \[
 \upd_{\chi,\omega}\colon\quad
 \Store\circ\absval{T^*\blank}
 \To{\thetaV{T^*\blank}}
 \cot\circ T^*
-\To{u_{\chi,\omega}}
+\To{\nu_{\chi,\omega}}
 \cot.
 \]
 For the projection $\chi=\pi$, where $\pi(x,\xi)=x$, we write $\intg_\omega\coloneqq\intg_{\pi,\omega}$.
 \end{definition}
-This is an integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors, hence strong monoidal; $\thetaV{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}, and $u_{\chi,\omega}$ by \cref{lem.combined_update}.
+This is an integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors, hence strong monoidal; $\thetaV{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}, and $\nu_{\chi,\omega}$ by \cref{lem.combined_update}.
 
 
 \begin{proposition}\label{prop.one_form_lift}
@@ -2591,7 +2591,7 @@ Writing $\omega_V(x,\xi)=\bigl(a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)\in V^*\op
 \end{proposition}
 
 \begin{proof}
-By \cref{lem.combined_update}, $u_{\chi,\omega}$ sends $(x,\xi)\mapsto\chi_V(x,\xi)$ on positions and, on directions, $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)=\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)$. Precomposing with $\thetaV{T^*V}$ leaves positions unchanged and, on directions, adds to the state $(x,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of that covector \eqref{eqn.directions_sharp},
+By \cref{lem.combined_update}, $\nu_{\chi,\omega}$ sends $(x,\xi)\mapsto\chi_V(x,\xi)$ on positions and, on directions, $\xi'\mapsto(\xi',0)+\omega_V(x,\xi)=\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)$. Precomposing with $\thetaV{T^*V}$ leaves positions unchanged and, on directions, adds to the state $(x,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of that covector \eqref{eqn.directions_sharp},
 \[
 \sharpS_{T^*V}\bigl(\xi'+a_\omega(x,\xi),\,b_\omega(x,\xi)\bigr)=\bigl(b_\omega(x,\xi),\,-\xi'-a_\omega(x,\xi)\bigr),
 \]
