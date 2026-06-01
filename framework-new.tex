@@ -1,0 +1,190 @@
+% ============================================================================
+% framework-new.tex  --  DRAFT SCAFFOLD for the `abstract-reorg' branch
+% ----------------------------------------------------------------------------
+% This file is PARKED.  It is \input near the end of the document (just before
+% the bibliography) so that the new statements compile inside the real preamble.
+% It is NOT in its final position.  Per REORG.md, this material becomes the new
+% "The abstract framework" chapter, placed AFTER Background and BEFORE the
+% smooth-instance chapter; the current Ch.2/3/4 material is relocated around it.
+%
+% NO NEW PROOF GAPS: every Theorem/Proposition below is discharged by EXISTING,
+% complete results, named in its PROVENANCE comment.  The only genuinely open
+% items are the morphism layer for prop.integrator_variation (Tier 2) and the
+% functoriality remark rmk.rwd_functor (Tier 3), both flagged TODO.
+% Full migration map: REORG.md.
+% ============================================================================
+
+\providecommand{\rwd}{\Fun{rWD}}     % abstract rewiring-diagram operad / functor
+\providecommand{\Data}{\Cat{Data}}   % domain category of rewiring data
+\providecommand{\SMC}{\Cat{SMC}}     % symmetric monoidal categories (codomain slice)
+
+%============================================================================
+\chapter{[DRAFT scaffold] The abstract framework}\label{ch.framework_DRAFT}
+%============================================================================
+
+This chapter takes a list of ingredients---a \emph{rewiring setup}---and
+produces, with no further input, a syntax operad together with a functor into
+$\org$. The smooth development of the main text ($\cat C=\mfd$, $\cat A=\rvect$,
+$p=\cot$, $R=\rr$) is recovered by plugging in; see the recovery theorem of the
+smooth-instance chapter [\,ref TODO\,]. Throughout, the target categories
+$\poly$ and $\org$ are \emph{fixed}: every setup feeds the same semantic anchor,
+which is what makes ``a category over $\org$'' the natural output type.
+
+%----------------------------------------------------------------------------
+\section{Rewiring setups}\label{sec.rewiring_setup}
+%----------------------------------------------------------------------------
+
+\begin{definition}[Rewiring setup]\label{def.rewiring_setup}
+A \emph{rewiring setup} $D$ consists of
+\begin{enumerate}
+  \item a cartesian monoidal category $\cat C$, the \emph{spaces};
+  \item a symmetric monoidal category $\cat A$, the \emph{parameters}, together
+    with a strong monoidal functor $J\colon\cat A\to\cat C$;
+  \item a commutative monoid object $R$ in $\cat C$, the \emph{potential receptor};
+  \item a strong symmetric monoidal functor
+    $p\colon(\cat C,1,\times)\to(\poly,\yon,\otimes)$, the \emph{interface functor};
+  \item a coupled $\otimes$-monoid $z$ in $\poly$ equipped with a
+    $\bigl(p(R)\otimes\blank\bigr)$-monoid structure $\alpha$, the
+    \emph{potential algebra}.
+\end{enumerate}
+\end{definition}
+
+The five pieces play distinct roles. The pair $(\cat C,R)$ supplies the
+\emph{syntax}: lenses in $\cat C$ carry the wiring, and the monad $R\times\blank$
+adds a potential to the backward pass, giving the coKleisli category
+$\Lcokl{\cat C}{R}$. The functor $J$ supplies \emph{parameters}, acting by
+$a\cdot\lensob c=\binom{\inpt c}{J(a)\otimes\outp c}$. The functor $p$ is the
+\emph{bridge} to polynomials: strong monoidality is what turns a parallel product
+of interfaces into a $\otimes$-product of polynomials, and it carries the receptor
+$R$ to a commutative monoid $p(R)$ in $\poly$. The potential algebra $(z,\alpha)$
+is the recipient into which a potential differentiates. We do \emph{not} require
+$\cat C$ to be monoidal closed: Moore internalization is carried out in $\poly$,
+after $p$, so an internal hom is needed only in the (fixed, closed) target.
+
+% PROVENANCE -- every clause is already available:
+%  (1) cartesian => each J(a) carries a canonical comonoid (hypothesis of
+%      lem.parameter_lens_action).
+%  (3) lemma.monoid_to_monad: a commutative monoid gives a monoidal monad,
+%      functorial in (C,M).
+%      *** MONOID, not group: the antipode of p(R) is never used downstream --
+%          composition ADDS potentials via mu=(+), it never subtracts.
+%          See REORG.md, "group vs monoid".
+%  (4) prop.cot_monoidal is the instance p=cot; prop.cot_hopf upgrades p(R) to a
+%      Hopf monoid when R happens to be a group (not needed).
+%  (5) rmk.alpha_general: for a commutative (Hopf) monoid m and coupled z, the
+%      (m (x) -)-monoid structures are classified by m[e_m]; lem.alpha_constant
+%      is the instance m=cot(R), z=yon, giving the choice r=+1 (=> potd).
+
+%----------------------------------------------------------------------------
+\section{The syntax operad of a setup}\label{sec.rwd_syntax}
+%----------------------------------------------------------------------------
+
+\begin{definition}[$\rwd_D$]\label{def.rwd}
+Let $D$ be a rewiring setup. The symmetric monoidal category
+$\para{\cat A}{\Lcokl{\cat C}{R}}$ has, as its underlying operad, the
+\emph{rewiring-diagram operad} $\rwd_D$ of $D$.
+\end{definition}
+
+% PROVENANCE: this is def.potlens with (rvect, plmfd) replaced by (A, Lcokl C R).
+% The action of A on Lcokl C R is lem.parameter_lens_action (already stated for
+% general A, C, J, T).  NAMING: the smooth instance is \srwd; reserve "smooth
+% rewiring diagrams"/\srwd for that case, \rwd_D here (REORG.md, "naming").
+
+%----------------------------------------------------------------------------
+\section{Moore internalization and the data functor}\label{sec.data_functor}
+%----------------------------------------------------------------------------
+
+% RELOCATE HERE (verbatim): sec.abstract_representation -- Moore internalization
+% Theta_z (thm.Theta_T_alpha) is already stated for an arbitrary SMCC, monoidal
+% monad T, and T-monoid z; here it is applied at the (fixed, closed) target Poly.
+
+\begin{theorem}[Data functor]\label{thm.data_functor}
+Every rewiring setup $D$ yields a normal lax symmetric monoidal functor
+\[
+  \Phi'\colon\rwd_D\longrightarrow\para{p}{\poly},
+\]
+where $\cat A$ acts on $\poly$ by $a\cdot q\coloneqq p(Ja)\otimes q$. On objects,
+$\Phi'\lensob{M}=p(\outp{M})\otimes\ihom{p(\inpt{M}),z}$.
+\end{theorem}
+
+\begin{proof}
+% TODO: relocate the proof of lem.potlens_to_para_poly verbatim, cot -> p, mfd -> C.
+Compose the two normal lax monoidal functors
+\[
+  \para{\cat A}{\Lcokl{\cat C}{R}}\To{\para{\cat A}{\Lens p}}
+  \para{\cat A}{\Lcokl{\poly}{p(R)}}\To{\para{\cat A}{\Theta_z}}
+  \para{p}{\poly}
+\]
+and pass to underlying operads. The first leg is the $p$-level analogue of
+\cref{lem.cot_lifts_lens_potential} (strong monoidality of $p$, together with the
+monad morphism $p(R\times\blank)\Rightarrow p(R)\otimes p(\blank)$ supplied by
+\cref{lemma.monoid_to_monad}); the second is \cref{cor.parameterized_representation}
+applied to the potential algebra $(z,\alpha)$.
+\end{proof}
+
+%----------------------------------------------------------------------------
+\section{Integrators and the dynamics functor
+  \texorpdfstring{$\rwd\colon\Data\to\SMC_{/\org}$}{rWD: Data -> SMC/Org}}
+  \label{sec.dynamics_functor_abstract}
+%----------------------------------------------------------------------------
+
+% RELOCATE HERE: sec.integrators -- def.integrator and prop.integrator_to_org are
+% already stated for a general symmetric monoidal A and strong monoidal p: A->Poly.
+% The parameter interface here is the composite p o J : A -> Poly.
+
+\begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
+Let $D$ be a rewiring setup and $\intg$ a $(p\circ J)$-integrator. There is an
+operad functor
+\[
+  \Phi_\intg\colon\rwd_D\longrightarrow\org,
+\]
+namely the composite of the data functor $\Phi'$ (\cref{thm.data_functor}) with
+the integrator semantics $\Psisem{\intg}$ (\cref{prop.integrator_to_org}).
+\end{theorem}
+
+\begin{proof}
+% TODO: this is thm.functor at the level of a general setup; relocate verbatim.
+Immediate from \cref{thm.data_functor,prop.integrator_to_org}.
+\end{proof}
+
+Thus the construction takes in data and returns a category over the fixed semantic
+anchor $\org$.
+
+\begin{remark}[Functoriality in the data]\label{rmk.rwd_functor}
+Write $\Data$ for the category of rewiring setups-with-integrator $(D,\intg)$
+[\,morphisms: TODO\,]. The construction above is the object part of a functor
+\[
+  \rwd\colon\Data\longrightarrow\SMC_{/\org},
+  \qquad (D,\intg)\longmapsto\bigl(\rwd_D,\ \Phi_\intg\bigr),
+\]
+landing in the (normal-lax, pseudo) slice of symmetric monoidal categories over
+$\org$.
+\end{remark}
+
+% TIER 3 (aspirational).  A morphism of setups should be (F: C->C', G: A->A',
+% rho: R->R', ...) respecting the FIXED p/Org anchor (p' F = p, J' G = F J, ...),
+% so the triangle over Org commutes up to coherent iso.  The constituent gadgets
+% are already functorial: lemma.monoid_to_monad ("functorial in (C,M)"), Para is
+% functorial, cor.parameterized_representation is natural.  The worked example of
+% a setup morphism is the CLS overlap category R (prop.euler_submersion_lenses).
+% TODO: pin down Data-morphisms and assemble naturality, or leave as aspiration.
+
+\begin{proposition}[One syntax, many regimes]\label{prop.integrator_variation}
+Fix a rewiring setup $D$. The assignment $\intg\mapsto\Phi_\intg$ is functorial in
+the integrator:
+\[
+  \mathbf{Int}_D\longrightarrow[\rwd_D,\ \org].
+\]
+\end{proposition}
+
+\begin{proof}
+% TIER 2 -- TODO: define morphisms of integrators.  A map (S,u) -> (S',u') should
+% be a monoidal nat. transf. relating the state functors compatibly with the
+% updates; configuration (S=|-|) and phase (S=|T*-|) are related by the readout
+% T*V ->> V (the pi/chi/nu story of NOTATION.md).  Ties to the integrator
+% design-space remark.  Sketch only below; to be completed.
+\emph{[Sketch; see TODO.]} Since $\Phi_\intg=\Psisem{\intg}\circ\Phi'$ with $\Phi'$
+independent of $\intg$, functoriality in $\intg$ reduces to that of
+$\intg\mapsto\Psisem{\intg}$, which follows from the naturality of
+\cref{prop.integrator_to_org} in the update map.
+\end{proof}
