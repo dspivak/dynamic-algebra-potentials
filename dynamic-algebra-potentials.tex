@@ -2006,9 +2006,85 @@ supplied by \cref{lemma.monoid_to_monad}); the second is
   \label{sec.dynamics_functor_abstract}
 %----------------------------------------------------------------------------
 
-% RELOCATE HERE (move #4b): the ABSTRACT parts of sec.integrator_semantics --
-% sec.org_as_para (Para = Org) and sec.integrators (def.integrator,
-% prop.integrator_to_org). Leave sec.TT and sec.phase_integrators for the instance.
+\label{sec.org_as_para}%
+This section assembles the dynamics functor in three steps: we repackage $\org_\cong$ as a Para construction (\cref{prop.org_as_para,lem.poly_to_org}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the data functor to obtain $\Phi_\intg$ (\cref{thm.dynamics_functor}).
+
+Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
+
+
+\begin{proposition}\label{prop.org_as_para}
+There is an isomorphism of categories
+\[
+\para{\Cat{Set}_{\cong}}{\poly}\To{\cong}\org_\cong.
+\]
+\end{proposition}
+
+\begin{proof}
+Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to q$ agree
+\begin{align*}
+	\para{\Cat{Set}_{\cong}}{\poly}(p,q)&=
+  \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, q)\\&\cong
+  \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
+  \sum_{S:\smsetiso}\poly(S,[p,q]\tri S)=\org_\cong(p,q)
+\end{align*}
+by \cref{eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
+
+In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
+\end{proof}
+
+\begin{lemma}\label{lem.poly_to_org}
+Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
+\[
+D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
+\]
+\end{lemma}
+
+\begin{proof}
+The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\otimes p$. The following action square obviously commutes:
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
+\cat A\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
+\smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
+\end{tikzcd}
+\]
+\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
+\end{proof}
+
+
+\begin{definition}[Integrator]\label{def.integrator}
+Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor, the \emph{parameter interface}. A \emph{$p$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\upd)$
+\[
+\begin{tikzcd}[column sep=60pt]
+	\cat A\ar[d, equal]\ar[r, "\Fun S", ""' name=top]&
+	\smsetiso\ar[d, "\Store"]\\
+	\cat A\ar[r, "p"', ""{name=bot}]&
+	\poly
+	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\upd"]
+\end{tikzcd}
+\]
+where $\Fun S\colon\cat A\to\smsetiso$, the \emph{state space}, is a strong symmetric monoidal functor and $\defineTerm{upd}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{update map}, is a monoidal natural transformation.
+\end{definition}
+
+By \cref{prop.coalg_as_poly_map}, the component $\upd_a\colon\Store(\Fun S(a))\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S(a)$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
+
+We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration, phase, and dissipative---are numerical integrators of explicit-Euler type, namely Euler on configuration space, a phase-space analogue, and a dissipative variant. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$ (e.g.\ amount of friction).
+
+\begin{proposition}\label{prop.integrator_to_org}
+Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
+\[\Psisem{\intg}\colon\para{p}{\poly}\to\org_\cong.\]
+\end{proposition}
+
+\begin{proof}
+Write $\Fun S$ for the state space of $\intg=(\Fun S,\upd)$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
+\[
+D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\org_\cong.
+\]
+By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
+\[
+\Para_{\cat A}^{\upd}\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
+\]
+Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd}$; it is normal lax monoidal because $\Para_{\cat A}^{\upd}$ is strong.
+\end{proof}
 
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
 Let $D$ be a rewiring setup and $\intg$ a $(\Fun{c}\circ J)$-integrator. There is an
@@ -2470,50 +2546,7 @@ This chapter constructs the dynamics functors $\srwd\to\org$ promised in the int
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-In \cref{sec.org_as_para} we repackage $\org_\cong$ as a Para construction over the store action of $\smsetiso$ on $\poly$. \Cref{sec.integrators} introduces \emph{integrators}, the device that turns an update map into a semantics, and builds the configuration integrator $\intg_\theta$. \Cref{sec.TT} develops the cotangent endofunctor and \cref{sec.phase_integrators} uses it to build the phase integrator $\intg_\beta$.
-
-\subsection{Coalgebras as Para over the store action}\label{sec.org_as_para}
-
-Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
-
-
-\begin{proposition}\label{prop.org_as_para}
-There is an isomorphism of categories
-\[
-\para{\Cat{Set}_{\cong}}{\poly}\To{\cong}\org_\cong.
-\]
-\end{proposition}
-
-\begin{proof}
-Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to q$ agree
-\begin{align*}
-	\para{\Cat{Set}_{\cong}}{\poly}(p,q)&=
-  \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, q)\\&\cong
-  \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
-  \sum_{S:\smsetiso}\poly(S,[p,q]\tri S)=\org_\cong(p,q)
-\end{align*}
-by \cref{eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
-
-In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
-\end{proof}
-
-\begin{lemma}\label{lem.poly_to_org}
-Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
-\[
-D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
-\]
-\end{lemma}
-
-\begin{proof}
-The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\otimes p$. The following action square obviously commutes:
-\[
-\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
-\cat A\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
-\smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
-\end{tikzcd}
-\]
-\Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
-\end{proof}
+Building on the integrator notion of \cref{sec.dynamics_functor_abstract}, this section constructs the two integrators used in the paper. \Cref{sec.integrators} builds the configuration integrator $\intg_\theta$; \cref{sec.TT} develops the cotangent endofunctor and \cref{sec.phase_integrators} uses it to build the phase integrator $\intg_\beta$.
 
 \subsection{Integrators}\label{sec.integrators}
 
@@ -2521,40 +2554,6 @@ Looking ahead, \cref{lem.potlens_to_para_poly} will assemble our constructions s
 
 In what follows we write $\cot\colon\rvect\to\poly$ for the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$.
 
-\begin{definition}[Integrator]\label{def.integrator}
-Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor, the \emph{parameter interface}. A \emph{$p$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\upd)$
-\[
-\begin{tikzcd}[column sep=60pt]
-	\cat A\ar[d, equal]\ar[r, "\Fun S", ""' name=top]&
-	\smsetiso\ar[d, "\Store"]\\
-	\cat A\ar[r, "p"', ""{name=bot}]&
-	\poly
-	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\upd"]
-\end{tikzcd}
-\]
-where $\Fun S\colon\cat A\to\smsetiso$, the \emph{state space}, is a strong symmetric monoidal functor and $\defineTerm{upd}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{update map}, is a monoidal natural transformation.
-\end{definition}
-
-By \cref{prop.coalg_as_poly_map}, the component $\upd_a\colon\Store(\Fun S(a))\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S(a)$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
-
-We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration, phase, and dissipative---are numerical integrators of explicit-Euler type, namely Euler on configuration space, a phase-space analogue, and a dissipative variant. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$ (e.g.\ amount of friction).
-
-\begin{proposition}\label{prop.integrator_to_org}
-Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
-\[\Psisem{\intg}\colon\para{p}{\poly}\to\org_\cong.\]
-\end{proposition}
-
-\begin{proof}
-Write $\Fun S$ for the state space of $\intg=(\Fun S,\upd)$. Since $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
-\[
-D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\org_\cong.
-\]
-By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
-\[
-\Para_{\cat A}^{\upd}\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
-\]
-Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd}$; it is normal lax monoidal because $\Para_{\cat A}^{\upd}$ is strong.
-\end{proof}
 
 We specialize to $\cat A=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $V\cdot q\coloneqq\cotof{V}\otimes q$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\org_\cong.\]

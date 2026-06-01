@@ -133,9 +133,10 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
   - **4.** Fill data-functor/integrator stubs:
     - [x] prep: inline the framework chapter into the main file.
     - [x] **4a.** Moore internalization machinery → Ch 3 data-functor section (label preserved).
-    - [ ] **4b.** abstract integrators (`sec.org_as_para`, `sec.integrators`) → Ch 3 dynamics-functor section; leave `sec.TT`, `sec.phase_integrators` for the instance.
+    - [x] **4b.** abstract integrators (`sec.org_as_para`, `def.integrator`, `prop.integrator_to_org`) → Ch 3 dynamics-functor section; `sec.TT`/`sec.phase_integrators`/`prop.rvect_polynomial`/config integrator left for the instance.
   - [ ] **5.** Assemble instance chapter: rvect + potentialized lenses + the two concrete integrators + recovery.
-  - [ ] **6.** Trim cross-refs / chapter intros / NOTATION as each lands.
+  - [ ] **6.** Trim cross-refs / chapter intros / NOTATION as each lands; drop "[DRAFT scaffold]" title.
+- [ ] **Math gap to close:** state the abstract `Lens(𝖼)` lemma (the `𝖼`-level analogue of `lem.cot_lifts_lens_potential`) that `thm.data_functor`'s proof currently cites as "the 𝖼-level analogue". The one genuinely-new statement; everything else is relocation.
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
 - [ ] Relocate `framework-new.tex` content into Ch 3; delete the parked `\input`.
