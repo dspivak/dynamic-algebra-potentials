@@ -1487,6 +1487,77 @@ $\para{\cat V}{\Lcokl{\cat M}{R}}$ has, as its underlying operad, the
 \emph{rewiring-diagram operad} $\rwd_D$ of $D$.
 \end{definition}
 
+\begin{remark}\label{rem.huge_wiring_diagram}
+The following diagram depicts composition of 1-ary morphisms in $\rwd_D$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
+
+So suppose given rewiring diagrams $f=(a,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$, with parameter $a$ and potential $U$, and $g=(a',\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $a'$ and potential $U'$. One may imagine $\lensob{L}$ as the inner-most box, $\lensob{M}$ as the middle box, and $\lensob{N}$ as the outer-most box.
+
+The composite $g\circ f$ has parameter $a\otimes a'$, forward and backward components inherited from $\Lcokl{\cat M}{R}$, and potential added via the monad multiplication $\mu$.
+\[
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
+  \node[bb={2}{1}] (fo) {$\outp f$};
+  \node[bb={2}{1}, right=7 of fo] (go) {$\outp g$};
+  \node[bb={1}{3}, above left=4 and 3 of fo] (fi) {$\inpt f$};
+  \node[bb={1}{3}, above left=4 and 3 of go] (gi) {$\inpt g$};
+  \node[bb={1}{3}, above right=1 and 0 of fi] (V) {$U$};
+  \node[bb={1}{3}, above right=1 and 0 of gi] (W) {$U'$};
+  \node[bb={1}{2}, above left=-1 and 2 of V] (plus) {$\mu$};
+  %
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo_in2] (dotL) {};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(gi.east|-fo.east)+(1,0)$) (dotM) {};
+  %
+  \coordinate (Lo) at ($(dotL)+(-5,0)$);
+  \coordinate (No) at ($(go.east)+(1,0)$);
+  \coordinate (Li) at (Lo |- fi_in1);
+  \coordinate (Ni) at (No |- gi_out3);
+  \node[left=0 of Lo] {$\outp L$};
+  \node[right=0 of No] {$\outp N$};
+  \node[left=0 of Li] {$\inpt L$};
+  \node[right=0 of Ni] {$\inpt N$};
+  %
+  \draw[ar] (Lo) to (dotL);
+  \draw[ar] (dotL) to (fo_in2);
+  \draw[ar] (fo_out1) to node[above, font=\scriptsize] {$\outp M$} (dotM);
+  \draw[ar] (dotM) to (go_in2);
+  \draw[ar] (go_out1) to (No);
+  \draw[ar] (fi_in1) to (Li);
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(gi_out3)+(3,0)$) (dotNI) {};
+  \draw[ar] (Ni) to (dotNI);
+  \draw[ar] (dotNI) to (gi_out3);
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fi_out3)+(3,0)$) (dotMI) {};
+  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt M$} (dotMI);
+  \draw[ar] (dotMI) to (fi_out3);
+  \draw[ar] (dotL) to[out=60, in=0] (fi_out2);
+  \draw[ar] (dotM) to[out=60, in=0] (gi_out2);
+  %
+  \node[above left=1 and 0 of Lo] (P) {$a$};
+  \node[above left=4 and 0 of Lo] (Q) {$a'$};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dotL|-P) (dotP) {};
+  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=5pt] at (dotM|-Q) (dotQ) {};
+  \draw[ar] (P) to (dotP);
+  \draw[ar] (Q) to (dotQ);
+  \draw[ar] (dotP) to (fo_in1);
+  \draw[ar] (dotP) to[out=60, in=0] (fi_out1);
+  \draw[ar] (dotQ) to (go_in1);
+  \draw[ar] (dotQ) to[out=60, in=0] (gi_out1);
+  %
+  \draw[ar] (dotP) to[out=60, in=0] (V_out1);
+  \draw[ar] (dotL) to[out=60, in=0] (V_out2);
+  \draw[ar] (dotMI) to[out=120, in=0] (V_out3);
+  \draw[ar] (dotQ) to[out=60, in=0] (W_out1);
+  \draw[ar] (dotM) to[out=60, in=0] (W_out2);
+  \draw[ar] (dotNI) to[out=120, in=0] (W_out3);
+  %
+  \draw[ar] (V_in1) to[out=180, in=0] (plus_out2);
+  \draw[ar] (W_in1) to[out=180, in=0] (plus_out1);
+  \coordinate (R) at ($(plus.west)+(-1,0)$);
+  \node[left=0 of R] {$R$};
+  \draw[ar] (plus_in1) to (R);
+\end{tikzpicture}
+\qedhere
+\]
+\end{remark}
+
 %----------------------------------------------------------------------------
 \section{Moore internalization and the data functor}\label{sec.data_functor}
 %----------------------------------------------------------------------------
@@ -2341,76 +2412,6 @@ U\colon V\times\prod_{i=1}^K\outp M_i\times\inpt N\to\rr.
 
 From this point on we work in $\srwd$. Multimorphisms in $\srwd$ are called \emph{smooth rewiring diagrams}. When the parameter is the trivial reactive vector space $\rr^0$, we call such a morphism a \emph{smooth (static) wiring diagram}; when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$, we call it a \emph{closed system}.
 
-\begin{remark}\label{rem.huge_wiring_diagram}
-The following diagram depicts composition of 1-ary morphisms in $\srwd$. We include it only for the algorithmically-minded reader's convenience: \emph{it follows from the abstract framework we already have developed.}
-
-So suppose given smooth rewiring diagrams $f=(V,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$, with parameter $V$ and potential $U$, and $g=(W,\outp g,\inpt g,U')\colon\lensob M\to\lensob N$, with parameter $W$ and potential $U'$. One may imagine $\lensob{L}$ as the inner-most box, $\lensob{M}$ as the middle box, and $\lensob{N}$ as the outer-most box.
-
-The composite $g\circ m$ has parameter $V\oplus W$, forward and backward components inherited from $\lmfd$, and potential added via the monad multiplication $\mu\coloneqq(+)$. 
-\[
-\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
-  \node[bb={2}{1}] (fo) {$\outp f$};
-  \node[bb={2}{1}, right=7 of fo] (go) {$\outp g$};
-  \node[bb={1}{3}, above left=4 and 3 of fo] (fi) {$\inpt f$};
-  \node[bb={1}{3}, above left=4 and 3 of go] (gi) {$\inpt g$};
-  \node[bb={1}{3}, above right=1 and 0 of fi] (V) {$U$};
-  \node[bb={1}{3}, above right=1 and 0 of gi] (W) {$U'$};
-  \node[bb={1}{2}, above left=-1 and 2 of V] (plus) {$+$};
-  %
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=1 of fo_in2] (dotL) {};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(gi.east|-fo.east)+(1,0)$) (dotM) {};
-  %
-  \coordinate (Lo) at ($(dotL)+(-5,0)$);
-  \coordinate (No) at ($(go.east)+(1,0)$);
-  \coordinate (Li) at (Lo |- fi_in1);
-  \coordinate (Ni) at (No |- gi_out3);
-  \node[left=0 of Lo] {$\outp L$};
-  \node[right=0 of No] {$\outp N$};
-  \node[left=0 of Li] {$\inpt L$};
-  \node[right=0 of Ni] {$\inpt N$};
-  %
-  \draw[ar] (Lo) to (dotL);
-  \draw[ar] (dotL) to (fo_in2);
-  \draw[ar] (fo_out1) to node[above, font=\scriptsize] {$\outp M$} (dotM);
-  \draw[ar] (dotM) to (go_in2);
-  \draw[ar] (go_out1) to (No);
-  \draw[ar] (fi_in1) to (Li);
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(gi_out3)+(3,0)$) (dotNI) {};
-  \draw[ar] (Ni) to (dotNI);
-  \draw[ar] (dotNI) to (gi_out3);
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at ($(fi_out3)+(3,0)$) (dotMI) {};
-  \draw[ar] (gi_in1) to[out=180, in=0] node[above, font=\scriptsize] {$\inpt M$} (dotMI);
-  \draw[ar] (dotMI) to (fi_out3);
-  \draw[ar] (dotL) to[out=60, in=0] (fi_out2);
-  \draw[ar] (dotM) to[out=60, in=0] (gi_out2);
-  %
-  \node[above left=1 and 0 of Lo] (P) {$V$};
-  \node[above left=4 and 0 of Lo] (Q) {$W$};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt] at (dotL|-P) (dotP) {};
-  \node[circle, draw, fill=black, inner sep=0, minimum size=3pt, left=5pt] at (dotM|-Q) (dotQ) {};
-  \draw[ar] (P) to (dotP);
-  \draw[ar] (Q) to (dotQ);
-  \draw[ar] (dotP) to (fo_in1);
-  \draw[ar] (dotP) to[out=60, in=0] (fi_out1);
-  \draw[ar] (dotQ) to (go_in1);
-  \draw[ar] (dotQ) to[out=60, in=0] (gi_out1);
-  %
-  \draw[ar] (dotP) to[out=60, in=0] (V_out1);
-  \draw[ar] (dotL) to[out=60, in=0] (V_out2);
-  \draw[ar] (dotMI) to[out=120, in=0] (V_out3);
-  \draw[ar] (dotQ) to[out=60, in=0] (W_out1);
-  \draw[ar] (dotM) to[out=60, in=0] (W_out2);
-  \draw[ar] (dotNI) to[out=120, in=0] (W_out3);
-  %
-  \draw[ar] (V_in1) to[out=180, in=0] (plus_out2);
-  \draw[ar] (W_in1) to[out=180, in=0] (plus_out1);
-  \coordinate (R) at ($(plus.west)+(-1,0)$);
-  \node[left=0 of R] {$\rr$};
-  \draw[ar] (plus_in1) to (R);
-\end{tikzpicture}
-\qedhere
-\]
-\end{remark}
 
 This settles the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take $\cat{W}\coloneqq\srwd$.
 
