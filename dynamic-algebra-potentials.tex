@@ -69,7 +69,6 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
   \setlistdepth{6}
 
 
-
 % tikz %
 
   \usetikzlibrary{
@@ -164,7 +163,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 			}
 		}
 }
-
 
 
   % amsthm + aliascnt (so cleveref prints the correct environment name) %
@@ -301,8 +299,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \DeclareMathOperator{\el}{El}
 
 
-
-
 \newcommand{\cat}[1]{\mathcal{#1}}%a generic category
 \newcommand{\Cat}[1]{\mathbf{#1}}%a named category
 \newcommand{\fun}[1]{\mathrm{#1}}%a function
@@ -327,8 +323,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \makeatother
 % To disable semantic notation links, replace the \termref line above with:
 % \DeclareRobustCommand{\termref}[2]{\notsafe{#2}}
-
-
 
 
 \newcommand{\id}{\mathrm{id}}
@@ -487,7 +481,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \setcounter{tocdepth}{1}
 
 
-
 %---------------Document---------------%
 \begin{document}
 
@@ -632,8 +625,6 @@ For $\cat R$ as above, there is a category $\cat S$, whose objects are submersio
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition*}
 The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_V$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\org$ on our side, where the tangent component $\dot x$ becomes the Euler step $x\mapsto x+\dot x$.
-
-
 
 
 %--------------------------------------------------------------------
@@ -2359,20 +2350,10 @@ A map $\lensob p\to\lensob q$ in $\plpoly$ is a pair
 \inpt f\colon\outp p\otimes\inpt q\to\cotof{\rr}\otimes\inpt p.
 \]
 
-\begin{lemma}\label{lem.cot_lifts_lens_potential}
-The strong symmetric monoidal functor $\cot\colon\mfd\to\poly$ lifts to a strong symmetric monoidal functor
-\[
-\Lens\cot\colon\plmfd\to\plpoly.
-\]
-\end{lemma}
-
-\begin{proof}
-Apply \cref{lem.lens_T_functoriality} with $F=\cot$ (strong symmetric monoidal by \cref{prop.cot_monoidal}) and the monad morphism $\cotof{\rr\times\blank}\Rightarrow\cotof{\rr}\otimes\cotof{\blank}$ supplied by \cref{lemma.monoid_to_monad}.
-\end{proof}
 
 \subsection{The potential algebra \texorpdfstring{$\potd$}{d}}\label{sec.potential_algebra}
 
-In \cref{lem.Theta_poly_potential} we will apply the Moore internalization from \cref{thm.Theta_T_alpha}, which works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$. For simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cotof{\rr}\to\yon$ is extra data.
+We now pin down the potential algebra $(z,\alpha)$ of the smooth setup. The Moore internalization of \cref{thm.Theta_T_alpha} works for any $\Fun T$-monoid $(z,e,m,\alpha)$ in $\poly$; for simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cotof{\rr}\to\yon$ is extra data.
 
 \begin{lemma}\label{lem.alpha_constant}
 Consider the monad $\Fun{T}\coloneqq(\cotof{\rr}\otimes\blank)$ on $\poly$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
@@ -2403,32 +2384,6 @@ We call it $\potd$ because this is the choice for which potentials contribute th
 \]
 exactly as in \eqref{eqn.differential}.
 
-\begin{lemma}\label{lem.Theta_poly_potential}
-There is a normal lax monoidal functor
-\[
-\Theta_{\potd}\colon\plpoly\to\poly,\qquad
-\Theta_{\potd}\lensob p\coloneqq\ihom{\inpt p,\yon}\otimes\outp p.
-\]
-%It sends a map $f\colon\lensob p\to\lensob q$, i.e.\ $\binom{\inpt f}{\outp f}$ with $\outp f\colon \outp p\to\outp q$ and $\inpt f\colon\outp p\otimes\inpt q\to\cotof{\rr}\otimes\inpt p$, to the composite
-%\[
-%\begin{tikzcd}[column sep=45pt, row sep=22pt, ampersand replacement=\&]
-%\outp p\otimes\ihom{\inpt p,\yon}\ar[r,"{\delta_{\outp p}\otimes\id}"]\ar[dd, dashed, "\Theta_{\potd}(f)"']
-%\& \outp p\otimes\outp p\otimes\ihom{\inpt p,\yon}\ar[r,"\outp f\otimes\coev"]
-%\& \outp q\otimes\ihom{\inpt q,\outp p\otimes\inpt q\otimes\ihom{\inpt p,\yon}}\ar[d,"{\id\otimes\ihom{\inpt q,\inpt f\otimes\id}}"]
-%\\
-%\&
-%\& \outp q\otimes\ihom{\inpt q,\Fun T\inpt p\otimes\ihom{\inpt p,\yon}}\ar[d,"{\id\otimes\ihom{\inpt q,\sigma}}"]
-%\\
-%\outp q\otimes\ihom{\inpt q,\yon}
-%\& \outp q\otimes\ihom{\inpt q,\Fun T\yon}\ar[l,"{\id\otimes\ihom{\inpt q,\potd}}"]
-%\& \outp q\otimes\ihom{\inpt q,\Fun T(\inpt p\otimes\ihom{\inpt p,\yon})}\ar[l,"{\id\otimes\ihom{\inpt q,\Fun T\ev}}"]
-%\end{tikzcd}
-%\]
-\end{lemma}
-
-\begin{proof}
-Follows from \cref{lemma.monoid_to_monad,lem.alpha_constant,thm.Theta_T_alpha}.
-\end{proof}
 
 \subsection{Forming \texorpdfstring{$\srwd$}{SRWD}}\label{sec.forming_potlens}
 
