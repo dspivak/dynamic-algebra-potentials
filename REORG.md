@@ -144,9 +144,11 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
     - [ ] part 2e-ii (optional): move #2 — manifolds + `sec.cot` from Background into the instance (Ch 4 start), so the instance is self-contained with its ingredients. Surgical (`sec.cot` is nested in `sec.poly_dynamic_bg`). Reframe Ch 4/Ch 5 intros + titles as "the smooth instance".
   - **6.** Trims:
     - [x] drop "[DRAFT scaffold]" title; rename `ch.framework_DRAFT` → `ch.framework`.
-    - [ ] move `lemma.monoid_to_monad` earlier (kills the `lem.c_lifts_lens` forward-ref).
-    - [ ] rewrite the **Plan** (`sec.plan`) for the 5-chapter shape (it still describes the old 4-chapter structure, missing the framework chapter).
-    - [ ] NOTATION pass (add `𝓜`/`𝓥`/`𝖼`/`R`/`rWD`; reconcile with the new structure).
+    - [x] move `lemma.monoid_to_monad` to Background (kills the `lem.c_lifts_lens` forward-ref); move `\rwd`/`\Data`/`\SMC` to the preamble.
+    - [x] rewrite the **Plan** (`sec.plan`) for the new 5-chapter shape.
+    - [x] NOTATION pass: added the "Abstract framework (rewiring setups)" table + smooth-instance column; updated the dynamics-functor row.
+
+  **Remaining (optional):** part 2e-ii — pull manifolds + `sec.cot` out of Background into the instance (Ch 4 opens with its own ingredients); reframe Ch 4/5 as "the smooth instance". Invasive (cross-chapter double-move; `sec.cot` nested in `sec.poly_dynamic_bg`); deferred as a dedicated pass. Paper is coherent without it.
 - [x] **Math gap closed:** `lem.c_lifts_lens` stated (= `lem.cot_lifts_lens_potential` at `𝖼`).
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
