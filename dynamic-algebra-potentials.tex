@@ -1408,6 +1408,20 @@ These two functions entirely determine the wiring diagram \eqref{eqn.arb_wd} as 
 
 \subsection{Backward monads on lenses}\label{sec.backwards}
 
+Our potentials will arise from a commutative monoid, via the following standard fact.
+
+\begin{lemma}\label{lemma.monoid_to_monad}
+If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative monoid object in it, then $M\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,M)$.
+\end{lemma}
+
+\begin{proof}
+The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The monoidal structure has unitor $e\colon I\to M\cong M\otimes I$ and productor
+\begin{equation}\label{eqn.monoid_productor}
+(M\otimes X)\otimes(M\otimes Y)\cong M\otimes M\otimes X\otimes Y\To{(*)\otimes\id}M\otimes X\otimes Y.
+\end{equation}
+The coherence diagrams arise from the monoid laws and commutativity of $M$. Functoriality in $(\cat C,M)$ is straightforward.
+\end{proof}
+
 We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad into a comonad.
 
 Recall that a monad $\Fun{T}$ on a monoidal category is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. When $\Fun{T}$ is a monoidal monad with components $\tau_0$ and $\tau_{X,Y}$, it is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
@@ -2250,18 +2264,6 @@ which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent
 Now that we have $\rvect$ in hand, we can assemble the syntax operad $\srwd$, whose morphisms are $\rvect$-parameterized manifold lenses equipped with a \emph{potential}---a smooth function $U\colon X\to\rr$---on the backward pass. This is the source of the $\rr$ throughout the section. \cref{sec.potentialized_cokleisli} specializes the backward-monad construction of \cref{sec.backwards} to $(\rr\times\blank)$ on $\mfd$, producing $\plmfd$; \cref{sec.potential_algebra} defines the potential monoid $\potd$ used by Moore internalization; \cref{sec.forming_potlens} parameterizes $\plmfd$ over $\rvect$ to form $\srwd$ and provides an explicit diagrammatic depiction of its morphisms.
 
 \subsection{Potentialized coKleisli lenses}\label{sec.potentialized_cokleisli}
-
-\begin{lemma}\label{lemma.monoid_to_monad}
-If $\cat{C}$ is a symmetric monoidal category and $(M,e,(*))$ is a commutative monoid object in it, then $M\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,M)$.
-\end{lemma}
-
-\begin{proof}
-The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The monoidal structure has unitor $e\colon I\to M\cong M\otimes I$ and productor
-\begin{equation}\label{eqn.monoid_productor}
-(M\otimes X)\otimes(M\otimes Y)\cong M\otimes M\otimes X\otimes Y\To{(*)\otimes\id}M\otimes X\otimes Y.
-\end{equation}
-The coherence diagrams arise from the monoid laws and commutativity of $M$. Functoriality in $(\cat C,M)$ is straightforward.
-\end{proof}
 
 Since $(\rr,0,+)$ is a commutative Lie group, \cref{prop.cot_hopf} gives a commutative monoid---in fact Hopf monoid---object $\cotof{\rr}$ in $\poly$. By \cref{lemma.monoid_to_monad} there are corresponding monoidal monads $(\rr\times\blank)$ and $(\cotof{\rr}\otimes\blank)$ respectively on $\mfd$ and $\poly$, and by \cref{prop.backward_comonad} there are corresponding colax monoidal comonads on $\Lens{\mfd}$ and $\Lens{\poly}$. We let $(\plmfd,\binom{\rr^0}{\rr^0},\times)$ and $(\plpoly,\binom{\yon}{\yon},\otimes)$ denote the corresponding coKleisli categories.
 
