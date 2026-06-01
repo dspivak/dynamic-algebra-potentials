@@ -138,10 +138,10 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
     - [x] part 1: word-for-word abstract proofs (thm.data_functor ← lem.potlens_to_para_poly, thm.dynamics_functor ← thm.functor); add `lem.c_lifts_lens`.
     - [x] part 2a: dedup `thm.recovery`'s proof (drop the four doomed full-proof citations).
     - [x] part 2b: delete `lem.potlens_to_para_poly` (folded into recovery); `thm.functor` → headline **corollary** of `thm.dynamics_functor`.
-    - [ ] part 2c: redirect remaining `thm.functor` references that read wrong now — Plan (647), Ch 5 intro ("the main theorem of the paper"), `rmk.rmfdc` (2591), the Φconf/Φphase unpacking "recall from `thm.functor`" (→ `thm.dynamics_functor`).
-    - [ ] part 2d: delete the other two subsumed concretes `lem.cot_lifts_lens_potential`, `lem.Theta_poly_potential`; move `lemma.monoid_to_monad` earlier (kills the `lem.c_lifts_lens` forward-ref).
+    - [x] part 2c: redirect stale `thm.functor` references (Ch 5 intro, `rmk.rmfdc`, the Φconf/Φphase unpacking) → `thm.dynamics_functor`. (Plan 647 deferred to step 6's holistic plan rewrite.)
+    - [x] part 2d: delete the other two subsumed concretes `lem.cot_lifts_lens_potential`, `lem.Theta_poly_potential`.
     - [ ] part 2e: relocate Recovery + the corollary to sit with the concrete integrators; gather the instance chapter (rvect, cot, manifolds (#2), integrators, Φ-unpacking).
-  - [ ] **6.** Trims: chapter intros / NOTATION; drop "[DRAFT scaffold]" title.
+  - [ ] **6.** Trims: move `lemma.monoid_to_monad` earlier (kills the `lem.c_lifts_lens` forward-ref); rewrite the Plan for the 5-chapter shape; chapter intros / NOTATION; drop "[DRAFT scaffold]" title.
 - [x] **Math gap closed:** `lem.c_lifts_lens` stated (= `lem.cot_lifts_lens_potential` at `𝖼`).
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
