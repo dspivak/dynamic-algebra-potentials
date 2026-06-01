@@ -128,40 +128,16 @@ edit, where updating the table is the whole point.
 Search hints: "manifold", "vector space", "point", "covector", "tangent",
 `(x,\\xi)`, `T^*_`, `T_xV`, `m\\colon\\rr^0`.
 
-### Sections of `T^*` (covector fields / 1-forms)
+### Sections of `T^*` (covector fields)
 
-A section of `T^*` is `\omega\colon M\to T^*M` for a generic manifold `M`,
-specializing to the monoidal-1-form case `\omega\colon T^*V\to T^*T^*V` when
-`M=T^*V`. Same sort, same symbol; the base just changes.
+A section of `T^*` is `\omega\colon M\to T^*M` for a generic manifold `M`; on `T^*V` we use the kinetic datum `\beta`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Generic section of `T^*` | `\omega` | also names the induced nat. trans.; covers covector fields on any `M` |
-| Kinetic 1-form | `\beta` | the `\sharpR`-packaging on `T^*V`; term-tracked (`\trackTermSymbol{beta_kin}`), anchor `\defineTerm{beta_kin}_V` at `ex.kinetic_one_form`, so all `\beta` back-link there |
-| Dissipation 1-form | `\zeta` | base form `\zeta_V(x,\xi)=(\xi,0)`; the friction-`c` form is the scalar multiple `c\,\zeta` |
-| **Forbidden for 1-forms** | `\gamma`, `\alpha`, bare `\omega` for dissipation | `\gamma` used elsewhere as a generic nat. trans.; bare `\omega` is the *generic* 1-form and collides with the specific dissipation form |
+| Generic section of `T^*` | `\omega` | a covector field on a manifold `M`; also names an induced nat. trans. |
+| Kinetic datum | `\beta` | the `\sharpR`-packaging `\beta_V(x,\xi)=(0,\sharpR_x\xi)` on `T^*V`; term-tracked (`\trackTermSymbol{beta_kin}`), anchor `\defineTerm{beta_kin}_V` at `eqn.kinetic_one_form` |
 
-Search hints: `"1-form"`, `"one[- ]form"`, `\\Rightarrow\\yon`,
-`T^*V\\to T^*\\(T^*V\\)`, `\\colon T^*`.
-
-### Monoidal readouts on `T^*`
-
-A monoidal readout is `\chi\colon\inc\circ T^*\Rightarrow\inc`, a smooth,
-`\rvect`-natural, `\oplus`-monoidal family `\chi_V\colon T^*V\to V`
-(`def.monoidal_readout`); it sets the *readout* (the exposed parameter, the
-position the forward pass reads) of a phase-space integrator. The induced
-polynomial map `\chi\colon\cot\circ T^*\Rightarrow\cot` is `lem.readout_to_poly`.
-
-| Sort | Symbol(s) | Notes |
-|---|---|---|
-| Generic monoidal readout | `\chi` | readout leg of `\intg_{\chi,\omega}` (`def.one_form_lift`); also names the induced `\cot\circ T^*\Rightarrow\cot` |
-| Projection (default) | `\pi` | `\pi_V(x,\xi)=x`; the `\chi=\pi` case, for which `\intg_\omega:=\intg_{\pi,\omega}` (phase, dissipative integrators) |
-| Euler step / exponential | `\exp` | `\exp_V(x,\xi)=x+\sharpR_x(\xi)`; the `\alpha=1` readout |
-| `\alpha`-step / look-ahead | `\exp^\alpha` | `\exp^\alpha_V(x,\xi)=x+\alpha\,\sharpR_x(\xi)=(1-\alpha)\,\pi+\alpha\,\exp`; samples the gradient at an extrapolated point (Nesterov hint, `rmk.heavy_ball`) |
-| **Forbidden for readouts** | `\delta` | reserved for comonoid comultiplication (see Categorical structure); never a readout |
-
-Search hints: `"readout"`, `\\chi`, `\\inc\\circ T^*\\Rightarrow\\inc`,
-`\\exp^`, `\\intg_{`.
+Search hints: `"kinetic"`, `\\beta`, `\\colon T^*`.
 
 ### p-coalgebras and state-update maps
 
@@ -180,9 +156,9 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 |---|---|---|
 | Parameter interface | `p` | strong monoidal functor `\cat A\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat A`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* in this section are `q` |
 | State space | `\Fun S` | strong monoidal functor `\cat A\to\smsetiso`; `\Fun S(a)` is the state set |
-| Integrator | `\intg` (renders `\mathfrak{i}`) | the pair `\intg=(\Fun S,\upd)` (`def.integrator`) — the object the construction runs on. Instances: `\intg_\theta` (configuration, `\Fun S=\absval\blank`); the phase-space integrators `\intg_{\chi,\omega}` (`def.one_form_lift`) indexed by a readout `\chi` and 1-form `\omega`, with `\intg_\omega:=\intg_{\pi,\omega}` — `\intg_\beta` (phase), `\intg_{\beta+c\zeta}` (dissipative), `\intg_{\exp^\alpha,\beta+c\zeta}` (look-ahead, `rmk.heavy_ball`) |
-| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\theta` (configuration), `\upd_{\chi,\omega}` (`def.one_form_lift`, with `\upd_\omega:=\upd_{\pi,\omega}`), `\upd_\beta` (phase), `\upd_{\beta+c\zeta}` (dissipative). The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
-| Combined transformation | `\nu_{\chi,\omega}` | the readout `\chi` and 1-form `\omega` combined into a monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` (`lem.combined_update`); the phase update factors as `\upd_{\chi,\omega}=\nu_{\chi,\omega}\circ\thetaV{T^*\blank}`. Distinct from `\upd` (which renders `u`); do **not** write it as `u_{\chi,\omega}` (former overload, retired) |
+| Integrator | `\intg` (renders `\mathfrak{i}`) | the pair `\intg=(\Fun S,\upd)` (`def.integrator`). Instances: `\intg_\theta` (configuration, `\Fun S=\absval\blank`) and `\intg_\beta` (phase, `\Fun S=\absval{T^*\blank}`) |
+| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\theta` (configuration), `\upd_\beta` (phase). The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
+| Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\upd_\beta=\nu\circ\thetaV{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
 | Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
 | Dynamics functor | `\Phi_\intg`, `\Phi'` | `\Phi_\intg\colon\srw\to\org`; `\Phi'` the syntax→`\para\cot\poly` factor. Named: `\Phiconf=\Phi_{\intg_\theta}`, `\Phiphase=\Phi_{\intg_\beta}` |
 
@@ -192,13 +168,11 @@ Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\up
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Friction / damping coefficient | `c \in [0,1]` | `c=0` undamped, `c=1` fully damped; the `c` of `m\ddot x+c\dot x+kx=0`. Roman, not Greek (a `[0,1]` fraction). Same letter as the generic real scalar in `prop.one_forms_monoid`, so `c\,\zeta` reads as an instance of `c\,\omega`. **Forbidden:** `\nu` (former symbol, now retired) |
 | Learning rate | `\eta_{\mathrm{LR}}` | never bare `\eta` (reserved, see below) |
-| Generic real scalar | `c`, `t` | `c\in\rr` for scalar multiplication (e.g. `prop.one_forms_monoid`); the damping coefficient is the `[0,1]` specialization of this same `c`. `t` for time/index. (`\lambda` is taken — dual-pairing element at `eqn.canonical_dual_sum`.) |
+| Generic real scalar | `c`, `t` | `c\in\rr` for scalar multiplication; `t` for time/index. (`\lambda` is taken — dual-pairing element at `eqn.canonical_dual_sum`.) |
 | Potential | `U\colon V\to\rr` | also `U\colon X\to\rr` for general state space |
 
-Search hints: `"friction"`, `"decay"`, `"damping"`, `"dissipat"`,
-`"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
+Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
 ### Categorical structure (reserved, line 671)
 
