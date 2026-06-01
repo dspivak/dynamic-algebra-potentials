@@ -140,8 +140,13 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
     - [x] part 2b: delete `lem.potlens_to_para_poly` (folded into recovery); `thm.functor` → headline **corollary** of `thm.dynamics_functor`.
     - [x] part 2c: redirect stale `thm.functor` references (Ch 5 intro, `rmk.rmfdc`, the Φconf/Φphase unpacking) → `thm.dynamics_functor`. (Plan 647 deferred to step 6's holistic plan rewrite.)
     - [x] part 2d: delete the other two subsumed concretes `lem.cot_lifts_lens_potential`, `lem.Theta_poly_potential`.
-    - [ ] part 2e: relocate Recovery + the corollary to sit with the concrete integrators; gather the instance chapter (rvect, cot, manifolds (#2), integrators, Φ-unpacking).
-  - [ ] **6.** Trims: move `lemma.monoid_to_monad` earlier (kills the `lem.c_lifts_lens` forward-ref); rewrite the Plan for the 5-chapter shape; chapter intros / NOTATION; drop "[DRAFT scaffold]" title.
+    - [x] part 2e-i: relocate Recovery (prop.smooth_setup + thm.recovery + handoff) into `sec.dynamics_functor` (Ch 5), after the integrators — fixes its forward-refs; drop the empty Recovery section header.
+    - [ ] part 2e-ii (optional): move #2 — manifolds + `sec.cot` from Background into the instance (Ch 4 start), so the instance is self-contained with its ingredients. Surgical (`sec.cot` is nested in `sec.poly_dynamic_bg`). Reframe Ch 4/Ch 5 intros + titles as "the smooth instance".
+  - **6.** Trims:
+    - [x] drop "[DRAFT scaffold]" title; rename `ch.framework_DRAFT` → `ch.framework`.
+    - [ ] move `lemma.monoid_to_monad` earlier (kills the `lem.c_lifts_lens` forward-ref).
+    - [ ] rewrite the **Plan** (`sec.plan`) for the 5-chapter shape (it still describes the old 4-chapter structure, missing the framework chapter).
+    - [ ] NOTATION pass (add `𝓜`/`𝓥`/`𝖼`/`R`/`rWD`; reconcile with the new structure).
 - [x] **Math gap closed:** `lem.c_lifts_lens` stated (= `lem.cot_lifts_lens_potential` at `𝖼`).
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
