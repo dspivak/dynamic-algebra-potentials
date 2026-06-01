@@ -2553,7 +2553,7 @@ Building on the integrator notion of \cref{sec.dynamics_functor_abstract}, this 
 
 \subsection{Integrators}\label{sec.integrators}
 
-Looking ahead, \cref{lem.potlens_to_para_poly} will assemble our constructions so far into maps of the form $\cotof{V}\otimes p\to q$, or equivalently $\cotof{V}\to[p,q]$. Our goal in this section is to turn them into $[p,q]$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{V}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
+Looking ahead, the data functor $\Phi'$ (\cref{thm.recovery}) assembles our constructions so far into maps of the form $\cotof{V}\otimes p\to q$, or equivalently $\cotof{V}\to[p,q]$. Our goal in this section is to turn them into $[p,q]$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{V}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
 In what follows we write $\cot\colon\rvect\to\poly$ for the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$.
 
@@ -2687,27 +2687,9 @@ Its position component $x\mapsto x+\sharpR_x(\xi)$ is $\exp_{\rv V}$ \eqref{eqn.
 \section{The dynamics functors}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
 
-The smooth rewiring diagrams of \cref{sec.forming_potlens} become smooth rewiring dynamics by first internalizing them as parameterized polynomial maps and then applying an integrator. We begin with a preliminary construction of a functor called $\Phi'$ which will be folded into our main functor of interest $\Phi$ in \cref{thm.functor}.
+The smooth rewiring diagrams of \cref{sec.forming_potlens} become smooth rewiring dynamics by applying the framework of \cref{ch.framework_DRAFT} to the smooth setup: the data functor $\Phi'$ internalizes them as parameterized polynomial maps, and an integrator turns these into coalgebras. We unpack this for the smooth instance.
 
-\begin{lemma}\label{lem.potlens_to_para_poly}
-There is a normal lax symmetric monoidal functor
-\[
-\Phi'\colon\srwd\to\para{\cot}{\poly}.
-\]
-\end{lemma}
-
-\begin{proof}
-By \cref{def.potlens}, $\srwd$ is the underlying operad of $\para{\rvect}{\plmfd}$. We have a strong monoidal functor $\Lens\cot\colon\plmfd\to\plpoly$ from \cref{lem.cot_lifts_lens_potential} and a normal lax monoidal $\Theta_{\potd}\colon\plpoly\to\poly$ from
-\cref{lem.Theta_poly_potential}. The action square for $\Lens\cot$ and the action square for $\Theta_{\potd}$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two normal lax monoidal maps below; restricting to underlying operads gives the desired $\Phi'$:
-\[
-\para{\rvect}{\plmfd}\To{\para{\rvect}{\Lens\cot}}
-\para{\rvect}{\plpoly}\To{\para{\rvect}{\Theta_{\potd}}}
-\para{\cot}{\poly}.
-\qedhere
-\]
-\end{proof}
-
-The functor $\Phi'$ acts on objects by
+The functor $\Phi'\colon\srwd\to\para{\cot}{\poly}$ of \cref{thm.recovery} acts on objects by
 \[\Phi'\lensob{M}\coloneqq\cotof{\outp{M}}\otimes\ihom{\cotof{\inpt{M}},\yon}.\] 
 And $\Phi'$ sends a smooth rewiring diagram $f\coloneqq\left((V,\sharpR_V),\binom{\inpt f}{\outp f},U\right)$ as in \eqref{eqn.srw_morphism}
 \[\lensob{M_1}\otimes\cdots\otimes\lensob{M_K}\To[\quad]{f}\lensob{N}\]
@@ -2737,21 +2719,16 @@ S\to\left[
 \]
 Constructing a precise relationship between $S$ and $V$ is precisely the role of the integrator: in our two main cases of interest it is the configuration space $\absval{V}$ and the phase space $\absval{T^*V}$; see \eqref{eqn.our_phis}.
 
-\begin{theorem}\label{thm.functor}
+\begin{corollary}\label{thm.functor}
 Every $\cot$-integrator $\intg$ induces an operad functor
 \[
 \Phi_{\intg}\colon\srwd\to\org.
 \]
-\end{theorem}
+\end{corollary}
 
 \begin{proof}
-Define $\Phi_{\intg}$ to be the composite of the normal lax monoidal functors below, given by \cref{lem.potlens_to_para_poly,prop.integrator_to_org}:
-\[
-\srwd\To{\Phi'}
-\para{\cot}{\poly}\To{\Psisem{\intg}}
-\org_\cong\inj\org.
+This is \cref{thm.dynamics_functor} for the smooth setup $D_{\mathrm{sm}}$ (\cref{prop.smooth_setup}), under the identification $\rwd_{D_{\mathrm{sm}}}=\srwd$ of \cref{thm.recovery}.
 \qedhere
-\]
 \end{proof}
 
 Write $\intg_\theta$ \eqref{eqn.conf_integrator} for the configuration integrator and $\intg_\beta$ \eqref{eqn.phase_integrator} for the phase integrator. Our main two functors of interest are:
@@ -2773,7 +2750,7 @@ S\yon^S\To{\thetaV{\rv V}}\cotof{V}.
 \]
 A state consists of a position $x\in V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $x+\sharpR_x(\xi')$ by \eqref{eqn.directions_sharp}. Note that in this case $\sharpR$ can depend on $x\in V$. 
 
-However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phi'$ factor from \cref{lem.potlens_to_para_poly}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
+However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phi'$ factor from \cref{thm.recovery}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
