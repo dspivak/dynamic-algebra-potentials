@@ -677,59 +677,10 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \footnote{That is, the functor $\Cat{SMC}_{\tn{lax}}\to\Cat{Opd}$ is fully faithful.}
 
 %--------------------------------------------------------------------
-\section{Smooth-manifold notation}\label{sec.manifolds_notation}
-%--------------------------------------------------------------------
-
-In this section we fix the differential-geometric notation used throughout the paper.
-
-We work in the cartesian category $(\defineTerm{mfd},\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, we write $TM$ and $T_mM$ for the tangent bundle and the tangent space at $m$, and we write $T^*M$ and $T^*_mM$ for the cotangent bundle and the cotangent space at $m$.
-
-The tangent functor $T\colon\mfd\to\mfd$ preserves products, and the cotangent-bundle assignment (which is not functorial) does so on objects: $T(M\times N)\cong TM\times TN$ and $T^*(M\times N)\cong T^*M\times T^*N$; in particular
-\begin{equation}\label{eqn.T_products}
-T_{(m,n)}(M\times N)\cong T_mM\oplus T_nN
-\qqand
-T^*_{(m,n)}(M\times N)\cong T^*_mM\oplus T^*_nN.
-\end{equation}
-
-For a smooth map $f\colon M\to N$, write
-\[
-Tf\colon TM\to TN
-\]
-for the \emph{tangent map} (also called the \emph{global differential}), and
-\[
-T_m f\colon T_mM\to T_{f(m)}N
-\qqand
-(T_m f)^\top\colon T^*_{f(m)}N\to T^*_mM
-\]
-for the \emph{differential at $m$}---the restriction of $Tf$ to the fiber over $m\in M$---and its transpose.%
-\footnote{In the literature, what we denote $T_m f$ is often denoted $Df_m$.}
-
-We often elide the inclusion $\inc\colon\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure on $\vect$ is (a coproduct and) a product, and $\inc$ is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
-\begin{equation}\label{eqn.tangent_vec}
-T_xV \;\cong\; V \qqand T^*_xV \;\cong\; V^*
-\end{equation}
-at every point $x\in V$; we use these identifications throughout, often without comment. We also will make frequent use of the canonical identification
-\begin{equation}\label{eqn.canonical_dual_sum}
-(V\oplus V^*)^*\cong V^*\oplus V,\qquad
-\lambda\leftrightarrow(\xi,x)\quad\text{where}\quad
-\lambda(x',\xi')=\xi(x')+\xi'(x).
-\end{equation}
-
-When the codomain is $\rr$, the tangent map of $U\colon M\to\rr$ can be combined with the standard constant covector field $r\mapsto +1$ on $\rr$ to give a covector field on $M$, also called the \emph{differential} of $U$:
-\begin{equation}\label{eqn.differential}
-dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
-\end{equation}
-Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=V$ is a vector space, we regard $dU|_x$ as an element of $V^*$ under \eqref{eqn.tangent_vec}.
-
-\begin{warning}\label{warn.prime}
-We will not use $f'$ notation to mean derivatives; ``priming'' a symbol (such as $f$) will only be used to indicate that $f'$ is somehow analogous to $f$.
-\end{warning}
-
-%--------------------------------------------------------------------
 \section{Polynomial functors, coalgebras, and $\mathbb{O}\Cat{rg}$}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the substitution product and the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), the monoidal bicategory $\org$ of polynomial coalgebras (\cref{sec.org}), and the encoding of cotangent bundles as polynomials (\cref{sec.cot}) that bridges this setup to the differential geometry of \cref{sec.manifolds_notation}.
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the substitution product and the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal bicategory $\org$ of polynomial coalgebras (\cref{sec.org}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\poly$}{Poly}}\label{sec.poly}
 
@@ -913,110 +864,6 @@ The polynomial $[p,q]$ also serves as the internal hom in $\org$:
 \]
 by closedness of $\poly$ (\cref{sec.poly}).
 \end{remark}
-
-\subsection{Cotangent bundles as polynomials}\label{sec.cot}
-
-The category $\mfd$ of smooth manifolds provides the source of polynomials relevant to physics and learning. Each manifold has a cotangent bundle, and each smooth map has a transpose on cotangent fibers; combining these gives a functor into $\poly$.
-
-\begin{definition}[Cotangent functor]\label{def.cot}
-The \emph{cotangent functor} $\defineTerm{cot}\colon\mfd\to\poly$ sends a smooth manifold $M$ to
-\begin{equation*}
-\cotof{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
-\end{equation*}
-where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cotof{f}\colon\cotof{M}\to\cotof{N}$ whose positions and directions are
-\[
-  \cotof{f}_1\coloneqq f
-  \qqand
-  \bk{\cotof{f}}{m}\coloneqq(T_m f)^\top
- \]
- as maps $M\to N$ and $T^*_{f(m)}N\to T^*_mM$.
-\end{definition}
-
-This is indeed functorial: the identity map $\id_M\colon M\to M$ has $T_m(\id_M)=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cotof{\id_M}=\id_{\cotof{M}}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $T_m(g\circ f)=T_{f(m)}g\circ T_m f$, so
-\[
-(T_m(g\circ f))^\top=(T_m f)^\top\circ(T_{f(m)}g)^\top=\bk{\cotof{f}}{m}\circ\bk{\cotof{g}}{f(m)},
-\]
-which is the backward part of $\cotof{g}\circ\cotof{f}$.
-
-\begin{proposition}\label{prop.cot_monoidal}
-The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
-\[
-\cotof{\mathbb{R}^0}\cong\yon
-\qqand
-\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}.
-\]
-\end{proposition}
-
-\begin{proof}
-The one-point manifold $\rr^0=\{0\}$ has $T^*_0\rr^0=\{0\}$, so $\cotof{\mathbb{R}^0}=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$, so the unit is preserved. By \eqref{eqn.T_products}, we have
-\begin{equation}\label{eqn.cot_times}
-\cotof{M\times N}=\sum_{(m,n)\in M\times N}\yon^{T^*_{(m,n)}(M\times N)}\cong\sum_{m\in M}\yon^{T^*_mM}\otimes\sum_{n\in N}\yon^{T^*_nN}=\cotof{M}\otimes\cotof{N}
-\end{equation}
-using the definition of the Dirichlet product \eqref{eqn.dirichlet}.
-
-This isomorphism $\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}$ is natural: given a product map $f\times g\colon M\times N\to M'\times N'$, the tangent map is block-diagonal: $T_{(m,n)}(f\times g)=T_m f\oplus T_n g$. Hence $(T_{(m,n)}(f\times g))^\top=(T_m f)^\top\times(T_n g)^\top$.
-%
-%\textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
-\end{proof}
-
-\begin{remark}
-In fact, $\cot$ also preserves coproducts,
-\[
-\cotof{M}+\cotof{N}\cong\cotof{M+N}.
-\]
-Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributive monoidal functor. We will not use this fact in this paper.
-\end{remark}
-
-\Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cotof{M}$.
-
-Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $\bang_M\colon M\to\mathbb{R}^0$. And since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. 
-
-\begin{lemma}\label{lem.cot_comonoid}
-For any smooth manifold $M$, the polynomial $\cotof{M}$ is a comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
-\[
-\cotof{\Delta_M}\colon\cotof{M}\to\cotof{M}\otimes\cotof{M}
-\qqand
- \cotof{\bang_M}\colon\cotof{M}\to\yon
-\]
-send positions by $m\mapsto(m,m)$ and $m\mapsto *$, respectively. On directions, each cotangent fiber $T^*_mM$ carries an induced \emph{commutative monoid} structure
-\[
-T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\xi')\mapsto\xi+\xi'
-\qqand \rr^0\to T^*_mM,\quad *\mapsto 0,
-\]
-i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cotof{M}$ recovers the additive structure of each cotangent space.%
-%\footnote{
-%One can recover scalar structure on $T^*_mM$ as well. For any $M:\mfd$, there is a natural map
-%\[
-%(\cdot)\colon\cotof{M}\to\yon^\rr\otimes\cotof{M}
-%\]
-%Axioms relating the comonoid structure of $\cotof{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}{x}\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
-%\[
-%	1\cdot\xi=\xi,\qquad
-%	(r_1r_2)\cdot\xi=r_1\cdot(r_2\cdot\xi),\qquad
-%	0\cdot\xi=0,\qand
-%	r\cdot(\xi_1+\xi_2)=(r\cdot\xi_1)+(r\cdot\xi_2).
-%\]
-%Notably missing is the axiom $(r_1+r_2)\cdot\xi=(r_1\cdot\xi)+(r_2\cdot\xi)$, which seemingly cannot be encoded this way because there is seemingly no way to copy a cotangent vector ($\xi$).
-%}
-\end{lemma}
-
-\begin{proof}
-On positions $\cotof{\Delta_M}$ and $\cotof{\bang_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(\bang_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
-\end{proof}
-
-
-\begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop.cot_hopf}
-Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cotof{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
-\[
-\cotof{\eta}\colon\yon\to\cotof{G},\qquad \cotof{\mu}\colon\cotof{G}\otimes\cotof{G}\to\cotof{G},
-\]
-the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\cotof{\iota}\colon\cotof{G}\to\cotof{G}$.
-\end{proposition}
-
-\begin{proof}
-It is well known that strong monoidal functors preserve monoids, comonoids, and bimonoids: they preserve both the defining maps and the axioms relating them. For the same reason they also preserve the antipode structure and axioms, hence the Hopf monoid structure. See also~\cite{spivak2023hopf}.
-\end{proof}
-
 
 %--------------------------------------------------------------------
 \section{Wiring-diagram operads}\label{sec.wd_operads}
@@ -2150,10 +1997,167 @@ direction.
 
 
 %====================================================================
-\chapter{From lenses to smooth rewiring diagrams}\label{ch.lenses_internalization}
+\chapter{Smooth rewiring diagrams}\label{ch.lenses_internalization}
 %====================================================================
 
-This chapter introduces the category $\rvect$ of reactive vector spaces (\cref{sec.rvect}) and builds the operad $\srwd$ from $\rvect$-parameterized manifold lenses with real-valued potentials (\cref{sec.potentialized_lenses}). This $\srwd$ is the smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; \cref{thm.recovery} identifies it with the rewiring-diagram operad $\rwd_{D_{\mathrm{sm}}}$ of the abstract framework.
+This chapter assembles the smooth instance of the framework. We recall smooth-manifold notation and the cotangent functor (\cref{sec.manifolds_notation,sec.cot}), introduce the category $\rvect$ of reactive vector spaces (\cref{sec.rvect}), and build the operad $\srwd$ from $\rvect$-parameterized manifold lenses with real-valued potentials (\cref{sec.potentialized_lenses}). This $\srwd$ is the smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; \cref{thm.recovery} identifies it with the rewiring-diagram operad $\rwd_{D_{\mathrm{sm}}}$ of the abstract framework.
+
+%--------------------------------------------------------------------
+\section{Smooth-manifold notation}\label{sec.manifolds_notation}
+%--------------------------------------------------------------------
+
+In this section we fix the differential-geometric notation used throughout the paper.
+
+We work in the cartesian category $(\defineTerm{mfd},\rr^0,\times)$ of finite-dimensional smooth real manifolds and smooth maps. For a manifold $M$ and point $m\colon\rr^0\to M$, we write $TM$ and $T_mM$ for the tangent bundle and the tangent space at $m$, and we write $T^*M$ and $T^*_mM$ for the cotangent bundle and the cotangent space at $m$.
+
+The tangent functor $T\colon\mfd\to\mfd$ preserves products, and the cotangent-bundle assignment (which is not functorial) does so on objects: $T(M\times N)\cong TM\times TN$ and $T^*(M\times N)\cong T^*M\times T^*N$; in particular
+\begin{equation}\label{eqn.T_products}
+T_{(m,n)}(M\times N)\cong T_mM\oplus T_nN
+\qqand
+T^*_{(m,n)}(M\times N)\cong T^*_mM\oplus T^*_nN.
+\end{equation}
+
+For a smooth map $f\colon M\to N$, write
+\[
+Tf\colon TM\to TN
+\]
+for the \emph{tangent map} (also called the \emph{global differential}), and
+\[
+T_m f\colon T_mM\to T_{f(m)}N
+\qqand
+(T_m f)^\top\colon T^*_{f(m)}N\to T^*_mM
+\]
+for the \emph{differential at $m$}---the restriction of $Tf$ to the fiber over $m\in M$---and its transpose.%
+\footnote{In the literature, what we denote $T_m f$ is often denoted $Df_m$.}
+
+We often elide the inclusion $\inc\colon\vect\to\mfd$, treating finite-dimensional real vector spaces as manifolds. The direct sum $(0,\oplus)$ structure on $\vect$ is (a coproduct and) a product, and $\inc$ is product preserving. By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $V$ provides linear isomorphisms
+\begin{equation}\label{eqn.tangent_vec}
+T_xV \;\cong\; V \qqand T^*_xV \;\cong\; V^*
+\end{equation}
+at every point $x\in V$; we use these identifications throughout, often without comment. We also will make frequent use of the canonical identification
+\begin{equation}\label{eqn.canonical_dual_sum}
+(V\oplus V^*)^*\cong V^*\oplus V,\qquad
+\lambda\leftrightarrow(\xi,x)\quad\text{where}\quad
+\lambda(x',\xi')=\xi(x')+\xi'(x).
+\end{equation}
+
+When the codomain is $\rr$, the tangent map of $U\colon M\to\rr$ can be combined with the standard constant covector field $r\mapsto +1$ on $\rr$ to give a covector field on $M$, also called the \emph{differential} of $U$:
+\begin{equation}\label{eqn.differential}
+dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
+\end{equation}
+Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=V$ is a vector space, we regard $dU|_x$ as an element of $V^*$ under \eqref{eqn.tangent_vec}.
+
+\begin{warning}\label{warn.prime}
+We will not use $f'$ notation to mean derivatives; ``priming'' a symbol (such as $f$) will only be used to indicate that $f'$ is somehow analogous to $f$.
+\end{warning}
+
+
+%--------------------------------------------------------------------
+\section{Cotangent bundles as polynomials}\label{sec.cot}
+%--------------------------------------------------------------------
+
+The category $\mfd$ of smooth manifolds provides the source of polynomials relevant to physics and learning. Each manifold has a cotangent bundle, and each smooth map has a transpose on cotangent fibers; combining these gives a functor into $\poly$.
+
+\begin{definition}[Cotangent functor]\label{def.cot}
+The \emph{cotangent functor} $\defineTerm{cot}\colon\mfd\to\poly$ sends a smooth manifold $M$ to
+\begin{equation*}
+\cotof{M}\coloneqq\sum_{m\in M}\yon^{T^*_mM}
+\end{equation*}
+where $T^*_mM$ is the cotangent space at $m$. A smooth map $f\colon M\to N$ is sent to the $\poly$ map $\cotof{f}\colon\cotof{M}\to\cotof{N}$ whose positions and directions are
+\[
+  \cotof{f}_1\coloneqq f
+  \qqand
+  \bk{\cotof{f}}{m}\coloneqq(T_m f)^\top
+ \]
+ as maps $M\to N$ and $T^*_{f(m)}N\to T^*_mM$.
+\end{definition}
+
+This is indeed functorial: the identity map $\id_M\colon M\to M$ has $T_m(\id_M)=\id_{T_mM}$, whose transpose is $\id_{T^*_mM}$, so $\cotof{\id_M}=\id_{\cotof{M}}$. For composable smooth maps $f\colon M\to N$ and $g\colon N\to P$, the chain rule gives $T_m(g\circ f)=T_{f(m)}g\circ T_m f$, so
+\[
+(T_m(g\circ f))^\top=(T_m f)^\top\circ(T_{f(m)}g)^\top=\bk{\cotof{f}}{m}\circ\bk{\cotof{g}}{f(m)},
+\]
+which is the backward part of $\cotof{g}\circ\cotof{f}$.
+
+\begin{proposition}\label{prop.cot_monoidal}
+The cotangent functor $\cot\colon(\mfd,\mathbb{R}^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal:
+\[
+\cotof{\mathbb{R}^0}\cong\yon
+\qqand
+\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}.
+\]
+\end{proposition}
+
+\begin{proof}
+The one-point manifold $\rr^0=\{0\}$ has $T^*_0\rr^0=\{0\}$, so $\cotof{\mathbb{R}^0}=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$, so the unit is preserved. By \eqref{eqn.T_products}, we have
+\begin{equation}\label{eqn.cot_times}
+\cotof{M\times N}=\sum_{(m,n)\in M\times N}\yon^{T^*_{(m,n)}(M\times N)}\cong\sum_{m\in M}\yon^{T^*_mM}\otimes\sum_{n\in N}\yon^{T^*_nN}=\cotof{M}\otimes\cotof{N}
+\end{equation}
+using the definition of the Dirichlet product \eqref{eqn.dirichlet}.
+
+This isomorphism $\cotof{M\times N}\cong\cotof{M}\otimes\cotof{N}$ is natural: given a product map $f\times g\colon M\times N\to M'\times N'$, the tangent map is block-diagonal: $T_{(m,n)}(f\times g)=T_m f\oplus T_n g$. Hence $(T_{(m,n)}(f\times g))^\top=(T_m f)^\top\times(T_n g)^\top$.
+%
+%\textit{Coherence.} The associator and unitor for the Dirichlet product correspond to the canonical isomorphisms $(M\times N)\times P\cong M\times(N\times P)$ and $M\times 1\cong M$ in $\mfd$, so the coherence diagrams for a strong monoidal functor commute.
+\end{proof}
+
+\begin{remark}
+In fact, $\cot$ also preserves coproducts,
+\[
+\cotof{M}+\cotof{N}\cong\cotof{M+N}.
+\]
+Hence $\cot\colon(\mfd,0,+,1,\times)\to(\poly,0,+,\yon,\otimes)$ is a distributive monoidal functor. We will not use this fact in this paper.
+\end{remark}
+
+\Cref{prop.cot_monoidal} uses only the underlying sets of the cotangent fibers, e.g.\ in \eqref{eqn.cot_times}. The linear structure is not lost, however: \cref{lem.cot_comonoid} shows that the diagonal and terminal maps in $\mfd$ induce fiberwise addition and zero on $\cotof{M}$.
+
+Since $(\mfd,\mathbb{R}^0,\times)$ is cartesian, every manifold $M$ is a comonoid via the diagonal $\Delta_M\colon M\to M\times M$ and $\bang_M\colon M\to\mathbb{R}^0$. And since $\cot$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), it preserves comonoid structures. 
+
+\begin{lemma}\label{lem.cot_comonoid}
+For any smooth manifold $M$, the polynomial $\cotof{M}$ is a comonoid in $(\poly,\yon,\otimes)$. The comultiplication and counit
+\[
+\cotof{\Delta_M}\colon\cotof{M}\to\cotof{M}\otimes\cotof{M}
+\qqand
+ \cotof{\bang_M}\colon\cotof{M}\to\yon
+\]
+send positions by $m\mapsto(m,m)$ and $m\mapsto *$, respectively. On directions, each cotangent fiber $T^*_mM$ carries an induced \emph{commutative monoid} structure
+\[
+T^*_mM\times T^*_mM\to T^*_mM,\quad (\xi,\xi')\mapsto\xi+\xi'
+\qqand \rr^0\to T^*_mM,\quad *\mapsto 0,
+\]
+i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\cotof{M}$ recovers the additive structure of each cotangent space.%
+%\footnote{
+%One can recover scalar structure on $T^*_mM$ as well. For any $M:\mfd$, there is a natural map
+%\[
+%(\cdot)\colon\cotof{M}\to\yon^\rr\otimes\cotof{M}
+%\]
+%Axioms relating the comonoid structure of $\cotof{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}{x}\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
+%\[
+%	1\cdot\xi=\xi,\qquad
+%	(r_1r_2)\cdot\xi=r_1\cdot(r_2\cdot\xi),\qquad
+%	0\cdot\xi=0,\qand
+%	r\cdot(\xi_1+\xi_2)=(r\cdot\xi_1)+(r\cdot\xi_2).
+%\]
+%Notably missing is the axiom $(r_1+r_2)\cdot\xi=(r_1\cdot\xi)+(r_2\cdot\xi)$, which seemingly cannot be encoded this way because there is seemingly no way to copy a cotangent vector ($\xi$).
+%}
+\end{lemma}
+
+\begin{proof}
+On positions $\cotof{\Delta_M}$ and $\cotof{\bang_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(\bang_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
+\end{proof}
+
+
+\begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop.cot_hopf}
+Let $G$ be a Lie group with unit $\eta\colon\mathbb{R}^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cotof{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
+\[
+\cotof{\eta}\colon\yon\to\cotof{G},\qquad \cotof{\mu}\colon\cotof{G}\otimes\cotof{G}\to\cotof{G},
+\]
+the comonoid structure is as in \cref{lem.cot_comonoid}, and the antipode is $\cotof{\iota}\colon\cotof{G}\to\cotof{G}$.
+\end{proposition}
+
+\begin{proof}
+It is well known that strong monoidal functors preserve monoids, comonoids, and bimonoids: they preserve both the defining maps and the axioms relating them. For the same reason they also preserve the antipode structure and axioms, hence the Hopf monoid structure. See also~\cite{spivak2023hopf}.
+\end{proof}
+
+
 
 %--------------------------------------------------------------------
 \section{Reactive vector spaces}\label{sec.rvect}
