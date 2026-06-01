@@ -9,9 +9,15 @@
 %
 % NO NEW PROOF GAPS: every Theorem/Proposition below is discharged by EXISTING,
 % complete results, named in its PROVENANCE comment.  The only genuinely open
-% items are the morphism layer for prop.integrator_variation (Tier 2) and the
-% functoriality remark rmk.rwd_functor (Tier 3), both flagged TODO.
+% item is functoriality in the SETUP (Tier 3, rmk.rwd_functor).  Functoriality
+% in the integrator (Tier 2) is recorded as NOT pursued in rmk.integrator_design.
 % Full migration map: REORG.md.
+%
+% ABSTRACT-SYMBOL NAMING (reminiscent of the instance they specialize to):
+%   \cat M  ~ mfd     (spaces)              \cat V  ~ rvect   (parameters)
+%   \Fun{c} ~ cot     (interface functor)   R       ~ R       (potential receptor)
+% Note \cat V is font-distinct from the carrier vector space V; \Fun{c} is
+% sans-serif (like \cot), distinct from the italic lens component c.
 % ============================================================================
 
 \providecommand{\rwd}{\Fun{rWD}}     % abstract rewiring-diagram operad / functor
@@ -24,11 +30,11 @@
 
 This chapter takes a list of ingredients---a \emph{rewiring setup}---and
 produces, with no further input, a syntax operad together with a functor into
-$\org$. The smooth development of the main text ($\cat C=\mfd$, $\cat A=\rvect$,
-$p=\cot$, $R=\rr$) is recovered by plugging in; see the recovery theorem of the
-smooth-instance chapter [\,ref TODO\,]. Throughout, the target categories
-$\poly$ and $\org$ are \emph{fixed}: every setup feeds the same semantic anchor,
-which is what makes ``a category over $\org$'' the natural output type.
+$\org$. The smooth development of the main text ($\cat M=\mfd$, $\cat V=\rvect$,
+$\Fun{c}=\cot$, $R=\rr$) is recovered by plugging in (\cref{thm.recovery}).
+Throughout, the target categories $\poly$ and $\org$ are \emph{fixed}: every
+setup feeds the same semantic anchor, which is what makes ``a category over
+$\org$'' the natural output type.
 
 %----------------------------------------------------------------------------
 \section{Rewiring setups}\label{sec.rewiring_setup}
@@ -37,43 +43,46 @@ which is what makes ``a category over $\org$'' the natural output type.
 \begin{definition}[Rewiring setup]\label{def.rewiring_setup}
 A \emph{rewiring setup} $D$ consists of
 \begin{enumerate}
-  \item a cartesian monoidal category $\cat C$, the \emph{spaces};
-  \item a symmetric monoidal category $\cat A$, the \emph{parameters}, together
-    with a strong monoidal functor $J\colon\cat A\to\cat C$;
-  \item a commutative monoid object $R$ in $\cat C$, the \emph{potential receptor};
+  \item a cartesian monoidal category $\cat M$, the \emph{spaces};
+  \item a symmetric monoidal category $\cat V$, the \emph{parameters}, together
+    with a strong monoidal functor $J\colon\cat V\to\cat M$;
+  \item a commutative monoid object $R$ in $\cat M$, the \emph{potential receptor};
   \item a strong symmetric monoidal functor
-    $p\colon(\cat C,1,\times)\to(\poly,\yon,\otimes)$, the \emph{interface functor};
-  \item a coupled $\otimes$-monoid $z$ in $\poly$ equipped with a
-    $\bigl(p(R)\otimes\blank\bigr)$-monoid structure $\alpha$, the
-    \emph{potential algebra}.
+    $\Fun{c}\colon(\cat M,1,\times)\to(\poly,\yon,\otimes)$, the \emph{interface functor};
+  \item a $\otimes$-monoid $z$ in $\poly$ equipped with a
+    $\bigl(\Fun{c}(R)\otimes\blank\bigr)$-monoid structure $\alpha$
+    (\cref{def.T_monoid}), the \emph{potential algebra}.
 \end{enumerate}
 \end{definition}
 
-The five pieces play distinct roles. The pair $(\cat C,R)$ supplies the
-\emph{syntax}: lenses in $\cat C$ carry the wiring, and the monad $R\times\blank$
+The five pieces play distinct roles. The pair $(\cat M,R)$ supplies the
+\emph{syntax}: lenses in $\cat M$ carry the wiring, and the monad $R\times\blank$
 adds a potential to the backward pass, giving the coKleisli category
-$\Lcokl{\cat C}{R}$. The functor $J$ supplies \emph{parameters}, acting by
-$a\cdot\lensob c=\binom{\inpt c}{J(a)\otimes\outp c}$. The functor $p$ is the
+$\Lcokl{\cat M}{R}$. The functor $J$ supplies \emph{parameters}, acting by
+$a\cdot\lensob c=\binom{\inpt c}{J(a)\otimes\outp c}$. The functor $\Fun{c}$ is the
 \emph{bridge} to polynomials: strong monoidality is what turns a parallel product
 of interfaces into a $\otimes$-product of polynomials, and it carries the receptor
-$R$ to a commutative monoid $p(R)$ in $\poly$. The potential algebra $(z,\alpha)$
-is the recipient into which a potential differentiates. We do \emph{not} require
-$\cat C$ to be monoidal closed: Moore internalization is carried out in $\poly$,
-after $p$, so an internal hom is needed only in the (fixed, closed) target.
+$R$ to a commutative monoid $\Fun{c}(R)$ in $\poly$. The potential algebra
+$(z,\alpha)$ is the recipient into which a potential differentiates. We do
+\emph{not} require $\cat M$ to be monoidal closed: Moore internalization is carried
+out in $\poly$, after $\Fun{c}$, so an internal hom is needed only in the (fixed,
+closed) target.
 
 % PROVENANCE -- every clause is already available:
 %  (1) cartesian => each J(a) carries a canonical comonoid (hypothesis of
 %      lem.parameter_lens_action).
 %  (3) lemma.monoid_to_monad: a commutative monoid gives a monoidal monad,
-%      functorial in (C,M).
-%      *** MONOID, not group: the antipode of p(R) is never used downstream --
+%      functorial in the pair (category, monoid).
+%      *** MONOID, not group: the antipode of c(R) is never used downstream --
 %          composition ADDS potentials via mu=(+), it never subtracts.
 %          See REORG.md, "group vs monoid".
-%  (4) prop.cot_monoidal is the instance p=cot; prop.cot_hopf upgrades p(R) to a
+%  (4) prop.cot_monoidal is the instance c=cot; prop.cot_hopf upgrades c(R) to a
 %      Hopf monoid when R happens to be a group (not needed).
-%  (5) rmk.alpha_general: for a commutative (Hopf) monoid m and coupled z, the
-%      (m (x) -)-monoid structures are classified by m[e_m]; lem.alpha_constant
-%      is the instance m=cot(R), z=yon, giving the choice r=+1 (=> potd).
+%  (5) The T-monoid notion is def.T_monoid (must precede this definition in the
+%      final order). lem.alpha_constant is the instance m=cot(R), z=yon, giving
+%      the choice r=+1 (=> potd); see also rmk.alpha_general for the general
+%      classification by m[e_m].  "Coupled" (rmk.alpha_general) is only needed to
+%      CLASSIFY the alphas, not to posit one, so it is not a hypothesis here.
 
 %----------------------------------------------------------------------------
 \section{The syntax operad of a setup}\label{sec.rwd_syntax}
@@ -81,12 +90,12 @@ after $p$, so an internal hom is needed only in the (fixed, closed) target.
 
 \begin{definition}[$\rwd_D$]\label{def.rwd}
 Let $D$ be a rewiring setup. The symmetric monoidal category
-$\para{\cat A}{\Lcokl{\cat C}{R}}$ has, as its underlying operad, the
+$\para{\cat V}{\Lcokl{\cat M}{R}}$ has, as its underlying operad, the
 \emph{rewiring-diagram operad} $\rwd_D$ of $D$.
 \end{definition}
 
-% PROVENANCE: this is def.potlens with (rvect, plmfd) replaced by (A, Lcokl C R).
-% The action of A on Lcokl C R is lem.parameter_lens_action (already stated for
+% PROVENANCE: this is def.potlens with (rvect, plmfd) replaced by (V, Lcokl M R).
+% The action of V on Lcokl M R is lem.parameter_lens_action (already stated for
 % general A, C, J, T).  NAMING: the smooth instance is \srwd; reserve "smooth
 % rewiring diagrams"/\srwd for that case, \rwd_D here (REORG.md, "naming").
 
@@ -101,25 +110,25 @@ $\para{\cat A}{\Lcokl{\cat C}{R}}$ has, as its underlying operad, the
 \begin{theorem}[Data functor]\label{thm.data_functor}
 Every rewiring setup $D$ yields a normal lax symmetric monoidal functor
 \[
-  \Phi'\colon\rwd_D\longrightarrow\para{p}{\poly},
+  \Phi'\colon\rwd_D\longrightarrow\para{\Fun{c}}{\poly},
 \]
-where $\cat A$ acts on $\poly$ by $a\cdot q\coloneqq p(Ja)\otimes q$. On objects,
-$\Phi'\lensob{M}=p(\outp{M})\otimes\ihom{p(\inpt{M}),z}$.
+where $\cat V$ acts on $\poly$ by $a\cdot q\coloneqq \Fun{c}(Ja)\otimes q$. On
+objects, $\Phi'\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{M}),z}$.
 \end{theorem}
 
 \begin{proof}
-% TODO: relocate the proof of lem.potlens_to_para_poly verbatim, cot -> p, mfd -> C.
+% TODO: relocate the proof of lem.potlens_to_para_poly verbatim, cot -> c, mfd -> M.
 Compose the two normal lax monoidal functors
 \[
-  \para{\cat A}{\Lcokl{\cat C}{R}}\To{\para{\cat A}{\Lens p}}
-  \para{\cat A}{\Lcokl{\poly}{p(R)}}\To{\para{\cat A}{\Theta_z}}
-  \para{p}{\poly}
+  \para{\cat V}{\Lcokl{\cat M}{R}}\To{\para{\cat V}{\Lens \Fun{c}}}
+  \para{\cat V}{\Lcokl{\poly}{\Fun{c}(R)}}\To{\para{\cat V}{\Theta_z}}
+  \para{\Fun{c}}{\poly}
 \]
-and pass to underlying operads. The first leg is the $p$-level analogue of
-\cref{lem.cot_lifts_lens_potential} (strong monoidality of $p$, together with the
-monad morphism $p(R\times\blank)\Rightarrow p(R)\otimes p(\blank)$ supplied by
-\cref{lemma.monoid_to_monad}); the second is \cref{cor.parameterized_representation}
-applied to the potential algebra $(z,\alpha)$.
+and pass to underlying operads. The first leg is the $\Fun{c}$-level analogue of
+\cref{lem.cot_lifts_lens_potential} (strong monoidality of $\Fun{c}$, together with
+the monad morphism $\Fun{c}(R\times\blank)\Rightarrow\Fun{c}(R)\otimes\Fun{c}(\blank)$
+supplied by \cref{lemma.monoid_to_monad}); the second is
+\cref{cor.parameterized_representation} applied to the potential algebra $(z,\alpha)$.
 \end{proof}
 
 %----------------------------------------------------------------------------
@@ -130,10 +139,10 @@ applied to the potential algebra $(z,\alpha)$.
 
 % RELOCATE HERE: sec.integrators -- def.integrator and prop.integrator_to_org are
 % already stated for a general symmetric monoidal A and strong monoidal p: A->Poly.
-% The parameter interface here is the composite p o J : A -> Poly.
+% The parameter interface here is the composite c o J : V -> Poly.
 
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
-Let $D$ be a rewiring setup and $\intg$ a $(p\circ J)$-integrator. There is an
+Let $D$ be a rewiring setup and $\intg$ a $(\Fun{c}\circ J)$-integrator. There is an
 operad functor
 \[
   \Phi_\intg\colon\rwd_D\longrightarrow\org,
@@ -161,33 +170,29 @@ landing in the (normal-lax, pseudo) slice of symmetric monoidal categories over
 $\org$.
 \end{remark}
 
-% TIER 3 (aspirational).  A morphism of setups should be (F: C->C', G: A->A',
-% rho: R->R', ...) respecting the FIXED p/Org anchor (p' F = p, J' G = F J, ...),
+% TIER 3 (aspirational).  A morphism of setups should be (F: M->M', G: V->V',
+% rho: R->R', ...) respecting the FIXED c/Org anchor (c' F = c, J' G = F J, ...),
 % so the triangle over Org commutes up to coherent iso.  The constituent gadgets
-% are already functorial: lemma.monoid_to_monad ("functorial in (C,M)"), Para is
-% functorial, cor.parameterized_representation is natural.  The worked example of
-% a setup morphism is the CLS overlap category R (prop.euler_submersion_lenses).
-% TODO: pin down Data-morphisms and assemble naturality, or leave as aspiration.
+% are already functorial: lemma.monoid_to_monad ("functorial in (category,monoid)"),
+% Para is functorial, cor.parameterized_representation is natural.  The worked
+% example of a setup morphism is the CLS overlap category R (sec.related_cls,
+% prop.euler_submersion_lenses).  TODO: pin down Data-morphisms and assemble
+% naturality, or leave as aspiration.
 
-\begin{proposition}[One syntax, many regimes]\label{prop.integrator_variation}
-Fix a rewiring setup $D$. The assignment $\intg\mapsto\Phi_\intg$ is functorial in
-the integrator:
-\[
-  \mathbf{Int}_D\longrightarrow[\rwd_D,\ \org].
-\]
-\end{proposition}
-
-\begin{proof}
-% TIER 2 -- TODO: define morphisms of integrators.  A map (S,u) -> (S',u') should
-% be a monoidal nat. transf. relating the state functors compatibly with the
-% updates; configuration (S=|-|) and phase (S=|T*-|) are related by the readout
-% T*V ->> V (the pi/chi/nu story of NOTATION.md).  Ties to the integrator
-% design-space remark.  Sketch only below; to be completed.
-\emph{[Sketch; see TODO.]} Since $\Phi_\intg=\Psisem{\intg}\circ\Phi'$ with $\Phi'$
-independent of $\intg$, functoriality in $\intg$ reduces to that of
-$\intg\mapsto\Psisem{\intg}$, which follows from the naturality of
-\cref{prop.integrator_to_org} in the update map.
-\end{proof}
+\begin{remark}[The integrator design space]\label{rmk.integrator_design}
+For a fixed setup the integrators of interest---configuration, phase, dissipative,
+look-ahead---form a design space, and one might ask whether $\intg\mapsto\Phi_\intg$
+is functorial in the integrator, i.e.\ whether a suitable notion of morphism of
+integrators makes it a functor $\mathbf{Int}_D\to[\rwd_D,\org]$. We do not pursue
+this. The natural relations among our integrators are not maps of integrators in any
+evident sense: configuration ($\Fun S=\absval\blank$) and phase
+($\Fun S=\absval{T^*\blank}$) have different state spaces and step along different
+data---the phase update uses the \emph{stored} momentum, the configuration update the
+\emph{incoming} covector---so the projection $T^*V\to V$ does not intertwine their
+updates; and the friction parameter of the dissipative family is not natural.
+Functoriality in the \emph{setup} (\cref{rmk.rwd_functor}) is the better-supported
+direction.
+\end{remark}
 
 %----------------------------------------------------------------------------
 \section{Recovery: the smooth instance}\label{sec.recovery_DRAFT}
@@ -219,9 +224,9 @@ We check the five clauses of \cref{def.rewiring_setup}.
   \item $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric
     monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid
     $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
-  \item $\yon$ is a coupled $\otimes$-monoid (\cref{rmk.alpha_general}), and
-    $\potd\colon\cotof{\rr}\to\yon$ is a $(\cotof{\rr}\otimes\blank)$-monoid structure
-    on it---the choice $r=+1$ of \eqref{eqn.d_potential}, by \cref{lem.alpha_constant}.
+  \item $\yon$ is a $\otimes$-monoid, and $\potd\colon\cotof{\rr}\to\yon$ is a
+    $(\cotof{\rr}\otimes\blank)$-monoid structure on it---the choice $r=+1$ of
+    \eqref{eqn.d_potential}, by \cref{lem.alpha_constant}.
     \qedhere
 \end{enumerate}
 \end{proof}
@@ -247,8 +252,8 @@ For the smooth setup $D_{\mathrm{sm}}$ of \cref{prop.smooth_setup}:
 \begin{proof}
 (1) By \cref{def.rwd}, $\rwd_{D_{\mathrm{sm}}}$ is the underlying operad of
 $\para{\rvect}{\Lcokl{\mfd}{\rr}}=\para{\rvect}{\plmfd}$, which is $\srwd$
-(\cref{def.potlens}). With $p\coloneqq\cot$ and $(z,\alpha)\coloneqq(\yon,\potd)$, the
-two legs of \cref{thm.data_functor} are $\Lens\cot$
+(\cref{def.potlens}). With $\Fun{c}\coloneqq\cot$ and $(z,\alpha)\coloneqq(\yon,\potd)$,
+the two legs of \cref{thm.data_functor} are $\Lens\cot$
 (\cref{lem.cot_lifts_lens_potential}) and $\Theta_\potd$
 (\cref{lem.Theta_poly_potential}), so the data functor is the $\Phi'$ of
 \cref{lem.potlens_to_para_poly}.

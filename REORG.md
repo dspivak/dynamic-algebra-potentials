@@ -60,7 +60,7 @@ kept separate; fold into Ch 3 only if we want the result literally in Ch 2.)
 |---|---|---|
 | potential monad | `lemma.monoid_to_monad` (any comm. monoid `R`) | `R=ℝ` ⇒ `ℝ×−`, `cot(ℝ)⊗−` |
 | potential algebra | `rmk.alpha_general` (folded into the setup) | `lem.alpha_constant`, `𝖉` at `r=+1` |
-| data functor | **thm.data_functor**: `rWD_D → Para_p(Poly)` | recovery for `p = cot` |
+| data functor | **thm.data_functor**: `rWD_D → Para_𝖼(Poly)` | recovery for `𝖼 = cot` |
 | Moore internalization | `thm.Theta_T_alpha` — **stays whole, relocates** (already abstract) | — |
 
 ## The four new statements (status)
@@ -73,19 +73,20 @@ kept separate; fold into Ch 3 only if we want the result literally in Ch 2.)
    (framework-new.tex §Recovery); relocates to Ch 4.
 
 Plus the framing layer:
-- `rmk.rwd_functor` (Tier 1 + Tier 3) — output type / functoriality slogan. **Drafted.**
-- `prop.integrator_variation` (Tier 2) — one syntax, many regimes. **Stated; proof TODO** (morphisms of integrators via the readout).
+- `rmk.rwd_functor` (Tier 1 + Tier 3) — output type / functoriality-in-setup slogan. **Drafted.**
+- `rmk.integrator_design` (Tier 2) — integrator functoriality **not pursued** (config/phase
+  and the friction family are not maps of integrators in any evident sense). **Drafted.**
 
 ## Rename map (abstract halves only; instance keeps concrete symbols)
 
-| current | abstract |
-|---|---|
-| `mfd` | `𝓒` (cartesian) |
-| `rvect` | `𝓐` with `J: 𝓐→𝓒` |
-| `cot` | `p` |
-| `ℝ` | `R` (commutative **monoid**, not group) |
-| `𝓢𝓡𝓦𝓓` / "smooth rewiring diagrams" | `rWD_D` / "rewiring-diagram operad of a setup" |
-| `𝖉` / `lem.alpha_constant` | `(z,α)` potential algebra |
+| current | abstract | reminiscent of |
+|---|---|---|
+| `mfd` | `𝓜` (`\cat M`, cartesian) | manifolds |
+| `rvect` | `𝓥` (`\cat V`) with `J: 𝓥→𝓜` | vector spaces |
+| `cot` | `𝖼` (`\Fun c`, sans-serif like `\cot`) | cotangent |
+| `ℝ` | `R` (commutative **monoid**, not group) | |
+| `𝓢𝓡𝓦𝓓` / "smooth rewiring diagrams" | `rWD_D` / "rewiring-diagram operad of a setup" | |
+| `𝖉` / `lem.alpha_constant` | `(z,α)` potential algebra | |
 
 ## Naming / notation decisions
 
@@ -94,12 +95,20 @@ Plus the framing layer:
 - Reserve `\srwd` / "smooth rewiring diagrams" for the Ch 4 instance only.
 - Domain `\Data` (echoes the intro's "smooth data"); alt `Setup`.
 - Codomain is the **(normal-lax, pseudo) slice** `SMC_{/Org}`, not plain `Cat/Org`.
+- Abstract symbols `𝓜 / 𝓥 / 𝖼` are reminiscent of `mfd / rvect / cot`. Caveats:
+  `𝓥` (`\cat V`) is font-distinct from the carrier `V`; `𝖼` (`\Fun c`) is sans-serif
+  like `\cot`, distinct from the italic lens component `c` and roman friction `c`.
+- "Coupled" dropped from `def.rewiring_setup`: it is needed only to *classify* the `α`'s
+  (`rmk.alpha_general`), not to *posit* one.
+- `def.T_monoid` must precede `def.rewiring_setup` in the final ordering (clause 5 cites it).
 
 ## rWD framing — three tiers
 
 - **Tier 1 (free):** output type "an object of `SMC_{/Org}`." Adopt as the Ch-3 slogan.
-- **Tier 2 (cheap, on-thesis):** fix setup, vary integrator → `Int_D → [rWD_D, Org]`.
-  Needs morphisms of integrators (config/phase related by readout `T*V↠V`). = `prop.integrator_variation`.
+- **Tier 2 (NOT pursued):** fix setup, vary integrator → `Int_D → [rWD_D, Org]`. Dropped —
+  the actual integrators are not related by maps of integrators: config vs phase differ on
+  stored-vs-incoming momentum (the projection `T*V↠V` does not intertwine the updates), and
+  friction isn't natural. No current result consumes it. Recorded as `rmk.integrator_design`.
 - **Tier 3 (aspirational):** full `rWD: Data → SMC_{/Org}`. Needs morphisms of
   setups + naturality assembly; CLS overlap `𝓡` (`prop.euler_submersion_lenses`)
   is the worked example. = `rmk.rwd_functor`.
