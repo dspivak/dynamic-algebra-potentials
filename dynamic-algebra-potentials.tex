@@ -1974,7 +1974,18 @@ J(a)\otimes\Theta_z\lensob c
 We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn.para_theta_z} as desired.
 \end{proof}
 
-With Moore internalization in hand, we obtain the data functor of a rewiring setup.
+With Moore internalization in hand, we obtain the data functor of a rewiring setup. First, the interface functor lifts to potentialized lenses.
+
+\begin{lemma}\label{lem.c_lifts_lens}
+The strong symmetric monoidal functor $\Fun c\colon\cat M\to\poly$ lifts to a strong symmetric monoidal functor
+\[
+\Lens{\Fun c}\colon\Lcokl{\cat M}{R}\to\Lcokl{\poly}{\Fun c(R)}.
+\]
+\end{lemma}
+
+\begin{proof}
+Apply \cref{lem.lens_T_functoriality} with $F=\Fun c$ (strong symmetric monoidal by \cref{def.rewiring_setup}) and the monad morphism $\Fun c(R\times\blank)\Rightarrow\Fun c(R)\otimes\Fun c(\blank)$ supplied by \cref{lemma.monoid_to_monad}.
+\end{proof}
 
 \begin{theorem}[Data functor]\label{thm.data_functor}
 Every rewiring setup $D$ yields a normal lax symmetric monoidal functor
@@ -1986,18 +1997,13 @@ objects, $\Phi'\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{M}),z}$.
 \end{theorem}
 
 \begin{proof}
-% TODO (move #4a): relocate the proof of lem.potlens_to_para_poly verbatim, cot -> c, mfd -> M.
-Compose the two normal lax monoidal functors
+By \cref{def.rwd}, $\rwd_D$ is the underlying operad of $\para{\cat V}{\Lcokl{\cat M}{R}}$. We have a strong monoidal functor $\Lens{\Fun c}\colon\Lcokl{\cat M}{R}\to\Lcokl{\poly}{\Fun c(R)}$ from \cref{lem.c_lifts_lens} and a normal lax monoidal $\Theta_z\colon\Lcokl{\poly}{\Fun c(R)}\to\poly$ from \cref{thm.Theta_T_alpha}. The action square for $\Lens{\Fun c}$ and the action square for $\Theta_z$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two normal lax monoidal maps below; restricting to underlying operads gives the desired $\Phi'$:
 \[
-  \para{\cat V}{\Lcokl{\cat M}{R}}\To{\para{\cat V}{\Lens{\Fun{c}}}}
-  \para{\cat V}{\Lcokl{\poly}{\Fun{c}(R)}}\To{\para{\cat V}{\Theta_z}}
-  \para{\Fun{c}}{\poly}
+\para{\cat V}{\Lcokl{\cat M}{R}}\To{\para{\cat V}{\Lens{\Fun c}}}
+\para{\cat V}{\Lcokl{\poly}{\Fun c(R)}}\To{\para{\cat V}{\Theta_z}}
+\para{\Fun c}{\poly}.
+\qedhere
 \]
-and pass to underlying operads. The first leg is the $\Fun{c}$-level analogue of
-\cref{lem.cot_lifts_lens_potential} (strong monoidality of $\Fun{c}$, together with
-the monad morphism $\Fun{c}(R\times\blank)\Rightarrow\Fun{c}(R)\otimes\Fun{c}(\blank)$
-supplied by \cref{lemma.monoid_to_monad}); the second is
-\cref{cor.parameterized_representation} applied to the potential algebra $(z,\alpha)$.
 \end{proof}
 
 %----------------------------------------------------------------------------
@@ -2087,18 +2093,20 @@ Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd
 \end{proof}
 
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
-Let $D$ be a rewiring setup and $\intg$ a $(\Fun{c}\circ J)$-integrator. There is an
-operad functor
+For a rewiring setup $D$, every $(\Fun{c}\circ J)$-integrator $\intg$ induces an operad functor
 \[
-  \Phi_\intg\colon\rwd_D\longrightarrow\org,
+\Phi_{\intg}\colon\rwd_D\to\org.
 \]
-namely the composite of the data functor $\Phi'$ (\cref{thm.data_functor}) with
-the integrator semantics $\Psisem{\intg}$ (\cref{prop.integrator_to_org}).
 \end{theorem}
 
 \begin{proof}
-% TODO (move #4b): this is thm.functor at the level of a general setup; relocate verbatim.
-Immediate from \cref{thm.data_functor,prop.integrator_to_org}.
+Define $\Phi_{\intg}$ to be the composite of the normal lax monoidal functors below, given by \cref{thm.data_functor,prop.integrator_to_org}:
+\[
+\rwd_D\To{\Phi'}
+\para{\Fun{c}}{\poly}\To{\Psisem{\intg}}
+\org_\cong\inj\org.
+\qedhere
+\]
 \end{proof}
 
 Thus the construction takes in data and returns a category over the fixed semantic
