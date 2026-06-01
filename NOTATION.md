@@ -164,12 +164,14 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 
 Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\upd`, `\\Fun S`, `\\Psisem`, `\\Phi_`.
 
-### Abstract framework (rewiring setups)
+### Abstract framework (rewiring data)
 
-A *rewiring setup* is `D = (\cat M, \cat V, J, R, \Fun c, z, \alpha)` (`def.rewiring_setup`),
-introduced in `ch.framework`. The smooth instance is
-`D_{\mathrm{sm}} = (\mfd, \rvect, \inc, \rr, \cot, \yon, \potd)` (`prop.smooth_setup`);
-the rightmost column gives it.
+A *rewiring datum* is `D = (\cat M, \cat V, J, R)` (`def.rewiring_setup`), introduced in
+`ch.framework`; the syntax operad `\rwd_D` depends only on it. Interpreting that syntax
+adds an interface functor `\Fun c` into `\poly` and a potential algebra `(z,\alpha)` (the
+data functor, `sec.data_functor`); an integrator then gives the dynamics functor into
+`\org`. The smooth instance plugs in `(\mfd, \rvect, \inc, \rr)` with `\Fun c = \cot` and
+`(z,\alpha) = (\yon, \potd)` (`prop.smooth_setup`); the rightmost column gives it.
 
 | Sort | Symbol | Notes | Smooth instance |
 |---|---|---|---|
@@ -179,10 +181,9 @@ the rightmost column gives it.
 | Potentials target | `R` | commutative **monoid** object in `\cat M` (not a group — the antipode is never used) | `\rr` |
 | Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
 | Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `(\Fun c(R)\otimes\blank)`-monoid structure `\alpha` (`def.T_monoid`) | `(\yon,\potd)` |
-| Rewiring-diagram operad | `\rwd_D` (renders `\Fun{rWD}_D`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rwd`) | `\srwd` |
-| Functoriality slogan | `\rwd\colon\Setup\to\SMC_{/\org}` | `(D,\intg)\mapsto(\rwd_D,\Phi_\intg)` (`rmk.rwd_functor`); `\Setup` is the domain of setups-with-integrator | — |
+| Rewiring-diagram operad | `\rwd_D` (renders `\Cat{rWD}_D`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rwd`) | `\srwd` |
 
-Search hints: `"rewiring setup"`, `\\rwd`, `\\cat M`, `\\cat V`, `\\Fun c`,
+Search hints: `"rewiring datum"`, `\\rwd`, `\\cat M`, `\\cat V`, `\\Fun c`,
 `def.rewiring_setup`, `def.rwd`, `thm.dynamics_functor`, `thm.recovery`.
 
 ### Scalars and parameters
