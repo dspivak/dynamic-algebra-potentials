@@ -126,7 +126,13 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
 - [x] Branch `abstract-reorg`.
 - [x] Parked, compiling scaffold: `framework-new.tex`, `\input` before the bib.
 - [x] Draft recovery theorem (Thm C): `prop.smooth_setup` + `thm.recovery`.
-- [ ] Move blocks chapter-by-chapter (build after each): Ch 2 trim → Ch 3 assemble → Ch 4 instance.
-- [ ] Rename in abstract halves (`cot→p`, `mfd→𝓒`, `ℝ→R`); fix `\cref` breakage.
+- Move blocks one at a time (build after each):
+  - [x] **1.** Lenses + backward monads → Background (after Para).
+  - [ ] **2.** Manifolds + cot → new instance-chapter shell (out of Background).
+  - [ ] **3.** Relocate framework draft into position as Ch 3; retire the parked `\input`.
+  - [ ] **4.** Fill data-functor/integrator stubs: move Moore internalization + `sec.integrator_semantics` into Ch 3.
+  - [ ] **5.** Assemble instance chapter: rvect + the two integrators + recovery.
+  - [ ] **6.** Trim cross-refs / chapter intros / NOTATION as each lands.
+- [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
 - [ ] Relocate `framework-new.tex` content into Ch 3; delete the parked `\input`.

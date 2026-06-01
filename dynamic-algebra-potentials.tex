@@ -640,9 +640,9 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
 
-\Cref{ch.background} fixes notation and recalls the categorical background used later: smooth manifolds; polynomial functors, coalgebras, and the bicategory $\org$; wiring-diagram operads; and the Para construction.
+\Cref{ch.background} fixes notation and recalls the categorical background used later: smooth manifolds; polynomial functors, coalgebras, and the bicategory $\org$; wiring-diagram operads; the Para construction; and lenses with their backward monads.
 
-\Cref{ch.lenses_internalization} constructs the syntax operad $\srwd$. It reviews lenses and the backward monad construction, proves the Moore internalization result $\Theta\colon\Lens{\cat C}\to\cat C$ (\cref{cor.Theta}), introduces reactive vector spaces, and builds smooth rewiring diagrams as parameterized manifold lenses equipped with potentials.
+\Cref{ch.lenses_internalization} constructs the syntax operad $\srwd$. It proves the Moore internalization result $\Theta\colon\Lens{\cat C}\to\cat C$ (\cref{cor.Theta}), introduces reactive vector spaces, and builds smooth rewiring diagrams as parameterized manifold lenses equipped with potentials.
 
 \Cref{ch.potential_driven_dynamics} constructs the dynamics functors. It defines integrators, proves that every integrator induces an operad functor $\Phi\colon\srwd\to\org$ (\cref{thm.functor}), and then unpacks the two used in the paper: configuration dynamics $\Phiconf$ and phase-space dynamics $\Phiphase$.
 
@@ -661,7 +661,7 @@ Thanks to Lukas Barth, Scott Viteri, David Jaz Myers, and Jake Araujo-Simon for 
 \chapter{Background}\label{ch.background}
 %====================================================================
 
-This chapter collects the background required for this paper. We first fix our typographic conventions and the differential-geometric notation. Then we recall polynomial functors, polynomial coalgebras, and the bicategory $\org$ they assemble into. Finally we review wiring-diagram operads and the Para construction, which together provide the compositional setting used in the rest of the paper.
+This chapter collects the background required for this paper. We first fix our typographic conventions and the differential-geometric notation. Then we recall polynomial functors, polynomial coalgebras, and the bicategory $\org$ they assemble into. Finally we review wiring-diagram operads, the Para construction, and lenses with their backward monads, which together provide the compositional setting used in the rest of the paper.
 
 %--------------------------------------------------------------------
 \section{Notational conventions}\label{sec.prelim}
@@ -1247,17 +1247,11 @@ The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 
 
 We suppress identities in the decoration $\para[\theta]{F}{G}$ of these induced functors: an identity action square $\theta$ is dropped from the superscript and an identity functor $G$ from the argument, while an identity functor $F$ is recorded by its acting category in the subscript rather than written as $\id$. Thus an action square $\theta$ between two actions of a fixed $\cat A$ on a fixed $\cat D$ (so $F=\id_{\cat A}$ and $G=\id_{\cat D}$) induces a functor we write simply as $\Para^{\theta}_{\cat A}$.
 
-%====================================================================
-\chapter{From lenses to smooth rewiring diagrams}\label{ch.lenses_internalization}
-%====================================================================
-
-This chapter constructs the composition syntax used in the rest of the paper, the domain of the dynamics functor $\srwd\to\org$ defined in \cref{thm.functor}. We begin by recalling lenses and a \emph{backward-monad} construction in \cref{sec.lenses_general}. Then in \cref{sec.abstract_representation} we define \emph{Moore internalization}, a functor $\Lens{\cat{C}}\to\cat{C}$ when $\cat{C}$ is monoidal closed; we'll use this for $\cat{C}=\poly$ when building the dynamics functor. After introducing the category $\rvect$ of reactive vector spaces in \cref{sec.rvect}, we build the operad $\srwd$ from $\rvect$-parameterized manifold lenses with real-valued potentials in \cref{sec.potentialized_lenses}. This $\srwd$ is the smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}.
-
 %--------------------------------------------------------------------
 \section{Lenses and backward monads}\label{sec.lenses_general}
 %--------------------------------------------------------------------
 
-This section reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoidal category $\cat C$, and develops the \emph{backward-monad} refinement that will let us add a real-valued potential to the backward direction. Both ingredients are standard, lightly adapted; the chapter's technical heart is the Moore internalization functor in \cref{sec.abstract_representation}.
+This section reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoidal category $\cat C$, and develops the \emph{backward-monad} refinement that will let us add a real-valued potential to the backward direction. Both ingredients are standard, lightly adapted; they feed the Moore internalization functor of \cref{sec.abstract_representation}.
 
 
 \subsection{Lenses}\label{sec.lenses}
@@ -1584,11 +1578,17 @@ J(a)\To{J(u)}J(a')\To{\varepsilon_{J(a')}} I.
 When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cref{prop.backward_comonad}, and the comparisons $J(I)\cong I$ and $(a\otimes a')\cdot(\lensob c\otimes\lensob d)\cong(a\cdot\lensob c)\otimes(a'\cdot\lensob d)$ come directly from the strong monoidality of $J$.
 \end{proof}
 
+%====================================================================
+\chapter{From lenses to smooth rewiring diagrams}\label{ch.lenses_internalization}
+%====================================================================
+
+This chapter constructs the composition syntax used in the rest of the paper, the domain of the dynamics functor $\srwd\to\org$ defined in \cref{thm.functor}. Building on the lenses and \emph{backward-monad} construction recalled in \cref{sec.lenses_general}, we define \emph{Moore internalization} in \cref{sec.abstract_representation}, a functor $\Lens{\cat{C}}\to\cat{C}$ when $\cat{C}$ is monoidal closed; we'll use this for $\cat{C}=\poly$ when building the dynamics functor. After introducing the category $\rvect$ of reactive vector spaces in \cref{sec.rvect}, we build the operad $\srwd$ from $\rvect$-parameterized manifold lenses with real-valued potentials in \cref{sec.potentialized_lenses}. This $\srwd$ is the smooth rewiring-diagram syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}.
+
 %--------------------------------------------------------------------
 \section{Moore internalization of lenses}\label{sec.abstract_representation}
 %--------------------------------------------------------------------
 
-The previous section built categories of lenses and their coKleisli variants. This section constructs \emph{Moore internalization}, the central construction of this chapter: a normal lax monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that turns each lens object $\lensob c$ back into a $\cat C$-object $\ihom{\inpt c,I}\otimes\outp c$. 
+This section constructs \emph{Moore internalization}, the central construction of this chapter: a normal lax monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that turns each lens object $\lensob c$ back into a $\cat C$-object $\ihom{\inpt c,I}\otimes\outp c$.
 
 The following is an immediate corollary of \cref{thm.Theta_T_alpha} with $\Fun{T}=\id$ and $z\coloneqq I$.
 
