@@ -160,9 +160,30 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 | Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\theta` (configuration), `\upd_\beta` (phase). The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
 | Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\upd_\beta=\nu\circ\thetaV{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
 | Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
-| Dynamics functor | `\Phi_\intg`, `\Phi'` | `\Phi_\intg\colon\srw\to\org`; `\Phi'` the syntax→`\para\cot\poly` factor. Named: `\Phiconf=\Phi_{\intg_\theta}`, `\Phiphase=\Phi_{\intg_\beta}` |
+| Dynamics functor | `\Phi_\intg`, `\Phi'` | `\Phi_\intg\colon\rwd_D\to\org` (`thm.dynamics_functor`), smooth instance `\srwd\to\org` (`thm.functor`); `\Phi'` the data-functor factor into `\para{\Fun c}\poly` (`thm.data_functor`). Named: `\Phiconf=\Phi_{\intg_\theta}`, `\Phiphase=\Phi_{\intg_\beta}`. See §"Abstract framework" |
 
 Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\upd`, `\\Fun S`, `\\Psisem`, `\\Phi_`.
+
+### Abstract framework (rewiring setups)
+
+A *rewiring setup* is `D = (\cat M, \cat V, J, R, \Fun c, z, \alpha)` (`def.rewiring_setup`),
+introduced in `ch.framework`. The smooth instance is
+`D_{\mathrm{sm}} = (\mfd, \rvect, \inc, \rr, \cot, \yon, \potd)` (`prop.smooth_setup`);
+the rightmost column gives it.
+
+| Sort | Symbol | Notes | Smooth instance |
+|---|---|---|---|
+| Spaces (cartesian category) | `\cat M` | source of lens syntax | `\mfd` |
+| Parameters (sym. monoidal category) | `\cat V` | acts on `\cat M` via `J`; font-distinct from the carrier `V` | `\rvect` |
+| Parameter inclusion | `J\colon\cat V\to\cat M` | strong monoidal | `\inc` |
+| Potentials target | `R` | commutative **monoid** object in `\cat M` (not a group — the antipode is never used) | `\rr` |
+| Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
+| Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `(\Fun c(R)\otimes\blank)`-monoid structure `\alpha` (`def.T_monoid`) | `(\yon,\potd)` |
+| Rewiring-diagram operad | `\rwd_D` (renders `\Fun{rWD}_D`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rwd`) | `\srwd` |
+| Functoriality slogan | `\rwd\colon\Setup\to\SMC_{/\org}` | `(D,\intg)\mapsto(\rwd_D,\Phi_\intg)` (`rmk.rwd_functor`); `\Setup` is the domain of setups-with-integrator | — |
+
+Search hints: `"rewiring setup"`, `\\rwd`, `\\cat M`, `\\cat V`, `\\Fun c`,
+`def.rewiring_setup`, `def.rwd`, `thm.dynamics_functor`, `thm.recovery`.
 
 ### Scalars and parameters
 
