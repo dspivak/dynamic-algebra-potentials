@@ -134,9 +134,15 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
     - [x] prep: inline the framework chapter into the main file.
     - [x] **4a.** Moore internalization machinery → Ch 3 data-functor section (label preserved).
     - [x] **4b.** abstract integrators (`sec.org_as_para`, `def.integrator`, `prop.integrator_to_org`) → Ch 3 dynamics-functor section; `sec.TT`/`sec.phase_integrators`/`prop.rvect_polynomial`/config integrator left for the instance.
-  - [ ] **5.** Assemble instance chapter: rvect + potentialized lenses + the two concrete integrators + recovery.
-  - [ ] **6.** Trim cross-refs / chapter intros / NOTATION as each lands; drop "[DRAFT scaffold]" title.
-- [ ] **Math gap to close:** state the abstract `Lens(𝖼)` lemma (the `𝖼`-level analogue of `lem.cot_lifts_lens_potential`) that `thm.data_functor`'s proof currently cites as "the 𝖼-level analogue". The one genuinely-new statement; everything else is relocation.
+  - **5.** Dedup (concrete = corollary of abstract) + assemble instance chapter:
+    - [x] part 1: word-for-word abstract proofs (thm.data_functor ← lem.potlens_to_para_poly, thm.dynamics_functor ← thm.functor); add `lem.c_lifts_lens`.
+    - [x] part 2a: dedup `thm.recovery`'s proof (drop the four doomed full-proof citations).
+    - [x] part 2b: delete `lem.potlens_to_para_poly` (folded into recovery); `thm.functor` → headline **corollary** of `thm.dynamics_functor`.
+    - [ ] part 2c: redirect remaining `thm.functor` references that read wrong now — Plan (647), Ch 5 intro ("the main theorem of the paper"), `rmk.rmfdc` (2591), the Φconf/Φphase unpacking "recall from `thm.functor`" (→ `thm.dynamics_functor`).
+    - [ ] part 2d: delete the other two subsumed concretes `lem.cot_lifts_lens_potential`, `lem.Theta_poly_potential`; move `lemma.monoid_to_monad` earlier (kills the `lem.c_lifts_lens` forward-ref).
+    - [ ] part 2e: relocate Recovery + the corollary to sit with the concrete integrators; gather the instance chapter (rvect, cot, manifolds (#2), integrators, Φ-unpacking).
+  - [ ] **6.** Trims: chapter intros / NOTATION; drop "[DRAFT scaffold]" title.
+- [x] **Math gap closed:** `lem.c_lifts_lens` stated (= `lem.cot_lifts_lens_potential` at `𝖼`).
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
 - [ ] Relocate `framework-new.tex` content into Ch 3; delete the parked `\input`.

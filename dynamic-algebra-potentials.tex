@@ -2543,7 +2543,7 @@ Finally, the general smooth rewiring diagrams are morphisms in $\srwd$: the inte
 \chapter{Smooth rewiring dynamics}\label{ch.potential_driven_dynamics}
 %====================================================================
 
-This chapter constructs the dynamics functors $\srwd\to\org$ promised in the introduction. \Cref{sec.integrator_semantics} introduces \emph{integrators}, the device that converts a $\cotof{V}$-parameterized polynomial map into an ordinary coalgebra in $\org$. It also singles out the two integrators used in this paper---configuration and phase---the latter using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then proves the main theorem of the paper, \cref{thm.functor}: each integrator induces an operad functor $\Phi\colon\srwd\to\org$. \Cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
+This chapter constructs the dynamics functors $\srwd\to\org$ promised in the introduction. \Cref{sec.integrator_semantics} introduces \emph{integrators}, the device that converts a $\cotof{V}$-parameterized polynomial map into an ordinary coalgebra in $\org$. It also singles out the two integrators used in this paper---configuration and phase---the latter using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then applies the framework of \cref{ch.framework_DRAFT} to the smooth setup, recovering the operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{thm.functor}). \Cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
 
 %--------------------------------------------------------------------
 \section{Integrator semantics}\label{sec.integrator_semantics}
@@ -2583,7 +2583,7 @@ The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, wh
 \end{proof}
 
 \begin{remark}[Generalization to manifolds]\label{rmk.rmfdc_generalization}
-The dynamics functor (\cref{thm.functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
+The dynamics functor (\cref{thm.dynamics_functor}) depends on $\rvect$ only through the monoidal natural transformation $\theta$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\theta\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.flow_cot}, and on flat $V$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
 \end{remark}
 
 The \emph{configuration integrator} $\intg_\theta\coloneqq(\absval{\blank},\theta)$ has state space
@@ -2702,7 +2702,7 @@ to a $\cotof{V}$-parameterized polynomial map of the form
 \end{equation}
 This is the bulk of the construction. Our main functor of interest $\Phi$, which depends on an integrator (see \cref{def.integrator}), acts the same as $\Phi'$ does on objects:
 \[\Phi\lensob{M}=\Phi'\lensob{M}.\]
-What \cref{thm.functor} does is to first rearrange \eqref{eqn.to_be_rearranged} to
+What \cref{thm.dynamics_functor} does is to first rearrange \eqref{eqn.to_be_rearranged} to
 \[
 \cotof{V}\to
 \left[
@@ -2744,7 +2744,7 @@ Write $\intg_\theta$ \eqref{eqn.conf_integrator} for the configuration integrato
 
 The dynamics functor $\Phiconf\colon\srwd\to\org$ is the simpler of the two dynamics functors: a state is just an element $x\in V$ of the parameterizing manifold (no additional ``momentum'' component), and each step updates $x\mapsto x+\sharpR_x(\xi_V)$, where $\xi_V\in V^*$ is a covector assembled from $f$'s backward pass and the differential of its potential. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
 
-Recall from \cref{thm.functor} that $\Phiconf=\Psisem{\intg_\theta}\circ\Phi'$. The functor $\Psisem{\intg_\theta}$ replaces a $\cotof{V}$-parameter via the configuration integrator's update $\thetaV{\rv V}$ (\cref{prop.rvect_polynomial}) on state set $S\coloneqq\absval{V}$:
+Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\intg_\theta}\circ\Phi'$. The functor $\Psisem{\intg_\theta}$ replaces a $\cotof{V}$-parameter via the configuration integrator's update $\thetaV{\rv V}$ (\cref{prop.rvect_polynomial}) on state set $S\coloneqq\absval{V}$:
 \[
 S\yon^S\To{\thetaV{\rv V}}\cotof{V}.
 \]
@@ -2945,7 +2945,7 @@ Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) 
 
 We remind the reader of \cref{warn.prime}: primes (e.g.\ $\xi', x'$) never denote derivatives in this paper.
 
-Recall from \cref{thm.functor} that $\Phiphase=\Psisem{\intg_\beta}\circ\Phi'$. The functor $\Psisem{\intg_\beta}$ replaces a $\cotof{V}$-parameter via the phase integrator \eqref{eqn.phase_update} on state set $S\coloneqq\absval{T^*V}$:
+Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\intg_\beta}\circ\Phi'$. The functor $\Psisem{\intg_\beta}$ replaces a $\cotof{V}$-parameter via the phase integrator \eqref{eqn.phase_update} on state set $S\coloneqq\absval{T^*V}$:
 \[
 S\yon^S\To{\upd_\beta}\cotof{V}.
 \]
