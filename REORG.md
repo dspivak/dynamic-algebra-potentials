@@ -128,8 +128,8 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
 - [x] Draft recovery theorem (Thm C): `prop.smooth_setup` + `thm.recovery`.
 - Move blocks one at a time (build after each):
   - [x] **1.** Lenses + backward monads → Background (after Para).
-  - [ ] **2.** Manifolds + cot → new instance-chapter shell (out of Background).
-  - [ ] **3.** Relocate framework draft into position as Ch 3; retire the parked `\input`.
+  - [ ] **2.** Manifolds + cot → new instance-chapter shell (out of Background). *(deferred to last, after the instance chapter exists)*
+  - [x] **3.** Relocate framework draft into position as Ch 3; retire the parked `\input`. *(done before #2, per agreed reorder)*
   - [ ] **4.** Fill data-functor/integrator stubs: move Moore internalization + `sec.integrator_semantics` into Ch 3.
   - [ ] **5.** Assemble instance chapter: rvect + the two integrators + recovery.
   - [ ] **6.** Trim cross-refs / chapter intros / NOTATION as each lands.
