@@ -148,7 +148,9 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
     - [x] rewrite the **Plan** (`sec.plan`) for the new 5-chapter shape.
     - [x] NOTATION pass: added the "Abstract framework (rewiring setups)" table + smooth-instance column; updated the dynamics-functor row.
 
-  **Remaining (optional):** part 2e-ii — pull manifolds + `sec.cot` out of Background into the instance (Ch 4 opens with its own ingredients); reframe Ch 4/5 as "the smooth instance". Invasive (cross-chapter double-move; `sec.cot` nested in `sec.poly_dynamic_bg`); deferred as a dedicated pass. Paper is coherent without it.
+    - [x] **part 2e-ii:** moved manifolds + `sec.cot` (promoted to a section) into Ch 4 — it now opens manifolds → cotangent functor → rvect → potentialized lenses; Background is now purely generic; Ch 4 retitled "Smooth rewiring diagrams".
+
+**REORG COMPLETE.** Final shape: 1 Introduction · 2 Background (generic tools) · 3 The abstract framework · 4 Smooth rewiring diagrams (smooth syntax) · 5 Smooth rewiring dynamics (smooth dynamics, incl. Recovery + the Φconf/Φphase corollary) · 6 Applications. Builds clean (66 pp, exit 0, no undefined refs/dup labels). Open follow-ups: a fresh NOTATION audit (Pass 1/2) against the restructured paper; possibly rename labels `ch.lenses_internalization`/`sec.manifolds_notation` to match new titles (cosmetic).
 - [x] **Math gap closed:** `lem.c_lifts_lens` stated (= `lem.cot_lifts_lens_potential` at `𝖼`).
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
