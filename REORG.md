@@ -130,8 +130,11 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
   - [x] **1.** Lenses + backward monads → Background (after Para).
   - [ ] **2.** Manifolds + cot → new instance-chapter shell (out of Background). *(deferred to last, after the instance chapter exists)*
   - [x] **3.** Relocate framework draft into position as Ch 3; retire the parked `\input`. *(done before #2, per agreed reorder)*
-  - [ ] **4.** Fill data-functor/integrator stubs: move Moore internalization + `sec.integrator_semantics` into Ch 3.
-  - [ ] **5.** Assemble instance chapter: rvect + the two integrators + recovery.
+  - **4.** Fill data-functor/integrator stubs:
+    - [x] prep: inline the framework chapter into the main file.
+    - [x] **4a.** Moore internalization machinery → Ch 3 data-functor section (label preserved).
+    - [ ] **4b.** abstract integrators (`sec.org_as_para`, `sec.integrators`) → Ch 3 dynamics-functor section; leave `sec.TT`, `sec.phase_integrators` for the instance.
+  - [ ] **5.** Assemble instance chapter: rvect + potentialized lenses + the two concrete integrators + recovery.
   - [ ] **6.** Trim cross-refs / chapter intros / NOTATION as each lands.
 - [ ] Rename in abstract halves (`cot→𝖼`, `mfd→𝓜`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.
