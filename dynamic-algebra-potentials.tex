@@ -304,7 +304,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\fun}[1]{\mathrm{#1}}%a function
 \newcommand{\Fun}[1]{\text{\normalfont\textsf{#1}}}%a named functor
 \providecommand{\rwd}{\Fun{rWD}}%abstract rewiring-diagram operad / functor (abstract-reorg)
-\providecommand{\Data}{\Cat{Data}}%domain category of rewiring data
+\providecommand{\Setup}{\Cat{Setup}}%category of rewiring setups (with integrator)
 \providecommand{\SMC}{\Cat{SMC}}%symmetric monoidal categories (codomain slice)
 
 \newcommand{\notsafe}[1]{{#1}}
@@ -636,7 +636,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 
 \Cref{ch.background} fixes notation and recalls the categorical background used later: smooth manifolds; polynomial functors, coalgebras, and the bicategory $\org$; wiring-diagram operads; the Para construction; and lenses with their backward monads.
 
-\Cref{ch.framework} is the abstract heart of the paper. From a \emph{rewiring setup}---a cartesian category of spaces, a parameter category, a potential receptor, a strong monoidal interface functor into $\poly$, and a potential algebra---it builds a syntax operad $\rwd_D$ and a \emph{data functor} into $\poly$ via Moore internalization (\cref{cor.Theta}); an \emph{integrator} then turns this into an operad functor $\rwd_D\to\org$ (\cref{thm.dynamics_functor}).
+\Cref{ch.framework} is the abstract heart of the paper. From a \emph{rewiring setup}---a cartesian category of spaces, a parameter category, a potentials target, a strong monoidal interface functor into $\poly$, and a potential algebra---it builds a syntax operad $\rwd_D$ and a \emph{data functor} into $\poly$ via Moore internalization (\cref{cor.Theta}); an \emph{integrator} then turns this into an operad functor $\rwd_D\to\org$ (\cref{thm.dynamics_functor}).
 
 \Cref{ch.lenses_internalization} instantiates the syntax: it introduces reactive vector spaces and builds the operad $\srwd$ of smooth rewiring diagrams as $\rvect$-parameterized manifold lenses equipped with potentials.
 
@@ -1457,7 +1457,7 @@ A \emph{rewiring setup} $D$ consists of
   \item a cartesian monoidal category $\cat M$, the \emph{spaces};
   \item a symmetric monoidal category $\cat V$, the \emph{parameters}, together
     with a strong monoidal functor $J\colon\cat V\to\cat M$;
-  \item a commutative monoid object $R$ in $\cat M$, the \emph{potential receptor};
+  \item a commutative monoid object $R$ in $\cat M$, the \emph{potentials target};
   \item a strong symmetric monoidal functor
     $\Fun{c}\colon(\cat M,1,\times)\to(\poly,\yon,\otimes)$, the \emph{interface functor};
   \item a $\otimes$-monoid $z$ in $\poly$ equipped with a
@@ -1479,9 +1479,7 @@ $(z,\alpha)$ is the recipient into which a potential differentiates. We do
 out in $\poly$, after $\Fun{c}$, so an internal hom is needed only in the (fixed,
 closed) target.
 
-%----------------------------------------------------------------------------
-\section{The syntax operad of a setup}\label{sec.rwd_syntax}
-%----------------------------------------------------------------------------
+These pieces assemble into a syntax operad.
 
 \begin{definition}[$\rwd_D$]\label{def.rwd}
 Let $D$ be a rewiring setup. The symmetric monoidal category
@@ -1856,7 +1854,7 @@ By \cref{def.rwd}, $\rwd_D$ is the underlying operad of $\para{\cat V}{\Lcokl{\c
 
 %----------------------------------------------------------------------------
 \section{Integrators and the dynamics functor
-  \texorpdfstring{$\rwd\colon\Data\to\SMC_{/\org}$}{rWD: Data -> SMC/Org}}
+  \texorpdfstring{$\rwd\colon\Setup\to\SMC_{/\org}$}{rWD: Setup -> SMC/Org}}
   \label{sec.dynamics_functor_abstract}
 %----------------------------------------------------------------------------
 
@@ -1960,11 +1958,12 @@ Define $\Phi_{\intg}$ to be the composite of the normal lax monoidal functors be
 Thus the construction takes in data and returns a category over the fixed semantic
 anchor $\org$.
 
-\begin{remark}[Functoriality in the data]\label{rmk.rwd_functor}
-Write $\Data$ for the category of rewiring setups-with-integrator $(D,\intg)$
-[\,morphisms: TODO\,]. The construction above is the object part of a functor
+\begin{remark}[Functoriality in the setup]\label{rmk.rwd_functor}
+Write $\Setup$ for the category whose objects are rewiring setups, each equipped
+with an integrator $\intg$ [\,morphisms: TODO\,]. The construction above is the
+object part of a functor
 \[
-  \rwd\colon\Data\longrightarrow\SMC_{/\org},
+  \rwd\colon\Setup\longrightarrow\SMC_{/\org},
   \qquad (D,\intg)\longmapsto\bigl(\rwd_D,\ \Phi_\intg\bigr),
 \]
 landing in the (normal-lax, pseudo) slice of symmetric monoidal categories over

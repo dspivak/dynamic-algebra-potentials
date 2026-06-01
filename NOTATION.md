@@ -176,11 +176,11 @@ the rightmost column gives it.
 | Spaces (cartesian category) | `\cat M` | source of lens syntax | `\mfd` |
 | Parameters (sym. monoidal category) | `\cat V` | acts on `\cat M` via `J`; font-distinct from the carrier `V` | `\rvect` |
 | Parameter inclusion | `J\colon\cat V\to\cat M` | strong monoidal | `\inc` |
-| Potential receptor | `R` | commutative **monoid** object in `\cat M` (not a group — the antipode is never used) | `\rr` |
+| Potentials target | `R` | commutative **monoid** object in `\cat M` (not a group — the antipode is never used) | `\rr` |
 | Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
 | Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `(\Fun c(R)\otimes\blank)`-monoid structure `\alpha` (`def.T_monoid`) | `(\yon,\potd)` |
 | Rewiring-diagram operad | `\rwd_D` (renders `\Fun{rWD}_D`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rwd`) | `\srwd` |
-| Functoriality slogan | `\rwd\colon\Data\to\SMC_{/\org}` | `(D,\intg)\mapsto(\rwd_D,\Phi_\intg)` (`rmk.rwd_functor`); `\Data` is the domain of setups-with-integrator | — |
+| Functoriality slogan | `\rwd\colon\Setup\to\SMC_{/\org}` | `(D,\intg)\mapsto(\rwd_D,\Phi_\intg)` (`rmk.rwd_functor`); `\Setup` is the domain of setups-with-integrator | — |
 
 Search hints: `"rewiring setup"`, `\\rwd`, `\\cat M`, `\\cat V`, `\\Fun c`,
 `def.rewiring_setup`, `def.rwd`, `thm.dynamics_functor`, `thm.recovery`.
