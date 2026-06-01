@@ -68,8 +68,9 @@ kept separate; fold into Ch 3 only if we want the result literally in Ch 2.)
 1. `def.rewiring_setup` — the ingredient bundle. **Drafted** (framework-new.tex).
 2. `thm.data_functor` (Thm A) — `lem.potlens_to_para_poly` with `cot↦p`. **Stated**; proof = relocate.
 3. `thm.dynamics_functor` (Thm B) — `thm.functor`, abstract. **Stated**; proof = compose.
-4. Recovery (Thm C) — discharge table citing `prop.cot_monoidal`, `prop.cot_hopf`,
-   `lem.alpha_constant`, `prop.rvect_polynomial`. **Not yet drafted** (lives in Ch 4).
+4. Recovery (Thm C) — `prop.smooth_setup` (the tuple is a setup: 5-clause discharge)
+   + `thm.recovery` (`rWD_Dsm = 𝓢𝓡𝓦𝓓`; `Φ_𝔦θ=Φconf`, `Φ_𝔦β=Φphase`). **Drafted**
+   (framework-new.tex §Recovery); relocates to Ch 4.
 
 Plus the framing layer:
 - `rmk.rwd_functor` (Tier 1 + Tier 3) — output type / functoriality slogan. **Drafted.**
@@ -115,7 +116,7 @@ monoid (giving `T*_e R` potential choices). `prop.cot_hopf` (Lie groups) is wher
 
 - [x] Branch `abstract-reorg`.
 - [x] Parked, compiling scaffold: `framework-new.tex`, `\input` before the bib.
-- [ ] Draft recovery theorem (Thm C) for Ch 4.
+- [x] Draft recovery theorem (Thm C): `prop.smooth_setup` + `thm.recovery`.
 - [ ] Move blocks chapter-by-chapter (build after each): Ch 2 trim → Ch 3 assemble → Ch 4 instance.
 - [ ] Rename in abstract halves (`cot→p`, `mfd→𝓒`, `ℝ→R`); fix `\cref` breakage.
 - [ ] Update `NOTATION.md` (add `𝓒`, `R`; `p` already present) in the same commits.

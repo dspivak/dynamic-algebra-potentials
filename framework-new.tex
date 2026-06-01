@@ -188,3 +188,79 @@ independent of $\intg$, functoriality in $\intg$ reduces to that of
 $\intg\mapsto\Psisem{\intg}$, which follows from the naturality of
 \cref{prop.integrator_to_org} in the update map.
 \end{proof}
+
+%----------------------------------------------------------------------------
+\section{Recovery: the smooth instance}\label{sec.recovery_DRAFT}
+%----------------------------------------------------------------------------
+
+% RELOCATES TO: Ch 4 (the smooth instance), AFTER the manifolds / cot / rvect /
+% integrator material. Every result cited below already exists in the main text;
+% this section only assembles them.
+% NOTE (overload to resolve at relocation): the letter D is the rewiring SETUP in
+% def.rewiring_setup, but D_F is also the descent functor of lem.poly_to_org.
+% Rename the latter when these live in the same chapter.
+
+\begin{proposition}[The smooth setup]\label{prop.smooth_setup}
+The tuple
+\[
+  D_{\mathrm{sm}}\coloneqq(\mfd,\ \rvect,\ \inc,\ \rr,\ \cot,\ \yon,\ \potd)
+\]
+is a rewiring setup (\cref{def.rewiring_setup}).
+\end{proposition}
+
+\begin{proof}
+We check the five clauses of \cref{def.rewiring_setup}.
+\begin{enumerate}
+  \item $(\mfd,\rr^0,\times)$ is cartesian.
+  \item $(\rvect,0,\oplus)$ is symmetric monoidal (\cref{prop.rvect_monoidal}) and
+    $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal
+    (\cref{prop.rvect_smc_action}).
+  \item $(\rr,0,+)$ is a commutative monoid---indeed a Lie group---object in $\mfd$.
+  \item $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric
+    monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid
+    $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
+  \item $\yon$ is a coupled $\otimes$-monoid (\cref{rmk.alpha_general}), and
+    $\potd\colon\cotof{\rr}\to\yon$ is a $(\cotof{\rr}\otimes\blank)$-monoid structure
+    on it---the choice $r=+1$ of \eqref{eqn.d_potential}, by \cref{lem.alpha_constant}.
+    \qedhere
+\end{enumerate}
+\end{proof}
+
+\begin{theorem}[Recovery]\label{thm.recovery}
+For the smooth setup $D_{\mathrm{sm}}$ of \cref{prop.smooth_setup}:
+\begin{enumerate}
+  \item $\rwd_{D_{\mathrm{sm}}}=\srwd$ (\cref{def.potlens}), and the data functor of
+    \cref{thm.data_functor} is the $\Phi'$ of \cref{lem.potlens_to_para_poly};
+  \item the configuration and phase integrators $\intg_\theta$
+    \eqref{eqn.conf_integrator} and $\intg_\beta$ \eqref{eqn.phase_integrator} are
+    $(\cot\circ\inc)$-integrators, and the dynamics functors they induce via
+    \cref{thm.dynamics_functor} are
+    \[
+      \Phi_{\intg_\theta}=\Phiconf
+      \qqand
+      \Phi_{\intg_\beta}=\Phiphase
+    \]
+    of \eqref{eqn.our_phis}.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) By \cref{def.rwd}, $\rwd_{D_{\mathrm{sm}}}$ is the underlying operad of
+$\para{\rvect}{\Lcokl{\mfd}{\rr}}=\para{\rvect}{\plmfd}$, which is $\srwd$
+(\cref{def.potlens}). With $p\coloneqq\cot$ and $(z,\alpha)\coloneqq(\yon,\potd)$, the
+two legs of \cref{thm.data_functor} are $\Lens\cot$
+(\cref{lem.cot_lifts_lens_potential}) and $\Theta_\potd$
+(\cref{lem.Theta_poly_potential}), so the data functor is the $\Phi'$ of
+\cref{lem.potlens_to_para_poly}.
+
+(2) Both $\intg_\theta=(\absval\blank,\theta)$ and
+$\intg_\beta=(\absval{T^*\blank},\upd_\beta)$ are $\cot$-integrators
+(\cref{def.integrator}), as established at \eqref{eqn.conf_integrator} and in
+\cref{sec.phase_integrators}. The induced functor
+$\Phi_{\intg}=\Psisem{\intg}\circ\Phi'$ of \cref{thm.dynamics_functor} is that of
+\cref{thm.functor}; the two named cases are \eqref{eqn.our_phis}.
+\qedhere
+\end{proof}
+
+From here on we write $\srwd$ for $\rwd_{D_{\mathrm{sm}}}$ and call its morphisms
+\emph{smooth rewiring diagrams}; the word ``smooth'' refers to this instance.
