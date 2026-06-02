@@ -170,21 +170,23 @@ A *rewiring datum* is `D = (\cat M, \cat V, J, R)` (`def.rewiring_setup`), intro
 `ch.framework`; the syntax operad `\rwd_D` depends only on it. Interpreting that syntax
 adds an interface functor `\Fun c` into `\poly` and a potential algebra `(z,\alpha)` (the
 data functor, `sec.data_functor`); an integrator then gives the dynamics functor into
-`\org`. The smooth instance plugs in `(\mfd, \rvect, \inc, \rr)` with `\Fun c = \cot` and
+`\org`. The smooth instance plugs in the rewiring datum `\Sm = (\mfd, \rvect, \inc, \rr)`
+(`def.potlens`) with interface functor `\Fun c = \cot` and potential algebra
 `(z,\alpha) = (\yon, \potd)` (`prop.smooth_setup`); the rightmost column gives it.
 
 | Sort | Symbol | Notes | Smooth instance |
 |---|---|---|---|
+| Rewiring datum (whole tuple) | `D = (\cat M, \cat V, J, R)` | `def.rewiring_setup`; determines the syntax operad `\rwd_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
 | Spaces (cartesian category) | `\cat M` | source of lens syntax | `\mfd` |
 | Parameters (sym. monoidal category) | `\cat V` | acts on `\cat M` via `J`; font-distinct from the carrier `V` | `\rvect` |
 | Parameter inclusion | `J\colon\cat V\to\cat M` | strong monoidal | `\inc` |
 | Potentials target | `R` | commutative **monoid** object in `\cat M` (not a group — the antipode is never used) | `\rr` |
 | Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
 | Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `(\Fun c(R)\otimes\blank)`-monoid structure `\alpha` (`def.T_monoid`) | `(\yon,\potd)` |
-| Rewiring-diagram operad | `\rwd_D` (renders `\Cat{rWD}_D`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rwd`) | `\srwd` |
+| Rewiring-diagram operad | `\rwd_D` (renders `\mathbb{R}\Cat{WD}_D`; blackboard `\mathbb{R}` marks it as a (2,1)-operad, in-family with `\org`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rwd`) | `\srwd \coloneqq \rwd_{\Sm}` by definition (`def.potlens`); `\srwd` expands to `\rwd_{\Sm}` (renders `\mathbb{R}\Cat{WD}_{\mathrm{Sm}}`) |
 
-Search hints: `"rewiring datum"`, `\\rwd`, `\\cat M`, `\\cat V`, `\\Fun c`,
-`def.rewiring_setup`, `def.rwd`, `thm.dynamics_functor`, `thm.recovery`.
+Search hints: `"rewiring datum"`, `\\rwd`, `\\Sm`, `\\cat M`, `\\cat V`, `\\Fun c`,
+`def.rewiring_setup`, `def.rwd`, `def.potlens`, `thm.dynamics_functor`, `thm.recovery`.
 
 ### Scalars and parameters
 
