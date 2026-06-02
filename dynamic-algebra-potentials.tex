@@ -648,7 +648,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 
 \Cref{ch.smooth_rwd} instantiates the syntax: it introduces reactive vector spaces and builds the operad $\srwd$ of smooth rewiring diagrams as $\rvect$-parameterized manifold lenses equipped with potentials.
 
-\Cref{ch.smooth_dynamics} instantiates the dynamics. The smooth pieces assemble into the rewiring datum $\Sm$ whose syntax is $\srwd=\rwd_{\Sm}$ (\cref{def.potlens}), and the configuration and phase integrators yield operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{thm.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
+\Cref{ch.smooth_dynamics} instantiates the dynamics. The smooth pieces assemble into the rewiring datum $\Sm$ whose syntax operad is $\srwd$ (\cref{def.potlens}), and the configuration and phase integrators yield operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{thm.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
 
 \Cref{ch.applications} works out the main examples: Newton's method, gradient descent with backpropagation, the discrete wave equation for a chain of harmonic particles, and the graph-Laplacian dynamics of harmonic particles on an arbitrary finite directed graph.
 
@@ -1753,7 +1753,7 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 
 This chapter produces a syntax operad $\rwd_D$ of \emph{rewiring diagrams} from a short list of pieces: a \emph{rewiring datum} $D$, including a notion of space, a notion of parameter, and a \emph{potentials monad} through which the backward pass is threaded and potentials accumulate. Given a few more pieces---how to cast spaces as polynomial interfaces, the effect of potentials, and how to integrate those effects---we obtain functorial semantics: a functor $\rwd_D\to\org$. The three play distinct roles: the rewiring datum is the material out of which the syntax operad $\rwd_D$ is built; the polynomial interpretation says how to interpret that syntax in $\poly$; and the integrator turns that interpretation into running dynamics in $\org$.
 
-The smooth version $\srwd\To{\Phi}\org$ will be a special case, where: spaces are manifolds, parameters are reactive vector spaces, potentials live in $\rr$, the cotangent bundle gives interfaces, potentials are differentiated, and integration is by Euler steps. This smooth instance is assembled in \cref{ch.smooth_rwd,ch.smooth_dynamics}: its rewiring datum $\Sm$ appears in \cref{def.potlens}, and the resulting syntax operad $\rwd_{\Sm}$ is the $\srwd$ of the introduction.
+The smooth version $\srwd\To{\Phi}\org$ will be a special case, where: spaces are manifolds, parameters are reactive vector spaces, potentials live in $\rr$, the cotangent bundle gives interfaces, potentials are differentiated, and integration is by Euler steps. This smooth instance is assembled in \cref{ch.smooth_rwd,ch.smooth_dynamics}: its rewiring datum $\Sm$ appears in \cref{def.potlens}, and its syntax operad is the $\srwd$ of the introduction.
 
 %--------------------------------------------------------------------
 \section{Rewiring data}\label{sec.rewiring_datum}
@@ -1876,11 +1876,11 @@ The composite $g\circ f$ has parameter $V\otimes V'$, forward and backward compo
 
 We conclude this section with a free supply of monads---the power monads---that can be used in conjunction with any other monad $\Fun R$.
 
-\begin{proposition}[Modes]\label{prop.moding}
-Let $\cat M$ be cartesian monoidal, and let $\md$ be a finite set. The power functor $(\blank)^{\md}$ is a monoidal monad on $\cat M$, and for every monoidal monad $\Fun R$ on $\cat M$ the composite $(\Fun R\blank)^{\md}$ is again a monoidal monad.
+\begin{proposition}[Moded rewiring data]\label{prop.moding}
+Let $\cat M$ be cartesian monoidal, and let $\md$ be a finite set. The power functor $(\blank)^{\md}$ is a monoidal monad on $\cat M$, and for every monoidal monad $\Fun R$ on $\cat M$ the composite $(\Fun R)^{\md}$ is again a monoidal monad.
 \end{proposition}
 \begin{proof}
-The power monad $(\blank)^{\md}=\prod_{\md}$ has unit $X\to X^{\md}$ and multiplication $(X^{\md})^{\md}\to X^{\md}$ induced by $\md\to 1$ and $\md\to\md\times\md$. It is monoidal since $\cat M$ is cartesian. The canonical $\langle\Fun R(\pi_i)\rangle_i\colon\Fun R(\prod_{\md} X)\to\prod_{\md}\Fun R(X)$ is a distributive law of $\Fun R$ over $\prod_{\md}$, so $(\Fun R\blank)^{\md}=\prod_{\md}\circ\Fun R$ is a monoidal monad. The distributive-law and monoidality axioms are routine and left to the reader.
+The power monad $(\blank)^{\md}=\prod_{\md}$ has unit $X\to X^{\md}$ and multiplication $(X^{\md})^{\md}\to X^{\md}$ induced by $\md\to 1$ and $\md\to\md\times\md$. It is monoidal since $\cat M$ is cartesian. The canonical $\langle\Fun R(\pi_i)\rangle_i\colon\Fun R(\prod_{\md} X)\to\prod_{\md}\Fun R(X)$ is a distributive law of $\Fun R$ over $\prod_{\md}$, so $(\Fun R)^{\md}\coloneqq\prod_{\md}\circ\Fun R$ is a monoidal monad. The distributive-law and monoidality axioms are routine and left to the reader.
 \end{proof}
 
 We call the elements of $\md$ \emph{modes}, e.g. ``training mode and inference mode''; \cref{prop.moded_algebra} will interpret them as such.
@@ -1927,18 +1927,23 @@ By \cref{def.rewiring_datum}, $\rwd_D$ is the underlying operad of $\para{\cat V
 \end{proof}
 
 
-Recall from \cref{prop.moding} that for any monoidal monad $\Fun{R}$ on $\cat{M}$ and any finite set $\md$, there is a monoidal monad $\Fun{R}^\md$.
+Recall from \cref{prop.moding} that for any finite set $\md$, we can upgrade any rewiring datum $D\coloneqq(\cat{M},\Fun{R},\cat{V})$ to an $\md$-mode version $D^\md\coloneqq(\cat{M},\Fun{R}^\md,\cat{V}$).
 
-\begin{proposition}[Moded algebra]\label{prop.moded_algebra}
-Let $\Fun T$ be a monoidal monad on $\poly$. For any finite set $\md$ of modes and any polynomial interpretation of $(\cat{M},\Fun{R},J)$, there is a polynomial interpretation of $(\cat{M},\Fun{R}^\md,J)$.
+\begin{proposition}[Moded interpretations]\label{prop.moded_algebra}
+Let $D$ be a rewiring datum and $\md$ a finite set. For any polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,(z,\alpha))$ of $D$, there is a polynomial interpretation $\interp^\md\coloneqq(\Fun c,(\Fun R')^\md,\theta^\md,(z^\md,\alpha^\md))$ of $D^\md$.
 \end{proposition}
 \begin{proof}
-$z^{\md}=\prod_{\md} z$ is the $\md$-fold product of the monoid $z$, hence a monoid, with $\Fun T$-algebra structure $\Fun T(z^{\md})\To{\langle\Fun T\pi_i\rangle}\prod_{\md}\Fun T z\To{\prod_{\md}\alpha}z^{\md}$. Compatibility with the distributive law of \cref{prop.moding} makes $(z^{\md},\alpha^{\md})$ a $(\Fun T\blank)^{\md}$-monoid. The coherence checks are left to the reader.
-\end{proof}
+We have that $(\Fun R')^\md\coloneqq\prod_\md\circ\,\Fun R'$ is a monoidal monad on $\poly$ by \cref{prop.moding}. The universal property of products gives a map $\Fun c\circ\prod_\md\To{}\prod_\md\circ\,\Fun c$, so we take the required comparison $\theta^\md$ to be the composite
+\[
+\Fun c\circ\Fun R^\md=\Fun c\circ\textstyle\prod_\md\circ\,\Fun R
+\to\textstyle\prod_\md\circ\,\Fun c\circ\Fun R
+\To{\prod_\md\theta}\textstyle\prod_\md\circ\,\Fun R'\circ\Fun c=(\Fun R')^\md\circ\Fun c.
+\]
 
-\begin{remark}[Modes; training versus inference]\label{rem.modes}
-Applying \cref{prop.moding,prop.moded_algebra} to the writer datum gives, for any finite set $\md$ of modes, the monad $(R\otimes\blank)^{\md}$ with potential algebra $(\yon^{\md},\potd^{\md})$: a morphism's backward pass carries an input and potential per mode, and the internalized interface acquires the factor $\ihom{\Fun c(\inpt M),\yon}^{\md}$---one passback per mode, e.g.\ training versus inference, selected at runtime. Since the potentials monad decorates only the backward pass, the forward map $\outp f$ is mode-blind: as in a neural network, the output is computed identically in every mode and only the parameter update differs. This is forced by the theory, not arranged. Note that $\yon^{\md}$ is not the monoidal unit of $\poly$, so this potential algebra is not normal (\cref{thm.Theta_T_alpha}); the smooth instance of \cref{ch.smooth_dynamics} recovers normality by taking the single-mode $z=\yon$.
-\end{remark}
+For the potential algebra, take $z^{\md}\coloneqq\prod_{\md} z$ to be the $\md$-fold product of the monoid $z$, which is naturally a monoid. Its $\Fun R'$-algebra structure is again given by the universal property of products
+\[\Fun R'(z^{\md})=\Fun R'(\textstyle\prod_\md z)\to\textstyle\prod_{\md}\Fun R'(z)\To{\prod_{\md}\alpha}\textstyle\prod_\md z=z^{\md}.\] 
+It is easy to check that $(z^{\md},\alpha^{\md})$ is a $(\Fun R'\blank)^{\md}$-monoid.
+\end{proof}
 
 
 
@@ -2405,11 +2410,7 @@ The \emph{smooth rewiring datum} is
 \[
 \Sm\coloneqq(\mfd,\rvect,\inc,\rr),
 \]
-a rewiring datum in the sense of \cref{def.rewiring_datum}: $\mfd$ is cartesian monoidal, $(\rr,0,+)$ is a commutative monoid object in it---giving the writer potentials monad $\rr\otimes\blank$ (\cref{lem.monoid_to_monad}), which we abbreviate by its carrier $\rr$---$\rvect$ is symmetric monoidal (\cref{prop.rvect_monoidal}), and $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal (\cref{prop.rvect_smc_action}). Its rewiring-diagram operad is
-\[
-\defineTerm{srwd}\coloneqq\rwd_{\Sm},
-\]
-the underlying operad of the symmetric monoidal category $\defineTerm{potlens}\coloneqq\para{\rvect}{\plmfd}$ (recall $\plmfd=\Lcokl{\mfd}{\rr}$).
+a rewiring datum in the sense of \cref{def.rewiring_datum}: $\mfd$ is cartesian monoidal, $(\rr,0,+)$ is a commutative monoid object in it---giving the writer potentials monad $\rr\otimes\blank$ (\cref{lem.monoid_to_monad}), which we abbreviate by its carrier $\rr$---$\rvect$ is symmetric monoidal (\cref{prop.rvect_monoidal}), and $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal (\cref{prop.rvect_smc_action}). Its rewiring-diagram operad $\defineTerm{srwd}$ is the underlying operad of the symmetric monoidal category $\defineTerm{potlens}\coloneqq\para{\rvect}{\plmfd}$.
 \end{definition}
 
 A morphism $f\colon\lensob{M_1}\otimes\cdots\otimes\lensob{M_K}\to\lensob{N}$ is a tuple $f=\left((V,\sharpR_V),\binom{\inpt f}{\outp f},U\right)$ with $(V,\sharpR_V):\rvect$ and smooth maps
@@ -2442,7 +2443,7 @@ Building on the integrator notion of \cref{sec.dynamics_functor_abstract}, this 
 
 \subsection{Integrators}\label{sec.integrators}
 
-Looking ahead, the polynomial interpretation $\Phi'$ (\cref{thm.recovery}) assembles our constructions so far into maps of the form $\cotof{V}\otimes p\to q$, or equivalently $\cotof{V}\to[p,q]$. Our goal in this section is to turn them into $[p,q]$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{V}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
+Looking ahead, the polynomial interpretation $\Phi'$ (\cref{prop.smooth_setup,thm.poly_interpretation}) assembles our constructions so far into maps of the form $\cotof{V}\otimes p\to q$, or equivalently $\cotof{V}\to[p,q]$. Our goal in this section is to turn them into $[p,q]$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{V}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
 In what follows we write $\cot\colon\rvect\to\poly$ for the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$.
 
@@ -2583,45 +2584,14 @@ The cotangent functor $\cot$, the writer-instance semantic monad $\cotof{\rr}\ot
 \end{proposition}
 
 \begin{proof}
-\emph{Interface functor.} $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
+For the interface functor we use $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
 
-\emph{Semantic potentials monad.} Since $\Sm$ uses the writer monad $\rr\otimes\blank$ and $\cot$ is strong monoidal, we take the canonical $\Fun R'\coloneqq\cotof{\rr}\otimes\blank$ with $\theta$ the comparison of \cref{def.polynomial_interpretation,lem.monoid_to_monad}.
+Since $\Sm$ uses the writer monad $\rr\otimes\blank$ and $\cot$ is strong monoidal, we take as our semantic effect the canonical $\Fun T\coloneqq\cotof{\rr}\otimes\blank$ with $\theta$ the comparison of \cref{def.polynomial_interpretation,lem.monoid_to_monad}.
 
-\emph{Potential algebra.} $\yon$ is a $\otimes$-monoid, and $\potd\colon\cotof{\rr}\to\yon$ is a $(\cotof{\rr}\otimes\blank)$-monoid structure on it---the choice $r=+1$ of \eqref{eqn.d_potential}, by \cref{lem.alpha_constant}. Since $z=\yon$ is the monoidal unit, this is the normal choice (\cref{thm.poly_interpretation}): the single-mode case of \cref{rem.modes}.
+For the potential algebra we use the unique $\otimes$-monoid structure on $\yon$ and the  $(\cotof{\rr}\otimes\blank)$-monoid structure on it given by $\potd\colon\cotof{\rr}\to\yon$, i.e.\ the choice $r=+1$ of \eqref{eqn.d_potential}.
 \end{proof}
 
-\begin{theorem}[Recovery]\label{thm.recovery}
-For the smooth rewiring datum $\Sm$ with its polynomial interpretation (\cref{def.potlens,prop.smooth_setup}):
-\begin{enumerate}
-  \item since $\srwd=\rwd_{\Sm}$ (\cref{def.potlens}), \cref{thm.poly_interpretation} specializes to a normal lax symmetric monoidal functor $\Phi'=\Phi'_{\cot,(\yon,\potd)}\colon\srwd\to\para{\cot}{\poly}$;
-  \item the configuration and phase integrators $\intg_{\mathrm{conf}}$
-    \eqref{eqn.conf_integrator} and $\intg_{\mathrm{phase}}$ \eqref{eqn.phase_integrator} are
-    $(\cot\circ\inc)$-integrators, and the dynamics functors they induce via
-    \cref{thm.dynamics_functor} are
-    \[
-      \Phi_{\intg_{\mathrm{conf}}}=\Phiconf
-      \qqand
-      \Phi_{\intg_{\mathrm{phase}}}=\Phiphase
-    \]
-    of \eqref{eqn.our_phis}.
-\end{enumerate}
-\end{theorem}
-
-\begin{proof}
-(1) By \cref{def.potlens}, $\srwd=\rwd_{\Sm}$ is the underlying operad of
-$\para{\rvect}{\plmfd}=\para{\rvect}{\Lcokl{\mfd}{\rr}}$. Its polynomial interpretation is
-$\Fun c=\cot$ and $(z,\alpha)=(\yon,\potd)$ (\cref{prop.smooth_setup}), so
-\cref{thm.poly_interpretation} gives the stated $\Phi'$.
-
-(2) Both $\intg_{\mathrm{conf}}=(\absval\blank,\chi)$ and
-$\intg_{\mathrm{phase}}=(\absval{T^*\blank},\upd_\beta)$ are $\cot$-integrators
-(\cref{def.integrator}), as established at \eqref{eqn.conf_integrator} and in
-\cref{sec.phase_integrators}. Their images under \cref{thm.dynamics_functor} are the
-two functors $\Phi_{\intg}=\Psisem{\intg}\circ\Phi'$ named in \eqref{eqn.our_phis}.
-\qedhere
-\end{proof}
-
-The functor $\Phi'\colon\srwd\to\para{\cot}{\poly}$ of \cref{thm.recovery} acts on objects by
+Applying \cref{thm.poly_interpretation} to the smooth polynomial interpretation (\cref{prop.smooth_setup}) yields a normal lax symmetric monoidal functor $\Phi'=\Phi'_{\cot,(\yon,\potd)}\colon\srwd\to\para{\cot}{\poly}$. It acts on objects by
 \[\Phi'\lensob{M}\coloneqq\cotof{\outp{M}}\otimes\ihom{\cotof{\inpt{M}},\yon}.\] 
 And $\Phi'$ sends a smooth rewiring diagram $f\coloneqq\left((V,\sharpR_V),\binom{\inpt f}{\outp f},U\right)$ as in \eqref{eqn.srw_morphism}
 \[\lensob{M_1}\otimes\cdots\otimes\lensob{M_K}\To[\quad]{f}\lensob{N}\]
@@ -2682,7 +2652,7 @@ S\yon^S\To{\chiV{\rv V}}\cotof{V}.
 \]
 A state consists of a position $x\in V$, and an incoming covector $\xi'\in T^*_xV$ updates that state to $x+\sharpR_x(\xi')$ by \eqref{eqn.directions_sharp}. Note that in this case $\sharpR$ can depend on $x\in V$. 
 
-However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phi'$ factor from \cref{thm.recovery}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
+However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phi'$ factor from \cref{prop.smooth_setup,thm.poly_interpretation}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
