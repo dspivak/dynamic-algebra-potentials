@@ -160,34 +160,34 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 | Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\chi` (configuration; `\chiV` for its `\rv V`-component, distinct from the lax/colax `\theta` of line 211), `\upd_\beta` (phase). The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
 | Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\upd_\beta=\nu\circ\chiV{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
 | Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
-| Dynamics functor | `\Phi_\intg`, `\Phi'` | `\Phi_\intg\colon\rwd_D\to\org` (`thm.dynamics_functor`), smooth instance `\srwd\to\org` (`thm.functor`); `\Phi'` the data-functor factor into `\para{\Fun c}\poly` (`thm.data_functor`). Named: `\Phiconf=\Phi_{\intg_{\mathrm{conf}}}`, `\Phiphase=\Phi_{\intg_{\mathrm{phase}}}`. See §"Abstract framework" |
+| Dynamics functor | `\Phi_{\interp,\intg}`, `\Phi'` | `\Phi_{\interp,\intg}\colon\rwd_D\to\org` (`thm.dynamics_functor`), smooth instance `\Phi_\intg\colon\srwd\to\org` (`cor.functor`); `\Phi'` the polynomial-interpretation factor into `\para{\Fun c\circ J}\poly` (`thm.poly_interpretation`). Named: `\Phiconf=\Phi_{\intg_{\mathrm{conf}}}`, `\Phiphase=\Phi_{\intg_{\mathrm{phase}}}`. See §"Abstract framework" |
 
 Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\upd`, `\\Fun S`, `\\Psisem`, `\\Phi_`.
 
 ### Abstract framework (rewiring data)
 
-A *rewiring datum* is `D = (\cat M, \cat V, J, R)` (`def.rewiring_datum`), introduced in
+A *rewiring datum* is `D = (\cat M, \cat V, J, \Fun R)` (`def.rewiring_datum`), introduced in
 `ch.framework`; the syntax operad `\rwd_D` depends only on it. Interpreting that syntax
 adds an interface functor `\Fun c` into `\poly` and a potential algebra `(z,\alpha)` (the
-data functor, `sec.data_functor`); an integrator then gives the dynamics functor into
+polynomial interpretation, `sec.poly_interpretation`); an integrator then gives the dynamics functor into
 `\org`. The smooth instance plugs in the rewiring datum `\Sm = (\mfd, \rvect, \inc, \rr)`
 (`def.potlens`) with interface functor `\Fun c = \cot` and potential algebra
 `(z,\alpha) = (\yon, \potd)` (`prop.smooth_setup`); the rightmost column gives it.
 
 | Sort | Symbol | Notes | Smooth instance |
 |---|---|---|---|
-| Rewiring datum (whole tuple) | `D = (\cat M, \cat V, J, R)` | `def.rewiring_datum`; determines the syntax operad `\rwd_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
+| Rewiring datum (whole tuple) | `D = (\cat M, \cat V, J, \Fun R)` | `def.rewiring_datum`; determines the syntax operad `\rwd_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
 | Spaces (cartesian category) | `\cat M` | source of lens syntax | `\mfd` |
 | Parameters (sym. monoidal category) | `\cat V` | acts on `\cat M` via `J`; font-distinct from the carrier `V` | `\rvect` |
 | Parameter inclusion | `J\colon\cat V\to\cat M` | strong monoidal | `\inc` |
-| Potentials target | `R` | commutative **monoid** object in `\cat M` (not a group — the antipode is never used) | `\rr` |
+| Potentials monad | `\Fun R` | monoidal monad on `\cat M` (`def.rewiring_datum`); the writer monad `R\otimes\blank` of a commutative **monoid** `R` (not a group — no antipode used) is the canonical instance | `\rr` (writer monad `\rr\otimes\blank`) |
 | Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
-| Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `(\Fun c(R)\otimes\blank)`-monoid structure `\alpha` (`def.T_monoid`). `\alpha` is reserved for this map: **not** covectors (write the pair) nor `\Para` 2-cells (use `g`, `prop.para`). The submersion-lens backward map in `prop.euler_submersion_lenses` reuses `\alpha` locally—sanctioned, since that proof never co-occurs with the potential algebra | `(\yon,\potd)` |
-| Set of modes | `\md` (`\mathsf{md}`) | finite set decorating a monad via the power `(\blank)^{\md}` (`prop.moding`, `prop.moded_algebra`, `rem.modes`); a mode is an element `i\in\md`. Sans-serif to stay clear of the space `M` and the category `\cat M`; element indexed by `i` to stay clear of the manifold point `m` | single-mode `z=\yon` (`rem.modes`) |
-| Rewiring-diagram operad | `\rwd_D` (renders `\mathbb{R}\Cat{WD}_D`; blackboard `\mathbb{R}` marks it as a (2,1)-operad, in-family with `\org`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{R}}` (`def.rewiring_datum`) | `\srwd \coloneqq \rwd_{\Sm}` by definition (`def.potlens`); `\srwd` expands to `\rwd_{\Sm}` (renders `\mathbb{R}\Cat{WD}_{\mathrm{Sm}}`) |
+| Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `\Fun R'`-monoid structure `\alpha` (`def.T_monoid`; `\Fun R'=\Fun c(R)\otimes\blank` in the writer instance). `\alpha` is reserved for this map: **not** covectors (write the pair) nor `\Para` 2-cells (use `g`, `prop.para`). The submersion-lens backward map in `prop.euler_submersion_lenses` reuses `\alpha` locally—sanctioned, since that proof never co-occurs with the potential algebra | `(\yon,\potd)` |
+| Set of modes | `\md` (`\mathsf{Md}`) | finite set decorating a monad via the power `(\blank)^{\md}` (`prop.moding`, `prop.moded_algebra`); a mode is an element `i\in\md`. Sans-serif to stay clear of the space `M` and the category `\cat M`; element indexed by `i` to stay clear of the manifold point `m` | single-mode `z=\yon` |
+| Rewiring-diagram operad | `\rwd_D` (renders `\mathbb{R}\Cat{WD}_D`; blackboard `\mathbb{R}` marks it as a (2,1)-operad, in-family with `\org`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{\Fun R}}` (`def.rewiring_datum`) | `\srwd \coloneqq \rwd_{\Sm}` by definition (`def.potlens`); `\srwd` expands to `\rwd_{\Sm}` (renders `\mathbb{R}\Cat{WD}_{\mathrm{Sm}}`) |
 
 Search hints: `"rewiring datum"`, `\\rwd`, `\\Sm`, `\\cat M`, `\\cat V`, `\\Fun c`,
-`def.rewiring_datum`, `def.rewiring_datum`, `def.potlens`, `thm.dynamics_functor`, `thm.recovery`.
+`def.rewiring_datum`, `def.potlens`, `thm.dynamics_functor`, `cor.functor`.
 
 Named (smooth) rewiring diagrams use the wiring family: `\Part` (particle), `\boxob` (box), `\fun{wire}_K` (K-ary wiring), `\fun{wire}_G` (graph `G`'s wiring, `eqn.psi_graph_lap`). `\psi` is **not** used for these—it is only a local proof variable and the second of a composable `(\varphi,\psi)` pair.
 

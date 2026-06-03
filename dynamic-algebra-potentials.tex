@@ -35,6 +35,7 @@
 \usepackage[backend=biber, backref=true, maxbibnames = 10, style = alphabetic]{biblatex}
 \usepackage[bookmarks=true, colorlinks=true, linkcolor=blue!50!black,
 citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperref}
+\usepackage{xurl} % break URLs at any character; avoids biblatex's stretched-out URL spacing
 \usepackage[capitalize]{cleveref}
 
 \usepackage{tikz}
@@ -440,7 +441,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\lensobs}[2]{\binom{\inpt{#1}\otimes\inpt{#2}}{\outp{#1}\otimes\outp{#2}}}% monoidal product of two lens objects
 \trackTerm{\potd}{potd}{\fun{d}}
 \trackTerm{\potalg}{potalg}{\mathbf z}% T-monoid / potential algebra: \potalg=(z,e_z,m_z,\alpha), carrier z (defined at def.T_monoid)
-\newcommand{\md}{\mathsf{Md}}% finite set of modes; element i\in\md (def.moding, prop.moded_algebra, rem.modes)
+\newcommand{\md}{\mathsf{Md}}% finite set of modes; element i\in\md (prop.moding, prop.moded_algebra)
 \newcommand{\conf}{\mathrm{conf}}
 \newcommand{\phase}{\mathrm{phase}}
 \newcommand{\lrn}{\mathrm{lrn}}
@@ -648,7 +649,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 
 \Cref{ch.smooth_rwd} instantiates the syntax: it introduces reactive vector spaces and builds the operad $\srwd$ of smooth rewiring diagrams as $\rvect$-parameterized manifold lenses equipped with potentials.
 
-\Cref{ch.smooth_dynamics} instantiates the dynamics. The smooth pieces assemble into the rewiring datum $\Sm$ whose syntax operad is $\srwd$ (\cref{def.potlens}), and the configuration and phase integrators yield operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{thm.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
+\Cref{ch.smooth_dynamics} instantiates the dynamics. The smooth pieces assemble into the rewiring datum $\Sm$ whose syntax operad is $\srwd$ (\cref{def.potlens}), and the configuration and phase integrators yield operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{cor.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
 
 \Cref{ch.applications} works out the main examples: Newton's method, gradient descent with backpropagation, the discrete wave equation for a chain of harmonic particles, and the graph-Laplacian dynamics of harmonic particles on an arbitrary finite directed graph.
 
@@ -735,7 +736,7 @@ p\hypertarget{term.tri}{\mathbin{\termraw{tri}}} q&=
 \sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
 \sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
 \end{align*}
-A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, we recover the notion of applying $\smset\To{p}\smset$ to $S$ using substition: $p\tri S=p(S)$.
+A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, we recover the notion of applying $\smset\To{p}\smset$ to $S$ using substitution: $p\tri S=p(S)$.
 
 Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, $\yon$, and there is a map of the form
 \begin{equation}\label{eqn.duoidal}
@@ -743,7 +744,7 @@ Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, t
 \end{equation}
 making the required diagrams commute. See \cite{aguiar2010monoidal,niu2025polynomial} for details.
 
-\begin{definition}[The store comonad]\label{ex.store}
+\begin{definition}[The store comonad]\label{def.store}
 For any set $S$, define $\defineTerm{Store}(S)\coloneqq S\yon^S$. It arises as the comonad associated to the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$.
 \end{definition}
 
@@ -760,7 +761,7 @@ When $p=B\yon^A$ then a $p$-coalgebra $S\to B\times S^A$ is equivalently a reado
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[f_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
-There is a connection between $p$-coalgebras and the $\Store$ comonad from \cref{ex.store}.
+There is a connection between $p$-coalgebras and the $\Store$ comonad from \cref{def.store}.
 
 \begin{lemma}\label{lem.store_monoidal}
 The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$, defines a strong symmetric monoidal functor
@@ -1112,7 +1113,7 @@ The rewiring diagrams we will build have boxes on the inside and a box on the ou
 \subsection{The category of lenses}\label{sec.category_of_lenses}
 We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. Let $(\cat{M}, I,\otimes)$ be a symmetric monoidal category.
 
-An \emph{interface} in $\cat M$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\epsilon,\delta)$.%
+An \emph{interface} in $\cat M$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\varepsilon,\delta)$.%
 \footnote{
 When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
 } 
@@ -1138,7 +1139,7 @@ A \emph{lens} $f\colon\lensob c\to\lensob d$ consists of a forward map $\outp f\
   \draw[ar] (dot) to[out=30, in=0] (fi_out1);
 \end{tikzpicture}
 \end{equation}
-The identity morphism has $\outp{\id_{\lensob{c}}}\coloneqq\id_{\outp{c}}$ and $\inpt{\id_{\lensob{c}}}\coloneqq\epsilon\otimes\id_{\inpt{c}}$, i.e.\ use the counit to discard the $\outp c$ part.
+The identity morphism has $\outp{\id_{\lensob{c}}}\coloneqq\id_{\outp{c}}$ and $\inpt{\id_{\lensob{c}}}\coloneqq\varepsilon\otimes\id_{\inpt{c}}$, i.e.\ use the counit to discard the $\outp c$ part.
 
 
 Morphisms compose as follows: given also $g\colon \lensob{d}\to\lensob{e}$, the composite $f\then g$ is given by
@@ -1293,12 +1294,12 @@ The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The mon
 \begin{equation}\label{eqn.monoid_productor}
 (R\otimes X)\otimes(R\otimes Y)\cong R\otimes R\otimes X\otimes Y\To{(*)\otimes\id}R\otimes X\otimes Y.
 \end{equation}
-The coherence diagrams arise from the monoid laws and commutativity of $R$. Functoriality in $(\cat C,M)$ is straightforward.
+The coherence diagrams arise from the monoid laws and commutativity of $R$. Functoriality in $(\cat C,R)$ is straightforward.
 \end{proof}
 
 We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad into a comonad.
 
-Recall that a monad $(\Fun{T},\eta,\mu)$ on a monoidal category $(\cat{C},I,\otimes)$ is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. It is \emph{monoidal} if $\Fun{T}$ is lax monoidal (with unitor $\tau_0\colon I\to\Fun{T}(I)$ and productor $\tau_{X,Y}\colon \Fun{T}(X)\otimes\Fun{T}(Y)\to\Fun{T}(X\otimes Y)$) and whose natural transformations are monoidal. Each monoidal monad  is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
+Recall that a monad $(\Fun{T},\eta,\mu)$ on a monoidal category $(\cat{C},I,\otimes)$ is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. It is \emph{monoidal} if $\Fun{T}$ is lax monoidal (with unitor $\tau_0\colon I\to\Fun{T}(I)$ and productor $\tau_{X,Y}\colon \Fun{T}(X)\otimes\Fun{T}(Y)\to\Fun{T}(X\otimes Y)$) and whose natural transformations are monoidal. Each monoidal monad is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
 \[
 X\otimes \Fun{T}Y\To{\eta_X}\Fun{T}(X)\otimes \Fun{T}(Y)\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
 \]
@@ -1320,8 +1321,8 @@ The counit and comultiplication of $\LensFun{\Fun{T}}$ are given on positions by
 \begin{equation*}
 \outp c\otimes\Fun{T}\Fun{T}\inpt c\To{\varepsilon_{\outp c}\otimes\id}\Fun{T}\Fun{T}\inpt c\To{\mu}\Fun{T}\inpt c.
 \end{equation*}
-We need to prove that $\LensFun{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond precisely to the four axioms of a monad strength.
-%The unit axiom~\cite[(1.5)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
+We need to prove that $\LensFun{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond to the four axioms of a monad strength.
+%The unit axiom~\cite[(1.7)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
 
 We include only the least trivial here: preservation of composition. For $f\colon\lensob c\to\lensob d$ and $g\colon\lensob d\to\lensob e$, it suffices to show that the following commutes (at which point we post-compose with $\Fun{T}\inpt f\colon\Fun{T}(\outp c\otimes\inpt d)\to\Fun{T}\inpt c$ to obtain equality of maps $\outp c\otimes\Fun{T}\inpt e\to\Fun{T}\inpt c$):
 \[
@@ -1351,7 +1352,7 @@ We include only the least trivial here: preservation of composition. For $f\colo
 \& \Fun{T}(\outp c\otimes\inpt d)
 \end{tikzcd}
 \]
-The first two squares are naturality of $\sigma$ in its first argument, the middle triangle is the associator axiom of strength~\cite[(1.6)]{kock1972strong}, and the last square is naturality of $\sigma$ in its second argument.
+The first two squares are naturality of $\sigma$ in its first argument, the middle triangle is the associator axiom of strength~\cite[(1.8)]{kock1972strong}, and the last square is naturality of $\sigma$ in its second argument.
 
 When $\Fun T$ is moreover a monoidal monad, we obtain a colax monoidal structure on $\LensFun{\Fun{T}}$: the counitor $\binom{\Fun T(I)}{I}\to\binom{I}{I}$ amounts to $\tau_0\colon I\to\Fun T I$ and the coproductor map $\binom{\Fun{T}(\inpt c\otimes\inpt d)}{\outp c\otimes\outp d}\to\binom{\Fun{T}(\inpt c)\otimes\Fun T(\inpt d)}{\outp c\otimes\outp d}$ amounts to $\tau_{\inpt c,\inpt d}\colon \Fun{T}(\inpt c)\otimes\Fun T(\inpt d)\to \Fun{T}(\inpt c\otimes\inpt d)$.
 \end{proof}
@@ -1519,7 +1520,7 @@ and let $\Theta_z(f)$ be the composite
   \]
 where the final arrow abbreviates $[\inpt d,\psi_f]\otimes\id_{\outp d}$.
 
-We leave the fact that $\Theta_z$ preserves identities to the reader.
+Preservation of identities is a short diagram chase from the triangle equation $\coev\then\ev=\id$ and the $\Fun T$-algebra unit law $\alpha\circ\eta_z=\id$; we leave it to the reader.
 %IDENTITIES
 %\[
 %\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
@@ -1760,12 +1761,12 @@ The smooth version $\srwd\To{\Phi}\org$ will be a special case, where: spaces ar
 %--------------------------------------------------------------------
 
 \begin{definition}[Rewiring datum]\label{def.rewiring_datum}
-A \emph{rewiring datum} $D$ consists of
+A \emph{rewiring datum} $D=(\cat M,\cat V,J,\Fun R)$ consists of
 \begin{enumerate}
   \item a cartesian monoidal category $\cat M$, objects are called \emph{spaces};
-  \item a monoidal monad $\Fun R$ on $\cat M$, the \emph{potentials monad};
-  \item a symmetric monoidal category $\cat V$, objects are called \emph{parameters}, together
-    with a strong monoidal functor $J\colon\cat V\to\cat M$.
+  \item a symmetric monoidal category $\cat V$, objects are called \emph{parameters};
+  \item a strong monoidal functor $J\colon\cat V\to\cat M$;
+  \item a monoidal monad $\Fun R$ on $\cat M$, the \emph{potentials monad}.
 \end{enumerate}
 Define the \emph{rewiring-diagram operad}, denoted $\rwd_D$, to be the operad underlying the symmetric monoidal category $\para{\cat V}{\Lcokl{\cat M}{\Fun R}}$.
 \end{definition}
@@ -1894,11 +1895,11 @@ We call the elements of $\md$ \emph{modes}, e.g. ``training mode and inference m
 To get a polynomial interpretation of the syntax $\rwd_D$ we fix three further pieces.
 
 \begin{definition}[Polynomial interpretation]\label{def.polynomial_interpretation}
-A \emph{polynomial interpretation} $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for a rewiring datum $D=(\cat M,\Fun R,J)$ consists of
+A \emph{polynomial interpretation} $\defineTerm{interp}=(\Fun c,\Fun R',\theta,\potalg)$ for a rewiring datum $D=(\cat M,\cat V,J,\Fun R)$ consists of
 \begin{enumerate}
   \item an \emph{interface functor}: a strong symmetric monoidal functor $\Fun c\colon(\cat M,1,\times)\to(\poly,\yon,\otimes)$;
-  \item a \emph{semantic effect}: a monoidal monad $\Fun R'$ on $\poly$ together with a monoidal monad morphism $\theta\colon\Fun c\circ\Fun R\Rightarrow\Fun R'\circ\Fun c$ carrying the syntactic effect to the semantic one;
-  \item a \emph{potential algebra} $\potalg=(z,\alpha)$: a $\Fun R'$-monoid (\cref{def.T_monoid}).
+  \item a \emph{semantic effect}: a monoidal monad $\Fun R'$ on $\poly$ together with a monoidal monad morphism $\theta\colon\Fun c\circ\Fun R\Rightarrow\Fun R'\circ\Fun c$, which carries the syntactic effect to the semantic one;
+  \item a \emph{potential algebra}: an $\Fun R'$-monoid  $\potalg=(z,\alpha)$ (\cref{def.T_monoid}).
   \qedhere
 \end{enumerate}
 \end{definition}
@@ -1910,38 +1911,39 @@ With these in hand we build the polynomial interpretation.
 \begin{theorem}[Polynomial interpretation]\label{thm.poly_interpretation}
 A polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for $D$ (\cref{def.polynomial_interpretation}) yields a lax symmetric monoidal functor
 \[
-  \Phi'_{\interp}\colon\rwd_D\longrightarrow\para{\Fun{c}}{\poly},
+  \Phi'_{\interp}\colon\rwd_D\longrightarrow\para{\Fun{c}\circ J}{\poly},
 \]
 where $\cat V$ acts on $\poly$ by $V\cdot q\coloneqq \Fun{c}(JV)\otimes q$. On
 objects, $\Phi'_{\interp}\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{M}),z}$. It is normal iff $z\cong\yon$ (\cref{thm.Theta_T_alpha}).
 \end{theorem}
 
 \begin{proof}
-By \cref{def.rewiring_datum}, $\rwd_D$ is the underlying operad of $\para{\cat V}{\Lcokl{\cat M}{\Fun R}}$. The interface functor $\Fun c$ (strong symmetric monoidal by definition) and the monad morphism $\theta\colon\Fun c\circ\Fun R\Rightarrow\Fun R'\circ\Fun c$ (\cref{def.polynomial_interpretation}) lift, by \cref{lem.lens_T_functoriality}, to a strong monoidal functor $\Lens{\Fun c}\colon\Lcokl{\cat M}{\Fun R}\to\Lcokl{\poly}{\Fun R'}$; and \cref{thm.Theta_T_alpha} (with $\Fun T\coloneqq\Fun R'$) supplies a lax monoidal $\Theta_z\colon\Lcokl{\poly}{\Fun R'}\to\poly$, which is normal iff $z\cong\yon$. The action square for $\Lens{\Fun c}$ and the action square for $\Theta_z$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two lax monoidal maps below; restricting to underlying operads gives the desired $\Phi'$:
+By \cref{def.rewiring_datum}, $\rwd_D$ is the underlying operad of $\para{\cat V}{\Lcokl{\cat M}{\Fun R}}$. The interface functor $\Fun c$ (strong symmetric monoidal by definition) and the monad morphism $\theta\colon\Fun c\circ\Fun R\Rightarrow\Fun R'\circ\Fun c$ (\cref{def.polynomial_interpretation}) lift, by \cref{lem.lens_T_functoriality}, to a strong monoidal functor $\LensMor{\Fun c}{\theta}\colon\Lcokl{\cat M}{\Fun R}\to\Lcokl{\poly}{\Fun R'}$; and \cref{thm.Theta_T_alpha} (with $\Fun T\coloneqq\Fun R'$) supplies a lax monoidal $\Theta_z\colon\Lcokl{\poly}{\Fun R'}\to\poly$, which is normal iff $z\cong\yon$. The action square for $\LensMor{\Fun c}{\theta}$, from the strong monoidality of $\Fun c$, and the action square for $\Theta_z$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two lax monoidal maps below; restricting to underlying operads gives the desired $\Phi'$:
 \[
-\para{\cat V}{\Lcokl{\cat M}{\Fun R}}\To{\para{\cat V}{\Lens{\Fun c}}}
+\para{\cat V}{\Lcokl{\cat M}{\Fun R}}\To{\para{\cat V}{\LensMor{\Fun c}{\theta}}}
 \para{\cat V}{\Lcokl{\poly}{\Fun R'}}\To{\para{\cat V}{\Theta_z}}
-\para{\Fun c}{\poly}.
+\para{\Fun c\circ J}{\poly}.
 \qedhere
 \]
 \end{proof}
 
 
-Recall from \cref{prop.moding} that for any finite set $\md$, we can upgrade any rewiring datum $D\coloneqq(\cat{M},\Fun{R},\cat{V})$ to an $\md$-mode version $D^\md\coloneqq(\cat{M},\Fun{R}^\md,\cat{V}$).
+Recall from \cref{prop.moding} that for any finite set $\md$, we can upgrade any rewiring datum $D\coloneqq(\cat{M},\cat V,J,\Fun{R})$ to an $\md$-mode version $D^\md\coloneqq(\cat{M},\cat V,J,\Fun{R}^\md)$.
 
 \begin{proposition}[Moded interpretations]\label{prop.moded_algebra}
 Let $D$ be a rewiring datum and $\md$ a finite set. For any polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,(z,\alpha))$ of $D$, there is a polynomial interpretation $\interp^\md\coloneqq(\Fun c,(\Fun R')^\md,\theta^\md,(z^\md,\alpha^\md))$ of $D^\md$.
 \end{proposition}
 \begin{proof}
-We have that $(\Fun R')^\md\coloneqq\prod_\md\circ\,\Fun R'$ is a monoidal monad on $\poly$ by \cref{prop.moding}. The universal property of products gives a map $\Fun c\circ\prod_\md\To{}\prod_\md\circ\,\Fun c$, so we take the required comparison $\theta^\md$ to be the composite
+We have that $(\Fun R')^\md\coloneqq\prod_\md\circ\,\Fun R'$ is a monoidal monad on $(\poly,\otimes)$: although \cref{prop.moding} is phrased for a cartesian base, the power $\prod_\md$ is a monoidal monad for the Dirichlet $\otimes$ as well, with productor $(\prod_\md p)\otimes(\prod_\md q)\to\prod_\md(p\otimes q)$ assembled from the projections, and $\Fun R'$ distributes over it as before. The universal property of products gives a map $\Fun c\circ\prod_\md\To{}\prod_\md\circ\,\Fun c$, so we take the required comparison $\theta^\md$ to be the composite
 \[
 \Fun c\circ\Fun R^\md=\Fun c\circ\textstyle\prod_\md\circ\,\Fun R
 \to\textstyle\prod_\md\circ\,\Fun c\circ\Fun R
 \To{\prod_\md\theta}\textstyle\prod_\md\circ\,\Fun R'\circ\Fun c=(\Fun R')^\md\circ\Fun c.
 \]
 
-For the potential algebra, take $z^{\md}\coloneqq\prod_{\md} z$ to be the $\md$-fold product of the monoid $z$, which is naturally a monoid. Its $\Fun R'$-algebra structure is again given by the universal property of products
-\[\Fun R'(z^{\md})=\Fun R'(\textstyle\prod_\md z)\to\textstyle\prod_{\md}\Fun R'(z)\To{\prod_{\md}\alpha}\textstyle\prod_\md z=z^{\md}.\] 
+For the potential algebra, take $z^{\md}\coloneqq\prod_{\md} z$ to be the $\md$-fold product of the monoid $z$, which is naturally a monoid. Its $(\Fun R')^{\md}$-algebra structure $\alpha^\md$ is given, on the factor at each $i\in\md$, by the composite
+\[(\Fun R')^\md(z^{\md})=\textstyle\prod_\md\Fun R'(\textstyle\prod_\md z)\To{\pi_i}\Fun R'(\textstyle\prod_\md z)\To{\Fun R'(\pi_i)}\Fun R'(z)\To{\alpha}z,\]
+using the universal property of products. 
 It is easy to check that $(z^{\md},\alpha^{\md})$ is a $(\Fun R'\blank)^{\md}$-monoid.
 \end{proof}
 
@@ -1971,7 +1973,7 @@ Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories w
 	\para{\Cat{Set}_{\cong}}{\poly}(p,q)&=
   \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, q)\\&\cong
   \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
-  \sum_{S:\smsetiso}\poly(S,[p,q]\tri S)=\org_\cong(p,q)
+  \sum_{S:\smsetiso}\smset(S,[p,q]\tri S)=\org_\cong(p,q)
 \end{align*}
 by \cref{eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
 
@@ -1996,6 +1998,8 @@ The induced action sends $(V,p)\mapsto \Store(F(V))\otimes p=F(V)\yon^{F(V)}\oti
 \Cref{prop.para_strong_induced,prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\org_\cong$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
+The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(V)\yon^{F(V)}\otimes p\to q$ can be converted into a $[p,q]$-coalgebra with states $F(V)$, and that this process is functorial.
+
 
 \begin{definition}[Integrator]\label{def.integrator}
 Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor, the \emph{parameter interface}. A \emph{$p$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\upd)$
@@ -2013,7 +2017,7 @@ where $\Fun S\colon\cat A\to\smsetiso$, the \emph{state space}, is a strong symm
 
 By \cref{prop.coalg_as_poly_map}, the component $\upd_a\colon\Store(\Fun S_a)\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S_a$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
 
-We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration, phase, and dissipative---are numerical integrators of explicit-Euler type, namely Euler on configuration space, a phase-space analogue, and a dissipative variant. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$ (e.g.\ amount of friction).
+We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$.
 
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat A$ be a symmetric monoidal category and $p\colon\cat A\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
@@ -2032,7 +2036,7 @@ By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Stor
 Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat A}^{\upd}$; it is normal lax monoidal because $\Para_{\cat A}^{\upd}$ is strong.
 \end{proof}
 
-Let $\rwd_D$ be the rewiring-diagram operad of a rewiring datum $D=(\cat{M},\Fun R,J)$.
+Let $\rwd_D$ be the rewiring-diagram operad of a rewiring datum $D=(\cat{M},\cat V,J,\Fun R)$.
 
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
 Every polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
@@ -2045,7 +2049,7 @@ Every polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(
 Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below (normal when $z\cong\yon$), given by \cref{thm.poly_interpretation,prop.integrator_to_org}:
 \[
 \rwd_D\To{\Phi'}
-\para{\Fun{c}}{\poly}\To{\Psisem{\intg}}
+\para{\Fun{c}\circ J}{\poly}\To{\Psisem{\intg}}
 \org_\cong\inj\org.
 \qedhere
 \]
@@ -2248,7 +2252,7 @@ It is well known that strong monoidal functors preserve monoids, comonoids, and 
 We will eventually define $\srwd$ as the operad underlying $\para{\rvect}{\plmfd}$. Here we define the parameterizing category $\rvect$---whose objects encode the data to turn covectors into vectors---a symplectic example $T^*V$, and the exponential $\exp_V$ that performs the Euler update.
 
 \begin{notation}\label{not.rvect_polynomials}
-Going forward we lighten notation in two ways. First, we will denote to the underlying set $\absval V:\smset$ of a finite-dimensional vector space $V:\vect$ simply by $V$; in particular $\Store(V)=V\yon^V$. Second, we will denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
+Going forward we lighten notation in two ways. First, we will denote the underlying set $\absval V:\smset$ of a finite-dimensional vector space $V:\vect$ simply by $V$; in particular $\Store(V)=V\yon^V$. Second, we will denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
 \[
 \cotof V=V\yon^{V^*}\qqand\cotof{T^*V}=(V\oplus V^*)\yon^{V^*\oplus V}.
 \]
@@ -2385,7 +2389,7 @@ Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In othe
 \end{proof}
 
 \begin{remark}[General form]\label{rmk.alpha_general}
-\Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cotof{R}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$.
+\Cref{lem.alpha_constant} generalizes in a couple of ways. First, $\cotof{\rr}$ can be replaced by any commutative Hopf monoid. Second, $\yon$ can be replaced by any $\otimes$-monoid $(z,e,(*))$ in $\poly$ that is \emph{coupled} in the sense that, for every $Z_1,Z_2:z(1)$, the backward action of multiplication $\bk{(*)}{(Z_1,Z_2)}\colon z[Z_1*Z_2]\to z[Z_1]\times z[Z_2]$ is surjective. For any commutative Hopf monoid $m$ in $\poly$ and any coupled $\otimes$-monoid $z$, the $(m\otimes\blank)$-monoid structures on $z$ for which the $m(1)$-action on $z(1)$ is trivial are in bijection with $m[e_m]$, the directions of $m$ at its unit position. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$.
 
 As examples, note that any $\otimes$-monoid of the form $M\yon=\sum_{m\in M}\yon$ for a monoid $(M,1,\cdot)$ in $\smset$ is coupled trivially (every position has one direction), recovering the $\yon$ case. A more interesting example is the polynomial $\mathrm{rand}\coloneqq\sum_{N:\nn}\sum_{P\in\Delta_N}\yon^N$ of finite random variables (called $\mathrm{lott}$ in~\cite{Spivak2023lotteries}), which underlies (the monad of) the operad of simplices~\cite[Ch.~12]{leinster2021entropy}. Taking $z=\mathrm{rand}$ would give stochastic covector fields, and hence stochastic update rules after applying the dynamics functor; we do not pursue this variation here. For $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\mathfrak{g}^*$, the dual of its Lie algebra; for $G\coloneqq\rr$ this recovers \cref{lem.alpha_constant}.
 \end{remark}
@@ -2433,7 +2437,7 @@ The smooth case instantiates the chain of \cref{rem.filtration} with $\cat M=\mf
 \chapter{Smooth rewiring dynamics}\label{ch.smooth_dynamics}
 %====================================================================
 
-This chapter constructs the dynamics functors $\srwd\to\org$ promised in the introduction. \Cref{sec.integrator_semantics} introduces \emph{integrators}, the device that converts a $\cotof{V}$-parameterized polynomial map into an ordinary coalgebra in $\org$. It also singles out the two integrators used in this paper---configuration and phase---the latter using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then applies the framework of \cref{ch.framework} to the smooth rewiring datum $\Sm$ (\cref{def.potlens}), recovering the operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{thm.functor}). \Cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
+This chapter constructs the dynamics functors $\srwd\to\org$ promised in the introduction. \Cref{sec.integrator_semantics} introduces \emph{integrators}, the device that converts a $\cotof{V}$-parameterized polynomial map into an ordinary coalgebra in $\org$. It also singles out the two integrators used in this paper---configuration and phase---the latter using the cotangent endofunctor $T^*\colon\rvect\to\rvect$ from \cref{prop.TT_endofunctors,prop.TT_monoidal}. \Cref{sec.dynamics_functor} then applies the framework of \cref{ch.framework} to the smooth rewiring datum $\Sm$ (\cref{def.potlens}), recovering the operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{cor.functor}). \Cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
 
 %--------------------------------------------------------------------
 \section{Integrator semantics}\label{sec.integrator_semantics}
@@ -2546,7 +2550,7 @@ It is a linear isomorphism, using $(V_1\oplus V_2)^*\cong V_1^*\oplus V_2^*$. Fo
 
 \subsection{The phase integrator}\label{sec.phase_integrators}
 
-The \emph{phase integrator} stores a phase point and updates it by the symplectic Euler step: it reads out the position and feeds the incoming gradient---together with the velocity $\sharpR_x(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*V$. We package the velocity as the \emph{kinetic datum}
+The \emph{phase integrator} stores a phase point and updates it by the explicit Euler step: it reads out the position and feeds the incoming gradient---together with the velocity $\sharpR_x(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*V$. We package the velocity as the \emph{kinetic datum}
 \begin{equation}\label{eqn.kinetic_one_form}
 \defineTerm{beta_kin}_V(x,\xi)\coloneqq\bigl(0,\sharpR_x(\xi)\bigr)\in V^*\oplus V\cong T^*_{(x,\xi)}(T^*V),
 \end{equation}
@@ -2584,11 +2588,11 @@ The cotangent functor $\cot$, the writer-instance semantic monad $\cotof{\rr}\ot
 \end{proposition}
 
 \begin{proof}
-For the interface functor we use $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
+For the interface functor we use that $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
 
 Since $\Sm$ uses the writer monad $\rr\otimes\blank$ and $\cot$ is strong monoidal, we take as our semantic effect the canonical $\Fun T\coloneqq\cotof{\rr}\otimes\blank$ with $\theta$ the comparison of \cref{def.polynomial_interpretation,lem.monoid_to_monad}.
 
-For the potential algebra we use the unique $\otimes$-monoid structure on $\yon$ and the  $(\cotof{\rr}\otimes\blank)$-monoid structure on it given by $\potd\colon\cotof{\rr}\to\yon$, i.e.\ the choice $r=+1$ of \eqref{eqn.d_potential}.
+For the potential algebra we use the unique $\otimes$-monoid structure on $\yon$ and the $(\cotof{\rr}\otimes\blank)$-monoid structure on it given by $\potd\colon\cotof{\rr}\to\yon$, i.e.\ the choice $r=+1$ of \eqref{eqn.d_potential}.
 \end{proof}
 
 Applying \cref{thm.poly_interpretation} to the smooth polynomial interpretation (\cref{prop.smooth_setup}) yields a normal lax symmetric monoidal functor $\Phi'=\Phi'_{\cot,(\yon,\potd)}\colon\srwd\to\para{\cot}{\poly}$. It acts on objects by
@@ -2621,7 +2625,7 @@ S\to\left[
 \]
 Constructing a precise relationship between $S$ and $V$ is precisely the role of the integrator: in our two main cases of interest it is the configuration space $\absval{V}$ and the phase space $\absval{T^*V}$; see \eqref{eqn.our_phis}.
 
-\begin{corollary}\label{thm.functor}
+\begin{corollary}\label{cor.functor}
 Every $\cot$-integrator $\intg$ induces an operad functor
 \[
 \Phi_{\intg}\colon\srwd\to\org.
@@ -2779,11 +2783,11 @@ B\ar[r, "r"']&
 B'\ar[ul, phantom, very near end, "\lrcorner"]
 \end{tikzcd}
 \]
-There is a strong symmetric monoidal functor $P\colon\Cat{SLens}\to\poly$ given by
+There is a strong symmetric monoidal functor $P\colon\Cat{SLens}\to\poly$ given on objects by
 \[
-P(E\surj B)\coloneqq\sum_{b:B}\yon^{E_b}
+P(E\surj B)\coloneqq\sum_{b:B}\yon^{E_b}.
 \]
-sends a submersion lens $(r,\alpha)\colon p\to p'$ to the polynomial map with forward component $r$ and backward component $\alpha$. It is strong monoidal because the tensor product of submersions is computed by products of total and base spaces.
+It sends a submersion lens $(r,\alpha)\colon p\to p'$ to the polynomial map with forward component $r$ and backward component $\alpha$. It is strong monoidal because the tensor product of submersions is computed by products of total and base spaces.
 
 The strong monoidal functor
 \[
@@ -2828,13 +2832,13 @@ The functor $\cat S\to\mathbf{COrg}$ is more straightforward: an $\cat S$-morphi
 
 For $\cat{R}$ we take the category $\cat R$ from \cref{sec.related_cls}. We define $\cat R\to\cat S$ on objects by $M\mapsto T^*M\surj M$. On morphisms, send $(\rv V,w,E)\colon M\to N$ to the $\cat S$-morphism with parameter space $V$, readout $r\coloneqq w$, and for the rest of the data write
 \[
-dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
+dE|_{(x,m)}+(T_{(x,m)}w)^\top(\xi_N)=(\xi_V,\xi_M)\in V^*\oplus T_m^*M
 \]
 and set $\alpha(x,m,\xi_N)\coloneqq\xi_M$ and $u(x,m,\xi_N)\coloneqq\sharpR_x(\xi_V)$. Functoriality follows from the chain rule.
 
 The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\srwd$, the morphism $(\rv V,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
-dE|_{(x,m)}+(T_{(x,m)}w)^*(\xi_N)=(\xi_V,\xi_M).
+dE|_{(x,m)}+(T_{(x,m)}w)^\top(\xi_N)=(\xi_V,\xi_M).
 \]
 Thus \eqref{eqn.state_update_gradient} sends the state $x$ to $x+\sharpR_x(\xi_V)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(\rv V,w,E)$ in $\cat S$. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
 \end{proof}
@@ -2993,7 +2997,7 @@ Applying $\Phiconf$ to $(\rv V,\bang,\bang,U)$ gives a coalgebra carried by stat
 \[
 x\longmapsto x+\sharpR_x(dU|_x)=x-\bigl(T_x(dU)\bigr)^{-1}(dU|_x),
 \]
-one step of \emph{Newton's method} for finding a critical point of $U$. The reactive structure $\sharpR_x=-\bigl(T_x(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic and jumps to that quadratic's critical point; for an exactly quadratic $U$, one step suffices to reach that critical point, which could be a maximum, minimum, or saddle. By contrast, gradient descent uses $\sharpR=-\epsilon\,\id$ and always moves downhill, so it can only find minima. Whether or not Newton's method converges to a critical point is a separate question.
+one step of \emph{Newton's method} for finding a critical point of $U$. The reactive structure $\sharpR_x=-\bigl(T_x(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic and jumps to that quadratic's critical point; for an exactly quadratic $U$, one step suffices to reach that critical point, which could be a maximum, minimum, or saddle. By contrast, gradient descent uses $\sharpR=-\eta_{\mathrm{LR}}\,\id$ and always moves downhill, so it can only find minima. Whether or not Newton's method converges to a critical point is a separate question.
 
 %--------------------------------------------------------------------
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
@@ -3186,13 +3190,13 @@ The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \]
 with state set $S\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
 \begin{equation*}
-(\vec x,\vec p)\mapsto\Bigl(\bigl(x_K,\,\omega_\boxob\bigr),\;(\xi_N,x_0)\mapsto\bigl(\vec x+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
+(\vec x,\vec p)\mapsto\Bigl(\bigl(x_K,\,\omega_1\bigr),\;(\xi_N,x_0)\mapsto\bigl(\vec x+\tfrac{1}{m}\vec p,\,\vec p-\xi_V\bigr)\Bigr),
 \end{equation*}
 where each piece is read off from the unpacking in \cref{sec.phase_dynamics}:
 \begin{itemize}
 \item The output position $x_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
 \item The \emph{harmonic spring} covector field on the left-hand side,
-\[\omega_\boxob(x_0)=d\bigl[\tfrac{\kappa}{2}(x_1-x_0)^2\bigr]\big|_{x_0}=-\kappa(x_1-x_0),\]
+\[\omega_1(x_0)=d\bigl[\tfrac{\kappa}{2}(x_1-x_0)^2\bigr]\big|_{x_0}=-\kappa(x_1-x_0),\]
 comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dx_0=+1$ via \eqref{eqn.d_potential}).
 \item The pullback covector $\xi_V\in T^*_{\vec x}V$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec x}V\cong V^*=(\rr^K)^*$) by
 \begin{align*}
@@ -3254,7 +3258,7 @@ The above chain uses a constant coupling $\kappa$, but the $\srwd$ formalism sup
 \[
 U\bigl((\kappa_1,\ldots,\kappa_{K-1}),(x_1,\ldots,x_K),x_0\bigr)\coloneqq\sum_{j=1}^{K-1}\tfrac{\kappa_j}{2}(x_{j+1}-x_j)^2.
 \]
-The resulting composite $\fun{wire}^{\mathrm{adapt}}_K(\Part,\ldots,\Part)$ is a $0$-ary smooth rewiring diagram whose parameter space is $\rr^K\oplus\rr^{K-1}$ (displacements plus stiffnesses). Under $\Phiconf$, the differential of $U$ with respect to $\kappa_j$ contributes a learning signal $\tfrac{1}{2}(x_{j+1}-x_j)^2$, and the variable sharp makes the stiffness update multiplicative: $\kappa_j\mapsto\kappa_j\bigl(1-\eta_{\mathrm{LR}}\tfrac{1}{2}(x_{j+1}-x_j)^2\bigr)$. This is an instance of natural gradient descent~\cite{amari1998natural}. We do not unpack the full coupled dynamics here.\qedhere
+The resulting composite $\fun{wire}^{\mathrm{adapt}}_K(\Part,\ldots,\Part)$ is a $0$-ary smooth rewiring diagram whose parameter space is $\rr^K\oplus\rr^{K-1}$ (displacements plus stiffnesses). Under $\Phiconf$, the differential of $U$ with respect to $\kappa_j$ contributes a learning signal $\tfrac{1}{2}(x_{j+1}-x_j)^2$, and the variable sharp makes the stiffness update multiplicative: $\kappa_j\mapsto\kappa_j\bigl(1-\eta_{\mathrm{LR}}\tfrac{1}{2}(x_{j+1}-x_j)^2\bigr)$. We do not unpack the full coupled dynamics here.\qedhere
 \end{remark}
 
 \subsection{Functoriality audit: composing in \texorpdfstring{$\org$}{Org}}\label{sec.spring_second_pass}
@@ -3314,7 +3318,7 @@ Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\o
 
 \section{Graph Laplacian on a directed graph}\label{sec.graph_laplacian}
 
-The chain of \cref{sec.spring_first_pass} is one instance of a more general construction: again using the harmonic particle, any finite directed graph $G=(E\tto V)$ yields a $0$-ary smooth rewiring diagram whose image under $\Phiphase$ is the discrete dynamics of the \emph{graph Laplacian} of $G$. Hopefully this serves as a sanity check on the formalism of this paper.
+The chain of \cref{sec.spring_first_pass} is one instance of a more general construction: again using the harmonic particle, any finite directed graph $G=(E\tto V)$ yields a $0$-ary smooth rewiring diagram whose image under $\Phiphase$ is the discrete dynamics of the \emph{graph Laplacian} of $G$. This serves as a sanity check on the formalism of this paper.
 
 \paragraph{From directed graph to static wiring diagram.}
 
@@ -3396,7 +3400,7 @@ One can check that $L_G$ has diagonal and off-diagonal entries given by
 \qqand
 (L_G)_{vw}=-\sum_{\{\src(e),\tgt(e)\}=\{v,w\}}\kappa_e
 \]
-This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite[\S 1.2--1.4]{chung1997spectral}.
+This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite{spielman2012spectral}.
 
 Fixing an initial state $(\vec x(0),\vec p(0))\in T^*\rr^V$ and iterating $\Phiphase(\fun{wire}_G)$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec x(t),\vec p(t)\bigr)_{t\in\nn}$. As a notational convenience, write $\ddot{x}_v(t)\coloneqq x_v(t+2)-2x_v(t+1)+x_v(t)$.
 
@@ -3431,7 +3435,7 @@ Both wave and heat dynamics on $\fun{wire}_G$ exhibit superposition: both $\Phip
 
 The operad $\srwd$ of smooth rewiring diagrams provides a single compositional syntax in which gradient-based learning and Hamiltonian-style mechanics coexist as functorial semantics $\Phiconf,\Phiphase\colon\srwd\to\org$. The key mediating construction is Moore internalization, which converts lens interfaces into polynomial interfaces, and integrators, which determine how stored state relates to the parameter space.
 
-Moreover, the two integrators interact with the neural-network example in a suggestive way. Applying $\Phiconf$ to the parameterized map $F\colon V\times\rr^m\to\rr^n$ of \cref{sec.dl_warmup} recovers gradient descent; we expect that applying $\Phiphase$ to the same $\srwd$-morphism, with a constant inverse-mass sharp $\sharpR_x(p)=\frac{1}{m}p$, yields momentum-based weight dynamics---the undamped heavy-ball method---placing standard and momentum-based training as two integrators of the same smooth rewiring syntax, just as the wave and heat equations arise as two integrators of the same graph wiring (\cref{rmk.graph_heat}).
+Moreover, the two integrators interact with the neural-network example in a suggestive way. Applying $\Phiconf$ to the parameterized map $F\colon V\times\rr^m\to\rr^n$ of \cref{sec.dl_warmup} recovers gradient descent; we expect that applying $\Phiphase$ to the same $\srwd$-morphism, with a constant inverse-mass sharp $\sharpR_x(p)=\frac{1}{m}p$, yields momentum-based weight dynamics---the undamped heavy-ball method---placing standard and momentum-based training as two integrators of the same smooth rewiring syntax, just as the wave and heat equations arise as two integrators of the same graph wiring, with the reaction's sign flipped (\cref{rmk.graph_heat}).
 
 Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond flat parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-step (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Substituting the stochastic polynomial $\mathrm{rand}$ for $\yon$ in the potential monoid (\cref{rmk.alpha_general}) would give stochastic update rules, opening a path toward compositional stochastic dynamics. Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\srwd^{\tn{lin}}\ss\srwd$ by restricting to constant sharps, linear lens maps, and quadratic potentials. 
 
