@@ -1039,10 +1039,10 @@ for any $O:\smset$. We continue with this approach, taking values in the bicateg
 \section{The Para construction}\label{sec.para_general}
 %--------------------------------------------------------------------
 
-Recall that an \emph{action} of a symmetric monoidal category $(\cat A,I,\otimes)$ on a category $\cat D$ is a functor $(\cdot)\colon\cat A\times\cat D\to\cat D$ equipped with coherent natural isomorphisms $I\cdot d\cong d$ and $(a\otimes b)\cdot d\cong a\cdot(b\cdot d)$; such data is also called an \emph{actegory}~\cite{capucci2024actegories}. When $\cat D$ too is symmetric monoidal and the action functor $(\cdot)$ is itself strong monoidal, $\cat D$ is called a \emph{monoidal actegory}~\cite[Def.~5.1.1]{capucci2024actegories}.
+Recall that an \emph{action} of a symmetric monoidal category $(\cat A,I,\otimes)$ on a category $\cat D$ is a functor $(\cdot)\colon\cat A\times\cat D\to\cat D$ equipped with coherent natural isomorphisms $I\cdot d\cong d$ and $(a\otimes b)\cdot d\cong a\cdot(b\cdot d)$; such data is also called an \emph{$\cat A$-actegory}~\cite{capucci2024actegories}. When $\cat D$ too is symmetric monoidal and the action functor $(\cdot)$ is itself strong monoidal, $\cat D$ is called a \emph{monoidal $\cat A$-actegory}~\cite[Def.~5.1.1]{capucci2024actegories}.
 
 \begin{lemma}[Strong monoidal functors give actions]\label{lem.smc_action}
-Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces an action of $\cat A$ on $\cat D$, making $\cat D$ a monoidal actegory, by left multiplication,
+Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces an action of $\cat A$ on $\cat D$, making $\cat D$ a monoidal $\cat A$-actegory, by left multiplication,
 \[
 a\cdot d\coloneqq J(a)\otimes d.
 \]
@@ -1058,11 +1058,11 @@ in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The 
 \end{equation*}
 i.e.\ $(b,g)\circ(a,f)=(b\otimes a, g\circ (b\cdot f))$.
 
-When $\cat D$ is a monoidal actegory, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $d_1\otimes d_2$ is the $\cat D$-tensor, and the tensor of maps $(a,f)\colon d_1\to d_2$ and $(a',f')\colon d_1'\to d_2'$ has parameter $a\otimes a'$ and underlying map
+When $\cat D$ is a monoidal $\cat A$-actegory, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $d_1\otimes d_2$ is the $\cat D$-tensor, and the tensor of maps $(a,f)\colon d_1\to d_2$ and $(a',f')\colon d_1'\to d_2'$ has parameter $a\otimes a'$ and underlying map
 \begin{equation*}
 (a\otimes a')\cdot(d_1\otimes d_1')\To{\cong}(a\cdot d_1)\otimes(a'\cdot d_1')\To{f\otimes g}d_2\otimes d_2',
 \end{equation*}
-where the first isomorphism comes from $\cat D$ being a monoidal actegory.
+where the first isomorphism comes from $\cat D$ being a monoidal $\cat A$-actegory.
 
 The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(d_1,d_2)$ is a morphism $g\colon a\to a'$ in $\cat A$ such that $f'\circ(g\cdot d_1)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(d_1,d_2)$ is a groupoid.
 In this paper, all of our parameter categories are groupoids, so these Para constructions are naturally $(2,1)$-categories; by the convention of \cref{sec.prelim}, we will usually call them categories.
@@ -1105,7 +1105,7 @@ Then there is an induced pseudo-functor
 \para[\theta]{F}{G}\colon\para{\cat A}{\cat D}\;\longrightarrow\;\para{\cat A'}{\cat D'},
 \]
 which is strict if $F$ is strict monoidal.
-When $\cat D,\cat D'$ are monoidal actegories, $G$ is strong (resp.\ normal lax, resp.\ lax) symmetric monoidal, and $\theta$ is a monoidal natural transformation, then $\para[\theta]{F}{G}$ extends to a strong (resp.\ normal lax, resp.\ lax) monoidal functor.
+When $\cat D$ is a monoidal $\cat A$-actegory and $\cat D'$ a monoidal $\cat A'$-actegory, $G$ is strong (resp.\ normal lax, resp.\ lax) symmetric monoidal, and $\theta$ is a monoidal natural transformation, then $\para[\theta]{F}{G}$ extends to a strong (resp.\ normal lax, resp.\ lax) monoidal functor.
 \end{proposition}
 
 \begin{proof}
@@ -1274,7 +1274,7 @@ By a \emph{semicategory} we mean almost a category, except without the notion of
   \end{tikzpicture}
  \end{equation}
 
-We will consider boxes as lenses $\binom{\inpt c}{\outp c}$, where the ports on the left of the box constitute the input $\inpt c$ and the ports on the right of the box constitute the output $\outp c$. The wiring diagram itself is a morphism in $\Lens{\cat{C}}$ from the tensor product of the internal boxes to the external box.
+We will consider boxes as lenses $\binom{\inpt c}{\outp c}$, where the ports on the left of the box constitute the input $\inpt c$ and the ports on the right of the box constitute the output $\outp c$. The wiring diagram itself is a morphism $\varphi$ in $\Lens{\cat{C}}$ from the tensor product of the internal boxes to one external box.
 
 For example, the wiring diagram \eqref{eqn.arb_wd} includes three boxes, two internal boxes and the external box, so it should be represented in $\Lens{\cat{C}}$ by a map of the form
 \[
@@ -1282,19 +1282,19 @@ For example, the wiring diagram \eqref{eqn.arb_wd} includes three boxes, two int
 \]
 where let us say that $B,C,D$ are comonoids. Unfolding, we need two maps in $\cat{C}$:
 \begin{equation}\label{eqn.wd_as_maps}
-B\otimes D\otimes C\to C\otimes D
+\outp\varphi\colon B\otimes D\otimes C\to C\otimes D
 \qqand
-(B\otimes D\otimes C)\otimes A\to C\otimes A\otimes B
+\inpt\varphi\colon (B\otimes D\otimes C)\otimes A\to C\otimes A\otimes B
 \end{equation}
 But these maps are obvious: they are just counit projections and symmetries.
 
-One could take $\cat{C}\coloneqq(\mfd,\rr^0,\times)$. Then $A,B,C, D$ are manifolds (all of which are naturally comonoids) and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
+One could take $\cat{C}\coloneqq(\mfd,\rr^0,\times)$. Then $A,B,C, D$ are manifolds and the wiring diagram represents information flow, shuffling coordinates around. But there are many more smooth functions of the form \eqref{eqn.wd_as_maps} than there are wiring diagrams, e.g.\ there is more than one smooth function $\rr\to\rr$.
 
-One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking the sets $A\coloneqq\{a\}$, $B\coloneqq\{b\}$, $C\coloneqq\{c\}$, and $D\coloneqq\{d\}$ all to have one element for simplicity. Now \eqref{eqn.wd_as_maps} consists of two maps
+One can also interpret \eqref{eqn.arb_wd} in $\finset\op$, the opposite of the category of finite sets. Taking the sets $A\coloneqq\{a\}$, $B\coloneqq\{b\}$, $C\coloneqq\{c\}$, and $D\coloneqq\{d\}$ all to have one element for simplicity. Now \eqref{eqn.wd_as_maps} consists of two functions
 \[
-\{b,d,c\}\from\{c,d\}
+\{b,d,c\}\From{\outp\varphi}\{c,d\}
 \qqand
-\{b,d,c\}+\{a\}\from\{c,a,b\}.
+\{b,d,c\}+\{a\}\From{\inpt\varphi}\{c,a,b\}.
 \]
 These two functions entirely determine the wiring diagram \eqref{eqn.arb_wd} as an operad morphism, saying how each external outgoing port $c,d$ is ``fed by'' some internal outgoing port (in $\{b,d,c\}$), and how each internal ingoing port $c,a,b$ is ``fed by'' either an internal outgoing port (in $\{b,d,c\}$) or the external ingoing port, $a$. Applying $\Lens{M^\blank}$ from \cref{lem.lens_pow}, for any manifold $M\in\mfd$, realizes such wiring diagrams as lenses between manifolds.
 
@@ -1303,20 +1303,20 @@ These two functions entirely determine the wiring diagram \eqref{eqn.arb_wd} as 
 Our potentials will arise from a commutative monoid, via the following standard fact.
 
 \begin{lemma}\label{lem.monoid_to_monad}
-If $\cat{C}$ is a symmetric monoidal category and $(R,e,(*))$ is a commutative monoid object in it, then $R\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,R)$.
+If $\cat{C}$ is a symmetric monoidal category and $(R,0,+)$ is a commutative monoid object in it, then $R\otimes\blank\colon\cat{C}\to\cat{C}$ carries a monoidal monad structure, functorially in $(\cat C,R)$.
 \end{lemma}
 
 \begin{proof}
-The monad unit and multiplication are $e\otimes\id$ and $(*)\otimes\id$. The monoidal structure has unitor $e\colon I\to R\cong R\otimes I$ and productor
+The monad unit and multiplication are $0\otimes\id$ and $(+)\otimes\id$. The monoidal structure has unitor $0\colon I\to R\cong R\otimes I$ and productor
 \begin{equation}\label{eqn.monoid_productor}
-(R\otimes X)\otimes(R\otimes Y)\cong R\otimes R\otimes X\otimes Y\To{(*)\otimes\id}R\otimes X\otimes Y.
+(R\otimes X)\otimes(R\otimes Y)\cong R\otimes R\otimes X\otimes Y\To{(+)\otimes\id}R\otimes X\otimes Y.
 \end{equation}
 The coherence diagrams arise from the monoid laws and commutativity of $R$. Functoriality in $(\cat C,R)$ is straightforward.
 \end{proof}
 
-We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad into a comonad.
+We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad on $\cat{C}$ into a comonad on $\Lens{\cat{C}}$.
 
-Recall that a monad $(\Fun{T},\eta,\mu)$ on a monoidal category $(\cat{C},I,\otimes)$ is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. It is \emph{monoidal} if $\Fun{T}$ is lax monoidal (with unitor $\tau_0\colon I\to\Fun{T}(I)$ and productor $\tau_{X,Y}\colon \Fun{T}(X)\otimes\Fun{T}(Y)\to\Fun{T}(X\otimes Y)$) and whose natural transformations are monoidal. Each monoidal monad is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
+\label{txt.monoidal_monad}Recall that a monad $(\Fun{T},\eta,\mu)$ on a monoidal category $(\cat{C},I,\otimes)$ is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. It is \emph{monoidal} if $\Fun{T}$ is lax monoidal (with unitor $\tau_0\colon I\to\Fun{T}(I)$ and productor $\tau_{X,Y}\colon \Fun{T}(X)\otimes\Fun{T}(Y)\to\Fun{T}(X\otimes Y)$) and whose natural transformations are monoidal. Each monoidal monad is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
 \[
 X\otimes \Fun{T}Y\To{\eta_X}\Fun{T}(X)\otimes \Fun{T}(Y)\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
 \]
@@ -1327,11 +1327,11 @@ Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal catego
 If moreover $\Fun{T}$ is a monoidal monad, then $\LensFun{\Fun T}$ is a colax monoidal comonad, thus the coKleisli category $(\Lens{\cat{C}}^{\Fun{T}},I,\otimes)$ is naturally monoidal.
 \end{proposition}
 \begin{proof}
-On a lens map $\binom{\inpt f}{\outp f}$ with $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, define the backward component of $\LensFun{\Fun T}\binom{\inpt f}{\outp f}$ to be the following composite:
+On a lens map $\binom{\inpt f}{\outp f}$ with $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, define the forward component of $\LensFun{\Fun T}\binom{\inpt f}{\outp f}$ to be $\outp f$ and the backward component to be the following composite:
 \begin{equation*}
 \outp c\otimes\Fun{T}\inpt d\To{\sigma}\Fun{T}(\outp c\otimes\inpt d)\To{\Fun{T}\inpt f}\Fun{T}\inpt c.
 \end{equation*}
-The counit and comultiplication of $\LensFun{\Fun{T}}$ are given on positions by the identity and on-directions by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp c}$:
+The counit and comultiplication of $\LensFun{\Fun{T}}$ are given by the identity on the forward map and, on the backward map, by the unit and multiplication of the monad, together with the counit $\varepsilon_{\outp c}$:
 \begin{equation*}
 \outp c\otimes\inpt c\To{\varepsilon_{\outp c}\otimes\id}\inpt c\To{\eta}\Fun{T}\inpt c,
 \end{equation*}
@@ -1356,7 +1356,7 @@ We include only the least trivial here: preservation of composition. For $f\colo
 \& \outp c\otimes\Fun{T}(\outp d\otimes\inpt e)
   \ar[r, "\inpt g"]
   \ar[d, "\sigma"]
-\& \outp c\otimes\Fun{T}\inpt d
+\&[5pt] \outp c\otimes\Fun{T}\inpt d
   \ar[d, "\sigma"]
 \\
 \Fun{T}(\outp c\otimes\inpt e)
@@ -1411,7 +1411,7 @@ By \cref{prop.lens_functoriality}, $F$ induces $\Lens F\colon\Lens{\cat C}\to\Le
 \[
 \gamma\colon\LensFun{\Fun T'}\circ\Lens F\Rightarrow \Lens F\circ\LensFun{\Fun T},
 \]
-whose component at $\lensob c$ has output map $\id_{F(\outp c)}$ and input map given by
+whose component at $\lensob c$ has output map $\outp{\gamma_{\lensob c}}\coloneqq\id_{F(\outp c)}$ and input map $\inpt{\gamma_{\lensob c}}$ given by
 \[
 F(\outp c)\otimes F(\Fun T\inpt c)\To{\varepsilon_{F(\outp c)}\otimes\id}F(\Fun T\inpt c)\To{\theta_{\inpt c}}\Fun T'F(\inpt c).
 \]
@@ -1456,7 +1456,7 @@ Let $\cat A$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad 
 \[
 a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}.
 \]
-If moreover $\Fun T$ is a monoidal monad, this action makes $\Lens{\cat C}^{\Fun T}$ a monoidal actegory.
+If moreover $\Fun T$ is a monoidal monad, this action makes $\Lens{\cat C}^{\Fun T}$ a monoidal $\cat A$-actegory.
 \end{lemma}
 
 \begin{proof}
@@ -1471,6 +1471,7 @@ Checking functoriality reduces immediately to the strength axioms for $\sigma$--
 \[
 J(a)\To{J(u)}J(a')\To{\varepsilon_{J(a')}} I.
 \]
+Together with the coKleisli composition of \cref{prop.backward_comonad}, these give preservation of identities and composition.
 
 When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cref{prop.backward_comonad}, and the comparisons $J(I)\cong I$ and $(a\otimes a')\cdot(\lensob c\otimes\lensob d)\cong(a\cdot\lensob c)\otimes(a'\cdot\lensob d)$ come directly from the strong monoidality of $J$.
 \end{proof}
@@ -1479,12 +1480,12 @@ When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cr
 \section{Moore internalization}\label{sec.moore_internalization}
 %----------------------------------------------------------------------------
 
-This section introduces \emph{Moore internalization}---a normal lax monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that turns each interface $\lensob c$ into the $\cat C$-object $\ihom{\inpt c,I}\otimes\outp c$---which \cref{ch.framework} uses to build the polynomial interpretation $\Phi'$ (\cref{thm.poly_interpretation}). We begin with a generalization.
+This section introduces \emph{Moore internalization}---a normal lax monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that turns each interface $\lensob c$ into the $\cat C$-object $\ihom{\inpt c,I}\otimes\outp c$---which \cref{ch.framework} will use to interpret rewiring syntax as parameterized polynomial maps (\cref{thm.poly_interpretation}). We begin with a generalization.
 
-All lax monoidal functors preserve monoids, so in particular monoidal monads do.
+All lax monoidal functors preserve monoids, so in particular monoidal monads (\cpageref{txt.monoidal_monad}) do.
 
 \begin{definition}\label{def.T_monoid}
-Let $(\Fun{T},\eta,\mu,\tau)$ be a monoidal monad on a symmetric monoidal category $\cat{C}$. A \emph{$\Fun{T}$-monoid in $\cat{C}$} is a $\otimes$-monoid $(z,e_z,m_z)$ in $\cat{C}$
+Let $(\Fun{T},\eta,\mu,\tau)$ be a monoidal monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. A \emph{$\Fun{T}$-monoid in $\cat{C}$} is a $\otimes$-monoid $(z,e_z,m_z)$ in $\cat{C}$
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 z\ar[r,"\eta_z"]\ar[dr,equal]\& \Fun{T}z\ar[d,"\alpha"]\\
@@ -1512,13 +1513,15 @@ We write $\defineTerm{potalg}\coloneqq(z,e_z,m_z,\alpha)$ for this data, with \e
 \end{definition}
 
 \begin{remark}\label{rmk.T_monoid_EM}
-A $\Fun{T}$-monoid in $\cat{C}$ is the same data as a $\otimes$-monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}_\otimes(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the monoidal structure on $\cat{C}$ lifts to one on $\cat{C}^{\Fun{T}}$ (equivalently, that $\Fun{T}$ lifts to a monad on $\Cat{Mon}_\otimes(\cat{C})$); see~\cite{kock1972strong, seal2013tensors}.
+A $\Fun{T}$-monoid $\potalg$ in $\cat{C}$ is the same data as a $\otimes$-monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}_\otimes(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the monoidal structure on $\cat{C}$ lifts to one on $\cat{C}^{\Fun{T}}$ (equivalently, that $\Fun{T}$ lifts to a monad on $\Cat{Mon}_\otimes(\cat{C})$); see~\cite{kock1972strong, seal2013tensors}.
 \end{remark}
+
+Recall that in a symmetric monoidal closed category the functor $-\otimes a$ is left adjoint to the internal hom $\ihom{a,-}$ for each object $a$. We write $\ev_a\colon\ihom{a,b}\otimes a\to b$ for the counit (\emph{evaluation}) and $\coev_a\colon b\to\ihom{a,b\otimes a}$ for the unit (\emph{coevaluation}) of this adjunction; they satisfy the triangle identity, which we abbreviate $\coev_a\then\ev_a=\id$.
 
 \begin{theorem}\label{thm.Theta_T_alpha}
 Let $(\Fun{T},\tau)$ be a monoidal monad on a symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, and let $(z,e,m,\alpha)$ be a $\Fun{T}$-monoid in $\cat{C}$ (\cref{def.T_monoid}). Then there is a lax monoidal functor that acts on objects as follows:
 \[
-\Theta_z\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
+\Theta_\potalg\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
 \lensob{c}\mapsto\ihom{\inpt c,z}\otimes \outp c
 \]
 It is normal iff $e\colon I\to z$ is an isomorphism.
@@ -1531,11 +1534,10 @@ H_c\otimes \outp c\otimes\inpt d\To{\inpt f}
 H_c\otimes\Fun{T}(\inpt c)\To{\sigma}
 \Fun{T}(H_c\otimes\inpt c)\To{\Fun T(\ev_c)}\Fun{T}(z)\To{\alpha}z
 \]
-and let $\Theta_z(f)$ be the composite
+and let $\Theta_\potalg(f)$ be the composite
 \[H_c\otimes\outp c\To{\delta}H_c\otimes\outp c\otimes\outp c\To{\coev_d\otimes\outp f}[\inpt d,H_c\otimes\outp
-  c\otimes\inpt d]\otimes\outp d\To{\psi_f}H_d\otimes\outp d,
+  c\otimes\inpt d]\otimes\outp d\To{\psi_f}H_d\otimes\outp d.
   \]
-where the final arrow abbreviates $[\inpt d,\psi_f]\otimes\id_{\outp d}$.
 
 Preservation of identities is a short diagram chase from the triangle equation $\coev\then\ev=\id$ and the $\Fun T$-algebra unit law $\alpha\circ\eta_z=\id$; we leave it to the reader.
 %IDENTITIES
@@ -1597,11 +1599,11 @@ Preservation of identities is a short diagram chase from the triangle equation $
 %\end{tikzcd}
 %\]
 %Each square is clear.
-To prove that $\Theta_z$ preserves composites, expand $\psi_{g\circ f}$ using the coKleisli composite and expand the composite $\Theta_z(g)\circ\Theta_z(f)$. After removing the common opening maps $\delta_{\outp c}$, $\outp f$, and $\coev_e$, it remains to verify that $\psi_{g\circ f}$ is the composite
+To prove that $\Theta_\potalg$ preserves composites, expand $\psi_{g\circ f}$ using the coKleisli composite and expand the composite $\Theta_\potalg(g)\circ\Theta_\potalg(f)$. After removing the common opening maps $\delta_{\outp c}$, $\outp f$, and $\coev_e$, it remains to verify that $\psi_{g\circ f}$ is the composite
 \[
-H_c\otimes \outp c \otimes \outp d\otimes\inpt e\To{\coev_d}[\inpt d,H_c\otimes \outp c\otimes\inpt d]\otimes \outp d\otimes \inpt e\To{\psi_f}H_d\otimes\outp d\otimes\inpt e\To{\psi_g}z,
+H_c\otimes \outp c \otimes \outp d\otimes\inpt e\To{\coev_d}[\inpt d,H_c\otimes \outp c\otimes\inpt d]\otimes \outp d\otimes \inpt e\To{\psi_f}H_d\otimes\outp d\otimes\inpt e\To{\psi_g}z.
 \] 
-and $\psi_{g\circ f}$ and this composite are respectively the left-bottom and top-right paths in the following diagram; we suppress~$\otimes$ and write $c$ for~$\inpt{c}$, $d$ for~$\inpt{d}$, and $e$ for~$\inpt{e}$:
+To do so, we write $\psi_{g\circ f}$ and this composite respectively as the left-bottom and top-right paths in the following diagram; we suppress~$\otimes$ and write $c$ for~$\inpt{c}$, $d$ for~$\inpt{d}$, and $e$ for~$\inpt{e}$:
 \[
 \begin{tikzcd}[column sep=1.1em, row sep=1.2em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
 H_c\outp c\outp d e
@@ -1687,18 +1689,18 @@ H_c\Fun T(c)
 \& z
 \end{tikzcd}
 \]
-The rectangular tiles commute by functoriality of $\otimes$, naturality of the strength $\sigma$, naturality of evaluation inside $\Fun T$, naturality of $\mu$, and the $\Fun T$-algebra axiom $\alpha\circ\mu=\alpha\circ\Fun T(\alpha)$. The lower-left region of the main diagram is the $\mu$-coherence axiom for the strength. For the remaining region, the dotted arrows show how it follows from naturality and the triangle equation $\coev\then\ev=\id$. Thus $\Theta_z$ is indeed a functor.
+The sixteen rectangular tiles commute by functoriality of $\otimes$, naturality of the strength $\sigma$, naturality of evaluation inside $\Fun T$, naturality of $\mu$, and the $\Fun T$-algebra axiom $\alpha\circ\mu=\alpha\circ\Fun T(\alpha)$. The lower-left pentagon is the $\mu$-coherence axiom for the strength. For the remaining region, the dotted arrows show how its commutativity follows from naturality and the triangle equation $\coev\then\ev=\id$. Thus $\Theta_\potalg$ is indeed a functor.
 
-The unitor is $e_z\colon I\to z=\Theta_z\binom{I}{I}$, and the productor is the canonical map
+The unitor is $e_z\colon I\to z=\Theta_\potalg\binom{I}{I}$, and the productor is the canonical map
 \[
 ([\inpt c,z]\otimes\outp c)\otimes([\inpt d,z]\otimes\outp d)
 \to
-[\inpt c\otimes\inpt d,z\otimes z]\otimes\outp c\otimes\outp d\To{[\id,m_z]\otimes\id}
+[\inpt c\otimes\inpt d,z\otimes z]\otimes\outp c\otimes\outp d\To{m}
 [\inpt c\otimes\inpt d,z]\otimes\outp c\otimes\outp d
 \]
 Their naturality, unitality, and associativity amount to the monoidality of $\Fun{T}$, the assumption that $\alpha$ is a monoid homomorphism, and that $z$ is a monoid.
 
-Finally, $e\colon I\to z$ is an isomorphism iff $z\cong I$ as a $\otimes$-monoid, iff $\Theta_z\binom{I}{I}=[I,z]\otimes I\cong z\cong I$ and the unitor of $\Theta_z$ realizes this isomorphism, proving the last claim.
+Finally, $e\colon I\to z$ is an isomorphism iff $z\cong I$ as a $\otimes$-monoid, iff $\Theta_\potalg\binom{I}{I}=[I,z]\otimes I\cong z\cong I$ and the unitor of $\Theta_\potalg$ realizes this isomorphism, proving the last claim.
 \end{proof}
 
 The following is an immediate corollary of \cref{thm.Theta_T_alpha} with $\Fun{T}=\id$ and $z\coloneqq I$.
@@ -1710,7 +1712,7 @@ Let $(\cat{C},I,\otimes, [-,-])$ be a symmetric monoidal closed category. There 
 \lensob{c}\mapsto\ihom{\inpt c,I}\otimes\outp c.\]
 \end{corollary}
 
-We call $\Theta$ the \emph{Moore internalization} functor, as justified by \cref{ex.moore}.
+We call $\Theta$, and more generally $\Theta_\potalg$ the \emph{Moore internalization} functor, as justified by \cref{ex.moore}.
 
 \begin{example}\label{ex.moore}
 The functor $\Lens{\blank\yon}\colon\Lens{\smset}\to\Lens{\poly}$ from \eqref{eqn.lens_yon} sends lenses $\binom{A}{B}$ in $\smset$ to lenses $\binom{A\yon}{B\yon}$ in $\poly$. Applying $\Theta$ one obtains:%
@@ -1726,15 +1728,15 @@ A coalgebra on $B\yon^A$ is a function of the form $S\to B\times S^A$, which is 
 
 
 \begin{corollary}\label{cor.parameterized_representation}
-Let $\cat C$, $(\Fun T,\tau)$, $(z,e,m,\alpha)$, and the resulting $\Theta_z\colon\Lens{\cat{C}}^{\Fun T}\to\cat{C}$ be as in \cref{thm.Theta_T_alpha}. Suppose $\cat A$ is symmetric monoidal and $J\colon\cat A\to\cat C$ is a strong monoidal functor such that each $J(a)$ carries a comonoid structure in $\cat C$ and each $J(u)$ is a comonoid homomorphism. Then with the $\cat A$-actions
+Let $\cat C$, $(\Fun T,\tau)$, $(z,e,m,\alpha)$, and the resulting $\Theta_\potalg\colon\Lens{\cat{C}}^{\Fun T}\to\cat{C}$ be as in \cref{thm.Theta_T_alpha}. Suppose $\cat A$ is symmetric monoidal and $J\colon\cat A\to\cat C$ is a strong monoidal functor such that each $J(a)$ carries a comonoid structure in $\cat C$ and each $J(u)$ is a comonoid homomorphism. Then with the $\cat A$-actions
 \[
 a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}
 \qqand
 a\cdot c\coloneqq J(a)\otimes c
 \]
-on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to a lax symmetric monoidal functor
+on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_\potalg$ extends to a lax symmetric monoidal functor
 \begin{equation}\label{eqn.para_theta_z}
-\para{\cat A}{\Theta_z}\colon\para{\cat A}{\Lens{\cat C}^{\Fun T}}\to\para{\cat A}{\cat C}.
+\para{\cat A}{\Theta_\potalg}\colon\para{\cat A}{\Lens{\cat C}^{\Fun T}}\to\para{\cat A}{\cat C}.
 \end{equation}
 \end{corollary}
 %It sends a parameterized coKleisli lens $(a,f\colon a\cdot\lensob c\to\lensob d)$ to the parameterized $\cat C$-morphism
@@ -1743,14 +1745,14 @@ on $\Lens{\cat C}^{\Fun T}$ and on $\cat C$ respectively, $\Theta_z$ extends to 
 %\]
 
 \begin{proof}
-We obtain the two above-displayed actions of $\cat{A}$, on $\Lens{\cat C}^{\Fun T}$ and on $\cat{C}$, by \cref{lem.parameter_lens_action,lem.smc_action}. The functor $\Theta_z$ is $\cat A$-equivariant:
+We obtain the two above-displayed actions of $\cat{A}$, on $\Lens{\cat C}^{\Fun T}$ and on $\cat{C}$, by \cref{lem.parameter_lens_action,lem.smc_action}. The functor $\Theta_\potalg$ is $\cat A$-equivariant:
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 \cat A\times\Lens{\cat C}^{\Fun T}
   \ar[r,"(\cdot)"]
-  \ar[d,"\id_{\cat A}\times\Theta_z"']
+  \ar[d,"\id_{\cat A}\times\Theta_\potalg"']
   \ar[dr,phantom,"\cong"]
-\& \Lens{\cat C}^{\Fun T}\ar[d,"\Theta_z"]\\
+\& \Lens{\cat C}^{\Fun T}\ar[d,"\Theta_\potalg"]\\
 \cat A\times\cat C
   \ar[r,"(\cdot)"']
 \& \cat C,
@@ -1758,9 +1760,9 @@ We obtain the two above-displayed actions of $\cat{A}$, on $\Lens{\cat C}^{\Fun 
 \]
 where the $(a,\binom{\inpt c}{\outp c})$ component of the natural isomorphism is given by
 \[
-J(a)\otimes\Theta_z\lensob c
+J(a)\otimes\Theta_\potalg\lensob c
 = J(a)\otimes(\ihom{\inpt c,z}\otimes\outp c)
-\cong\Theta_z\left(a\cdot\lensob c\right).
+\cong\Theta_\potalg\left(a\cdot\lensob c\right).
 \]
 We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn.para_theta_z} as desired.
 \end{proof}
@@ -1935,10 +1937,10 @@ objects, $\Phi'_{\interp}\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{
 \end{theorem}
 
 \begin{proof}
-By \cref{def.rewiring_datum}, $\rwd_D$ is the underlying operad of $\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}$. The interface functor $\Fun c$ (strong symmetric monoidal by definition) and the monad morphism $\theta\colon\Fun c\circ\Fun R\Rightarrow\Fun R'\circ\Fun c$ (\cref{def.polynomial_interpretation}) lift, by \cref{lem.lens_T_functoriality}, to a strong monoidal functor $\LensMor{\Fun c}{\theta}\colon\Lcokl{\cat M}{\Fun R}\to\Lcokl{\poly}{\Fun R'}$; and \cref{thm.Theta_T_alpha} (with $\Fun T\coloneqq\Fun R'$) supplies a lax monoidal $\Theta_z\colon\Lcokl{\poly}{\Fun R'}\to\poly$, which is normal iff $z\cong\yon$. The action square for $\LensMor{\Fun c}{\theta}$, from the strong monoidality of $\Fun c$, and the action square for $\Theta_z$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two lax monoidal maps below; restricting to underlying operads gives the desired $\Phi'$:
+By \cref{def.rewiring_datum}, $\rwd_D$ is the underlying operad of $\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}$. The interface functor $\Fun c$ (strong symmetric monoidal by definition) and the monad morphism $\theta\colon\Fun c\circ\Fun R\Rightarrow\Fun R'\circ\Fun c$ (\cref{def.polynomial_interpretation}) lift, by \cref{lem.lens_T_functoriality}, to a strong monoidal functor $\LensMor{\Fun c}{\theta}\colon\Lcokl{\cat M}{\Fun R}\to\Lcokl{\poly}{\Fun R'}$; and \cref{thm.Theta_T_alpha} (with $\Fun T\coloneqq\Fun R'$) supplies a lax monoidal $\Theta_\potalg\colon\Lcokl{\poly}{\Fun R'}\to\poly$, which is normal iff $z\cong\yon$. The action square for $\LensMor{\Fun c}{\theta}$, from the strong monoidality of $\Fun c$, and the action square for $\Theta_\potalg$ recorded in \cref{cor.parameterized_representation} induce, by \cref{prop.para_square}, the two lax monoidal maps below; restricting to underlying operads gives the desired $\Phi'$:
 \[
 \para{\cat Q}{\Lcokl{\cat M}{\Fun R}}\To{\para{\cat Q}{\LensMor{\Fun c}{\theta}}}
-\para{\cat Q}{\Lcokl{\poly}{\Fun R'}}\To{\para{\cat Q}{\Theta_z}}
+\para{\cat Q}{\Lcokl{\poly}{\Fun R'}}\To{\para{\cat Q}{\Theta_\potalg}}
 \para{\Fun c\circ J}{\poly}.
 \qedhere
 \]
