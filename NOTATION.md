@@ -116,26 +116,26 @@ edit, where updating the table is the whole point.
 | Sort | Symbol(s) | Notes |
 |---|---|---|
 | Generic smooth manifold | `M`, `N` | `\mfd` for the category |
-| Reactive vector space (object of `\rvect`) | `\rv V`=`(V,\sharpR_V)` | bold `\rv` macro; emphasizes sharp-dependence (e.g. `\chiV{\rv V}`) |
-| Underlying / carrier vector space | `V`, `W` | also: domain for `T^*V` constructions; abused for the object `\rv V` when sharp is understood or canonical (`T^*V`) |
+| Reactive vector space (object of `\rvect`) | `\rv Q`=`(Q,\sharpR_Q)` | bold `\rv` macro; emphasizes sharp-dependence (e.g. `\chiQ{\rv Q}`) |
+| Underlying / carrier vector space | `Q`, `W` | also: domain for `T^*Q` constructions; abused for the object `\rv Q` when sharp is understood or canonical (`T^*Q`) |
 | Point of a manifold | `m`, `n` | `m\colon\rr^0\to M` style |
-| Point of a vector space | `x`, `y` | also: position in `(x,\xi)\in T^*V` |
-| Tangent vector | `v`, `w` | at `T_xV`; avoid clashing with vector-space `V` |
-| Covector | `\xi` | primed/indexed: `\xi'`, `\xi_V`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,x)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
-| Phase point | `(x,\xi)\in T^*V` | position–momentum pair |
-| State (underlying set) | `s\in S` | `S=|V|` when from a reactive vector space |
+| Point of a vector space | `x`, `y` | also: position in `(x,\xi)\in T^*Q` |
+| Tangent vector | `v`, `w` | at `T_xQ`; avoid clashing with vector-space `Q` |
+| Covector | `\xi` | primed/indexed: `\xi'`, `\xi_Q`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,x)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
+| Phase point | `(x,\xi)\in T^*Q` | position–momentum pair |
+| State (underlying set) | `s\in S` | `S=|Q|` when from a reactive vector space |
 
 Search hints: "manifold", "vector space", "point", "covector", "tangent",
-`(x,\\xi)`, `T^*_`, `T_xV`, `m\\colon\\rr^0`.
+`(x,\\xi)`, `T^*_`, `T_xQ`, `m\\colon\\rr^0`.
 
 ### Sections of `T^*` (covector fields)
 
-A section of `T^*` is `\omega\colon M\to T^*M` for a generic manifold `M`; on `T^*V` we use the kinetic datum `\beta`.
+A section of `T^*` is `\omega\colon M\to T^*M` for a generic manifold `M`; on `T^*Q` we use the kinetic datum `\beta`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
 | Generic section of `T^*` | `\omega` | a covector field on a manifold `M`; also names an induced nat. trans. |
-| Kinetic datum | `\beta` | the `\sharpR`-packaging `\beta_V(x,\xi)=(0,\sharpR_x\xi)` on `T^*V`; term-tracked (`\trackTermSymbol{beta_kin}`), anchor `\defineTerm{beta_kin}_V` at `eqn.kinetic_one_form` |
+| Kinetic datum | `\beta` | the `\sharpR`-packaging `\beta_Q(x,\xi)=(0,\sharpR_x\xi)` on `T^*Q`; term-tracked (`\trackTermSymbol{beta_kin}`), anchor `\defineTerm{beta_kin}_Q` at `eqn.kinetic_one_form` |
 
 Search hints: `"kinetic"`, `\\beta`, `\\colon T^*`.
 
@@ -154,11 +154,11 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Parameter interface | `p` | strong monoidal functor `\cat A\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat A`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* in this section are `q` |
-| State space | `\Fun S` | strong monoidal functor `\cat A\to\smsetiso`; `\Fun S(a)` is the state set |
+| Parameter interface | `p` | strong monoidal functor `\cat Q\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat Q`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* in this section are `q` |
+| State space | `\Fun S` | strong monoidal functor `\cat Q\to\smsetiso`; `\Fun S(a)` is the state set |
 | Integrator | `\intg` (renders `\mathfrak{i}`) | the pair `\intg=(\Fun S,\upd)` (`def.integrator`). Instances: `\intg_{\mathrm{conf}}` (configuration, `\Fun S=\absval\blank`) and `\intg_{\mathrm{phase}}` (phase, `\Fun S=\absval{T^*\blank}`) |
-| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\chi` (configuration; `\chiV` for its `\rv V`-component, distinct from the lax/colax `\theta` of line 211), `\upd_\beta` (phase). The `\Para_{\cat A}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat A` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
-| Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\upd_\beta=\nu\circ\chiV{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
+| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\chi` (configuration; `\chiQ` for its `\rv Q`-component, distinct from the lax/colax `\theta` of line 213), `\upd_\beta` (phase). The `\Para_{\cat Q}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat Q` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
+| Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\upd_\beta=\nu\circ\chiQ{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
 | Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
 | Dynamics functor | `\Phi_{\interp,\intg}`, `\Phi'` | `\Phi_{\interp,\intg}\colon\rwd_D\to\org` (`thm.dynamics_functor`), smooth instance `\Phi_\intg\colon\srwd\to\org` (`cor.functor`); `\Phi'` the polynomial-interpretation factor into `\para{\Fun c\circ J}\poly` (`thm.poly_interpretation`). Named: `\Phiconf=\Phi_{\intg_{\mathrm{conf}}}`, `\Phiphase=\Phi_{\intg_{\mathrm{phase}}}`. See §"Abstract framework" |
 
@@ -166,7 +166,7 @@ Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\up
 
 ### Abstract framework (rewiring data)
 
-A *rewiring datum* is `D = (\cat M, \cat V, J, \Fun R)` (`def.rewiring_datum`), introduced in
+A *rewiring datum* is `D = (\cat M, \cat Q, J, \Fun R)` (`def.rewiring_datum`), introduced in
 `ch.framework`; the syntax operad `\rwd_D` depends only on it. Interpreting that syntax
 adds an interface functor `\Fun c` into `\poly` and a potential algebra `(z,\alpha)` (the
 polynomial interpretation, `sec.poly_interpretation`); an integrator then gives the dynamics functor into
@@ -176,17 +176,17 @@ polynomial interpretation, `sec.poly_interpretation`); an integrator then gives 
 
 | Sort | Symbol | Notes | Smooth instance |
 |---|---|---|---|
-| Rewiring datum (whole tuple) | `D = (\cat M, \cat V, J, \Fun R)` | `def.rewiring_datum`; determines the syntax operad `\rwd_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
+| Rewiring datum (whole tuple) | `D = (\cat M, \cat Q, J, \Fun R)` | `def.rewiring_datum`; determines the syntax operad `\rwd_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
 | Spaces (cartesian category) | `\cat M` | source of lens syntax | `\mfd` |
-| Parameters (sym. monoidal category) | `\cat V` | acts on `\cat M` via `J`; font-distinct from the carrier `V` | `\rvect` |
-| Parameter inclusion | `J\colon\cat V\to\cat M` | strong monoidal | `\inc` |
+| Parameters (sym. monoidal category) | `\cat Q` | acts on `\cat M` via `J`; font-distinct from the carrier `Q` | `\rvect` |
+| Parameter inclusion | `J\colon\cat Q\to\cat M` | strong monoidal | `\inc` |
 | Potentials monad | `\Fun R` | monoidal monad on `\cat M` (`def.rewiring_datum`); the writer monad `R\otimes\blank` of a commutative **monoid** `R` (not a group — no antipode used) is the canonical instance | `\rr` (writer monad `\rr\otimes\blank`) |
 | Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
 | Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `\Fun R'`-monoid structure `\alpha` (`def.T_monoid`; `\Fun R'=\Fun c(R)\otimes\blank` in the writer instance). `\alpha` is reserved for this map: **not** covectors (write the pair) nor `\Para` 2-cells (use `g`, `prop.para`). The submersion-lens backward map in `prop.euler_submersion_lenses` reuses `\alpha` locally—sanctioned, since that proof never co-occurs with the potential algebra | `(\yon,\potd)` |
 | Set of modes | `\md` (`\mathsf{Md}`) | finite set decorating a monad via the power `(\blank)^{\md}` (`prop.moding`, `prop.moded_algebra`); a mode is an element `i\in\md`. Sans-serif to stay clear of the space `M` and the category `\cat M`; element indexed by `i` to stay clear of the manifold point `m` | single-mode `z=\yon` |
-| Rewiring-diagram operad | `\rwd_D` (renders `\mathbb{R}\Cat{WD}_D`; blackboard `\mathbb{R}` marks it as a (2,1)-operad, in-family with `\org`) | underlying operad of `\para{\cat V}{\Lcokl{\cat M}{\Fun R}}` (`def.rewiring_datum`) | `\srwd \coloneqq \rwd_{\Sm}` by definition (`def.potlens`); `\srwd` expands to `\rwd_{\Sm}` (renders `\mathbb{R}\Cat{WD}_{\mathrm{Sm}}`) |
+| Rewiring-diagram operad | `\rwd_D` (renders `\mathbb{R}\Cat{WD}_D`; blackboard `\mathbb{R}` marks it as a (2,1)-operad, in-family with `\org`) | underlying operad of `\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}` (`def.rewiring_datum`) | `\srwd \coloneqq \rwd_{\Sm}` by definition (`def.potlens`); `\srwd` expands to `\rwd_{\Sm}` (renders `\mathbb{R}\Cat{WD}_{\mathrm{Sm}}`) |
 
-Search hints: `"rewiring datum"`, `\\rwd`, `\\Sm`, `\\cat M`, `\\cat V`, `\\Fun c`,
+Search hints: `"rewiring datum"`, `\\rwd`, `\\Sm`, `\\cat M`, `\\cat Q`, `\\Fun c`,
 `def.rewiring_datum`, `def.potlens`, `thm.dynamics_functor`, `cor.functor`.
 
 Named (smooth) rewiring diagrams use the wiring family: `\Part` (particle), `\boxob` (box), `\fun{wire}_K` (K-ary wiring), `\fun{wire}_G` (graph `G`'s wiring, `eqn.psi_graph_lap`). `\psi` is **not** used for these—it is only a local proof variable and the second of a composable `(\varphi,\psi)` pair.
@@ -197,11 +197,11 @@ Named (smooth) rewiring diagrams use the wiring family: `\Part` (particle), `\bo
 |---|---|---|
 | Learning rate | `\eta_{\mathrm{LR}}` | never bare `\eta` (reserved, see below) |
 | Generic real scalar | `c`, `t` | `c\in\rr` for scalar multiplication; `t` for time/index. (`\lambda` is taken — dual-pairing element at `eqn.canonical_dual_sum`.) |
-| Potential | `U\colon V\to\rr` | also `U\colon X\to\rr` for general state space |
+| Potential | `U\colon Q\to\rr` | `V` for a second potential in a composite (`g\circ f`); also `U\colon X\to\rr` for general state space |
 
 Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
-### Categorical structure (reserved, line 671)
+### Categorical structure (reserved, line 696)
 
 | Sort | Symbol | Notes |
 |---|---|---|
@@ -216,8 +216,8 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Reactive sharp | `\sharpR_V`, `\sharpR_x` | section / fiber-evaluated; the data distinguishing the object `\rv V=(V,\sharpR_V)` |
-| Symplectic (canonical) sharp | `\sharpS_{T^*V}` | always on `T^*V` |
+| Reactive sharp | `\sharpR_Q`, `\sharpR_x` | section / fiber-evaluated; the data distinguishing the object `\rv Q=(Q,\sharpR_Q)` |
+| Symplectic (canonical) sharp | `\sharpS_{T^*Q}` | always on `T^*Q` |
 | Euclidean sharp | `\sharpEuc{}` | constant case |
 | Lens backward map | `\bk{\varphi}{i}` | **never** `\varphi^\sharp` (clashes with `\sharpR`, footnote line 750) |
 
@@ -225,7 +225,7 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Generic polynomial | `p`, `q` | the parameter-interface functor is *also* `p` (a poly-valued functor `\cat A\to\poly`, `p_a:\poly`); see §"Integrators & dynamics functors". Generic polynomial *objects* in the integrator section are `q`, to avoid clash |
+| Generic polynomial | `p`, `q` | the parameter-interface functor is *also* `p` (a poly-valued functor `\cat Q\to\poly`, `p_a:\poly`); see §"Integrators & dynamics functors". Generic polynomial *objects* in the integrator section are `q`, to avoid clash |
 | Position set | `p(1)` | |
 | Directions at `i` | `p[i]` | |
 | Cotangent polynomial | `\cotof{M}` | from `\cot\colon\mfd\to\poly` |
@@ -253,7 +253,7 @@ One rule governs all four gadgets: **subscript = base/functor direction, supersc
 - In `rem.filtration` the induced functor appears as `\LensMor{\cat M}{\eta}` = `\Cat{Lens}_{\cat M}^\eta` (the `F=\id_{\cat M}`, `\theta=\eta` case; `\cat M` is `\id_{\cat M}` by the "category name = its identity functor" convention stated in `sec.prelim`).
 - On objects the induced functor agrees with `\Cat{Lens}_F`, so its object-action is written `F\lensob c` (not `\LensMor{F}{\theta}\lensob c`).
 
-### Priming convention (line 724)
+### Priming convention (line 2152)
 
 - `f'` does **not** mean derivative.
 - Priming indicates "analogous to `f`".
