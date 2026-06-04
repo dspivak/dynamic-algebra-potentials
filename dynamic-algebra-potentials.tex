@@ -379,8 +379,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \trackTerm{\yon}{yon}{\mathcal{y}}
 \trackTerm{\poly}{poly}{\Cat{Poly}}
-\trackTermSymbol{tri}{\triangleleft}
-\newcommand{\tri}{\mathbin{\termref{tri}{\termraw{tri}}}}
 
 % lenses
 \newcommand{\biglens}[2]{
@@ -691,39 +689,39 @@ We fix some typographic conventions. We denote generic categories using calligra
 
 For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$ is clickable.
 
-We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the product-with-$\rr$ functor. We write $\defineTerm{bang}$ for a unique map when the domain and codomain make it clear, e.g.\ the unique map $\emptyset\to A$ or the unique map $X\to\rr^0$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. In any category, we may use an object name as the name of the identity morphism on that object, e.g.\ $X\otimes f$ in place of $\id_X\otimes f$. For example, $\cat{C}$ can stand as the name of the identity functor $\id_\cat{C}$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
+We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the functor $M\mapsto\rr\times M$. We write $\defineTerm{bang}$ for a unique map when the domain and codomain make it clear, e.g.\ the unique map $\emptyset\to A$ or the unique map $X\to\rr^0$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. In any category, we may use an object name as the name of the identity morphism on that object, e.g.\ $X\otimes f$ in place of $\id_X\otimes f$. For example, $\cat{C}$ can stand as the name of the identity functor $\id_\cat{C}$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
 We reserve $\eta$ and $\mu$ for units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
 
 We sometimes refer to a $(2,1)$-category simply as a category. More precisely, its homs are groupoids and composition is associative and unital up to coherent isomorphism.
 
-By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We sometimes elide the difference between monoidal categories $(\cat{C},I,\otimes)$ and their underlying operads $\cat{O}_{\cat{C}}$, which have $K$-ary morphisms $c_1\otimes\cdots\otimes c_K\to c'$. Morphisms between underlying operads correspond exactly to lax morphisms between the monoidal categories.%
+By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We sometimes elide the difference between monoidal categories $(\cat{C},I,\otimes)$ and their underlying operads $\cat{O}_{\cat{C}}$, which have $K$-ary morphisms $c_1\otimes\cdots\otimes c_K\to c'$. Lax monoidal functors between monoidal categories correspond exactly to functors between their underlying operads.%
 \footnote{That is, the functor $\Cat{SMC}_{\tn{lax}}\to\Cat{Opd}$ is fully faithful.}
 
 %--------------------------------------------------------------------
 \section{Polynomial functors, coalgebras, and $\mathbb{O}\Cat{rg}$}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the substitution product and the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal bicategory $\org$ of polynomial coalgebras (\cref{sec.org}).
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal bicategory $\org$ of polynomial coalgebras (\cref{sec.org}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\termraw{poly}$}{Poly}}\label{sec.poly}
 
 We briefly review the category $\defineTerm{poly}$ of polynomial functors; see~\cite{niu2025polynomial} for a comprehensive treatment.
 
-For any set $A$, let $\yon^A\colon\smset\to\smset$ denote the functor $\smset(A,\blank)$. A \emph{polynomial functor} is a coproduct $p\coloneqq\sum_{i: I}\yon^{A_i}$ of such functors. We refer to $I$ as the set of \emph{positions} of $p$ and $A_i$ is the set of \emph{directions} at position $i$. For example $(\yon^2+\yon)\colon\smset\to\smset$ is the polynomial that sends a set $X$ to $(X\times X)+X$; it has two positions, with two and one direction, respectively.
+For any set $A$, let $\yon^A\colon\smset\to\smset$ denote the functor $\smset(A,\blank)$. A \emph{polynomial functor} is a coproduct $p\coloneqq\sum_{i: I}\yon^{A_i}$ of such functors. We refer to $I$ as the set of \emph{positions} of $p$ and $A_i$ is the set of \emph{directions} at position $i$. For example $(\yon^2+\yon^1)\colon\smset\to\smset$ is the polynomial that sends a set $X$ to $(X\times X)+X$; it has two positions, with two and one direction, respectively.
 
-The category $\poly$ has polynomial functors as objects and natural transformations as morphisms. It has all sums and products, and these are given by the usual sum and product of polynomials, e.g. $(\yon^2+\yon)\times\yon\cong\yon^3+\yon^2$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
+The category $\poly$ has polynomial functors as objects and natural transformations as morphisms. It has all categorical sums and products, and these are given by the usual sum and product of polynomials, e.g. $(\yon^2+\yon)\times\yon\cong\yon^3+\yon^2$. Since $p(1)=\sum_{i:I}1=I$, we use the compact notation $p(1)$ for the position set and $p[i]\coloneqq A_i$ for the direction set at $i: p(1)$, so that
 \begin{equation}\label{eqn.poly}
 p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
 \end{equation}
-We use juxtaposition for multiplication: $pq\coloneqq p\times q$, and we write $\defineTerm{yon}\coloneqq\yon^1$ and $1\coloneqq\yon^0$. A \emph{monomial} is a polynomial of the form $M\yon^N=\sum_{m\in M}\yon^N$; we refer to $\yon^N$ as a \emph{representable} and to $M=M\yon^0$ as a \emph{constant}.
+We use juxtaposition for multiplication: $pq\coloneqq p\times q$, and we write $\defineTerm{yon}\coloneqq\yon^1$ and $1\coloneqq\yon^0$.
 
 One can derive from the universal property of coproducts and the Yoneda lemma that the maps in $\poly$, i.e.\ the natural transformations $\varphi\colon p\to q$, are given by:
 \begin{equation}\label{eqn.poly_map}
 \poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
 \end{equation}
 The outer $\prod_i\sum_j$ yields a ``forward on positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote it as follows:%
-\footnote{What we denote here by $\bk{\varphi}{i}$ is often denoted $\varphi^\sharp_i$; we use different notation because $\sharpR$ is used throughout the paper.}
+\footnote{What we denote here by $\bk{\varphi}{i}$ is often denoted $\varphi^\sharp_i$; we use different notation because $\sharpR$ is used throughout the paper in the context of reactive vector spaces.}
 \[\bk{\varphi}{i}\colon q[\varphi_1(i)]\to p[i].\]
 
 For polynomials $p,q:\poly$, their \emph{Dirichlet product} is
@@ -740,28 +738,24 @@ satisfying the hom-tensor adjunction
 \end{equation}
 naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it in standard form as
 \begin{equation*}
-\ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}
+\ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}.
 \end{equation*}
 
-\subsection{The substitution product and the store comonad}\label{sec.substitution_store}
-
-The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$; it is a (nonsymmetric) monoidal structure with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
-\begin{align*}
-p\hypertarget{term.tri}{\mathbin{\termraw{tri}}} q&=
-\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
-\sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
-\end{align*}
-A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, we recover the notion of applying $\smset\To{p}\smset$ to $S$ using substitution: $p\tri S=p(S)$.
-
-Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, $\yon$, and there is a map of the form
-\begin{equation}\label{eqn.duoidal}
-(p_1\tri p_2)\otimes(q_1\tri q_2)\too(p_1\otimes q_1)\tri(p_2\otimes q_2)
-\end{equation}
-making the required diagrams commute. See \cite{aguiar2010monoidal,niu2025polynomial} for details.
+\subsection{The store comonad}\label{sec.substitution_store}
 
 \begin{definition}[The store comonad]\label{def.store}
 For any set $S$, define $\defineTerm{Store}(S)\coloneqq S\yon^S$. It arises as the comonad associated to the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$.
 \end{definition}
+
+\begin{lemma}\label{lem.store_monoidal}
+The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$, defines a strong symmetric monoidal functor
+\[
+\Store\colon(\smsetiso,1,\times)\to(\poly,\yon,\otimes).
+\]
+\end{lemma}
+\begin{proof}
+The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$. Functoriality on bijections is direct: $\Store(g\circ f)=(g\circ f)\yon^{f\inv\circ g\inv}=\Store(g)\circ\Store(f)$.
+\end{proof}
 
 \subsection{Polynomial coalgebras as dynamical systems}\label{sec.coalgebras}
 
@@ -778,53 +772,23 @@ A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$:
 
 There is a connection between $p$-coalgebras and the $\Store$ comonad from \cref{def.store}.
 
-\begin{lemma}\label{lem.store_monoidal}
-The assignment $S\mapsto\Store(S)$, sending a bijection $f\colon S\To{\cong}T$ to $f\yon^{f\inv}$, defines a strong symmetric monoidal functor
-\[
-\Store\colon(\smsetiso,1,\times)\to(\poly,\yon,\otimes).
-\]
-\end{lemma}
-\begin{proof}
-The Dirichlet product formula \eqref{eqn.dirichlet} gives $1\yon^1=\yon$ and $S\yon^S\otimes T\yon^T=(S\times T)\yon^{S\times T}$. Functoriality on bijections is direct: $\Store(g\circ f)=(g\circ f)\yon^{f\inv\circ g\inv}=\Store(g)\circ\Store(f)$.
-\end{proof}
-
-Recall that an \emph{action} of a symmetric monoidal category $(\cat A,I,\otimes)$ on a category $\cat D$ is a functor $(\cdot)\colon\cat A\times\cat D\to\cat D$ equipped with coherent natural isomorphisms $I\cdot x\cong x$ and $(a\otimes b)\cdot x\cong a\cdot(b\cdot x)$; such data is also called an \emph{actegory}~\cite{capucci2024actegories}. When $\cat D$ too is symmetric monoidal and the action functor $(\cdot)$ is itself strong monoidal, $\cat D$ is a \emph{monoidal actegory}~\cite[Def.~5.1.1]{capucci2024actegories}.
-
-\begin{lemma}[Strong monoidal functors give actions]\label{lem.smc_action}
-Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces an action of $\cat A$ on $\cat D$, making $\cat D$ a monoidal actegory, by left multiplication,
-\[
-a\cdot d\coloneqq J(a)\otimes d.
-\]
-\end{lemma}
-
-\begin{definition}[Store action]\label{def.store_action}
-The \emph{store action} of $\smsetiso$ on $\poly$ is the action induced by $\Store$ via \cref{lem.smc_action}:
-\[
-(\cdot)\colon\smsetiso\times\poly\to\poly,
-\qquad
-S\cdot p\coloneqq \Store(S)\otimes p.
-\qedhere\]
-\end{definition}
-
 \begin{proposition}[Coalgebras as polynomial maps]\label{prop.coalg_as_poly_map}
 For $p:\poly$ and $S:\smsetiso$, there is a natural bijection
-\[
-\smset(S,\,p\tri S)\;\cong\;\poly(\Store(S),\,p).
-\]
+\begin{equation}\label{eqn.store_coalg}
+\smset(S,\,p(S))\;\cong\;\poly(\Store(S),\,p).
+\end{equation}
 \end{proposition}
 
 \begin{proof}
-As in \eqref{eqn.coalg_unpack}, a coalgebra $f\colon S\to p\tri S$ unpacks as a pair $f_1\colon S\to p(1)$ and $\bk{f}{\blank}\colon\prod_{s:S}S^{p[f_1(s)]}$. A polynomial map $\phi\colon S\yon^S\to p$ unpacks as a pair $\phi_1\colon S\to p(1)$ and $\bk{\phi}{\blank}\colon\prod_{s:S}S^{p[\phi_1(s)]}$ with the same type signature by \eqref{eqn.poly_map}, so they are in bijection.\footnote{
-Equivalently, $\poly$ has a left Kan operation $\lens{p}{q}$ with $\poly(p,q'\tri q)\cong\poly(\lens{p}{q},q')$ given by $\lens{p}{q}=\sum_{i:p(1)}\yon^{q\tri p[i]}$, so $\lens{S}{S}=S\yon^S$.
-}
+As in \eqref{eqn.coalg_unpack}, a coalgebra $f\colon S\to p(S)$ unpacks as a readout $f_1\colon S\to p(1)$ and an update $\bk{f}{\blank}\colon\prod_{s:S}S^{p[f_1(s)]}$. A polynomial map $\phi\colon S\yon^S\to p$ unpacks as a pair $\phi_1\colon S\to p(1)$ and $\bk{\phi}{\blank}\colon\prod_{s:S}S^{p[\phi_1(s)]}$ with the same type signature by \eqref{eqn.poly_map}, so they are in bijection.
 
-Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection $g\colon S\To{\cong}T$ acts on the left side via post-composition with $p\tri g$ and pre-composition with $g\inv$, and on the right side via $\Store(g)=g\yon^{g\inv}$ (\cref{lem.store_monoidal}); we check
+Naturality in $p:\poly$ is just composition. For naturality in $S$, a bijection $g\colon S\To{\cong}T$ acts on the left side of \eqref{eqn.store_coalg} via post-composition with $p(g)$ and pre-composition with $g\inv$, and on the right side of \eqref{eqn.store_coalg} via $\Store(g)=g\yon^{g\inv}$ (\cref{lem.store_monoidal}); we check
 \[
 \begin{tikzcd}
-	S\ar[r,"f"]\ar[d, "g"']&p\tri S\ar[d, "p\tri g"]\\
-	T\ar[r,"f'"']&p\tri T
+	S\ar[r,"f"]\ar[d, "g"']&p(S)\ar[d, "p(g)"]\\
+	T\ar[r,"f'"']&p(T)
 \end{tikzcd}
-\quad\leftrightsquigarrow\quad
+\quad\leftrightsquigarrow^?\quad
 \begin{tikzcd}
 	S\yon^S\ar[r,"\phi"]\ar[d, "g\yon^{g\inv}"']&
 	p\ar[d, equal]\\
@@ -836,7 +800,7 @@ The first commutes iff $f'_1\circ g=f_1$ and $g\circ\bk{f}{s}=\bk{f'}{g(s)}$ for
 \end{proof}
 
 \begin{example}[$\yon$-coalgebras and trajectories]\label{ex.y_coalgebra_trajectory}
-The simplest case is $p\coloneqq\yon$, in which case its positions $p(1)=1$ and directions $p[*]=1$ are both singletons, and $\yon\tri S=S$, so a $\yon$-coalgebra is just a function $f\colon S\to S$. The readout is trivial and the update takes no input direction: at each tick, the state $s$ transitions to $f(s)$. Given an initial state $x_0\in S$, iteration produces a function
+The simplest case is $p\coloneqq\yon$, in which case its positions $p(1)=1$ and directions $p[*]=1$ are both singletons, and $\yon(S)=S$, so a $\yon$-coalgebra is just a function $f\colon S\to S$. The readout is trivial and the update takes no input direction: at each tick, the state $s$ transitions to $f(s)$. Given an initial state $x_0\in S$, iteration produces a function
 \[
 x\colon\nn\to S,\qquad x(0)\coloneqq x_0,\qquad x(t+1)\coloneqq f(x(t)).
 \]
@@ -847,16 +811,16 @@ We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $x
 
 We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. Its objects are polynomials $\ob\org=\ob\poly$, and for polynomials $p,q$ the hom-category is
 \[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
-Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,f\colon S\to\ihom{p,q}\tri S)$. We regard it as an interaction, regarding $p$ as an \emph{internal} interface and $q$ as an \emph{external} one: and at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
+Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,f\colon S\to\ihom{p,q}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $q$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
 \[
 \smset(S,\ihom{p,q}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
 \]
-We refer to $S$ as the \emph{state set}; a morphism $(S,f)\to(S',f')$ in $\ihom{p,q}\coalg$ is a function $g\colon S\to S'$ such that $(\ihom{p,q}\tri g)\circ f=f'\circ g$. Concisely, we denote the function $f$ by
+A morphism $(S,f)\to(S',f')$ in $\ihom{p,q}\coalg$ is a function $g\colon S\to S'$ such that $\ihom{p,q}(g)\circ f=f'\circ g$. Concisely, we denote the function $f$ by
 \begin{equation*}
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
 \end{equation*}
 
-In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,q}\cong q$, a morphism $\yon\to q$ in $\org$ is precisely a $q$-coalgebra.
+In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,q}\cong q$, a morphism $\yon\to q$ in $\org$ is precisely a $q$-coalgebra $S\to q(S)$.
 
 We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
 \[
@@ -893,7 +857,7 @@ by closedness of $\poly$ (\cref{sec.poly}).
 \section{Wiring-diagram operads}\label{sec.wd_operads}
 %--------------------------------------------------------------------
 
-Categories, monoidal categories, traced categories, operads, etc.\ can be understood in terms of the sort of composition syntax they interpret. For example the following diagrams are interpretable:
+Categories, monoidal categories, traced categories, operads, etc.\ can be understood in terms of the sort of composition syntax they interpret. For example, each of the following diagrams is interpretable in the sort of structure named beneath it:
 \begin{equation}\label{eqn.wd_examples}
 \begin{tikzpicture}[baseline=(Catg)]
 \begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
@@ -989,7 +953,7 @@ Category-like structures that can interpret the compositionality syntax from $\c
 \begin{equation}\label{eqn.W_alg}
 \cat{C}\colon\cat{W}\to\smset.
 \end{equation}
-So any categories are lax monoidal functors $\cat{W}_{O\tn{-Cat}}\to\smset$ for various $O$, monoidal categories are lax monoidal functors $\cat{W}_{O\tn{-MnCat}}\to\smset$ for various $O$, etc. Indeed, such a functor $\cat{C}$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\varphi$ the function $\cat{C}(\varphi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
+So categories are lax monoidal functors $\cat{W}_{O\tn{-Cat}}\to\smset$ for various $O$, monoidal categories are lax monoidal functors $\cat{W}_{O\tn{-MnCat}}\to\smset$ for various $O$, etc. Indeed, such a functor $\cat{C}$ assigns to each box $b$ the set $\cat{C}(b)$ of ``fillers'' and to each arrangement $\varphi$ the function $\cat{C}(\varphi)\colon \cat{C}(b_1)\times\cdots\times \cat{C}(b_K)\to \cat{C}(c)$ sending fillers for internal boxes to a filler of the external box.%
 \footnote{
 By a $\cat{W}$-algebra, we mean an operad functor $\cat{W}\to\smset$, where $\smset$ is the operad (multicategory) underlying the monoidal category $(\smset,1,\times)$. In general, the \emph{underlying operad} of a symmetric monoidal category $(\cat{C},I,\otimes)$ has the same objects as $\cat{C}$ and morphisms $\cat{C}(a_1,\ldots,a_n;b)\coloneqq\cat{C}(a_1\otimes\cdots\otimes a_n,b)$, with operadic composition by tensoring and composing in $\cat{C}$.
 }
@@ -1005,7 +969,7 @@ For a set $O$, let $\ob\cat{W}_{O\tn{-Cat}}\coloneqq O\times O$ and
 \]
 Thus the diagram
 \begin{equation}\label{eqn.cat_composite}
-\varphi\coloneqq\begin{tikzpicture}[oriented WD, bb port sep=1, bb port length=0, bb min width=.2cm, bby=.2cm, inner xsep=.2cm, x=.2cm, y=.3cm, baseline=(Catf)]
+\begin{tikzpicture}[oriented WD, bb port sep=1, bb port length=0, bb min width=.2cm, bby=.2cm, inner xsep=.2cm, x=.2cm, y=.3cm, baseline=(Catf)]
 \begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
   \node[bb={1}{1}] (Catf) {$f_1$};
   \node[bb={1}{1}, right=1 of Catf] (Catg) {$f_2$};
@@ -1026,16 +990,37 @@ Thus the diagram
 \end{scope}
 \end{tikzpicture}
 \end{equation}
-	represents a map $\varphi\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_0=A_0'$, $A_1=A_1'$ and $A_2=A_2'$. 
+	represents a map $\mathit{compose}\colon (A'_0,A_1),(A'_1,A_2)\to(A_0,A'_2)$ in $\cat{W}_{O\tn{-Cat}}$, in the case $A_0=A_0'$, $A_1=A_1'$ and $A_2=A_2'$, i.e.\ in the case that each wire in the diagram has a consistent type
+\[
+\mathit{compose}\coloneqq
+	\begin{tikzpicture}[oriented WD, bb port sep=1, bb port length=0, bb min width=.2cm, bby=.2cm, inner xsep=.2cm, x=.2cm, y=.3cm, baseline=(Catf)]
+\begin{scope}[font=\footnotesize, text height=1.5ex, text depth=.5ex]
+  \node[bb={1}{1}] (Catf) {$f_1$};
+  \node[bb={1}{1}, right=1 of Catf] (Catg) {$f_2$};
+  \node[bb={0}{0}, fit=(Catf) (Catg)] (Cat) {};
+  \node[coordinate] at (Cat.west|-Catf_in1) (Cat_in1) {};
+  \node[coordinate] at (Cat.east|-Catg_out1) (Cat_out1) {};
+  \draw (Cat_in1) -- (Catf_in1) node[label, midway, above] {$A_0$};
+  \draw (Catf_out1) -- (Catg_in1) node[label, midway, above] {$A_1$};
+  \draw (Catg_out1) -- (Cat_out1) node[label, midway, above] {$A_2$};
+\end{scope}
+\end{tikzpicture}
+\hphantom{\mathit{compose}\coloneqq}
+\]
+	
 
-If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then \eqref{eqn.cat_composite} shows $f_1:\cat{C}(A'_0,A_1)$, $f_2:\cat{C}(A'_1,A_2)$ and $\varphi(f_1,f_2):\cat{C}(A_0,A'_2)$. In other words the $2$-ary morphism $\varphi$ represents composition in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.%
+If $\cat{C}\colon\cat{W}_{O\tn{-Cat}}\to\smset$ is an algebra, then \eqref{eqn.cat_composite} shows $f_1:\cat{C}(A_0,A_1)$, $f_2:\cat{C}(A_1,A_2)$ and $\cat{C}(\mathit{compose})(f_1,f_2):\cat{C}(A_0,A_2)$. In other words the $2$-ary morphism $\varphi$ represents composition 
+\[
+\cat{C}(\mathit{compose})\colon\cat{C}(A_0,A_1)\times\cat{C}(A_1,A_2)\to\cat{C}(A_0,A_2)
+\]
+in a category. The category of small categories with object set $O$ is equivalent to the category of $\cat{W}_{O\tn{-Cat}}$-algebras.%
 \footnote{It is not hard to let the objects change as well. For any function $O\to O'$, there is an induced operad functor $\cat{W}_{O\tn{-Cat}}\to\cat{W}_{O'\tn{-Cat}}$ and hence a functor $\cat{W}_{O'\tn{-Cat}}\alg\to\cat{W}_{O\tn{-Cat}}\alg$. The Grothendieck construction of this data is equivalent to the category of small categories. The same idea applies to all of the wiring diagram operads.}
 \end{example}
 
-Each such $\cat{W}$ is a \emph{composition syntax}: its morphisms specify legal arrangements of boxes---how systems compose---with no commitment about what fills them. A $\cat{W}$-algebra is a semantics. A variety of examples of these wiring-diagram operads, whose algebras are structured categories, can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact cases, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
+Each such $\cat{W}$ is a \emph{composition syntax}: its morphisms specify legal arrangements of boxes---how systems compose---with no commitment about what fills them. A $\cat{W}$-algebra is a semantics. A variety of examples of these wiring-diagram operads, whose algebras are structured categories, can be found in the literature. \cite{Spivak.Schultz.Rupel:2016a} treats the traced and compact categories, showing in particular that the operad $\cat{W}_{\tn{TrCat}}$ for traced categories is the operad $1\tn{-}\Cat{Cob}$ of oriented 1-dimensional cobordisms. \cite{fong2019hypergraph} treats hypergraph categories, whose associated operad $\cat{W}_{\tn{HypCat}}$ is given by cospans of finite sets. The symmetric monoidal case~\cite{patterson2021wiring} is in some sense the most basic of the three, but its operad $\cat{W}_{\tn{MnCat}}$ is less easy to describe directly.
 
 An advantage of the operadic perspective is that it allows us to more uniformly treat various sorts of category, including ones that may not have an existing name. For example, 
-consider the notion of ``traced monoidal categories without identity''; one might balk at this because they wouldn't know whether the ``yanking'' axiom could so easily just be discarded. But as an operad it is fine because wiring diagrams of this sort can be nested.
+consider the notion of ``traced monoidal categories without identity''; one might balk at this notion, worrying that it might not be coherent for one reason or another. But as an operad it is perfectly sensible and well-defined because wiring diagrams of this sort---disallowing wires that pass straight through the diagram---can be nested.
 
 Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$ in place of $\smset$ as in \eqref{eqn.W_alg}. For example, a $\vect$-enriched category with object set $O$ is an operad functor $\cat{W}_{O\tn{-Cat}}\to\vect$.
 
@@ -1054,22 +1039,32 @@ for any $O:\smset$. We continue with this approach, taking values in the bicateg
 \section{The Para construction}\label{sec.para_general}
 %--------------------------------------------------------------------
 
-We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$ (\cref{lem.smc_action}), the category $\defineTerm{Para}_{\cat{A}}(\cat{D})$ has the same objects as $\cat{D}$, and a morphism $x\to y$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
-\[
-f\colon a\cdot x\to y
-\]
-in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The identity on $x$ has parameter $I$ and action given by the unitor $I\cdot x\cong x$. The composite of $(a,f)\colon x\to y$ and $(b,g)\colon y\to z$ has parameter $b\otimes a$ and uses
-\begin{equation*}
-(b\otimes a)\cdot x\cong b\cdot(a\cdot x)\To{b\cdot f}b\cdot y\To{g}z.
-\end{equation*}
+Recall that an \emph{action} of a symmetric monoidal category $(\cat A,I,\otimes)$ on a category $\cat D$ is a functor $(\cdot)\colon\cat A\times\cat D\to\cat D$ equipped with coherent natural isomorphisms $I\cdot d\cong d$ and $(a\otimes b)\cdot d\cong a\cdot(b\cdot d)$; such data is also called an \emph{actegory}~\cite{capucci2024actegories}. When $\cat D$ too is symmetric monoidal and the action functor $(\cdot)$ is itself strong monoidal, $\cat D$ is called a \emph{monoidal actegory}~\cite[Def.~5.1.1]{capucci2024actegories}.
 
-When $\cat D$ is a monoidal actegory, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $x\otimes y$ is the $\cat D$-tensor, and the tensor of $(a,f)\colon x\to y$ and $(b,g)\colon x'\to y'$ has parameter $a\otimes b$ and underlying map
+\begin{lemma}[Strong monoidal functors give actions]\label{lem.smc_action}
+Any strong monoidal functor $J\colon\cat A\to\cat D$ with $\cat D$ symmetric monoidal induces an action of $\cat A$ on $\cat D$, making $\cat D$ a monoidal actegory, by left multiplication,
+\[
+a\cdot d\coloneqq J(a)\otimes d.
+\]
+\end{lemma}
+
+We use the following form of the Para construction. If a symmetric monoidal category $\cat{A}$ acts on a category $\cat{D}$ (\cref{lem.smc_action}), the category $\defineTerm{Para}_{\cat{A}}(\cat{D})$ has the same objects as $\cat{D}$, and a morphism $d_1\to d_2$  in $\para{\cat{A}}{\cat{D}}$ is a pair $(a,f)$ with $a:\cat{A}$ and
+\[
+f\colon a\cdot d_1\to d_2
+\]
+in $\cat{D}$. We call such morphisms \emph{parameterized maps} in $\cat D$. The identity on $d_1$ has parameter $I$ and action given by the unitor $I\cdot d_1\cong d_1$. The composite of $(a,f)\colon d_1\to d_2$ and $(b,g)\colon d_2\to d_3$ has parameter $b\otimes a$ and uses
 \begin{equation*}
-(a\otimes b)\cdot(x\otimes x')\To{\cong}(a\cdot x)\otimes(b\cdot x')\To{f\otimes g}y\otimes y',
+(b\otimes a)\cdot d_1\cong b\cdot(a\cdot d_1)\To{b\cdot f}b\cdot d_2\To{g}d_3,
+\end{equation*}
+i.e.\ $(b,g)\circ(a,f)=(b\otimes a, g\circ (b\cdot f))$.
+
+When $\cat D$ is a monoidal actegory, $\para{\cat A}{\cat D}$ inherits a symmetric monoidal structure: on objects, $d_1\otimes d_2$ is the $\cat D$-tensor, and the tensor of maps $(a,f)\colon d_1\to d_2$ and $(a',f')\colon d_1'\to d_2'$ has parameter $a\otimes a'$ and underlying map
+\begin{equation*}
+(a\otimes a')\cdot(d_1\otimes d_1')\To{\cong}(a\cdot d_1)\otimes(a'\cdot d_1')\To{f\otimes g}d_2\otimes d_2',
 \end{equation*}
 where the first isomorphism comes from $\cat D$ being a monoidal actegory.
 
-The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(x,y)$ is a morphism $g\colon a\to a'$ in $\cat A$ such that $f'\circ(g\cdot x)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(x,y)$ is a groupoid.
+The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(d_1,d_2)$ is a morphism $g\colon a\to a'$ in $\cat A$ such that $f'\circ(g\cdot d_1)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(d_1,d_2)$ is a groupoid.
 In this paper, all of our parameter categories are groupoids, so these Para constructions are naturally $(2,1)$-categories; by the convention of \cref{sec.prelim}, we will usually call them categories.
 
 The following is straightforward.
@@ -1090,9 +1085,14 @@ Let $J\colon\cat A\to\cat D$ and $J'\colon\cat A'\to\cat D'$ be strong monoidal 
 \end{tikzcd}
 \]
 \end{proposition}
+Unwinding, the induced 2-cell is the composite
+\[
+F(a)\cdot' G(d)=J'(F(a))\otimes' G(d)\To{\theta_a\otimes' G(d)}G(J(a))\otimes' G(d)\To{}G(J(a)\otimes d)=G(a\cdot d).
+\]
+
 
 \begin{proposition}[Para functoriality from action squares {\cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}}]\label{prop.para_square}
-Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot' G(x)\to G(a\cdot x)$ is a natural transformation compatible with the action unitors and associators:
+Suppose $\cat A,\cat A'$ are symmetric monoidal categories acting on $\cat D,\cat D'$, that $F\colon\cat A\to\cat A'$ is a strong monoidal functor, $G\colon\cat D\to\cat D'$ is a functor, and $\theta\colon F(a)\cdot' G(d)\to G(a\cdot d)$ is a natural transformation compatible with the action unitors and associators:
 \begin{equation*}
 \begin{tikzcd}[ampersand replacement=\&]
 \cat A\times\cat D\ar[r,"(\cdot)"]\ar[d,"F\times G"', ""{name=left}]\& \cat D\ar[d,"G", ""' {name=right}]\\
@@ -1112,27 +1112,29 @@ When $\cat D,\cat D'$ are monoidal actegories, $G$ is strong (resp.\ normal lax,
 The hypothesis is a 1-cell in the 2-category $\Cat{Act}$ of actegories \cite[\S 3.6, eq.~(3.59)]{capucci2024actegories}; the induced functor records the action of $\mathbb{P}\Cat{ara}$ on it. For the normal-lax case: the unitor of $\para[\theta]{F}{G}$ at the unit object $(I_{\cat A}, I_{\cat D})$ is built from $F$'s unitor and $G$'s unitor, both of which are isomorphisms, so the unitor of $\para[\theta]{F}{G}$ is too.\qedhere
 \end{proof}
 
-We suppress identities in the decoration $\para[\theta]{F}{G}$ of these induced functors: an identity action square $\theta$ is dropped from the superscript and an identity functor $G$ from the argument, while an identity functor $F$ is recorded by its acting category in the subscript rather than written as $\id$. Thus an action square $\theta$ between two actions of a fixed $\cat A$ on a fixed $\cat D$ (so $F=\id_{\cat A}$ and $G=\id_{\cat D}$) induces a functor we write simply as $\Para^{\theta}_{\cat A}$.
+The above functor is given on objects and on morphisms by $\para[\theta]{F}{G}(d)\coloneqq G(d)$ and $\para[\theta]{F}{G}(f\colon a\cdot d\to d')$ is the composite $F(a)\cdot' G(d)\To{\theta}G(a\cdot d)\To{G(f)}G(d')$.
+
+When $\theta$ is the identity, we drop it from the notation.
 
 %====================================================================
 \chapter{Lenses and their internalization}\label{ch.lenses}
 %====================================================================
 
-This chapter reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoidal category $\cat C$, develops the \emph{backward-monad} refinement that will let us add a real-valued potential to the backward direction, and builds the \emph{Moore internalization} functor (\cref{sec.moore_internalization}). The lens and backward-monad material is standard, lightly adapted.
+This chapter reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoidal category $\cat C$, develops the \emph{backward-monad} construction that will let us add a real-valued potential to the backward direction, and builds the \emph{Moore internalization} functor (\cref{sec.moore_internalization}). The lens and backward-monad material is standard, lightly adapted.
 
 
 \section{Lenses}\label{sec.lenses}
 
-The rewiring diagrams we will build have boxes on the inside and a box on the outside, and some sort of (possibly varying) message-passing structure between them. Each box includes two objects $(\inpt m, \outp m)$ in some other category (for us, eventually $\mfd$), their input and output side; these are the objects in the category $\Lens{\cat{M}}$. 
+The rewiring diagrams we will build have boxes on the inside and a box on the outside, and some sort of (possibly varying) message-passing arrangement between them. Each box includes two objects $(\inpt c, \outp c)$ in some other category (for us, eventually $\mfd$), their input and output side; these are the objects in the category $\Lens{\cat{C}}$.
 
 \subsection{The category of lenses}\label{sec.category_of_lenses}
-We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. Let $(\cat{M}, I,\otimes)$ be a symmetric monoidal category.
+We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. Let $(\cat{C}, I,\otimes)$ be a symmetric monoidal category.
 
-An \emph{interface} in $\cat M$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\varepsilon,\delta)$.%
+An \emph{interface} in $\cat C$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\varepsilon,\delta)$.%
 \footnote{
 When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism~\cite{fox1976coalgebras}.
 } 
-A \emph{lens} $f\colon\lensob c\to\lensob d$ consists of a forward map $\outp f\colon\outp c\to\outp d$ (a comonoid homomorphism) and a backward map $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$ (any map in $\cat{M}$). Such a morphism can be depicted as follows:
+A \emph{lens} $f\colon\lensob c\to\lensob d$ consists of a forward map $\outp f\colon\outp c\to\outp d$ (a comonoid homomorphism) and a backward map $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$ (any map in $\cat{C}$). Such a morphism can be depicted as follows:
 \begin{equation}\label{eqn.lens_map}
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={1}{1}] (fo) {$\outp f$};
@@ -1154,10 +1156,10 @@ A \emph{lens} $f\colon\lensob c\to\lensob d$ consists of a forward map $\outp f\
   \draw[ar] (dot) to[out=30, in=0] (fi_out1);
 \end{tikzpicture}
 \end{equation}
-The identity morphism has $\outp{\id_{\lensob{c}}}\coloneqq\id_{\outp{c}}$ and $\inpt{\id_{\lensob{c}}}\coloneqq\varepsilon\otimes\id_{\inpt{c}}$, i.e.\ use the counit to discard the $\outp c$ part.
+The identity lens has $\outp{\id_{\lensob{c}}}\coloneqq\id_{\outp{c}}$ and $\inpt{\id_{\lensob{c}}}\coloneqq\varepsilon\otimes\id_{\inpt{c}}$, i.e.\ use the counit to discard the $\outp c$ part.
 
 
-Morphisms compose as follows: given also $g\colon \lensob{d}\to\lensob{e}$, the composite $f\then g$ is given by
+Lenses compose as follows: given also $g\colon \lensob{d}\to\lensob{e}$, the composite $f\then g$ is given by
 \[
 \outp{(f\then g)}=\outp f\then\outp g
 \qqand
@@ -1198,7 +1200,7 @@ This dense notation can be depicted in a string-diagram as follows:
 \end{equation*}
 
 \begin{definition}\label{def.lens}
-For a symmetric monoidal category $(\cat M, I,\otimes)$, the category $\Lens{\cat M}$ of \emph{interfaces} and \emph{lenses} has as objects the pairs $\lensob c$ with $\outp c$ a comonoid $(\varepsilon_{\outp c},\delta_{\outp c})$, and as morphisms $\lensob c\to\lensob d$ the pairs $\binom{\inpt f}{\outp f}$ with $\outp f\colon\outp c\to\outp d$ a comonoid homomorphism and $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$, with identity and composition as above.
+For a symmetric monoidal category $(\cat C, I,\otimes)$, the category $\Lens{\cat C}$ of \emph{interfaces} and \emph{lenses} has as objects the pairs $\lensob c$ with $\outp c$ a comonoid $(\varepsilon_{\outp c},\delta_{\outp c})$, and as morphisms $\lensob c\to\lensob d$ the pairs $\binom{\inpt f}{\outp f}$ with $\outp f\colon\outp c\to\outp d$ a comonoid homomorphism and $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$ any map in $\cat{C}$, with identity and composition as above.
 
 It is symmetric monoidal with unit $\binom{I}{I}$ and
 \[
@@ -1225,7 +1227,7 @@ with no further homomorphism condition, as it is automatic.
 The $\Lens{\blank}$ construction is functorial in symmetric monoidal categories and strong monoidal functors.
 \end{proposition}
 \begin{proof}
-If $F\colon\cat{C}\to\cat{D}$ is colax monoidal, it preserves comonoid structures, so we can define $\Lens F$ on objects. If $F$ is lax monoidal, it has a productor $F_2\colon F(A)\otimes F(B)\to F(A\otimes B)$ from which we can define $\Lens F$ on morphisms: given a lens morphism $\binom{\inpt f}{\outp f}$ we set $\Lens F\binom{\inpt f}{\outp f}\coloneqq\binom{F(\inpt f)\circ F_2}{F(\outp f)}$. For functoriality the lax and colax structures must cohere, i.e. the lax structure must be inverse to the colax structure; we leave the details to the reader.
+If $F\colon\cat{C}\to\cat{D}$ is colax monoidal, it preserves comonoid structures, so we can define $\Lens F$ on objects. If $F$ is lax monoidal, it has a productor $F_2\colon F(A)\otimes F(B)\to F(A\otimes B)$ from which we can define $\Lens F$ on morphisms: given a lens morphism $\binom{\inpt f}{\outp f}$ we set $\Lens F\binom{\inpt f}{\outp f}\coloneqq\binom{F(\inpt f)\circ F_2}{F(\outp f)}$. So if $F$ is strong, we can define $\Lens F$ on objects and morphisms and the invertibility of the coherence maps assures functoriality; we leave the details to the reader.
 \qedhere
 \end{proof}
 
@@ -1248,7 +1250,7 @@ For any cartesian category $\cat M$ and object $M:\cat M$, the functor $M^\blank
 \subsection{Lenses can represent serial, parallel, and feedback}\label{sec.plenspot_ops}
 
 \begin{warning}
-The diagrams in the previous section, e.g.\ \eqref{eqn.lens_map}, are string diagrams for maps in $\cat{M}$. The wiring diagrams as in \eqref{eqn.arb_wd} will denote maps in $\Lens{\cat{M}}$. A different way to say it: the pictures above are implicit in all the wiring diagram maps we'll choose, but are at a different level of abstraction, and we ask the reader not to confuse the two picture languages.
+The diagrams in the previous section, e.g.\ \eqref{eqn.lens_map}, are string diagrams for maps in $\cat{C}$. The wiring diagrams below as in \eqref{eqn.arb_wd} will denote maps in $\Lens{\cat{C}}$. A different way to say it: the pictures above are implicit in all the wiring diagram maps we'll choose, but are at a different level of abstraction, and we ask the reader not to confuse the two picture languages.
 \end{warning}
 
 Recall from \cref{sec.wd_operads} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, we can think of the operad underlying $\Lens{\cat{C}}$ as giving a syntax for something like ``traced symmetric monoidal semicategories'', as we now explain. This section is meant for intuition and in particular does not define the previously quoted phrase. It will also not be used in any formal development.
@@ -1974,6 +1976,14 @@ This section assembles the dynamics functor in three steps: we repackage $\org_\
 
 Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
+\begin{definition}[Store action]\label{def.store_action}
+The \emph{store action} of $\smsetiso$ on $\poly$ is the action induced by $\Store$ via \cref{lem.smc_action}:
+\[
+(\cdot)\colon\smsetiso\times\poly\to\poly,
+\qquad
+S\cdot p\coloneqq \Store(S)\otimes p.
+\qedhere\]
+\end{definition}
 
 \begin{proposition}\label{prop.org_as_para}
 There is an isomorphism of categories
@@ -1988,9 +1998,9 @@ Both $\para{\Cat{Set}_{\cong}}{\poly}$ and $\org_\cong$ are $(2,1)$-categories w
 	\para{\Cat{Set}_{\cong}}{\poly}(p,q)&=
   \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, q)\\&\cong
   \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
-  \sum_{S:\smsetiso}\smset(S,[p,q]\tri S)=\org_\cong(p,q)
+  \sum_{S:\smsetiso}\smset(S,[p,q](S))=\org_\cong(p,q)
 \end{align*}
-by \cref{eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
+by \cref{def.store_action,eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
 
 In both cases the identity is indexed by the monoidal unit $1$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
@@ -2003,7 +2013,7 @@ D_F\colon\para{\Store\circ F}{\poly}\to\org_\cong.
 \end{lemma}
 
 \begin{proof}
-The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\otimes p$. The following action square obviously commutes:
+The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\otimes p$. The following action square, whose lower edge is the store action (\cref{def.store_action}), obviously commutes:
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
 \cat A\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
@@ -2046,9 +2056,9 @@ D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\org_\cong.
 \]
 By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
 \[
-\Para_{\cat Q}^{\upd}\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
+\Para_{\cat Q}^{\upd}(\poly)\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
 \]
-Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat Q}^{\upd}$; it is normal lax monoidal because $\Para_{\cat Q}^{\upd}$ is strong.
+Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat Q}^{\upd}(\poly)$; it is normal lax monoidal because $\Para_{\cat Q}^{\upd}(\poly)$ is strong.
 \end{proof}
 
 Let $\rwd_D$ be the rewiring-diagram operad of a rewiring datum $D=(\cat{M},\cat Q,J,\Fun R)$.
@@ -2714,7 +2724,7 @@ we denote its points by $x\in S=|Q|$. The state update below uses the (possibly 
 We now unpack the coalgebra function itself,
 \[
 S\To{\Phiconf(\rv Q,f)}
-\left[\Phiconf\lensob M,\Phiconf\lensob N\right]\tri S.
+\left[\Phiconf\lensob M,\Phiconf\lensob N\right](S).
 \]
 Given a state $x\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point using $\outp{f}$ from \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.outpn}
@@ -2893,7 +2903,7 @@ specializing \eqref{eqn.canonical_sharp}.
 We now unpack the coalgebra function itself,
 \[
 S\To{\Phiphase(\rv Q,f)}
-\left[\Phiphase\lensob M,\Phiphase\lensob N\right]\tri S.
+\left[\Phiphase\lensob M,\Phiphase\lensob N\right](S).
 \]
 Given a state $s\coloneqq(x,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(\rv Q,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $x$ alone, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(x,\xi)$, the state is updated to
 \begin{equation}\label{eqn.state_update}
@@ -2963,14 +2973,14 @@ The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system 
 
 For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\org$ and hom-categories
 \[
-\org^{(K)}(p,q)\coloneqq\ihom{p,q}^{\tri K}\coalg,
+\org^{(K)}(p,q)\coloneqq\ihom{p,q}^{\circ K}\coalg,
 \]
-where $x^{\tri K}\coloneqq x\tri\cdots\tri x$ is the $K$-fold $\tri$-power.%
-\footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\org^C$ with objects given by $\ob\cat{P}$ and $\org^C(p,p')\coloneqq C([p,p'])$. Then $\org$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\org^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\tri K}}\poly\To{\blank\coalg}\smcat$.
+where $x^{\circ K}\coloneqq x\circ\cdots\circ x$ is the $K$-fold composite of the polynomial functor $x$ with itself.%
+\footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\org^C$ with objects given by $\ob\cat{P}$ and $\org^C(p,p')\coloneqq C([p,p'])$. Then $\org$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\org^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\circ K}}\poly\To{\blank\coalg}\smcat$.
 }
-For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q\tri q\tri S$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q[j_2]$, updates the state. 
+For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q(q(S))$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q[j_2]$, updates the state. 
 
-We conjecture that by using a modified definition of integrator (\cref{def.integrator}) with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\tri K}$, one again obtains an operad functor $\srwd\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+We conjecture that by using a modified definition of integrator (\cref{def.integrator}) with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, one again obtains an operad functor $\srwd\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 
@@ -2986,7 +2996,7 @@ In this concluding chapter we illustrate the two dynamics functors on four concr
 \section{Newton's method}\label{sec.newton_warmup}
 %--------------------------------------------------------------------
 
-A \emph{scalar} in a symmetric monoidal category is an endomorphism of the monoidal unit $I$; monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\potlens$ representing $\srwd$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Newton's method for finding critical points of a potential is such a scalar. Under $\Phiconf$, it determines a scalar in $\org$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon]\tri Q=Q$. 
+A \emph{scalar} in a symmetric monoidal category is an endomorphism of the monoidal unit $I$; monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\potlens$ representing $\srwd$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Newton's method for finding critical points of a potential is such a scalar. Under $\Phiconf$, it determines a scalar in $\org$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
 
 Let $U\colon Q\to\rr$ be a smooth map on a finite-dimensional real vector space $Q$. Its derivative $dU\colon Q\to Q^*$ is a smooth map sending $x\in Q$ to the gradient covector $dU|_x\in Q^*$, and the derivative of $dU$ at $x$ is itself a linear map
 \begin{equation*}
@@ -3201,7 +3211,7 @@ The discrete dynamics appear when we apply the functor $\Phiphase\colon\srwd\to\
 \]
 The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \[
-\Phiphase(\fun{wire}_K(\Part,\ldots,\Part))\colon S\To{}\Phiphase(\boxob)\tri S
+\Phiphase(\fun{wire}_K(\Part,\ldots,\Part))\colon S\To{}\Phiphase(\boxob)(S)
 \]
 with state set $S\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
 \begin{equation*}
@@ -3319,9 +3329,9 @@ The routing $\omega_{i+1}(x_i)$ into box $i$'s $\xi$-component is how the wiring
 
 \paragraph{Composition.}
 
-The $\org$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\org$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)\tri T^*\rr$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
+The $\org$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\org$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
 \[
-T^*\rr^K\To{\Phiphase(\Part)^{\otimes K}}\Phiphase(\boxob)^{\otimes K}\tri T^*\rr^K\To{\Phiphase(\fun{wire}_K)\tri T^*\rr^K}\Phiphase(\boxob)\tri T^*\rr^K.
+T^*\rr^K\To{\Phiphase(\Part)^{\otimes K}}\Phiphase(\boxob)^{\otimes K}(T^*\rr^K)\To{\Phiphase(\fun{wire}_K)(T^*\rr^K)}\Phiphase(\boxob)(T^*\rr^K).
 \]
 Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
 \begin{equation*}
