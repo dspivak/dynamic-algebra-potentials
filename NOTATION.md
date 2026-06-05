@@ -119,10 +119,10 @@ edit, where updating the table is the whole point.
 | Reactive vector space (object of `\rvect`) | `\rv Q`=`(Q,\sharpR_Q)` | bold `\rv` macro; emphasizes sharp-dependence (e.g. `\chiQ{\rv Q}`) |
 | Underlying / carrier vector space | `Q`, `W` | also: domain for `T^*Q` constructions; abused for the object `\rv Q` when sharp is understood or canonical (`T^*Q`) |
 | Point of a manifold | `m`, `n` | `m\colon\rr^0\to M` style |
-| Point of a vector space | `x`, `y` | also: position in `(x,\xi)\in T^*Q` |
-| Tangent vector | `v`, `w` | at `T_xQ`; avoid clashing with vector-space `Q` |
-| Covector | `\xi` | primed/indexed: `\xi'`, `\xi_Q`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,x)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
-| Phase point | `(x,\xi)\in T^*Q` | position–momentum pair |
+| Point of a vector space | `q` | element tracks the carrier `Q`; position in `(q,\xi)\in T^*Q`; second point `q'`, indexed `q_1,\ldots,q_K` (physics generalized coordinates). `x` is retired as a point, and `q` is never a polynomial |
+| Tangent vector | `v`, `w` | at `T_qQ`; avoid clashing with vector-space `Q` |
+| Covector | `\xi` | primed/indexed: `\xi'`, `\xi_Q`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,q)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
+| Phase point | `(q,\xi)\in T^*Q` | position–momentum pair |
 | State (underlying set) | `s\in S` | `S=|Q|` when from a reactive vector space |
 
 Search hints: "manifold", "vector space", "point", "covector", "tangent",
@@ -154,7 +154,7 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Parameter interface | `p` | strong monoidal functor `\cat Q\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat Q`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* in this section are `q` |
+| Parameter interface | `p` | strong monoidal functor `\cat Q\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat Q`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* are primed (`p'`, `p''`), with a probe/variable object `a` |
 | State space | `\Fun S` | strong monoidal functor `\cat Q\to\smsetiso`; `\Fun S(a)` is the state set |
 | Integrator | `\intg` (renders `\mathfrak{i}`) | the pair `\intg=(\Fun S,\upd)` (`def.integrator`). Instances: `\intg_{\mathrm{conf}}` (configuration, `\Fun S=\absval\blank`) and `\intg_{\mathrm{phase}}` (phase, `\Fun S=\absval{T^*\blank}`) |
 | Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\chi` (configuration; `\chiQ` for its `\rv Q`-component, distinct from the lax/colax `\theta` of line 213), `\upd_\beta` (phase). The `\Para_{\cat Q}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat Q` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
@@ -216,7 +216,7 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Reactive sharp | `\sharpR_Q`, `\sharpR_x` | section / fiber-evaluated; the data distinguishing the object `\rv Q=(Q,\sharpR_Q)` |
+| Reactive sharp | `\sharpR_Q`, `\sharpR_q` | section / fiber-evaluated; the data distinguishing the object `\rv Q=(Q,\sharpR_Q)` |
 | Symplectic (canonical) sharp | `\sharpS_{T^*Q}` | always on `T^*Q` |
 | Euclidean sharp | `\sharpEuc{}` | constant case |
 | Lens backward map | `\bk{\varphi}{i}` | **never** `\varphi^\sharp` (clashes with `\sharpR`, footnote line 750) |
@@ -225,7 +225,7 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Generic polynomial | `p`, `q` | the parameter-interface functor is *also* `p` (a poly-valued functor `\cat Q\to\poly`, `p_a:\poly`); see §"Integrators & dynamics functors". Generic polynomial *objects* in the integrator section are `q`, to avoid clash |
+| Generic polynomial | `p`, `p'`, `p''` | the parameter-interface functor is *also* `p` (a poly-valued functor `\cat Q\to\poly`, `p_a:\poly`); see §"Integrators & dynamics functors". Second and third polynomials are **primed** (e.g. composition `[p,p']\otimes[p',p'']\to[p,p'']`); a probe/variable object (tensor--hom, internal hom) is `a`. **`q` is never a polynomial**---it denotes a point of `Q` (full-consistency rename, 2026-06-05) |
 | Position set | `p(1)` | |
 | Directions at `i` | `p[i]` | |
 | Cotangent polynomial | `\cotof{M}` | from `\cot\colon\mfd\to\poly` |
@@ -257,4 +257,4 @@ One rule governs all four gadgets: **subscript = base/functor direction, supersc
 
 - `f'` does **not** mean derivative.
 - Priming indicates "analogous to `f`".
-- Use this for `\xi'` (cotangent input vs. stored momentum).
+- Use this for `\xi'` (cotangent input vs. stored momentum) and `q'` (a second point of `Q`).

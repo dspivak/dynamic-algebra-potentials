@@ -569,13 +569,13 @@ is just a family of \emph{directions} $p[i]$ indexed by a family of \emph{positi
 
 %Just as the free coproduct completion of a single object has all limits---i.e.\ $\smset$ has a great deal of structure emerging unexpectedly when simply asking for coproducts---much of the usefulness of $\poly$ comes from structure that emerges unexpectedly from the free-distributive description. For example, as recalled in \cref{sec.poly}, polynomials can be understood as functors $\smset\to\smset$, and under this interpretation they compose, which gives a monoidal product $\tri$ on $\poly$. This leads naturally to considering polynomial coalgebras and the store comonad, both of which will be essential.
 
-Most relevantly for smooth rewiring, $\poly$ also carries the Dirichlet product $\otimes$, which combines interfaces in parallel, and this monoidal structure is closed. A map of polynomials $p\to q$ can be understood as a static coupling pattern: it sends each output position of the internal interface $p$ to an output position of the external interface $q$ and each compatible input direction of $q$ back to an input direction of $p$. Thus the $K$-many internal interfaces $p_1,\ldots,p_K$ of a wiring diagram combine as $p_1\otimes\cdots\otimes p_K$, and a static wiring into an external interface $q$ is a map $\varphi\colon p_1\otimes\cdots\otimes p_K\to q$ as in \eqref{eqn.varphi}.
+Most relevantly for smooth rewiring, $\poly$ also carries the Dirichlet product $\otimes$, which combines interfaces in parallel, and this monoidal structure is closed. A map of polynomials $p\to p'$ can be understood as a static coupling pattern: it sends each output position of the internal interface $p$ to an output position of the external interface $p'$ and each compatible input direction of $p'$ back to an input direction of $p$. Thus the $K$-many internal interfaces $p_1,\ldots,p_K$ of a wiring diagram combine as $p_1\otimes\cdots\otimes p_K$, and a static wiring into an external interface $p'$ is a map $\varphi\colon p_1\otimes\cdots\otimes p_K\to p'$ as in \eqref{eqn.varphi}.
 
 Because $\poly$ is monoidal closed, such maps are equivalently the positions of the internal hom
 \[
-w\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,q},
+w\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,p'},
 \]
-so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the rewiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to q$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
+so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the rewiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to p'$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
 
 %--------------------------------------------------------------------
 \section{From smooth data to dynamics}\label{sec.intro_smooth_to_dynamics}
@@ -724,31 +724,31 @@ The category $\poly$ has polynomial functors as objects and natural transformati
 \begin{equation}\label{eqn.poly}
 p=\sum_{i: p(1)}\yon^{p[i]}=\sum_{i: p(1)}\;\prod_{d: p[i]}\yon.
 \end{equation}
-We use juxtaposition for multiplication: $pq\coloneqq p\times q$, and we write $\defineTerm{yon}\coloneqq\yon^1$ and $1\coloneqq\yon^0$.
+We use juxtaposition for multiplication: $pp'\coloneqq p\times p'$, and we write $\defineTerm{yon}\coloneqq\yon^1$ and $1\coloneqq\yon^0$.
 
-One can derive from the universal property of coproducts and the Yoneda lemma that the maps in $\poly$, i.e.\ the natural transformations $\varphi\colon p\to q$, are given by:
+One can derive from the universal property of coproducts and the Yoneda lemma that the maps in $\poly$, i.e.\ the natural transformations $\varphi\colon p\to p'$, are given by:
 \begin{equation}\label{eqn.poly_map}
-\poly(p,q)=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\; \sum_{d: p[i]}1.
+\poly(p,p')=\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\; \sum_{d: p[i]}1.
 \end{equation}
-The outer $\prod_i\sum_j$ yields a ``forward on positions'' function $\varphi_1\colon p(1)\to q(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on directions'' function from the directions of $q$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote it as follows:%
+The outer $\prod_i\sum_j$ yields a ``forward on positions'' function $\varphi_1\colon p(1)\to p'(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on directions'' function from the directions of $p'$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote it as follows:%
 \footnote{What we denote here by $\bk{\varphi}{i}$ is often denoted $\varphi^\sharp_i$; we use different notation because $\sharpR$ is used throughout the paper in the context of reactive vector spaces.}
-\[\bk{\varphi}{i}\colon q[\varphi_1(i)]\to p[i].\]
+\[\bk{\varphi}{i}\colon p'[\varphi_1(i)]\to p[i].\]
 
-For polynomials $p,q:\poly$, their \emph{Dirichlet product} is
+For polynomials $p,p':\poly$, their \emph{Dirichlet product} is
 \begin{equation}\label{eqn.dirichlet}
-p\otimes q\coloneqq\sum_{(i,j):p(1)\times q(1)}\yon^{p[i]\times q[j]}\;.
+p\otimes p'\coloneqq\sum_{(i,j):p(1)\times p'(1)}\yon^{p[i]\times p'[j]}\;.
 \end{equation}
 Together with unit $\yon$, the Dirichlet product forms a symmetric monoidal structure, which is also closed: the \emph{internal hom} is
 \begin{equation}\label{eqn.dirichlet_hom}
-\ihom{p,q}=\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\yon
+\ihom{p,p'}=\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\;\sum_{d: p[i]}\yon
 \end{equation}
 satisfying the hom-tensor adjunction
 \begin{equation}\label{eqn.dirichlet_adjunction}
-\poly(r\otimes p,\, q)\cong\poly(r,\,\ihom{p,q}),
+\poly(a\otimes p,\, p')\cong\poly(a,\,\ihom{p,p'}),
 \end{equation}
-naturally in $r$. Note that $\ihom{p,q}(1)=\poly(p,q)$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it in standard form as
+naturally in $a$. Note that $\ihom{p,p'}(1)=\poly(p,p')$, as is immediate from comparing \eqref{eqn.dirichlet_hom} with \eqref{eqn.poly_map}. We can rewrite it in standard form as
 \begin{equation*}
-\ihom{p,q}\cong\sum_{\varphi: \poly(p,q)}\yon^{\sum_{i: p(1)}q[\varphi_1(i)]}.
+\ihom{p,p'}\cong\sum_{\varphi: \poly(p,p')}\yon^{\sum_{i: p(1)}p'[\varphi_1(i)]}.
 \end{equation*}
 
 \subsection{The store comonad}\label{sec.substitution_store}
@@ -810,64 +810,64 @@ The first commutes iff $f'_1\circ g=f_1$ and $g\circ\bk{f}{s}=\bk{f'}{g(s)}$ for
 \end{proof}
 
 \begin{example}[$\yon$-coalgebras and trajectories]\label{ex.y_coalgebra_trajectory}
-The simplest case is $p\coloneqq\yon$, in which case its positions $p(1)=1$ and directions $p[*]=1$ are both singletons, and $\yon(S)=S$, so a $\yon$-coalgebra is just a function $f\colon S\to S$. The readout is trivial and the update takes no input direction: at each tick, the state $s$ transitions to $f(s)$. Given an initial state $x_0\in S$, iteration produces a function
+The simplest case is $p\coloneqq\yon$, in which case its positions $p(1)=1$ and directions $p[*]=1$ are both singletons, and $\yon(S)=S$, so a $\yon$-coalgebra is just a function $f\colon S\to S$. The readout is trivial and the update takes no input direction: at each tick, the state $s$ transitions to $f(s)$. Given an initial state $s_0\in S$, iteration produces a function
 \[
-x\colon\nn\to S,\qquad x(0)\coloneqq x_0,\qquad x(t+1)\coloneqq f(x(t)).
+s\colon\nn\to S,\qquad s(0)\coloneqq s_0,\qquad s(t+1)\coloneqq f(s(t)).
 \]
-We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $x_0$, and use this notation freely below.
+We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $s_0$, and use this notation freely below.
 \end{example}
 
 \subsection{The monoidal bicategory \texorpdfstring{$\termraw{org}$}{Org}}\label{sec.org}
 
-We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. Its objects are polynomials $\ob\org=\ob\poly$, and for polynomials $p,q$ the hom-category is
-\[\org(p,q)\coloneqq\ihom{p,q}\tn{-}\Cat{Coalg}.\]
-Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to q$ in $\org$ is an $\ihom{p,q}$-coalgebra $(S,\,f\colon S\to\ihom{p,q}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $q$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in q(1)$, then converts each external input $e\in q[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
+We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. Its objects are polynomials $\ob\org=\ob\poly$, and for polynomials $p,p'$ the hom-category is
+\[\org(p,p')\coloneqq\ihom{p,p'}\tn{-}\Cat{Coalg}.\]
+Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to p'$ in $\org$ is an $\ihom{p,p'}$-coalgebra $(S,\,f\colon S\to\ihom{p,p'}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $p'$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in p'(1)$, then converts each external input $e\in p'[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
 \[
-\smset(S,\ihom{p,q}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
+\smset(S,\ihom{p,p'}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
 \]
-A morphism $(S,f)\to(S',f')$ in $\ihom{p,q}\coalg$ is a function $g\colon S\to S'$ such that $\ihom{p,q}(g)\circ f=f'\circ g$. Concisely, we denote the function $f$ by
+A morphism $(S,f)\to(S',f')$ in $\ihom{p,p'}\coalg$ is a function $g\colon S\to S'$ such that $\ihom{p,p'}(g)\circ f=f'\circ g$. Concisely, we denote the function $f$ by
 \begin{equation*}
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
 \end{equation*}
 
-In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,q}\cong q$, a morphism $\yon\to q$ in $\org$ is precisely a $q$-coalgebra $S\to q(S)$.
+In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,p'}\cong p'$, a morphism $\yon\to p'$ in $\org$ is precisely a $p'$-coalgebra $S\to p'(S)$.
 
 We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
 \[
-\org(p_1,\ldots,p_K;q)\coloneqq[p_1\otimes\cdots\otimes p_K,q]\coalg.
+\org(p_1,\ldots,p_K;p')\coloneqq[p_1\otimes\cdots\otimes p_K,p']\coalg.
 \]
-The operadic perspective is closer to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $q$---than the monoidal perspective is, but the operadic notation $\org(p_1,\ldots,p_K;q)$ is heavier than the monoidal notation $\org(p,q)$.
+The operadic perspective is closer to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $p'$---than the monoidal perspective is, but the operadic notation $\org(p_1,\ldots,p_K;p')$ is heavier than the monoidal notation $\org(p,p')$.
 
 \begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop.org}
-The hom-categories $\ihom{p,q}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects, with monoidal structure $(\yon,\otimes)$ inherited by the Dirichlet product on polynomials.
+The hom-categories $\ihom{p,p'}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects, with monoidal structure $(\yon,\otimes)$ inherited by the Dirichlet product on polynomials.
 \end{proposition}
 
 This structure arises from the fact that the functor $\blank\coalg$ from $(\poly,\yon,\otimes)$ to $(\defineTerm{smcat},1,\times)$ is lax monoidal:
 \[
 1\to\yon\coalg
 \qqand
-p\coalg\times q\coalg\to(p\otimes q)\coalg.
+p\coalg\times p'\coalg\to(p\otimes p')\coalg.
 \]
-From here, the structure maps $\yon\to[p,p]$ and $[p,q]\otimes[q,r]\to[p,r]$ induce the identity and composition functors
+From here, the structure maps $\yon\to[p,p]$ and $[p,p']\otimes[p',p'']\to[p,p'']$ induce the identity and composition functors
 \[
 1\to[p,p]\coalg
 \qqand
-[p,q]\coalg\times[q,r]\coalg\to[p,r]\coalg.
+[p,p']\coalg\times[p',p'']\coalg\to[p,p'']\coalg.
 \]
 
 \begin{remark}[$\org$ is monoidal closed]\label{rmk.org_closed}
-The polynomial $[p,q]$ also serves as the internal hom in $\org$:
+The polynomial $[p,p']$ also serves as the internal hom in $\org$:
 \[
-\org(a,[p,q])\,=\,[a,[p,q]]\coalg\;\cong\;[a\otimes p,q]\coalg\,=\,\org(a\otimes p,q),
+\org(a,[p,p'])\,=\,[a,[p,p']]\coalg\;\cong\;[a\otimes p,p']\coalg\,=\,\org(a\otimes p,p'),
 \]
 by closedness of $\poly$ (\cref{sec.poly}).
 \end{remark}
 
 We write $\defineTerm{orgiso}$ for the wide sub-$(2,1)$-category of $\org$ with the same objects and 1-cells but only the \emph{invertible} 2-cells, so that each hom-category is replaced by its core:
 \[
-\orgiso(p,q)\coloneqq\sum_{S:\smsetiso}\smset(S,\ihom{p,q}(S)).
+\orgiso(p,p')\coloneqq\sum_{S:\smsetiso}\smset(S,\ihom{p,p'}(S)).
 \]
-A 1-cell $p\to q$ is again an $\ihom{p,q}$-coalgebra $(S,f)$, but a 2-cell $(S,f)\to(S',f')$ is now a \emph{bijection} $g\colon S\To{\cong}S'$ compatible with the coalgebra structure. We write $\orgiso\inj\org$ for the inclusion.
+A 1-cell $p\to p'$ is again an $\ihom{p,p'}$-coalgebra $(S,f)$, but a 2-cell $(S,f)\to(S',f')$ is now a \emph{bijection} $g\colon S\To{\cong}S'$ compatible with the coalgebra structure. We write $\orgiso\inj\org$ for the inclusion.
 
 %--------------------------------------------------------------------
 \section{Wiring-diagram operads}\label{sec.wd_operads}
@@ -1944,7 +1944,7 @@ A polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for $D$ (\
 \[
   \Phip{\interp}\colon\rwd_D\longrightarrow\para{\Fun{c}\circ J}{\poly},
 \]
-where $\cat Q$ acts on $\poly$ by $Q\cdot q\coloneqq \Fun{c}(JQ)\otimes q$. On
+where $\cat Q$ acts on $\poly$ by $Q\cdot\blank\coloneqq \Fun{c}(JQ)\otimes\blank$. On
 objects, $\Phip{\interp}\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{M}),z}$. It is normal iff $z\cong\yon$.
 \end{theorem}
 
@@ -2007,16 +2007,16 @@ There is an isomorphism of categories
 \end{proposition}
 
 \begin{proof}
-Both $\para{\smsetiso}{\poly}$ and $\orgiso$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to q$ agree
+Both $\para{\smsetiso}{\poly}$ and $\orgiso$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to p'$ agree
 \begin{align*}
-	\para{\smsetiso}{\poly}(p,q)&=
-  \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, q)\\&\cong
-  \sum_{S:\smsetiso}\poly(S\yon^S,[p,q])\\&\cong
-  \sum_{S:\smsetiso}\smset(S,[p,q](S))=\orgiso(p,q)
+	\para{\smsetiso}{\poly}(p,p')&=
+  \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, p')\\&\cong
+  \sum_{S:\smsetiso}\poly(S\yon^S,[p,p'])\\&\cong
+  \sum_{S:\smsetiso}\smset(S,[p,p'](S))=\orgiso(p,p')
 \end{align*}
 by \cref{def.store_action,eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
 
-In both cases the identity is indexed by the monoidal unit $1:\smsetiso$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}q\To{(T,\psi)}r$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
+In both cases the identity is indexed by the monoidal unit $1:\smsetiso$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}p'\To{(T,\psi)}p''$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
 
 \begin{lemma}\label{lem.poly_to_org}
@@ -2037,7 +2037,7 @@ The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\oti
 \Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\orgiso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
-The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to q$ can be converted into a $[p,q]$-coalgebra with states $F(Q)$, and that this process is functorial.
+The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
 
 
 \begin{definition}[Integrator]\label{def.integrator}
@@ -2159,20 +2159,20 @@ for the \emph{differential at $m$}---the restriction of $Tf$ to the fiber over $
 
 By standard manifold theory, the canonical global chart on a finite-dimensional real vector space $Q$ provides linear isomorphisms
 \begin{equation}\label{eqn.tangent_vec}
-T_xQ \;\cong\; Q \qqand T^*_xQ \;\cong\; Q^*
+T_qQ \;\cong\; Q \qqand T^*_qQ \;\cong\; Q^*
 \end{equation}
-at every point $x\in Q$; we use these identifications throughout, often without comment. We also will make frequent use of the canonical identification
+at every point $q\in Q$; we use these identifications throughout, often without comment. We also will make frequent use of the canonical identification
 \begin{equation}\label{eqn.canonical_dual_sum}
 (Q\oplus Q^*)^*\cong Q^*\oplus Q,\qquad
-\lambda\leftrightarrow(\xi,x)\quad\text{where}\quad
-\lambda(x',\xi')=\xi(x')+\xi'(x).
+\lambda\leftrightarrow(\xi,q)\quad\text{where}\quad
+\lambda(q',\xi')=\xi(q')+\xi'(q).
 \end{equation}
 
 When the codomain is $\rr$, the tangent map of any $U\colon M\to\rr$ can be combined with the standard constant covector field $r\mapsto +1$ on $\rr$ to give a covector field on $M$, also called the \emph{differential} of $U$:
 \begin{equation}\label{eqn.differential}
 dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
 \end{equation}
-Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=Q$ is a vector space, we regard $dU|_x$ as an element of $Q^*$ under \eqref{eqn.tangent_vec}.
+Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=Q$ is a vector space, we regard $dU|_q$ as an element of $Q^*$ under \eqref{eqn.tangent_vec}.
 
 \begin{warning}\label{warn.prime}
 We will not use $f'$ notation to mean derivatives; ``priming'' a symbol (such as $f$) will only be used to indicate that $f'$ is somehow analogous to $f$.
@@ -2191,22 +2191,22 @@ A \emph{reactive vector space} is a finite-dimensional real vector space $Q$ tog
 \[
 \sharpR_Q\colon Q\to\vect(Q^*,Q),
 \]
-the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_x\coloneqq\sharpR_Q(x)\colon Q^*\to Q$ for each $x\in Q$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case.}%
+the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_q\coloneqq\sharpR_Q(q)\colon Q^*\to Q$ for each $q\in Q$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case.}%
 \footnote{
-Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_xQ\cong Q$ and $T^*_xQ\cong Q^*$. It will be more convenient to use the above form.
+Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_qQ\cong Q$ and $T^*_qQ\cong Q^*$. It will be more convenient to use the above form.
 }
-We say the reaction is \emph{constant} if $\sharpR_x=\sharpR_0$ for all $x$. We call a reactive vector space \emph{nondegenerate} if $\sharpR_x$ is an isomorphism for every $x$; in that case the pointwise inverse $\flat_x\coloneqq\sharpR_x\inv\colon Q\to Q^*$ is the \emph{flat} map and $\pairing{v,v'}_x\coloneqq\flat_x(v)(v')$ is the \emph{pairing at $x$}.
+We say the reaction is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We call a reactive vector space \emph{nondegenerate} if $\sharpR_q$ is an isomorphism for every $q$; in that case the pointwise inverse $\flat_q\coloneqq\sharpR_q\inv\colon Q\to Q^*$ is the \emph{flat} map and $\pairing{v,v'}_q\coloneqq\flat_q(v)(v')$ is the \emph{pairing at $q$}.
 
 We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects---we write $\rv Q\coloneqq(Q,\sharpR_Q)$ for the object and $Q$ for its underlying vector space---and as morphisms $\rv Q\to\rv W$ the linear isomorphisms $\phi\colon Q\To{\cong}W$ that are \emph{sharp-equivariant}: 
-for all $x\in Q$,
+for all $q\in Q$,
 \begin{equation}\label{eqn.pairing_triangle}
-\phi\circ\sharpR_x\circ\phi^*=\sharpR_{\phi(x)}
+\phi\circ\sharpR_q\circ\phi^*=\sharpR_{\phi(q)}
 \end{equation}
 as maps $W^*\to W$.%
 \footnote{
 Restricting to isomorphisms (making $\rvect$ a groupoid) is essential for our development below: each $\rvect$-morphism is used both as $\phi$ on vectors and as $(\phi^*)\inv$ on covectors, e.g.\ in $T^*\phi$ \eqref{eqn.TT_phi} below.
 }
-In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwise pairing-preservation: $\pairing{\phi v,\phi v'}_{\phi(x)}=\pairing{v,v'}_x$.
+In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwise pairing-preservation: $\pairing{\phi v,\phi v'}_{\phi(q)}=\pairing{v,v'}_q$.
 
 Where the sharp is understood, or is the canonical one (as on $T^*Q$, \cref{prop.canonical_symplectic_pairing}), we abuse notation and write simply $Q$ for $\rv Q$.
 \end{definition}
@@ -2233,24 +2233,24 @@ The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\ve
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
 For any finite-dimensional vector space $Q:\vect$, the direct sum $Q\oplus Q^*$ is a reactive vector space under the \emph{canonical symplectic pairing}: at every basepoint $w\in Q\oplus Q^*$,
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(x,\xi),(x',\xi')}_{w} \;=\; \xi'(x)-\xi(x').
+\pairing{(q,\xi),(q',\xi')}_{w} \;=\; \xi'(q)-\xi(q').
 \end{equation}
 The right-hand side does not depend on $w$, so the reaction is constant.
 \end{proposition}
 
 \begin{proof}
-The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(x,\xi)$ pairs to $0$ with every $(x',\xi')$. Taking $x'=0$ gives $\xi'(x)=0$ for all $\xi'\in Q^*$, hence $x=0$; taking $\xi'=0$ gives $\xi(x')=0$ for all $x'\in Q$, hence $\xi=0$.\qedhere
+The form in \eqref{eqn.canonical_form} is bilinear. To see that it is nondegenerate, suppose $(q,\xi)$ pairs to $0$ with every $(q',\xi')$. Taking $q'=0$ gives $\xi'(q)=0$ for all $\xi'\in Q^*$, hence $q=0$; taking $\xi'=0$ gives $\xi(q')=0$ for all $q'\in Q$, hence $\xi=0$.\qedhere
 \end{proof}
 
 For the canonical symplectic pairing, under \eqref{eqn.canonical_dual_sum}, the associated sharp map is the constant map
 \begin{equation}\label{eqn.canonical_sharp}
-\defineTerm{sharp_symp}_{Q\oplus Q^*}\colon Q^*\oplus Q\to Q\oplus Q^*,\qquad(\xi,x)\mapsto(x,-\xi).
+\defineTerm{sharp_symp}_{Q\oplus Q^*}\colon Q^*\oplus Q\to Q\oplus Q^*,\qquad(\xi,q)\mapsto(q,-\xi).
 \end{equation}
 
 \begin{remark}[Symplectic sharp produces perpendicular vectors]\label{rmk.symplectic_perpendicular}
-For any covector $(\xi,x)\in Q^*\oplus Q$, the resulting vector $\sharpS_{Q\oplus Q^*}(\xi,x)=(x,-\xi)\in Q\oplus Q^*$ \eqref{eqn.canonical_sharp} is annihilated by it: pairing the two via \eqref{eqn.canonical_dual_sum},
+For any covector $(\xi,q)\in Q^*\oplus Q$, the resulting vector $\sharpS_{Q\oplus Q^*}(\xi,q)=(q,-\xi)\in Q\oplus Q^*$ \eqref{eqn.canonical_sharp} is annihilated by it: pairing the two via \eqref{eqn.canonical_dual_sum},
 \[
-(\xi,x)\bigl(\sharpS_{Q\oplus Q^*}(\xi,x)\bigr) = \xi(x) + (-\xi)(x) = 0.
+(\xi,q)\bigl(\sharpS_{Q\oplus Q^*}(\xi,q)\bigr) = \xi(q) + (-\xi)(q) = 0.
 \]
 Geometrically, the symplectic sharp ``rotates'' each covector to a vector ``perpendicular'' to it. In particular, when the covector is the differential $dH|_w$ of a smooth function $H\colon Q\oplus Q^*\to\rr$, the vector $\sharpS_{Q\oplus Q^*}(dH|_w)$ is tangent to the level set $\{H=H(w)\}$, so the flow it generates conserves $H$.\qedhere
 \end{remark}
@@ -2262,17 +2262,17 @@ A finite-dimensional real vector space $Q$ equipped with an inner product---a sy
 \end{equation*}
 the inverse of $\flat_\euc(v)\coloneqq\pairing{v,-}\colon Q\to Q^*$. This is the example underlying the gradient-descent dynamics of \cref{sec.dl_warmup}, scaled by a \emph{learning rate} $\eta_{\mathrm{LR}}>0$:
 \begin{equation}\label{eqn.learning_sharp}
-\sharpR_x=\eta_{\mathrm{LR}}\sharpEuc{}.
+\sharpR_q=\eta_{\mathrm{LR}}\sharpEuc{}.
 \end{equation}
-Here the sharp is a positive metric, carrying no sign of its own; the descent direction is supplied by the configuration integrator (\cref{sec.integrators}), whose update steps \emph{against} $\sharpR_x(\xi)$.\qedhere
+Here the sharp is a positive metric, carrying no sign of its own; the descent direction is supplied by the configuration integrator (\cref{sec.integrators}), whose update steps \emph{against} $\sharpR_q(\xi)$.\qedhere
 \end{example}
 
 The \emph{exponential} of a reactive vector space $(Q,\sharpR_Q)$ is the map%
 \footnote{Strictly speaking, what we denote $\exp_{\rv Q}$ is the composite $T^*Q\To{\sharpR}TQ\To{\exp_V} Q$ of $\sharpR$ with the genuine exponential on $V$. We combine them for brevity.}
 \begin{equation}\label{eqn.flow_cot}
-\exp_{\rv Q}\colon T^*Q\to Q,\qquad (x,\xi)\longmapsto x+\sharpR_x(\xi),
+\exp_{\rv Q}\colon T^*Q\to Q,\qquad (q,\xi)\longmapsto q+\sharpR_q(\xi),
 \end{equation}
-which at each $(x,\xi)$ is the first-order Euler step from $x$ along the tangent vector $\sharpR_x(\xi)\in T_xQ\cong Q$. It is natural in $\rvect$-isomorphisms by linearity and the sharp-equivariance condition \eqref{eqn.pairing_triangle}.
+which at each $(q,\xi)$ is the first-order Euler step from $q$ along the tangent vector $\sharpR_q(\xi)\in T_qQ\cong Q$. It is natural in $\rvect$-isomorphisms by linearity and the sharp-equivariance condition \eqref{eqn.pairing_triangle}.
 
 %--------------------------------------------------------------------
 \section{The smooth rewiring datum \texorpdfstring{$\Sm$}{Sm}}\label{sec.potentialized_lenses}
@@ -2408,7 +2408,7 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 %\[
 %(\cdot)\colon\cotof{M}\to\yon^\rr\otimes\cotof{M}
 %\]
-%Axioms relating the comonoid structure of $\cotof{M}$ and various structures on $\rr$ enforce that the forward map is $x\mapsto (!,x)$ and that the backwards map $\bk{(\cdot)}{x}\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
+%Axioms relating the comonoid structure of $\cotof{M}$ and various structures on $\rr$ enforce that the forward map is $q\mapsto (!,q)$ and that the backwards map $\bk{(\cdot)}{q}\colon (r,\xi)\mapsto r\cdot\xi$ encodes the following laws:
 %\[
 %	1\cdot\xi=\xi,\qquad
 %	(r_1r_2)\cdot\xi=r_1\cdot(r_2\cdot\xi),\qquad
@@ -2456,12 +2456,12 @@ Consider the monad $\Fun{T}\coloneqq(\cotof{\rr}\otimes\blank)$ on $\poly$. The 
 \end{lemma}
 
 \begin{proof}
-There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cotof{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, where $\alpha$ is identified with $\omega(x)\coloneqq\bk{\alpha}{x}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ necessary to make it a $\Fun{T}$-monoid is that the following equation holds for all $x_1,x_2\in\rr$
+There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cotof{\rr}\to\yon$ are in bijection with (not-necessarily continuous) covector fields $\omega\colon\rr\to T^*\rr$ on $\rr$, where $\alpha$ is identified with $\omega(q)\coloneqq\bk{\alpha}{q}(*)$. The first condition of \eqref{eqn.T_monoid} is vacuous. Thus the only condition on $\alpha$ necessary to make it a $\Fun{T}$-monoid is that the second condition, which requires that the following equation holds for all $q_1,q_2\in\rr$
 \[
-\left(\omega(x_1),\omega(x_2)\right)=
-\left(\omega(x_1+x_2),\omega(x_1+x_2)\right).
+\left(\omega(q_1),\omega(q_2)\right)=
+\left(\omega(q_1+q_2),\omega(q_1+q_2)\right).
 \]
-Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In other words, $\omega=r$ is constant at some $r:\rr$. And conversely, any constant covector field is a $\Fun{T}$-monoid.
+Setting $q_2\coloneqq 0$, we find $\omega(0)=\omega(q_1)$ for all $q_1$. In other words, $\omega=r$ is constant at some $r:\rr$. And conversely, any constant covector field is a $\Fun{T}$-monoid.
 \end{proof}
 
 \begin{remark}[General form]\label{rmk.alpha_general}
@@ -2470,11 +2470,11 @@ Setting $x_2\coloneqq 0$, we find $\omega(0)=\omega(x_1)$ for all $x_1$. In othe
 
 Specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
 \begin{equation}\label{eqn.d_potential}
-\defineTerm{potd}\colon\cotof{\rr}\to\yon,\qquad\bk{\potd}{x}(*)\coloneqq +1\in T^*_x\rr.
+\defineTerm{potd}\colon\cotof{\rr}\to\yon,\qquad\bk{\potd}{q}(*)\coloneqq +1\in T^*_q\rr.
 \end{equation}
 We call it $\potd$ because this is the choice for which potentials contribute their usual differentials. Indeed, for a smooth map $U\colon X\to\rr$, the composite $\potd\circ\cotof{U}\colon\cotof{X}\to\yon$ is trivial on positions and tracing through directions,
 \[
-\bk{\potd\circ\cotof{U}}{x}(*)=(T_x U)^\top(+1)=dU|_x
+\bk{\potd\circ\cotof{U}}{q}(*)=(T_q U)^\top(+1)=dU|_q
 \]
 exactly as in \eqref{eqn.differential}. That is, under the identification of maps $\cotof{X}\to\yon$ with covector fields on $X$, the composite $\potd\circ\cotof{U}$ corresponds to the differential $dU$.
 
@@ -2512,30 +2512,30 @@ Building on the integrator notion of \cref{sec.dynamics_functor_abstract}, this 
 
 \subsection{Integrators}\label{sec.integrators}
 
-The polynomial interpretation $\Phip{\interp}$ of \cref{sec.smooth_interpretation} produces maps of the form $\cotof{Q}\otimes p\to q$, or equivalently $\cotof{Q}\to[p,q]$. Our goal in this section is to turn them into $[p,q]$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{Q}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
+The polynomial interpretation $\Phip{\interp}$ of \cref{sec.smooth_interpretation} produces maps of the form $\cotof{Q}\otimes p\to p'$, or equivalently $\cotof{Q}\to[p,p']$. Our goal in this section is to turn them into $[p,p']$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{Q}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
-We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot q\coloneqq\cotof{Q}\otimes q$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
+We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\orgiso.\]
 
 \begin{proposition}\label{prop.rvect_polynomial}
-There is a monoidal natural transformation $\chi\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ of functors $\rvect\to\poly$ whose component $\defineTerm{chiQ}_{\rv Q}\colon\Store(\absval{Q})\to\cotof{Q}$ at $\rv Q=(Q,\sharpR_Q)$ is the polynomial map given on positions by the identity and on directions at $x\in Q$ by
+There is a monoidal natural transformation $\chi\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ of functors $\rvect\to\poly$ whose component $\defineTerm{chiQ}_{\rv Q}\colon\Store(\absval{Q})\to\cotof{Q}$ at $\rv Q=(Q,\sharpR_Q)$ is the polynomial map given on positions by the identity and on directions at $q\in Q$ by
 \begin{equation}\label{eqn.directions_sharp}
-T^*_xQ\To{\eqref{eqn.tangent_vec}}Q^*\To{\sharpR_x}Q\To{x+\blank}Q,
+T^*_qQ\To{\eqref{eqn.tangent_vec}}Q^*\To{\sharpR_q}Q\To{q+\blank}Q,
 \qquad
-\xi\longmapsto x+\sharpR_x(\xi).
+\xi\longmapsto q+\sharpR_q(\xi).
 \end{equation}
 When $\sharpR$ is nondegenerate, $\chiQ{\rv Q}$ is an isomorphism.
 \end{proposition}
 
 \begin{proof}
-On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $Q$ to its underlying set, so we can take the on-positions component of $\chiQ{\rv Q}$ to be the identity. At each $x\in Q$, \eqref{eqn.directions_sharp} is the composite of the linear map $\sharpR_x$ with translation by $x$, giving a well-defined polynomial map $\Store(\absval{Q})\to\cotof{Q}$. When $\sharpR_x$ is an isomorphism for all $x$, the on-directions component is a bijection, so $\chiQ{\rv Q}$ is an isomorphism in $\poly$.
+On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $Q$ to its underlying set, so we can take the on-positions component of $\chiQ{\rv Q}$ to be the identity. At each $q\in Q$, \eqref{eqn.directions_sharp} is the composite of the linear map $\sharpR_q$ with translation by $q$, giving a well-defined polynomial map $\Store(\absval{Q})\to\cotof{Q}$. When $\sharpR_q$ is an isomorphism for all $q$, the on-directions component is a bijection, so $\chiQ{\rv Q}$ is an isomorphism in $\poly$.
 
-For naturality at a $\rvect$-isomorphism $\phi\colon\rv Q\to\rv W$, the on-positions square commutes by definition. On directions at $x:Q$, we must check that the two backward composites $T^*_{\phi(x)}W\to Q$ agree:
+For naturality at a $\rvect$-isomorphism $\phi\colon\rv Q\to\rv W$, the on-positions square commutes by definition. On directions at $q:Q$, we must check that the two backward composites $T^*_{\phi(q)}W\to Q$ agree:
 \begin{align*}
-\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharpR_x}\;\sharpR_x(\phi^*\xi)\;\Mapsto{x+\blank}\;x+\sharpR_x(\phi^*\xi), && \text{[$\chiQ{\rv Q}\circ\cotof{\phi}$]}\\
-\xi\;&\Mapsto{\sharpR_{\phi(x)}}\;\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi(x)+\blank}\;\phi(x)+\sharpR_{\phi(x)}(\xi)\;\Mapsto{\phi^{-1}}\;x+\phi^{-1}(\sharpR_{\phi(x)}\xi) && \text{[$\Store(\phi)\circ\chiQ{\rv W}$]}.
+\xi\;&\Mapsto{\phi^*}\;\phi^*\xi\;\Mapsto{\sharpR_q}\;\sharpR_q(\phi^*\xi)\;\Mapsto{q+\blank}\;q+\sharpR_q(\phi^*\xi), && \text{[$\chiQ{\rv Q}\circ\cotof{\phi}$]}\\
+\xi\;&\Mapsto{\sharpR_{\phi(q)}}\;\sharpR_{\phi(q)}(\xi)\;\Mapsto{\phi(q)+\blank}\;\phi(q)+\sharpR_{\phi(q)}(\xi)\;\Mapsto{\phi^{-1}}\;q+\phi^{-1}(\sharpR_{\phi(q)}\xi) && \text{[$\Store(\phi)\circ\chiQ{\rv W}$]}.
 \end{align*}
-The two are equal iff $\sharpR_x\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(x)}$, which is the sharp-equivariance condition \eqref{eqn.pairing_triangle} at $x$. Monoidality follows from the direct-sum convention $\sharpR_{Q_1\oplus Q_2}=\sharpR_{Q_1}\oplus\sharpR_{Q_2}$ (\cref{prop.rvect_monoidal}).\qedhere
+The two are equal iff $\sharpR_q\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(q)}$, which is the sharp-equivariance condition \eqref{eqn.pairing_triangle} at $q$. Monoidality follows from the direct-sum convention $\sharpR_{Q_1\oplus Q_2}=\sharpR_{Q_1}\oplus\sharpR_{Q_2}$ (\cref{prop.rvect_monoidal}).\qedhere
 \end{proof}
 
 \begin{remark}[Generalization to manifolds]\label{rmk.rmfdc_generalization}
@@ -2545,9 +2545,9 @@ The dynamics functor (\cref{thm.dynamics_functor}) depends on $\rvect$ only thro
 The \emph{configuration integrator} $\intg_{\mathrm{conf}}\coloneqq(\absval{\blank},\chi^-)$ has state space
 $Q\mapsto\absval{Q}$; its update $\chi^-$ is the \emph{descent} variant of the natural transformation $\chi$ of \cref{prop.rvect_polynomial},
 \begin{equation}\label{eqn.conf_integrator}
-\chi^-_{\rv Q}\colon\Store(\absval Q)\to\cotof Q,\qquad x\mapsto x-\sharpR_x(\xi).
+\chi^-_{\rv Q}\colon\Store(\absval Q)\to\cotof Q,\qquad q\mapsto q-\sharpR_q(\xi).
 \end{equation}
-Its state set is the configuration space $\absval Q$, and an incoming covector $\xi\in Q^*$ updates the state by stepping \emph{against} $\sharpR_x(\xi)$, i.e.\ by $x\mapsto x-\sharpR_x(\xi)$. The minus is what makes the configuration dynamics descent rather than ascent---the role played, in the phase integrator, by the symplectic sharp \eqref{eqn.canonical_sharp}. It is a monoidal natural transformation, hence a $\cot$-integrator, by \cref{prop.rvect_polynomial} with $\sharpR$ replaced by $-\sharpR$.
+Its state set is the configuration space $\absval Q$, and an incoming covector $\xi\in Q^*$ updates the state by stepping \emph{against} $\sharpR_q(\xi)$, i.e.\ by $q\mapsto q-\sharpR_q(\xi)$. The minus is what makes the configuration dynamics descent rather than ascent---the role played, in the phase integrator, by the symplectic sharp \eqref{eqn.canonical_sharp}. It is a monoidal natural transformation, hence a $\cot$-integrator, by \cref{prop.rvect_polynomial} with $\sharpR$ replaced by $-\sharpR$.
 
 \subsection{The cotangent endofunctor}\label{sec.TT}
 
@@ -2565,7 +2565,7 @@ For a reactive vector space $(Q,\sharpR_Q):\rvect$, define
 \begin{equation}\label{eqn.TT_def}
 T^*Q\coloneqq Q\oplus Q^*.
 \end{equation}
-This agrees with taking the cotangent bundle of $Q$ as a manifold. Thus for these integrators, the stored state is a point $(x,\xi)$ in the phase space $T^*Q=Q\oplus Q^*$, with \emph{position} $x$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\intg_{\mathrm{phase}}$ from the canonical symplectic structure on $T^*Q$.
+This agrees with taking the cotangent bundle of $Q$ as a manifold. Thus for these integrators, the stored state is a point $(q,\xi)$ in the phase space $T^*Q=Q\oplus Q^*$, with \emph{position} $q$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\intg_{\mathrm{phase}}$ from the canonical symplectic structure on $T^*Q$.
 
 The cotangent bundle is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon Q\To{\cong} W$, define
@@ -2585,10 +2585,10 @@ If $\phi\colon Q\to W$ is a linear isomorphism so is $T^*\phi$. Functoriality is
 \end{equation}
 To verify sharp-equivariance \eqref{eqn.pairing_triangle}, we equivalently check pairing-preservation (both pairings are nondegenerate). Fix any basepoint $w\in T^*Q$ and calculate
 \begin{align*}
-\pairing{T^*\phi(x_1,\xi_1),T^*\phi(x_2,\xi_2)}_{T^*\phi(w)}
-&= (\psi\xi_2)(\phi x_1)-(\psi\xi_1)(\phi x_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
-&= \xi_2(x_1)-\xi_1(x_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(x_1,\xi_1),(x_2,\xi_2)}_{w} && \text{[\eqref{eqn.canonical_form}]};
+\pairing{T^*\phi(q_1,\xi_1),T^*\phi(q_2,\xi_2)}_{T^*\phi(w)}
+&= (\psi\xi_2)(\phi q_1)-(\psi\xi_1)(\phi q_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
+&= \xi_2(q_1)-\xi_1(q_2) && \text{[\eqref{eqn.dualeval}]}\\
+&= \pairing{(q_1,\xi_1),(q_2,\xi_2)}_{w} && \text{[\eqref{eqn.canonical_form}]};
 \end{align*}
 both sides are independent of $w$ by constancy of the canonical symplectic pairing.
 \end{proof}
@@ -2605,16 +2605,16 @@ The endofunctor $T^*\colon\rvect\to\rvect$ is strong symmetric monoidal with res
 \begin{proof}
 The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comparison is the swap
 \begin{equation*}
-(T^*)_2\colon T^*Q_1\oplus T^*Q_2\To{\cong}T^*(Q_1\oplus Q_2),\quad ((x_1,\xi_1),(x_2,\xi_2))\mapsto((x_1,x_2),(\xi_1,\xi_2)).
+(T^*)_2\colon T^*Q_1\oplus T^*Q_2\To{\cong}T^*(Q_1\oplus Q_2),\quad ((q_1,\xi_1),(q_2,\xi_2))\mapsto((q_1,q_2),(\xi_1,\xi_2)).
 \end{equation*}
-It is a linear isomorphism, using $(Q_1\oplus Q_2)^*\cong Q_1^*\oplus Q_2^*$. For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ sends $(\xi_1,\xi_2,x_1,x_2)\mapsto(x_1,x_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives $(\xi_1,x_1,\xi_2,x_2)\mapsto(x_1,-\xi_1,x_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
+It is a linear isomorphism, using $(Q_1\oplus Q_2)^*\cong Q_1^*\oplus Q_2^*$. For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ sends $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
 \end{proof}
 
 \subsection{The phase integrator}\label{sec.phase_integrators}
 
-The \emph{phase integrator} stores a phase point and updates it by the explicit Euler step: it reads out the position and feeds the incoming gradient---together with the velocity $\sharpR_x(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*Q$. We package the velocity as the \emph{kinetic datum}
+The \emph{phase integrator} stores a phase point and updates it by the explicit Euler step: it reads out the position and feeds the incoming gradient---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*Q$. We package the velocity as the \emph{kinetic datum}
 \begin{equation}\label{eqn.kinetic_one_form}
-\defineTerm{beta_kin}_Q(x,\xi)\coloneqq\bigl(0,\sharpR_x(\xi)\bigr)\in Q^*\oplus Q\cong T^*_{(x,\xi)}(T^*Q),
+\defineTerm{beta_kin}_Q(q,\xi)\coloneqq\bigl(0,\sharpR_q(\xi)\bigr)\in Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q),
 \end{equation}
 using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.%
 \footnote{We borrow the name from physics: when $\sharpR$ is constant and symmetric, $\beta_Q$ is the differential of the kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ (see \cref{rmk.constant_inverse_mass_hamiltonian}).}
@@ -2627,17 +2627,17 @@ whose update is the composite
 \[
 \upd_\beta\colon\quad\Store\circ\absval{T^*\blank}\To{\chiQ{T^*\blank}}\cot\circ T^*\To{\nu}\cot,
 \]
-where $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out $(x,\xi)\mapsto x$ on positions and sends $\xi'\mapsto(\xi',0)+\beta_Q(x,\xi)=(\xi',\sharpR_x\xi)$ on directions. This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because the projection is natural and monoidal, while the $\sharpR_x\xi$ term is so by sharp-equivariance \eqref{eqn.pairing_triangle} and the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
+where $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out $(q,\xi)\mapsto q$ on positions and sends $\xi'\mapsto(\xi',0)+\beta_Q(q,\xi)=(\xi',\sharpR_q\xi)$ on directions. This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because the projection is natural and monoidal, while the $\sharpR_q\xi$ term is so by sharp-equivariance \eqref{eqn.pairing_triangle} and the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
 
-The two legs separate the data from the geometry: $\chiQ{T^*\blank}$ is the positive Euler step $\chi$ \eqref{eqn.directions_sharp} on the doubled space $T^*Q$, the same symplectic step regardless of $\sharpR_Q$ (\cref{rmk.constant_canonical_sharp}), while $\nu$ carries the phase-space data. (Here the force's sign is supplied structurally, by the symplectic sharp \eqref{eqn.canonical_sharp}; this is why the phase integrator uses $\chi$ itself, where the configuration integrator uses its descent variant $\chi^-$.) On directions, $\chiQ{T^*Q}$ adds to $(x,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_x\xi)$ \eqref{eqn.directions_sharp},
+The two legs separate the data from the geometry: $\chiQ{T^*\blank}$ is the positive Euler step $\chi$ \eqref{eqn.directions_sharp} on the doubled space $T^*Q$, the same symplectic step regardless of $\sharpR_Q$ (\cref{rmk.constant_canonical_sharp}), while $\nu$ carries the phase-space data. (Here the force's sign is supplied structurally, by the symplectic sharp \eqref{eqn.canonical_sharp}; this is why the phase integrator uses $\chi$ itself, where the configuration integrator uses its descent variant $\chi^-$.) On directions, $\chiQ{T^*Q}$ adds to $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.directions_sharp},
 \[
-\sharpS_{T^*Q}\bigl(\xi',\sharpR_x(\xi)\bigr)=\bigl(\sharpR_x(\xi),\,-\xi'\bigr),
+\sharpS_{T^*Q}\bigl(\xi',\sharpR_q(\xi)\bigr)=\bigl(\sharpR_q(\xi),\,-\xi'\bigr),
 \]
-so the update reads out $(x,\xi)\mapsto x$ and, on directions, is
+so the update reads out $(q,\xi)\mapsto q$ and, on directions, is
 \begin{equation}\label{eqn.phase_update}
-\absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((x,\xi),\xi')\mapsto(x+\sharpR_x(\xi),\,\xi-\xi').
+\absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((q,\xi),\xi')\mapsto(q+\sharpR_q(\xi),\,\xi-\xi').
 \end{equation}
-Its position component $x\mapsto x+\sharpR_x(\xi)$ is $\exp_{\rv Q}$ \eqref{eqn.flow_cot}.
+Its position component $q\mapsto q+\sharpR_q(\xi)$ is $\exp_{\rv Q}$ \eqref{eqn.flow_cot}.
 
 %--------------------------------------------------------------------
 \section{The dynamics functors}\label{sec.dynamics_functor}
@@ -2687,13 +2687,13 @@ Write $\intg_{\mathrm{conf}}$ \eqref{eqn.conf_integrator} for the configuration 
 \section{Configuration dynamics \texorpdfstring{$\termraw{Phiconf}$}{Phi conf}}\label{sec.configuration_dynamics}
 %--------------------------------------------------------------------
 
-The dynamics functor $\Phiconf\colon\srwd\to\org$ is the simpler of the two dynamics functors: a state is just an element $x\in Q$ of the parameterizing manifold (no additional ``momentum'' component), and each step updates $x\mapsto x-\sharpR_x(\xi_Q)$, where $\xi_Q\in Q^*$ is a covector assembled from $f$'s backward pass and the differential of its potential. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
+The dynamics functor $\Phiconf\colon\srwd\to\org$ is the simpler of the two dynamics functors: a state is just an element $q\in Q$ of the parameterizing manifold (no additional ``momentum'' component), and each step updates $q\mapsto q-\sharpR_q(\xi_Q)$, where $\xi_Q\in Q^*$ is a covector assembled from $f$'s backward pass and the differential of its potential. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
 
 Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\intg_{\mathrm{conf}}}\circ\Phip{\interp}$. The functor $\Psisem{\intg_{\mathrm{conf}}}$ replaces a $\cotof{Q}$-parameter via the configuration integrator's descent update $\chi^-_{\rv Q}$ (\cref{eqn.conf_integrator}) on state set $S\coloneqq\absval{Q}$:
 \[
 S\yon^S\To{\chi^-_{\rv Q}}\cotof{Q}.
 \]
-A state consists of a position $x\in Q$, and an incoming covector $\xi'\in T^*_xQ$ updates that state to $x-\sharpR_x(\xi')$ by \eqref{eqn.conf_integrator}. Note that in this case $\sharpR$ can depend on $x\in Q$.
+A state consists of a position $q\in Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $q-\sharpR_q(\xi')$ by \eqref{eqn.conf_integrator}. Note that in this case $\sharpR$ can depend on $q\in Q$.
 
 However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phip{\interp}$ factor from \cref{prop.smooth_setup,thm.poly_interpretation}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
 
@@ -2729,61 +2729,61 @@ It is sent by $\Phiconf$ to a $[\Phiconf\lensob M,\Phiconf\lensob N]$-coalgebra 
 \begin{equation}\label{eqn.state_space_conf}
 S\coloneqq\absval{Q};
 \end{equation}
-we denote its points by $x\in S=|Q|$. The state update below uses the (possibly basepoint-varying) sharp $\sharpR_x$ on $Q$ from \cref{def.rvect}.
+we denote its points by $q\in S=|Q|$. The state update below uses the (possibly basepoint-varying) sharp $\sharpR_q$ on $Q$ from \cref{def.rvect}.
 
 We now unpack the coalgebra function itself,
 \[
 S\To{\Phiconf(\rv Q,f)}
 \left[\Phiconf\lensob M,\Phiconf\lensob N\right](S).
 \]
-Given a state $x\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point using $\outp{f}$ from \eqref{eqn.para_potential_lens_maps}:
+Given a state $q\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point using $\outp{f}$ from \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.outpn}
-\outp n\coloneqq\outp f(x,\outp m)
+\outp n\coloneqq\outp f(q,\outp m)
 \end{equation}
 and the output covector field $\omega_N\colon\inpt N\to T^*\inpt N$ using the rest of \eqref{eqn.para_potential_lens_maps}:
 \begin{equation}\label{eqn.omegaprime}
-\omega_N(\inpt n)\coloneqq(\inpt f(x,\outp m,\blank))^*\omega_M\big|_{\inpt n}\;+\;d(U(x,\outp m,\blank))\big|_{\inpt n}.
+\omega_N(\inpt n)\coloneqq(\inpt f(q,\outp m,\blank))^*\omega_M\big|_{\inpt n}\;+\;d(U(q,\outp m,\blank))\big|_{\inpt n}.
 \end{equation}
-The first term is the pullback of $\omega_M$ along the partial map $\inpt f(x,\outp m,\blank)\colon\inpt N\to\inpt M$; the second is the differential of the potential $U(x,\outp m,\blank)\colon\inpt N\to\rr$ at $\inpt n$, in the sense of \eqref{eqn.differential}.%
+The first term is the pullback of $\omega_M$ along the partial map $\inpt f(q,\outp m,\blank)\colon\inpt N\to\inpt M$; the second is the differential of the potential $U(q,\outp m,\blank)\colon\inpt N\to\rr$ at $\inpt n$, in the sense of \eqref{eqn.differential}.%
 \footnote{The $+1$ that turns the second summand into $dU$ comes from \eqref{eqn.d_potential}; the $+$ between summands is the cotangent splitting $T^*(\rr\times\inpt M)\cong T^*\rr\oplus T^*\inpt M$ (\cref{sec.manifolds_notation}).} Thus the readout position is the pair,
 \[
 b\coloneqq\bigl(\outp n,\,\omega_N\bigr)\;\in\;\outp N\times\Omega(\inpt N).
 \]
 
 
-Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiconf\lensob N[b]$, the coalgebra function $\Phiconf(\rv Q,f)$ at $(x,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
+Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiconf\lensob N[b]$, the coalgebra function $\Phiconf(\rv Q,f)$ at $(q,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
 \begin{equation}\label{eqn.inptm}
-\inpt m\coloneqq\inpt f(x,\outp m,\inpt n)
+\inpt m\coloneqq\inpt f(q,\outp m,\inpt n)
 \end{equation}
 and define
 \begin{equation}\label{eqn.bigtheta}
-(\xi_Q,\,\xi_M,\,\xi_{\inpt N})\coloneqq (T_{(x,\outp m)}\outp f)^\top\xi_N \;+\; (T_{(x,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m) \;+\; dU\big|_{(x,\outp m,\inpt n)}\;
+(\xi_Q,\,\xi_M,\,\xi_{\inpt N})\coloneqq (T_{(q,\outp m)}\outp f)^\top\xi_N \;+\; (T_{(q,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m) \;+\; dU\big|_{(q,\outp m,\inpt n)}\;
 \end{equation}
 where $(\xi_Q,\,\xi_M,\,\xi_{\inpt N}):Q^*\oplus T^*_{\outp m}\outp M\oplus T^*_{\inpt n}\inpt N$.%
 \footnote{Each summand is a cotangent pullback: $\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (via $\potd$, \eqref{eqn.d_potential}); the $+$'s are the cotangent splitting of $Q\times\outp M\times\inpt N$ (\cref{sec.manifolds_notation}), morally the domain of the maps in \eqref{eqn.para_potential_lens_maps}.}
-Note that the first summand $(T_{(x,\outp m)}\outp f)^\top\xi_N$ naturally lands in $Q^*\oplus T^*_{\outp m}\outp M$ and has been extended by $0$ in the remaining $\inpt N$-factor, so by \eqref{eqn.omegaprime} we have $\omega_N(\inpt n)=\xi_{\inpt N}$.
+Note that the first summand $(T_{(q,\outp m)}\outp f)^\top\xi_N$ naturally lands in $Q^*\oplus T^*_{\outp m}\outp M$ and has been extended by $0$ in the remaining $\inpt N$-factor, so by \eqref{eqn.omegaprime} we have $\omega_N(\inpt n)=\xi_{\inpt N}$.
 
-All of the work has now been done: the coalgebra at $(x,a)$ on $(\xi_N,\inpt n)$ returns the direction
+All of the work has now been done: the coalgebra at $(q,a)$ on $(\xi_N,\inpt n)$ returns the direction
 \[
 (\xi_M,\,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiconf\lensob M[a]
 \]
-and updates the state (from its original $x$) to
+and updates the state (from its original $q$) to
 \begin{equation}\label{eqn.state_update_gradient}
-x-\sharpR_x(\xi_Q),
+q-\sharpR_q(\xi_Q),
 \end{equation}
-which is the on-directions component of the descent update $\chi^-_{\rv Q}$ \eqref{eqn.conf_integrator} applied to the covector $\xi_Q\in Q^*$ of \eqref{eqn.bigtheta}. In other words, the state is updated by summing three covectors pulled back along the maps in \eqref{eqn.para_potential_lens_maps}---$\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (yielding $dU$)---projecting to the $Q^*$-component, sharpening to a vector via $\sharpR_x$, and subtracting it from the original state.
+which is the on-directions component of the descent update $\chi^-_{\rv Q}$ \eqref{eqn.conf_integrator} applied to the covector $\xi_Q\in Q^*$ of \eqref{eqn.bigtheta}. In other words, the state is updated by summing three covectors pulled back along the maps in \eqref{eqn.para_potential_lens_maps}---$\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (yielding $dU$)---projecting to the $Q^*$-component, sharpening to a vector via $\sharpR_q$, and subtracting it from the original state.
 
 All in all, one could tersely denote the coalgebra map as follows:
 \[
 \Phiconf(\rv Q,f)\colon
-x\mapsto
+q\mapsto
 (\outp m,\omega_M)\mapsto
 \Big(
 	(\outp n,\omega_N),
 	(\xi_N,\inpt n)\mapsto\\
 	\big(
 		(\xi_M,\inpt m),
-		x-\sharpR_x(\xi_Q)
+		q-\sharpR_q(\xi_Q)
 	\big)
 \Big),
 \]
@@ -2846,9 +2846,9 @@ Let $\absval{\blank}\colon\vectiso\to\smsetiso$ be the underlying-set functor. F
 \[
 \chi_{Q,p}\colon \Store(\absval{Q})\otimes P(p)\to P\bigl((TQ\surj Q)\otimes p\bigr).
 \]
-Both sides have positions $(x,b)\in Q\times B$. Using the canonical identification $TQ\cong Q\times Q$, the map $\chi_{Q,p}\colon T_xQ\times E_b\to Q\times E_b$ on directions at $(x,b)$ is given by
+Both sides have positions $(q,b)\in Q\times B$. Using the canonical identification $TQ\cong Q\times Q$, the map $\chi_{Q,p}\colon T_qQ\times E_b\to Q\times E_b$ on directions at $(q,b)$ is given by
 \[
-(\dot x,e)\mapsto (x+\dot x,e).
+(\dot q,e)\mapsto (q+\dot q,e).
 \]
 These maps are natural in vector-space isomorphisms and submersion lenses, and monoidal by componentwise addition in direct sums. Thus \cref{prop.para_square} induces a normal lax symmetric monoidal functor
 \[
@@ -2856,10 +2856,10 @@ These maps are natural in vector-space isomorphisms and submersion lenses, and m
 \]
 Composing with the identification $\para{\smsetiso}{\poly}\cong\orgiso$ of \cref{prop.org_as_para} and the inclusion $\orgiso\inj\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the coalgebra with state set $Q$ whose action is
 \[
-x\longmapsto b\longmapsto
+q\longmapsto b\longmapsto
 \left(
-r(x,b),\;
-a'\longmapsto\bigl(\alpha(x,b,a'),\,x+u(x,b,a')\bigr)
+r(q,b),\;
+a'\longmapsto\bigl(\alpha(q,b,a'),\,q+u(q,b,a')\bigr)
 \right).
 \]
 
@@ -2867,15 +2867,15 @@ The functor $\cat S\to\mathbf{COrg}$ is more straightforward: an $\cat S$-morphi
 
 For $\cat{R}$ we take the category $\cat R$ from \cref{sec.related_cls}. We define $\cat R\to\cat S$ on objects by $M\mapsto T^*M\surj M$. On morphisms, send $(\rv Q,w,E)\colon M\to N$ to the $\cat S$-morphism with parameter space $Q$, readout $r\coloneqq w$, and for the rest of the data write
 \[
-dE|_{(x,m)}+(T_{(x,m)}w)^\top(\xi_N)=(\xi_Q,\xi_M)\in Q^*\oplus T_m^*M
+dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N)=(\xi_Q,\xi_M)\in Q^*\oplus T_m^*M
 \]
-and set $\alpha(x,m,\xi_N)\coloneqq\xi_M$ and $u(x,m,\xi_N)\coloneqq-\sharpR_x(\xi_Q)$, the descent velocity. Functoriality follows from the chain rule.
+and set $\alpha(q,m,\xi_N)\coloneqq\xi_M$ and $u(q,m,\xi_N)\coloneqq-\sharpR_q(\xi_Q)$, the descent velocity. Functoriality follows from the chain rule.
 
 The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\srwd$, the morphism $(\rv Q,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
-dE|_{(x,m)}+(T_{(x,m)}w)^\top(\xi_N)=(\xi_Q,\xi_M).
+dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N)=(\xi_Q,\xi_M).
 \]
-Thus \eqref{eqn.state_update_gradient} sends the state $x$ to $x-\sharpR_x(\xi_Q)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(\rv Q,w,E)$ in $\cat S$. The descent sign here sits in the configuration integrator \eqref{eqn.conf_integrator}---the minus in the velocity $u=-\sharpR_x(\xi_Q)$---while the reaction $\sharpR_Q$ stays sign-free; CLS make the opposite choice, folding the sign into the reaction so that the velocity is $\sharpR_Q(dE)$ directly~\cite[Eq.~1]{capucci2024organizing}. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
+Thus \eqref{eqn.state_update_gradient} sends the state $q$ to $q-\sharpR_q(\xi_Q)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(\rv Q,w,E)$ in $\cat S$. The descent sign here sits in the configuration integrator \eqref{eqn.conf_integrator}---the minus in the velocity $u=-\sharpR_q(\xi_Q)$---while the reaction $\sharpR_Q$ stays sign-free; CLS make the opposite choice, folding the sign into the reaction so that the velocity is $\sharpR_Q(dE)$ directly~\cite[Eq.~1]{capucci2024organizing}. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
 \end{proof}
 
 Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) and \cref{sec.dl_warmup} (gradient descent and backpropagation).
@@ -2884,14 +2884,14 @@ Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) 
 \section{Phase-space dynamics \texorpdfstring{$\termraw{Phiphase}$}{Phi phase}}\label{sec.phase_dynamics}
 %--------------------------------------------------------------------
 
-We remind the reader of \cref{warn.prime}: primes (e.g.\ $\xi', x'$) never denote derivatives in this paper.
+We remind the reader of \cref{warn.prime}: primes (e.g.\ $\xi', q'$) never denote derivatives in this paper.
 
 Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\intg_{\mathrm{phase}}}\circ\Phip{\interp}$. The functor $\Psisem{\intg_{\mathrm{phase}}}$ replaces a $\cotof{Q}$-parameter via the phase integrator \eqref{eqn.phase_update} on state set $S\coloneqq\absval{T^*Q}$:
 \[
 S\yon^S\To{\upd_\beta}\cotof{Q}.
 \]
-A state consists of a position and a momentum $(x,\xi)\in T^*Q$, and an incoming covector $\xi'\in T^*_xQ$ updates that state to $(x+\sharpR_x(\xi),\,\xi-\xi')$
- by \eqref{eqn.phase_update}. The readout and backward pass of the coalgebra $\Phiphase(\rv Q,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $x$, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
+A state consists of a position and a momentum $(q,\xi)\in T^*Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $(q+\sharpR_q(\xi),\,\xi-\xi')$
+ by \eqref{eqn.phase_update}. The readout and backward pass of the coalgebra $\Phiphase(\rv Q,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $q$, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
 
 \paragraph{The action of $\termraw{Phiphase}$ on objects.}
 The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case.
@@ -2904,9 +2904,9 @@ It is sent by $\Phiphase$ to a $[\Phiphase\lensob M,\Phiphase\lensob N]$-coalgeb
 \begin{equation}\label{eqn.state_space}
 S\coloneqq\absval{T^*Q}\cong Q\oplus Q^*;
 \end{equation}
-we write $s=(x,\xi)\in S$ for position $x\in Q$ and momentum $\xi\in Q^*$. Although the coalgebra remembers only the set $S$, the state update below uses the canonical symplectic pairing on $T^*Q$. Its sharp map is
+we write $s=(q,\xi)\in S$ for position $q\in Q$ and momentum $\xi\in Q^*$. Although the coalgebra remembers only the set $S$, the state update below uses the canonical symplectic pairing on $T^*Q$. Its sharp map is
 \begin{equation}\label{eqn.sharp_S}
-\sharpS_S\colon S^*\to S,\qquad (\xi',x')\mapsto(x',-\xi'),
+\sharpS_S\colon S^*\to S,\qquad (\xi',q')\mapsto(q',-\xi'),
 \end{equation}
 specializing \eqref{eqn.canonical_sharp}.
 
@@ -2915,27 +2915,27 @@ We now unpack the coalgebra function itself,
 S\To{\Phiphase(\rv Q,f)}
 \left[\Phiphase\lensob M,\Phiphase\lensob N\right](S).
 \]
-Given a state $s\coloneqq(x,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(\rv Q,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $x$ alone, and the phase integrator maps $(x,\xi)\mapsto x$ on positions by \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(x,\xi)$, the state is updated to
+Given a state $s\coloneqq(q,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(\rv Q,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $q$ alone, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(q,\xi)$, the state is updated to
 \begin{equation}\label{eqn.state_update}
-s+\sharpS_S(\xi_Q,\sharpR_x(\xi))=\bigl(x+\sharpR_x(\xi),\,\xi-\xi_Q\bigr).
+s+\sharpS_S(\xi_Q,\sharpR_q(\xi))=\bigl(q+\sharpR_q(\xi),\,\xi-\xi_Q\bigr).
 \end{equation}
 We will now break down \cref{eqn.state_update}, which is the phase integrator \eqref{eqn.phase_update} with the substitution $\xi'=\xi_Q$.
 
-Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*Q$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_Q,\sharpR_x(\xi))\in T^*_sS$ comes from the kinetic 1-form \eqref{eqn.kinetic_one_form} at $(x,\xi)$.
+Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the exponential of the reactive vector space $T^*Q$ on the underlying set $S$, \eqref{eqn.flow_cot}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from the kinetic 1-form \eqref{eqn.kinetic_one_form} at $(q,\xi)$.
 
-The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_Q,\sharpR_x(\xi))=(\sharpR_x(\xi),-\xi_Q)$, then componentwise addition with $s=(x,\xi)$ produces $(x+\sharpR_x(\xi),\,\xi-\xi_Q)$.
+The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_Q,\sharpR_q(\xi))=(\sharpR_q(\xi),-\xi_Q)$, then componentwise addition with $s=(q,\xi)$ produces $(q+\sharpR_q(\xi),\,\xi-\xi_Q)$.
 
 All in all, one could tersely denote the coalgebra map as follows:
 \begin{multline*}
 \Phiphase(\rv Q,f)\colon
-(x,\xi)\mapsto
+(q,\xi)\mapsto
 (\outp m,\omega_M)\mapsto
 \Big(
 	(\outp n,\omega_N),
 	(\xi_N,\inpt n)\mapsto\\
 	\big(
 		(\xi_M,\inpt m),
-		(x+\sharpR_x(\xi),\,\xi-\xi_Q)
+		(q+\sharpR_q(\xi),\,\xi-\xi_Q)
 	\big)
 \Big),
 \end{multline*}
@@ -2944,28 +2944,28 @@ where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegap
 \begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
 In this remark we aim to justify the Hamiltonian terminology that we allude to elsewhere in the paper. The assumptions that make the dynamics Hamiltonian are written in bold.
 
-Suppose \textbf{the domain and codomain interfaces are closed}, i.e.\ $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, so that in particular $\xi_N=0$ and $\omega_M=0$ and $U\colon Q\to\rr$ depends only on $x$. Then \eqref{eqn.bigtheta} gives $\xi_Q=dU|_x$. If moreover \textbf{the sharp is constant}, $\sharpR_x=\sharpR_0$, then \eqref{eqn.state_update} becomes
+Suppose \textbf{the domain and codomain interfaces are closed}, i.e.\ $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, so that in particular $\xi_N=0$ and $\omega_M=0$ and $U\colon Q\to\rr$ depends only on $q$. Then \eqref{eqn.bigtheta} gives $\xi_Q=dU|_q$. If moreover \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then \eqref{eqn.state_update} becomes
 \[
-s+\sharpS_S(dU|_x,\sharpR_0(\xi))
+s+\sharpS_S(dU|_q,\sharpR_0(\xi))
 =
-(x+\sharpR_0(\xi),\,\xi-dU|_x),
+(q+\sharpR_0(\xi),\,\xi-dU|_q),
 \]
-which is the explicit Euler step for the vector field $(\dot x,\dot\xi)$ where
+which is the explicit Euler step for the vector field $(\dot q,\dot\xi)$ where
 \[
-\dot x\coloneqq \sharpR_0(\xi),
+\dot q\coloneqq \sharpR_0(\xi),
 \qquad
-\dot\xi\coloneqq-dU|_x.
+\dot\xi\coloneqq-dU|_q.
 \]
-In the one-dimensional mass=$m$ case this reads $\dot x=\xi/m$ and $\dot\xi=-dU|_x$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot x$ the usual momentum.
+In the one-dimensional mass=$m$ case this reads $\dot q=\xi/m$ and $\dot\xi=-dU|_q$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot q$ the usual momentum.
 
 Finally, when \textbf{the sharp is symmetric}, in the sense that $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in Q^*$, this vector field is \emph{Hamiltonian} meaning that it is the symplectic sharp applied to the derivative of some function, namely
 \[
-H(x,\xi)\coloneqq \tfrac12\xi(\sharpR_0(\xi))+U(x).
+H(q,\xi)\coloneqq \tfrac12\xi(\sharpR_0(\xi))+U(q).
 \]
 This $H$ is the energy of a \emph{simple mechanical system}~\cite[\S 3.7]{abraham1978foundations}: kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ plus potential energy $U$.
-Indeed, the symmetry condition and the linearity of $\sharpR$ give $dH|_{(x,\xi)}=(dU|_x,\sharpR_0(\xi))\in Q^*\oplus Q$, and applying the canonical symplectic sharp \eqref{eqn.sharp_S} recovers the vector field:
+Indeed, the symmetry condition and the linearity of $\sharpR$ give $dH|_{(q,\xi)}=(dU|_q,\sharpR_0(\xi))\in Q^*\oplus Q$, and applying the canonical symplectic sharp \eqref{eqn.sharp_S} recovers the vector field:
 \[
-\sharpS_S(dH|_{(x,\xi)})=(\sharpR_0(\xi),-dU|_x)=(\dot{x},\dot{\xi}).
+\sharpS_S(dH|_{(q,\xi)})=(\sharpR_0(\xi),-dU|_q)=(\dot{q},\dot{\xi}).
 \]
 In particular the flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.\qedhere
 \end{remark}
@@ -2983,12 +2983,12 @@ The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system 
 
 For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\org$ and hom-categories
 \[
-\org^{(K)}(p,q)\coloneqq\ihom{p,q}^{\circ K}\coalg,
+\org^{(K)}(p,p')\coloneqq\ihom{p,p'}^{\circ K}\coalg,
 \]
-where $x^{\circ K}\coloneqq x\circ\cdots\circ x$ is the $K$-fold composite of the polynomial functor $x$ with itself.%
+where $p^{\circ K}\coloneqq p\circ\cdots\circ p$ is the $K$-fold composite of the polynomial functor $p$ with itself.%
 \footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\org^C$ with objects given by $\ob\cat{P}$ and $\org^C(p,p')\coloneqq C([p,p'])$. Then $\org$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\org^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\circ K}}\poly\To{\blank\coalg}\smcat$.
 }
-For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to q(q(S))$. Given a state, it outputs a position $j_1:q(1)$ and, for every input direction $e_1:q[j_1]$, outputs another position $j_2:q(1)$ and, for every input direction $e_2:q[j_2]$, updates the state. 
+For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to p'(p'(S))$. Given a state, it outputs a position $j_1:p'(1)$ and, for every input direction $e_1:p'[j_1]$, outputs another position $j_2:p'(1)$ and, for every input direction $e_2:p'[j_2]$, updates the state. 
 
 We conjecture that by using a modified definition of integrator (\cref{def.integrator}) with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, one again obtains an operad functor $\srwd\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
@@ -3008,17 +3008,17 @@ In this concluding chapter we illustrate the two dynamics functors on four concr
 
 A \emph{scalar} in a symmetric monoidal category is an endomorphism of the monoidal unit $I$; monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\para{\rvect}{\plmfd}$ representing $\srwd$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Newton's method for finding critical points of a potential is such a scalar. Under $\Phiconf$, it determines a scalar in $\org$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
 
-Let $U\colon Q\to\rr$ be a smooth map on a finite-dimensional real vector space $Q$. Its derivative $dU\colon Q\to Q^*$ is a smooth map sending $x\in Q$ to the gradient covector $dU|_x\in Q^*$, and the derivative of $dU$ at $x$ is itself a linear map
+Let $U\colon Q\to\rr$ be a smooth map on a finite-dimensional real vector space $Q$. Its derivative $dU\colon Q\to Q^*$ is a smooth map sending $q\in Q$ to the gradient covector $dU|_q\in Q^*$, and the derivative of $dU$ at $q$ is itself a linear map
 \begin{equation*}
-T_x(dU)\colon Q\to Q^*,
+T_q(dU)\colon Q\to Q^*,
 \end{equation*}
-called the \emph{Hessian} of $U$ at $x$. In a basis $e_1,\ldots,e_n$ of $Q$, the linear map $T_x(dU)$ is given by the matrix of second partial derivatives
+called the \emph{Hessian} of $U$ at $q$. In a basis $e_1,\ldots,e_n$ of $Q$, the linear map $T_q(dU)$ is given by the matrix of second partial derivatives
 \[
-\bigl(T_x(dU)\bigr)_{ij}=\partial_i\partial_j U(x),
+\bigl(T_q(dU)\bigr)_{ij}=\partial_i\partial_j U(q),
 \]
-which is symmetric by equality of mixed partials. Newton's method requires this matrix to have full rank at every $x\in Q$, so that $T_x(dU)$ is an isomorphism. This gives a nondegenerate reactive vector space (\cref{def.rvect}): put
+which is symmetric by equality of mixed partials. Newton's method requires this matrix to have full rank at every $q\in Q$, so that $T_q(dU)$ is an isomorphism. This gives a nondegenerate reactive vector space (\cref{def.rvect}): put
 \[
-\sharpR_x\coloneqq\bigl(T_x(dU)\bigr)^{-1}\colon Q^*\To{\cong}Q,
+\sharpR_q\coloneqq\bigl(T_q(dU)\bigr)^{-1}\colon Q^*\To{\cong}Q,
 \]
 so $(Q,\sharpR_Q)\in\rvect$.
 
@@ -3028,11 +3028,11 @@ So we now have a scalar in $\srwd$
 \]
 with potential $U$.
 
-Applying $\Phiconf$ to $(\rv Q,\bang,\bang,U)$ gives a coalgebra carried by state set $\absval Q$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU|_x$, and the state update \eqref{eqn.state_update_gradient} reads
+Applying $\Phiconf$ to $(\rv Q,\bang,\bang,U)$ gives a coalgebra carried by state set $\absval Q$; in \eqref{eqn.bigtheta} the $\xi_N$- and $\omega_M$-summands vanish, leaving only $dU|_q$, and the state update \eqref{eqn.state_update_gradient} reads
 \[
-x\longmapsto x-\sharpR_x(dU|_x)=x-\bigl(T_x(dU)\bigr)^{-1}(dU|_x),
+q\longmapsto q-\sharpR_q(dU|_q)=q-\bigl(T_q(dU)\bigr)^{-1}(dU|_q),
 \]
-one step of \emph{Newton's method} for finding a critical point of $U$. The reactive structure $\sharpR_x=\bigl(T_x(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic, and the configuration integrator's descent step jumps to that quadratic's critical point; for an exactly quadratic $U$, one step suffices to reach that critical point, which could be a maximum, minimum, or saddle. By contrast, gradient descent uses $\sharpR=\eta_{\mathrm{LR}}\,\id$, and the same descent step always moves downhill, so it can only find minima. Whether or not Newton's method converges to a critical point is a separate question.
+one step of \emph{Newton's method} for finding a critical point of $U$. The reactive structure $\sharpR_q=\bigl(T_q(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic, and the configuration integrator's descent step jumps to that quadratic's critical point; for an exactly quadratic $U$, one step suffices to reach that critical point, which could be a maximum, minimum, or saddle. By contrast, gradient descent uses $\sharpR=\eta_{\mathrm{LR}}\,\id$, and the same descent step always moves downhill, so it can only find minima. Whether or not Newton's method converges to a critical point is a separate question.
 
 %--------------------------------------------------------------------
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
@@ -3055,7 +3055,7 @@ Suppose we are given a smooth parameterized map
 \begin{equation}\label{eqn.model_map}
 F\colon Q\times\rr^m\to\rr^n,
 \end{equation}
-  thought of as a feedforward neural network with parameter space $(Q,\sharpR_Q):\rvect$---i.e., $Q$ comes equipped with a smooth map $\sharpR_Q\colon Q\to\vect(Q^*,Q)$ (\cref{def.rvect}), whose value $\sharpR_x\colon Q^*\to Q$ at $x\in Q$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a $\srwd$-morphism
+  thought of as a feedforward neural network with parameter space $(Q,\sharpR_Q):\rvect$---i.e., $Q$ comes equipped with a smooth map $\sharpR_Q\colon Q\to\vect(Q^*,Q)$ (\cref{def.rvect}), whose value $\sharpR_q\colon Q^*\to Q$ at $q\in Q$ will act as a position-dependent learning-rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a $\srwd$-morphism
 \[
 f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}
 \]
@@ -3071,48 +3071,48 @@ On objects, $\lrn(\rr^m)$ is given by
 because $\cotof{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phiconf(f)$ is a $[\cotof{\rr^m},\cotof{\rr^n}]$-coalgebra.
 
 \paragraph{The coalgebra.}
-Because we are using the configuration integrator, the state set is $\absval{Q}$ by \eqref{eqn.state_space_conf}; an element is a vector of the ``weights and biases'' of the artificial neural network. We unpack the coalgebra step at fixed $x\in Q$, given an input position $z\in\rr^m$ from upstream and a direction $\xi\in T^*_{F(x,z)}\rr^n$ from downstream; where these come from during the training process is taken up below.
+Because we are using the configuration integrator, the state set is $\absval{Q}$ by \eqref{eqn.state_space_conf}; an element is a vector of the ``weights and biases'' of the artificial neural network. We unpack the coalgebra step at fixed $q\in Q$, given an input position $z\in\rr^m$ from upstream and a direction $\xi\in T^*_{F(q,z)}\rr^n$ from downstream; where these come from during the training process is taken up below.
 
-At state $x\in Q$ and input data $z\in\rr^m$, the readout point is
+At state $q\in Q$ and input data $z\in\rr^m$, the readout point is
 \begin{equation*}
-\outp n\coloneqq\outp f(x,z)=F(x,z),
+\outp n\coloneqq\outp f(q,z)=F(q,z),
 \end{equation*}
 which is \eqref{eqn.outpn} in this special case.
 
-Now we feed the external interface a direction $\xi\in T^*_{F(x,z)}\rr^n$. Since $\inpt f$ is the unique map to $\rr^0$ and $U=0$, the second and third summands in \eqref{eqn.bigtheta} vanish. Thus the only nonzero contribution is the cotangent pullback along $F$:
+Now we feed the external interface a direction $\xi\in T^*_{F(q,z)}\rr^n$. Since $\inpt f$ is the unique map to $\rr^0$ and $U=0$, the second and third summands in \eqref{eqn.bigtheta} vanish. Thus the only nonzero contribution is the cotangent pullback along $F$:
 \begin{equation}\label{eqn.dl_pullback}
-(\xi_Q,\xi_M)=(T_{(x,z)}F)^\top\xi\in Q^*\oplus T^*_z\rr^m.
+(\xi_Q,\xi_M)=(T_{(q,z)}F)^\top\xi\in Q^*\oplus T^*_z\rr^m.
 \end{equation}
 Here $\xi_Q$ is the parameter covector and $\xi_M$ is the covector returned to the $\binom{\rr^0}{\rr^m}$ interface. In partial-map notation,
 \[
-\xi_Q=\bigl(T_x(F(\blank,z))\bigr)^\top\xi
+\xi_Q=\bigl(T_q(F(\blank,z))\bigr)^\top\xi
 \qqand
-\xi_M=\bigl(T_z(F(x,\blank))\bigr)^\top\xi.
+\xi_M=\bigl(T_z(F(q,\blank))\bigr)^\top\xi.
 \]
 By \eqref{eqn.state_update_gradient}, the parameter update is therefore
 \begin{equation}\label{eqn.dl_gradient_update}
-x\longmapsto x-\sharpR_x(\xi_Q).
+q\longmapsto q-\sharpR_q(\xi_Q).
 \end{equation}
 Altogether, suppressing the unique $\rr^0$-components, the coalgebra is
 \[
-\Phiconf(F)(x)(z)
-=\Bigl(F(x,z),\;\xi\mapsto\bigl(\xi_M,\,x-\sharpR_x(\xi_Q)\bigr)\Bigr),
+\Phiconf(F)(q)(z)
+=\Bigl(F(q,z),\;\xi\mapsto\bigl(\xi_M,\,q-\sharpR_q(\xi_Q)\bigr)\Bigr),
 \]
 where $(\xi_Q,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
 
 \paragraph{Losses and backpropagation.}
-The zero-potential condition does not mean there is no learning signal; it means the learning signal is supplied as an external cotangent direction. If $\xi=dU|_{F(x,z)}$ for a loss $U\colon\rr^n\to\rr$, then by the chain rule
+The zero-potential condition does not mean there is no learning signal; it means the learning signal is supplied as an external cotangent direction. If $\xi=dU|_{F(q,z)}$ for a loss $U\colon\rr^n\to\rr$, then by the chain rule
 \[
-d(U\circ F)|_{(x,z)}=(T_{(x,z)}F)^\top dU|_{F(x,z)}=(\xi_Q,\xi_M).
+d(U\circ F)|_{(q,z)}=(T_{(q,z)}F)^\top dU|_{F(q,z)}=(\xi_Q,\xi_M).
 \]
-Thus $\xi_Q=d_x(U(F(\blank,z)))$ is the parameter-gradient covector, while $\xi_M=d_z(U(F(x,\blank)))$ is the covector propagated backward to the previous interface, if any. For a composite network, this repeated production of the covector $\xi_M$ is the usual backpropagated gradient signal. On Euclidean parameter spaces, for the constant sharp \eqref{eqn.learning_sharp}, \eqref{eqn.dl_gradient_update} is vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$. This presupposes a single fixed loss $U$ applied at every step; in actual training, $U$ varies per datum (typically through a label), and the source of $z$ varies too. We package both as a single coalgebra next.
+Thus $\xi_Q=d_q(U(F(\blank,z)))$ is the parameter-gradient covector, while $\xi_M=d_z(U(F(q,\blank)))$ is the covector propagated backward to the previous interface, if any. For a composite network, this repeated production of the covector $\xi_M$ is the usual backpropagated gradient signal. On Euclidean parameter spaces, for the constant sharp \eqref{eqn.learning_sharp}, \eqref{eqn.dl_gradient_update} is vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$. This presupposes a single fixed loss $U$ applied at every step; in actual training, $U$ varies per datum (typically through a label), and the source of $z$ varies too. We package both as a single coalgebra next.
 
 \paragraph{Training data as an environment.}
-The preceding discussion focuses on $\xi=dU|_{F(x,z)}$ for a single fixed loss function $U\colon\rr^n\to\rr$ and a single input $z\in\rr^m$. Genuine training involves a stream of such pairs, which we package as an $\org$-map $f_{\mathrm{gen}}\colon\yon\to\Phiconf\binom{\rr^n}{\rr^m}$, i.e.\ a coalgebra on
+The preceding discussion focuses on $\xi=dU|_{F(q,z)}$ for a single fixed loss function $U\colon\rr^n\to\rr$ and a single input $z\in\rr^m$. Genuine training involves a stream of such pairs, which we package as an $\org$-map $f_{\mathrm{gen}}\colon\yon\to\Phiconf\binom{\rr^n}{\rr^m}$, i.e.\ a coalgebra on
 \[
 \cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}
 \]
-whose positions are pairs $(z,\omega)\in\rr^m\times\Omega(\rr^n)$: an input point together with a covector field on the output (typically $\omega=dU$ for some per-datum loss $U\colon\rr^n\to\rr$). Such a coalgebra is, in general, not just a stream of $(z,\omega)$'s, but can branch after each step based on a pair $(\xi_M,y)\in T^*_z\rr^m\times\rr^n$. These are exactly what the network gives back when we wire it in, below: $y=F(x,z)$ is the predicted output and $\xi_M$ is the backpropagated input-gradient. So the training-data block emits $(z,\omega)$ and may transition based on what the network replies, namely the prediction $y$ and the backpropagated input-gradient $\xi_M$. When the transition of the data generator depends on these replies, the data presented to the model-in-training is adapted to that model's behavior; when it ignores them, the data presentation is simply an externally specified supervised stream.
+whose positions are pairs $(z,\omega)\in\rr^m\times\Omega(\rr^n)$: an input point together with a covector field on the output (typically $\omega=dU$ for some per-datum loss $U\colon\rr^n\to\rr$). Such a coalgebra is, in general, not just a stream of $(z,\omega)$'s, but can branch after each step based on a pair $(\xi_M,y)\in T^*_z\rr^m\times\rr^n$. These are exactly what the network gives back when we wire it in, below: $y=F(q,z)$ is the predicted output and $\xi_M$ is the backpropagated input-gradient. So the training-data block emits $(z,\omega)$ and may transition based on what the network replies, namely the prediction $y$ and the backpropagated input-gradient $\xi_M$. When the transition of the data generator depends on these replies, the data presented to the model-in-training is adapted to that model's behavior; when it ignores them, the data presentation is simply an externally specified supervised stream.
 
 We can combine $f_{\mathrm{gen}}$ with the network $\lrn(F)\colon\cotof{\rr^m}\to\cotof{\rr^n}$ from \eqref{eqn.lrn} and \eqref{eqn.model_map} as follows. By closedness of $\org$ (\cref{rmk.org_closed}), $\lrn(F)$ corresponds equivalently to a map
 \[
@@ -3122,7 +3122,7 @@ in $\org$. Tensoring with $f_{\mathrm{gen}}$ and applying the two evaluation pai
 \[
 \yon\To{f_{\mathrm{gen}}\otimes\overline{\lrn(F)}}\bigl(\cotof{\rr^m}\otimes\ihom{\cotof{\rr^n},\yon}\bigr)\otimes[\cotof{\rr^m},\cotof{\rr^n}]\To{\ev_1}\cotof{\rr^n}\otimes\ihom{\cotof{\rr^n},\yon}\To{\ev_2}\yon.
 \]
-The result is a $\yon$-coalgebra on $\absval{Q}\times\absval{Q_{\mathrm{gen}}}$, where $Q_{\mathrm{gen}}$ is the carrier of $f_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $Q\times Q_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $x\in Q$ and dataset state $s\in Q_{\mathrm{gen}}$: $f_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cotof{\rr^m}$ (carrying $z$) with $[\cotof{\rr^m},\cotof{\rr^n}]$ to run the network, producing $y=F(x,z)$; $\ev_2$ pairs $[\cotof{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cotof{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $x\mapsto x-\sharpR_x(\xi_Q)$, and advance $f_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
+The result is a $\yon$-coalgebra on $\absval{Q}\times\absval{Q_{\mathrm{gen}}}$, where $Q_{\mathrm{gen}}$ is the carrier of $f_{\mathrm{gen}}$, i.e.\ a discrete dynamical system on $Q\times Q_{\mathrm{gen}}$ that trains the neural network as it moves through training data. In each step, starting from the current network parameter $q\in Q$ and dataset state $s\in Q_{\mathrm{gen}}$: $f_{\mathrm{gen}}$ at $s$ produces $(z,\omega)$; $\ev_1$ pairs $\cotof{\rr^m}$ (carrying $z$) with $[\cotof{\rr^m},\cotof{\rr^n}]$ to run the network, producing $y=F(q,z)$; $\ev_2$ pairs $[\cotof{\rr^n},\yon]$ (carrying $\omega$) with the resulting $\cotof{\rr^n}$, sampling $\xi=\omega(y)$ and triggering the backward pass; update $q\mapsto q-\sharpR_q(\xi_Q)$, and advance $f_{\mathrm{gen}}$'s state via its coalgebra map applied to $(\xi_M,\,y)$.
 
 %--------------------------------------------------------------------
 \section{The wave equation}\label{sec.wave_equation}
@@ -3157,9 +3157,9 @@ That is, we begin with a single particle whose state is a transverse displacemen
 and calculate that the resulting state dynamics evolves according to the discrete wave equation:%
 \footnote{Taking the continuum limit gives the usual wave equation.}
 \begin{equation}\label{eqn.discrete_wave}
-m\ddot x_i=\kappa(x_{i-1}-2x_i+x_{i+1}),
+m\ddot q_i=\kappa(q_{i-1}-2q_i+q_{i+1}),
 \end{equation}
-where $\ddot x_i(t)=x_i(t+2)-2x_i(t+1)+x_i(t).$
+where $\ddot q_i(t)=q_i(t+2)-2q_i(t+1)+q_i(t).$
 
 We will work in the full suboperad of $\srwd$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider morphisms of the form
 \[
@@ -3175,8 +3175,8 @@ First we give a $0$-ary smooth rewiring diagram $\Part\colon\binom{\rr^0}{\rr^0}
 
 \paragraph{The particle.}
 
-To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in $\srwd$ \eqref{eqn.srw_morphism}, we need a reactive vector space $(Q,\sharpR_Q)$, a smooth output map $\outp f\colon Q\to\rr$, and a smooth potential $U\colon Q\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharpR_x(p)\coloneqq p/m$ (independent of $x\in\rr$); we read the value $x\in\rr$ as the particle's transverse displacement from equilibrium. We take the output map to be the identity, $\outp f(x)\coloneqq x$, and the potential to be
-\[U(x,y)\coloneqq\tfrac{\kappa}{2}(x-y)^2,\]
+To define a particle $\Part\colon\binom{\rr^0}{\rr^0}\to\binom{\rr}{\rr}$ as a $0$-ary smooth rewiring diagram in $\srwd$ \eqref{eqn.srw_morphism}, we need a reactive vector space $(Q,\sharpR_Q)$, a smooth output map $\outp f\colon Q\to\rr$, and a smooth potential $U\colon Q\times\rr\to\rr$. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharpR_q(p)\coloneqq p/m$ (independent of $q\in\rr$); we read the value $q\in\rr$ as the particle's transverse displacement from equilibrium. We take the output map to be the identity, $\outp f(q)\coloneqq q$, and the potential to be
+\[U(q,q')\coloneqq\tfrac{\kappa}{2}(q-q')^2,\]
 the \emph{harmonic} potential, assigning energy to the relative displacement of the particle and its neighbor.
 
 \paragraph{The wiring diagram.}
@@ -3188,11 +3188,11 @@ K+1\From{\inpt f} K,
 \]
 where we identify $K+1$ with the disjoint union of the $K$ internal-box outputs and the external-box input, the external-box input last. Then $\outp f$ picks out the last wire, $\outp{f}(*)=K$, and $\inpt f$ picks out the preceding wire for each internal input: the first internal input is fed by the external input, and input $n>1$ is fed by output $n-1$.
 
-Applying $\rr^\blank$ from \cref{lem.lens_pow}, we obtain the lens $\binom{\rr^K}{\rr^K}\to\binom{\rr}{\rr}$ given by
+Applying $\rr^\blank$ from \cref{lem.lens_pow}, we obtain the lens $\binom{\rr^K}{\rr^K}\to\binom{\rr}{\rr}$ given on coordinates by the functions
 \[
-\outp f(x_1,\ldots,x_K)\coloneqq x_K
+\outp f(q_1,\ldots,q_K)\coloneqq q_K
 \qqand
-\inpt f\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq(x_0,\,x_1,\,\ldots,\,x_{K-1}).
+\inpt f\bigl((q_1,\ldots,q_K),\,q_0\bigr)\coloneqq(q_0,\,q_1,\,\ldots,\,q_{K-1}).
 \]
 {\emergencystretch=2em
 Lenses without potential and without parameterization are special cases of smooth rewiring diagrams in $\srwd$, i.e.\ taking $Q'\coloneqq\rr^0$ and the $0$-potential $V\coloneqq0\colon\rr^K\times\rr\to\rr$, we have the wiring as a smooth (static) wiring diagram
@@ -3203,76 +3203,76 @@ Lenses without potential and without parameterization are special cases of smoot
 
 Composing, we obtain a $0$-ary smooth rewiring diagram, $\fun{wire}_K(\Part,\ldots,\Part)$, with parameter $Q\coloneqq Q'\oplus\rr^{\oplus K}=\rr^K$ (one $\rr$ per particle) and constant sharp
 \begin{equation}\label{eqn.sharp_chain}
-\sharpR_{\vec x}\colon Q^*\to Q,\qquad p\mapsto p/m,
+\sharpR_{\vec q}\colon Q^*\to Q,\qquad p\mapsto p/m,
 \end{equation}
-acting per-particle on each $\rr$-summand (the inverse-mass pairing), independent of $\vec x\in Q$. The defining maps are
+acting per-particle on each $\rr$-summand (the inverse-mass pairing), independent of $\vec q\in Q$. The defining maps are
 \[
-\outp f(x_1,\ldots,x_K)\coloneqq x_K
+\outp f(q_1,\ldots,q_K)\coloneqq q_K
 \qqand
-U\bigl((x_1,\ldots,x_K),\,x_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(x_i-x_{i-1})^2,
+U\bigl((q_1,\ldots,q_K),\,q_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(q_i-q_{i-1})^2,
 \]
-with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto x_{i-1}$ via $\inpt f$ (with $x_0$ the external input).
+with $\inpt f$ vacuous. The sum in $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\Lens\mfd$, where $(\rr,0,+)$ is the additive monoid. Composition with $\fun{wire}_K$ then substitutes $y_i\mapsto q_{i-1}$ via $\inpt f$ (with $q_0$ the external input).
 
 \paragraph{The discrete dynamics.}
 
 The discrete dynamics appear when we apply the functor $\Phiphase\colon\srwd\to\org$. The object $\boxob$ is sent to
 \[
-\Phiphase(\boxob)=\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times \rr}.
+\Phiphase(\boxob)=\sum_{(q,\omega):\rr\times\Omega(\rr)}\yon^{T^*_q\rr\times \rr}.
 \]
 The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \[
 \Phiphase(\fun{wire}_K(\Part,\ldots,\Part))\colon S\To{}\Phiphase(\boxob)(S)
 \]
-with state set $S\coloneqq T^*\rr^K$, with elements written $s=((x_1,\ldots,x_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
+with state set $S\coloneqq T^*\rr^K$, with elements written $s=((q_1,\ldots,q_K),(p_1,\ldots,p_K))$ for positions and momenta (so $\xi=\vec p$ in terms of \eqref{eqn.state_update}), and with the function given by
 \begin{equation*}
-(\vec x,\vec p)\mapsto\Bigl(\bigl(x_K,\,\omega_1\bigr),\;(\xi_N,x_0)\mapsto\bigl(\vec x+\tfrac{1}{m}\vec p,\,\vec p-\xi_Q\bigr)\Bigr),
+(\vec q,\vec p)\mapsto\Bigl(\bigl(q_K,\,\omega_1\bigr),\;(\xi_N,q_0)\mapsto\bigl(\vec q+\tfrac{1}{m}\vec p,\,\vec p-\xi_Q\bigr)\Bigr),
 \end{equation*}
 where each ingredient is read off from the unpacking in \cref{sec.phase_dynamics}:
 \begin{itemize}
-\item The output position $x_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
+\item The output position $q_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
 \item The \emph{harmonic spring} covector field on the left-hand side,
-\[\omega_1(x_0)=d\bigl[\tfrac{\kappa}{2}(x_1-x_0)^2\bigr]\big|_{x_0}=-\kappa(x_1-x_0),\]
-comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dx_0=+1$ via \eqref{eqn.d_potential}).
-\item The pullback covector $\xi_Q\in T^*_{\vec x}Q$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec x}Q\cong Q^*=(\rr^K)^*$) by
+\[\omega_1(q_0)=d\bigl[\tfrac{\kappa}{2}(q_1-q_0)^2\bigr]\big|_{q_0}=-\kappa(q_1-q_0),\]
+comes from \eqref{eqn.omegaprime} (with $\inpt f$ and $\omega_M$ vacuous, and $dq_0=+1$ via \eqref{eqn.d_potential}).
+\item The pullback covector $\xi_Q\in T^*_{\vec q}Q$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec q}Q\cong Q^*=(\rr^K)^*$) by
 \begin{align*}
 (\xi_Q)_i&=
-\bigl((T_{\vec x}\outp f)^\top\xi_N\bigr)_i+\partial_{x_i}U(\vec x,x_0)\\&=
-\begin{cases}\partial_{x_i}U(\vec x,x_0)+0&1\leq i<K\\ \partial_{x_K}U(\vec x,x_0)+\xi_N&i=K\end{cases}\\&=
-\begin{cases}\kappa(2x_i-x_{i-1}-x_{i+1})&1\leq i<K\\ \kappa(x_K-x_{K-1})+\xi_N&i=K\end{cases}
+\bigl((T_{\vec q}\outp f)^\top\xi_N\bigr)_i+\partial_{q_i}U(\vec q,q_0)\\&=
+\begin{cases}\partial_{q_i}U(\vec q,q_0)+0&1\leq i<K\\ \partial_{q_K}U(\vec q,q_0)+\xi_N&i=K\end{cases}\\&=
+\begin{cases}\kappa(2q_i-q_{i-1}-q_{i+1})&1\leq i<K\\ \kappa(q_K-q_{K-1})+\xi_N&i=K\end{cases}
 \end{align*}
-\item The state update applied to $s=(\vec x,\vec p)$ comes from \eqref{eqn.state_update}: using our (constant) sharp $\sharpR_{\vec x}(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharpS_S\colon(\xi,x)\mapsto(x,-\xi)$ from \eqref{eqn.sharp_S}, we get
+\item The state update applied to $s=(\vec q,\vec p)$ comes from \eqref{eqn.state_update}: using our (constant) sharp $\sharpR_{\vec q}(\vec p)=\vec p/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharpS_S\colon(\xi,q)\mapsto(q,-\xi)$ from \eqref{eqn.sharp_S}, we get
 \[
-s'\coloneqq s+\sharpS_S(\xi_Q,\sharpR_{\vec x}(\vec p))=(\vec x+\vec p/m,\,\vec p-\xi_Q).
+s'\coloneqq s+\sharpS_S(\xi_Q,\sharpR_{\vec q}(\vec p))=(\vec q+\vec p/m,\,\vec p-\xi_Q).
 \]
-In other words, writing $s'=(x_1',\ldots,x_K',p_1',\ldots,p_K')$, we have
+In other words, writing $s'=(q_1',\ldots,q_K',p_1',\ldots,p_K')$, we have
 \begin{equation}\label{eqn.potlens_composite_final}
-x_i'\coloneqq x_i+p_i/m
+q_i'\coloneqq q_i+p_i/m
 \qqand
-p_i'\coloneqq\begin{cases}p_i+\kappa(x_{i-1}+x_{i+1}-2x_i)&1\leq i<K\\ p_i+\kappa(x_{K-1}-x_K)-\xi_N&i=K.\end{cases}
+p_i'\coloneqq\begin{cases}p_i+\kappa(q_{i-1}+q_{i+1}-2q_i)&1\leq i<K\\ p_i+\kappa(q_{K-1}-q_K)-\xi_N&i=K.\end{cases}
 \end{equation}
 \end{itemize}
 
 \paragraph{Recovering the wave equation.}
 To recover the discrete wave equation everywhere, we pin both ends of the chain by fixing the phantom neighbor displacements outside the chain to zero:
 \begin{equation}\label{eqn.wave_pin}
-  x_0\coloneqq 0
+  q_0\coloneqq 0
   \qqand
-  x_{K+1}\coloneqq 0.
+  q_{K+1}\coloneqq 0.
 \end{equation}
 Supplying these via the external direction-input means setting
 \begin{equation}\label{eqn.wave_bc}
-x_0\coloneqq 0\qqand\xi_N\coloneqq \kappa\,x_K.
+q_0\coloneqq 0\qqand\xi_N\coloneqq \kappa\,q_K.
 \end{equation}
-With these choices, the boundary case at $i=K$ becomes $p_K'=p_K+\kappa(x_{K-1}-2x_K)$, so the above state update formula reduces to this:
+With these choices, the boundary case at $i=K$ becomes $p_K'=p_K+\kappa(q_{K-1}-2q_K)$, so the above state update formula reduces to this:
 \begin{equation}\label{eqn.state_update_explicit}
-x_i'\coloneqq x_i+p_i/m
+q_i'\coloneqq q_i+p_i/m
 \qqand
-p_i'\coloneqq p_i+\kappa(x_{i-1}+x_{i+1}-2x_i).
+p_i'\coloneqq p_i+\kappa(q_{i-1}+q_{i+1}-2q_i).
 \end{equation}
 
-Following \cref{ex.y_coalgebra_trajectory}, fix any initial $s(0)\coloneqq(\vec{x}(0),\vec{p}(0))$ and write $s(t)$ for the resulting trajectory under \eqref{eqn.state_update_explicit}; in particular $s(t+1)=s(t)'$. We then rewrite the first equation as $p_i(t)=mx_i(t+1)-mx_i(t)$ and substitute it into the second:
+Following \cref{ex.y_coalgebra_trajectory}, fix any initial $s(0)\coloneqq(\vec{q}(0),\vec{p}(0))$ and write $s(t)$ for the resulting trajectory under \eqref{eqn.state_update_explicit}; in particular $s(t+1)=s(t)'$. We then rewrite the first equation as $p_i(t)=mq_i(t+1)-mq_i(t)$ and substitute it into the second:
 \begin{equation}\label{eqn.recurrence}
-mx_i(t+2)-mx_i(t+1)=mx_i(t+1)-mx_i(t)+\kappa(x_{i-1}(t)+x_{i+1}(t)-2x_i(t))
+mq_i(t+2)-mq_i(t+1)=mq_i(t+1)-mq_i(t)+\kappa(q_{i-1}(t)+q_{i+1}(t)-2q_i(t))
 \end{equation}
 Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
 
@@ -3291,9 +3291,9 @@ This is the calculation of \eqref{eqn.state_update_explicit}: writing the state 
 \begin{remark}[Adaptive spring material]\label{rmk.adaptive_spring}
 The above chain uses a constant coupling $\kappa$, but the $\srwd$ formalism supports adaptive ones, as mentioned in \cref{sec.intro_smooth_rewiring}. Replace $\fun{wire}_K$ with a $K$-ary smooth rewiring diagram $\fun{wire}^{\mathrm{adapt}}_K\colon\boxob\tpow{K}\to\boxob$ whose parameter space $(Q,\sharpR_Q)$ is $\rr^{K-1}$ (one stiffness $\kappa_j$ per bond) with variable sharp $\sharpR_\kappa(\xi)_j\coloneqq\eta_{\mathrm{LR}}\kappa_j\xi_j$, whose output and input maps $(\outp f,\inpt f)$ are the same as $\fun{wire}_K$, and whose potential is
 \[
-U\bigl((\kappa_1,\ldots,\kappa_{K-1}),(x_1,\ldots,x_K),x_0\bigr)\coloneqq\sum_{j=1}^{K-1}\tfrac{\kappa_j}{2}(x_{j+1}-x_j)^2.
+U\bigl((\kappa_1,\ldots,\kappa_{K-1}),(q_1,\ldots,q_K),q_0\bigr)\coloneqq\sum_{j=1}^{K-1}\tfrac{\kappa_j}{2}(q_{j+1}-q_j)^2.
 \]
-The resulting composite $\fun{wire}^{\mathrm{adapt}}_K(\Part,\ldots,\Part)$ is a $0$-ary smooth rewiring diagram whose parameter space is $\rr^K\oplus\rr^{K-1}$ (displacements plus stiffnesses). Under $\Phiconf$, the differential of $U$ with respect to $\kappa_j$ contributes a learning signal $\tfrac{1}{2}(x_{j+1}-x_j)^2$, and the variable sharp makes the stiffness update multiplicative: $\kappa_j\mapsto\kappa_j\bigl(1-\eta_{\mathrm{LR}}\tfrac{1}{2}(x_{j+1}-x_j)^2\bigr)$. We do not unpack the full coupled dynamics here.\qedhere
+The resulting composite $\fun{wire}^{\mathrm{adapt}}_K(\Part,\ldots,\Part)$ is a $0$-ary smooth rewiring diagram whose parameter space is $\rr^K\oplus\rr^{K-1}$ (displacements plus stiffnesses). Under $\Phiconf$, the differential of $U$ with respect to $\kappa_j$ contributes a learning signal $\tfrac{1}{2}(q_{j+1}-q_j)^2$, and the variable sharp makes the stiffness update multiplicative: $\kappa_j\mapsto\kappa_j\bigl(1-\eta_{\mathrm{LR}}\tfrac{1}{2}(q_{j+1}-q_j)^2\bigr)$. We do not unpack the full coupled dynamics here.\qedhere
 \end{remark}
 
 \subsection{Functoriality audit: composing in \texorpdfstring{$\termraw{org}$}{Org}}\label{sec.spring_second_pass}
@@ -3310,32 +3310,32 @@ We first apply $\Phiphase$ to $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$ to obta
 \[
   \left[\Phiphase\binom{\rr^0}{\rr^0},\Phiphase(\boxob)\right]=
   \left[\yon,\Phiphase(\boxob)\right]\cong\Phiphase(\boxob)=
-  \sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}
+  \sum_{(q,\omega):\rr\times\Omega(\rr)}\yon^{T^*_q\rr\times\rr}
 \]
-We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state set of $\Phiphase(\Part)$ is $S\coloneqq T^*\rr$, with elements written $s=(x,p)$ for position and momentum. The map
+We took the parameter space to be $\rr$, so by \eqref{eqn.state_space} the state set of $\Phiphase(\Part)$ is $S\coloneqq T^*\rr$, with elements written $s=(q,p)$ for position and momentum. The map
 \[
 S\To{\Phiphase(\Part)}
-\sum_{(x,\omega):\rr\times\Omega(\rr)}S^{T^*_x\rr\times\rr}
+\sum_{(q,\omega):\rr\times\Omega(\rr)}S^{T^*_q\rr\times\rr}
 \]
 is given by
 \[
-(x,p)\mapsto\Bigl(\bigl(x,\,x_{\fun{prev}}\mapsto\kappa(x_{\fun{prev}}-x)\bigr),\;(\xi_{\fun{next}},x_{\fun{prev}})\mapsto\bigl(x+p/m,\,p-\xi_{\fun{next}}+\kappa(x_{\fun{prev}}-x)\bigr)\Bigr).
+(q,p)\mapsto\Bigl(\bigl(q,\,q_{\fun{prev}}\mapsto\kappa(q_{\fun{prev}}-q)\bigr),\;(\xi_{\fun{next}},q_{\fun{prev}})\mapsto\bigl(q+p/m,\,p-\xi_{\fun{next}}+\kappa(q_{\fun{prev}}-q)\bigr)\Bigr).
 \]
-In other words, starting at position $x$ and momentum $p$, it outputs $x$ to the right and the covector field $x_{\fun{prev}}\mapsto\kappa(x_{\fun{prev}}-x)$, which ``pulls'' $x_{\fun{prev}}$ toward $x$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $x_{\fun{prev}}$ from the left, it updates its position by adding velocity (momentum divided by mass) and updates its momentum by adding the spring force $\kappa(x_{\fun{prev}}-x)$, which ``pulls'' $x$ toward $x_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
+In other words, starting at position $q$ and momentum $p$, it outputs $q$ to the right and the covector field $q_{\fun{prev}}\mapsto\kappa(q_{\fun{prev}}-q)$, which ``pulls'' $q_{\fun{prev}}$ toward $q$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $q_{\fun{prev}}$ from the left, it updates its position by adding velocity (momentum divided by mass) and updates its momentum by adding the spring force $\kappa(q_{\fun{prev}}-q)$, which ``pulls'' $q$ toward $q_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
  
 \paragraph{The static wiring.}
 
 Apply $\Phiphase$ to $\fun{wire}_K\colon\boxob^{\otimes K}\to\boxob$. With trivial parameter $\rr^0$, the state space $T^*\rr^0$ is a single point, so $\Phiphase(\fun{wire}_K)$ is \emph{static}: a function $1\to[\Phiphase(\boxob)^{\otimes K},\allowbreak\Phiphase(\boxob)](1)$ is equivalently (see \eqref{eqn.dirichlet_hom}) a polynomial map $\Phiphase(\boxob)^{\otimes K}\to\allowbreak\Phiphase(\boxob)$, i.e.\
 \[
-\sum_{(\vec x,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec x}\rr^K\times\rr^K}
+\sum_{(\vec q,\vec\omega):\rr^K\times\Omega(\rr)^K}\yon^{T^*_{\vec q}\rr^K\times\rr^K}
 \To{\Phiphase(\fun{wire}_K)}
-\sum_{(x,\omega):\rr\times\Omega(\rr)}\yon^{T^*_x\rr\times\rr}.
+\sum_{(q,\omega):\rr\times\Omega(\rr)}\yon^{T^*_q\rr\times\rr}.
 \]
-To each $(\vec x,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(x_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,x_0)$ at the external box, we assign the internal inputs $(\omega_2(x_1),x_0)$, $(\omega_3(x_2),x_1)$, $\ldots$, $(\omega_K(x_{K-1}),x_{K-2})$, $(\xi_N,x_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $x_i$ in its $\xi$-component, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
+To each $(\vec q,\vec \omega)$, the vector of outputs of the internal boxes, we assign the external output $(q_K,\omega_1)$ (the rightmost particle's position with the leftmost box's covector field); and to each external input $(\xi_N,q_0)$ at the external box, we assign the internal inputs $(\omega_2(q_1),q_0)$, $(\omega_3(q_2),q_1)$, $\ldots$, $(\omega_K(q_{K-1}),q_{K-2})$, $(\xi_N,q_{K-1})$---each box $i<K$ receives its right neighbor's covector field evaluated at $q_i$ in its $\xi$-component, box $K$ gets the external $\xi_N$, and each box receives its left neighbor's position. In our concise format,
 \begin{equation}\label{eqn.org_wiring_concise}
-(\vec x,\vec \omega)\mapsto\Big((x_K,\omega_1),\;(\xi_N,x_0)\mapsto\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)\Big).
+(\vec q,\vec \omega)\mapsto\Big((q_K,\omega_1),\;(\xi_N,q_0)\mapsto\bigl((\omega_2(q_1),\ldots,\omega_K(q_{K-1}),\xi_N),\,(q_0,q_1,\ldots,q_{K-1})\bigr)\Big).
 \end{equation}
-The routing $\omega_{i+1}(x_i)$ into box $i$'s $\xi$-component is how the wiring transmits the spring force from box $i+1$ to box $i$; the only external forcing is via $x_0$ (the leftmost neighbor position, fed to box $1$) and $\xi_N$ (the covector at $x_K$, fed to box $K$) in \eqref{eqn.wave_wd}.
+The routing $\omega_{i+1}(q_i)$ into box $i$'s $\xi$-component is how the wiring transmits the spring force from box $i+1$ to box $i$; the only external forcing is via $q_0$ (the leftmost neighbor position, fed to box $1$) and $\xi_N$ (the covector at $q_K$, fed to box $K$) in \eqref{eqn.wave_wd}.
 
 \paragraph{Composition.}
 
@@ -3343,13 +3343,13 @@ The $\org$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phip
 \[
 T^*\rr^K\To{\Phiphase(\Part)^{\otimes K}}\Phiphase(\boxob)^{\otimes K}(T^*\rr^K)\To{\Phiphase(\fun{wire}_K)(T^*\rr^K)}\Phiphase(\boxob)(T^*\rr^K).
 \]
-Given a tuple $(\vec x,\vec p):T^*\rr^K$, the first arrow sends it to
+Given a tuple $(\vec q,\vec p):T^*\rr^K$, the first arrow sends it to
 \begin{equation*}
-\Bigl(\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K,\;(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})\mapsto\bigl(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x)\bigr)\Bigr).
+\Bigl(\bigl(q_i,\,q_i'\mapsto\kappa(q_i'-q_i)\bigr)_{i=1}^K,\;(\vec\xi_{\fun{next}},\vec q_{\fun{prev}})\mapsto\bigl(\vec q+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec q_{\fun{prev}}-\vec q)\bigr)\Bigr).
 \end{equation*}
 When applying the second arrow \eqref{eqn.org_wiring_concise} to the result, the threading goes as follows. 
 
-Beginning with $(\vec x,\vec p):T^*\rr^K$, the coalgebras output $(\vec x,\vec\omega)\coloneqq\bigl(x_i,\,x_i'\mapsto\kappa(x_i'-x_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(x_K,\omega_1)$, and asks for $(\xi_N,x_0)$. Upon receiving it, it sends $\bigl((\omega_2(x_1),\ldots,\omega_K(x_{K-1}),\xi_N),\,(x_0,x_1,\ldots,x_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec x_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(x_i)=\kappa(x_i-x_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_N$, and $(x_{\fun{prev}})_i=x_{i-1}$. This in turn is sent to $(\vec x+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec x_{\fun{prev}}-\vec x))$. This is exactly \eqref{eqn.potlens_composite_final}: the two routes through the functoriality square agree term by term, confirming the signs, indices, and covector-field evaluations in the formulas above.
+Beginning with $(\vec q,\vec p):T^*\rr^K$, the coalgebras output $(\vec q,\vec\omega)\coloneqq\bigl(q_i,\,q_i'\mapsto\kappa(q_i'-q_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(q_K,\omega_1)$, and asks for $(\xi_N,q_0)$. Upon receiving it, it sends $\bigl((\omega_2(q_1),\ldots,\omega_K(q_{K-1}),\xi_N),\,(q_0,q_1,\ldots,q_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec q_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(q_i)=\kappa(q_i-q_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_N$, and $(q_{\fun{prev}})_i=q_{i-1}$. This in turn is sent to $(\vec q+\vec p/m,\,\vec p-\vec\xi_{\fun{next}}+\kappa(\vec q_{\fun{prev}}-\vec q))$. This is exactly \eqref{eqn.potlens_composite_final}: the two routes through the functoriality square agree term by term, confirming the signs, indices, and covector-field evaluations in the formulas above.
 
 \section{Graph Laplacian on a directed graph}\label{sec.graph_laplacian}
 
@@ -3390,12 +3390,12 @@ For each $v\in N$, fix a mass $m_v>0$, and fix a stiffness $\kappa_e>0$ for each
 \]
 defined by:
 \begin{itemize}
-\item parameter space $Q_v\coloneqq\rr\in\rvect$ with constant sharp $\sharpR_x(p)\coloneqq p/m_v$ (independent of $x\in\rr$);
-\item output map $\outp{f_v}\colon Q_v\to\rr^{\outp{v}}$ the broadcast diagonal $x\mapsto(x)_{e\in\outp{v}}$, sending the particle's position to each of its $|\outp{v}|$-many out-edges;
+\item parameter space $Q_v\coloneqq\rr\in\rvect$ with constant sharp $\sharpR_q(p)\coloneqq p/m_v$ (independent of $q\in\rr$);
+\item output map $\outp{f_v}\colon Q_v\to\rr^{\outp{v}}$ the broadcast diagonal $q\mapsto(q)_{e\in\outp{v}}$, sending the particle's position to each of its $|\outp{v}|$-many out-edges;
 \item input map $\inpt{f_v}\coloneqq\bang\colon Q_v\times\rr^{\inpt{v}}\to\rr^0$, uniquely determined;
 \item potential $U_v\colon Q_v\times\rr^{\inpt{v}}\to\rr$ given by
 \[
-U_v\bigl(x,(n_e)_{e\in\inpt{v}}\bigr)\coloneqq\sum_{e\in\inpt{v}}\tfrac{\kappa_e}{2}\,(x-n_e)^2.
+U_v\bigl(q,(n_e)_{e\in\inpt{v}}\bigr)\coloneqq\sum_{e\in\inpt{v}}\tfrac{\kappa_e}{2}\,(q-n_e)^2.
 \]
 \end{itemize}
 The particle $\Part$ of \cref{sec.spring_first_pass} is the case where $|\outp{v}|=|\inpt{v}|\coloneqq 1$ with $\kappa_e\coloneqq\kappa$ and $m_v\coloneqq m$ for a single $\kappa,m>0$.
@@ -3406,28 +3406,28 @@ Composing $\rr^{\varphi_G}$ with the family $(\Part_v)_{v\in N}$ in $\srwd$ prod
 \begin{equation}\label{eqn.psi_graph_lap}
 \fun{wire}_G\coloneqq\rr^{\varphi_G}\bigl((\Part_v)_{v\in N}\bigr)\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}
 \end{equation}
-with composite parameter space $Q_G\coloneqq\bigoplus_{v\in N}Q_v=\rr^N$, constant sharp $\sharpR_{\vec x}(\vec p)\coloneqq(p_v/m_v)_{v\in N}$, vacuous output and input maps, and composite potential $\rr^N\to\rr$ calculated as
+with composite parameter space $Q_G\coloneqq\bigoplus_{v\in N}Q_v=\rr^N$, constant sharp $\sharpR_{\vec q}(\vec p)\coloneqq(p_v/m_v)_{v\in N}$, vacuous output and input maps, and composite potential $\rr^N\to\rr$ calculated as
 \begin{equation}\label{eqn.graph_potential}
-U(\vec x)\;=\;\sum_{v\in N}U_v\bigl(x_v,(x_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(x_{\tgt(e)}-x_{\src(e)})^2.
+U(\vec q)\;=\;\sum_{v\in N}U_v\bigl(q_v,(q_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(q_{\tgt(e)}-q_{\src(e)})^2.
 \end{equation}
 The first equality comes from $\outp f_v$ and $\inpt f_v$ for each $v\in N$; the second equality uses the partition $E=\bigsqcup_{v\in N}\inpt{v}$.
 
 \paragraph{The discrete dynamics.}
 
-Next we will apply $\Phiphase$ to $\fun{wire}_G\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}$. By \cref{sec.phase_dynamics}, since $\Phiphase\binom{\rr^0}{\rr^0}=\yon$, we have that $\Phiphase(\fun{wire}_G)$ is a $[\yon,\yon]=\yon$-coalgebra, i.e.\ a function $T^*\rr^N\to T^*\rr^N$. For $(\vec x,\vec p)\in T^*\rr^N$, it is given by
+Next we will apply $\Phiphase$ to $\fun{wire}_G\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}$. By \cref{sec.phase_dynamics}, since $\Phiphase\binom{\rr^0}{\rr^0}=\yon$, we have that $\Phiphase(\fun{wire}_G)$ is a $[\yon,\yon]=\yon$-coalgebra, i.e.\ a function $T^*\rr^N\to T^*\rr^N$. For $(\vec q,\vec p)\in T^*\rr^N$, it is given by
 \begin{equation}\label{eqn.graph_state_update}
-\Phiphase(\fun{wire}_G)(\vec x,\vec p)\coloneqq\bigl(\vec x+(p_v/m_v)_{v\in N},\,\vec p-\xi_{Q_G}\bigr),
+\Phiphase(\fun{wire}_G)(\vec q,\vec p)\coloneqq\bigl(\vec q+(p_v/m_v)_{v\in N},\,\vec p-\xi_{Q_G}\bigr),
 \end{equation}
-where $\xi_{Q_G}\in(\rr^N)^*$ is as in \eqref{eqn.bigtheta}. With $\outp f$ and $\inpt f$ both vacuous, the pullback terms $(T_{\vec x}\outp f)^\top\xi_N$ and $(T_{\vec x}\inpt f)^\top\omega_M(\inpt m)$ vanish, leaving $\xi_{Q_G}=dU(\vec x)$, i.e.\ the differential of \eqref{eqn.graph_potential}. Component-wise (via \eqref{eqn.tangent_vec}):
+where $\xi_{Q_G}\in(\rr^N)^*$ is as in \eqref{eqn.bigtheta}. With $\outp f$ and $\inpt f$ both vacuous, the pullback terms $(T_{\vec q}\outp f)^\top\xi_N$ and $(T_{\vec q}\inpt f)^\top\omega_M(\inpt m)$ vanish, leaving $\xi_{Q_G}=dU(\vec q)$, i.e.\ the differential of \eqref{eqn.graph_potential}. Component-wise (via \eqref{eqn.tangent_vec}):
 \begin{align}\label{eqn.no_self}
 (\xi_{Q_G})_v
-&=\partial_{x_v}\sum_{e\in E}\tfrac{\kappa_e}{2}(x_{\tgt(e)}-x_{\src(e)})^2\\\nonumber
-&=\sum_{e\in E}\kappa_e\,(x_{\tgt(e)}-x_{\src(e)})\cdot\bigl(\mathbf{1}_{\tgt(e)=v}-\mathbf{1}_{\src(e)=v}\bigr)\\\nonumber
-&=\sum_{e\in\inpt{v}}\kappa_e(x_v-x_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(x_v-x_{\tgt(e)}).
+&=\partial_{q_v}\sum_{e\in E}\tfrac{\kappa_e}{2}(q_{\tgt(e)}-q_{\src(e)})^2\\\nonumber
+&=\sum_{e\in E}\kappa_e\,(q_{\tgt(e)}-q_{\src(e)})\cdot\bigl(\mathbf{1}_{\tgt(e)=v}-\mathbf{1}_{\src(e)=v}\bigr)\\\nonumber
+&=\sum_{e\in\inpt{v}}\kappa_e(q_v-q_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(q_v-q_{\tgt(e)}).
 \end{align}
-where $\mathbf{1}_{\tgt(e)=v}$ and $\mathbf{1}_{\src(e)=v}$ are indicator functions. We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contribute nothing to the sum \eqref{eqn.no_self}. Define a $(N\times N)$-matrix $L_G$ to be the linear function that sends $\vec{x}$ to the vector with the following components:
+where $\mathbf{1}_{\tgt(e)=v}$ and $\mathbf{1}_{\src(e)=v}$ are indicator functions. We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contribute nothing to the sum \eqref{eqn.no_self}. Define a $(N\times N)$-matrix $L_G$ to be the linear function that sends $\vec{q}$ to the vector with the following components:
 \begin{equation}\label{eqn.graph_laplacian}
-(L_G\,\vec x)_v\;\coloneqq\;\sum_{e\in\inpt{v}}\kappa_e(x_v-x_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(x_v-x_{\tgt(e)});
+(L_G\,\vec q)_v\;\coloneqq\;\sum_{e\in\inpt{v}}\kappa_e(q_v-q_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(q_v-q_{\tgt(e)});
 \end{equation}
 One can check that $L_G$ has diagonal and off-diagonal entries given by
 \[
@@ -3437,28 +3437,28 @@ One can check that $L_G$ has diagonal and off-diagonal entries given by
 \]
 This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite{spielman2012spectral}.
 
-Fixing an initial state $(\vec x(0),\vec p(0))\in T^*\rr^N$ and iterating $\Phiphase(\fun{wire}_G)$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec x(t),\vec p(t)\bigr)_{t\in\nn}$. As a notational convenience, write $\ddot{x}_v(t)\coloneqq x_v(t+2)-2x_v(t+1)+x_v(t)$.
+Fixing an initial state $(\vec q(0),\vec p(0))\in T^*\rr^N$ and iterating $\Phiphase(\fun{wire}_G)$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec q(t),\vec p(t)\bigr)_{t\in\nn}$. As a notational convenience, write $\ddot{q}_v(t)\coloneqq q_v(t+2)-2q_v(t+1)+q_v(t)$.
 
 \begin{proposition}\label{prop.graph_laplacian}
 For $\fun{wire}_G$ as in \eqref{eqn.psi_graph_lap}, every trajectory of $\Phiphase(\fun{wire}_G)\colon T^*\rr^N\to T^*\rr^N$ satisfies
 \begin{equation}\label{eqn.graph_laplacian_dynamics}
-m_v\,\ddot{x}_v(t)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
+m_v\,\ddot{q}_v(t)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
 \qquad(v\in N,\ t\in\nn),
 \end{equation}
 where $L_G$ is the graph Laplacian \eqref{eqn.graph_laplacian} of $G$.
 \end{proposition}
 \begin{proof}
-From the state update equation \eqref{eqn.graph_state_update}, the position update is $x_v(t+1)=x_v(t)+p_v(t)/m_v$; solving for momentum we get $p_v(t)=m_v\bigl(x_v(t+1)-x_v(t)\bigr)$. And the momentum update is $p_v(t+1)=p_v(t)-(\xi_{Q_G})_v=p_v(t)-(L_G\vec x(t))_v$, using \eqref{eqn.graph_laplacian} for the last equality. Substituting the first into the second gives
+From the state update equation \eqref{eqn.graph_state_update}, the position update is $q_v(t+1)=q_v(t)+p_v(t)/m_v$; solving for momentum we get $p_v(t)=m_v\bigl(q_v(t+1)-q_v(t)\bigr)$. And the momentum update is $p_v(t+1)=p_v(t)-(\xi_{Q_G})_v=p_v(t)-(L_G\vec q(t))_v$, using \eqref{eqn.graph_laplacian} for the last equality. Substituting the first into the second gives
 \[
-m_v\bigl(x_v(t+2)-x_v(t+1)\bigr)\;=\;m_v\bigl(x_v(t+1)-x_v(t)\bigr)-(L_G\vec x(t))_v,
+m_v\bigl(q_v(t+2)-q_v(t+1)\bigr)\;=\;m_v\bigl(q_v(t+1)-q_v(t)\bigr)-(L_G\vec q(t))_v,
 \]
 and collecting the position terms on the left yields \eqref{eqn.graph_laplacian_dynamics}.
 \end{proof}
 
 \begin{remark}[Heat equation from the configuration integrator]\label{rmk.graph_heat}
-Applying $\Phiconf$ rather than $\Phiphase$ to the \emph{very same} smooth rewiring diagram---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec x}(\vec p)=(p_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^N$ (no momentum), and using the same $\xi_{Q_G}=L_G\vec x$ from \eqref{eqn.graph_laplacian}, the configuration integrator's descent update $\vec x(t+1)=\vec x(t)-\sharpR_{\vec x(t)}(\xi_{Q_G})$ reads component-wise as
+Applying $\Phiconf$ rather than $\Phiphase$ to the \emph{very same} smooth rewiring diagram---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec p)=(p_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^N$ (no momentum), and using the same $\xi_{Q_G}=L_G\vec q$ from \eqref{eqn.graph_laplacian}, the configuration integrator's descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_{Q_G})$ reads component-wise as
 \[
-m_v\bigl(x_v(t+1)-x_v(t)\bigr)\;=\;-\bigl(L_G\,\vec x(t)\bigr)_v
+m_v\bigl(q_v(t+1)-q_v(t)\bigr)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
 \qquad(v\in N,\ t\in\nn),
 \]
 i.e.\ explicit-Euler diffusion on $G$ with vertex masses as heat capacities. Thus a single smooth rewiring diagram gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative one are two semantics of one syntactic object. The sign that distinguishes them is supplied by the integrator---structurally, by the symplectic sharp in the phase case \eqref{eqn.canonical_sharp}, and by the descent step in the configuration case \eqref{eqn.conf_integrator}---not by the reaction.
@@ -3470,7 +3470,7 @@ Both wave and heat dynamics on $\fun{wire}_G$ exhibit superposition: both $\Phip
 
 The operad $\srwd$ of smooth rewiring diagrams provides a single compositional syntax in which gradient-based learning and Hamiltonian-style mechanics coexist as functorial semantics $\Phiconf,\Phiphase\colon\srwd\to\org$. The key mediating construction is Moore internalization, which converts lens interfaces into polynomial interfaces, and integrators, which determine how stored state relates to the parameter space.
 
-Moreover, the two integrators interact with the neural-network example in a suggestive way. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ of \cref{sec.dl_warmup} recovers gradient descent; we expect that applying $\Phiphase$ to the same $\srwd$-morphism---reaction and all, its positive metric $\sharpR_x(p)=\frac{1}{m}p$ now read as a constant inverse mass---yields momentum-based weight dynamics, the undamped heavy-ball method. This places standard and momentum-based training as two integrators of one smooth rewiring diagram, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
+Moreover, the two integrators interact with the neural-network example in a suggestive way. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ of \cref{sec.dl_warmup} recovers gradient descent; we expect that applying $\Phiphase$ to the same $\srwd$-morphism---reaction and all, its positive metric $\sharpR_q(p)=\frac{1}{m}p$ now read as a constant inverse mass---yields momentum-based weight dynamics, the undamped heavy-ball method. This places standard and momentum-based training as two integrators of one smooth rewiring diagram, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
 Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond flat parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-step (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). A stochastic variant---replacing the potential carrier $\yon$ with the finite-distribution monad $\mathrm{rand}$ (the monad $\mathrm{lott}$ of~\cite{Spivak2023lotteries})---would have the potential algebra emit distributions over directions rather than single covectors, yielding stochastic update rules and a path toward compositional stochastic dynamics. Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\srwd^{\tn{lin}}\ss\srwd$ by restricting to constant sharps, linear lens maps, and quadratic potentials. 
 
