@@ -197,7 +197,7 @@ Named (smooth) rewiring diagrams use the wiring family: `\Part` (particle), `\bo
 |---|---|---|
 | Learning rate | `\eta_{\mathrm{LR}}` | never bare `\eta` (reserved, see below) |
 | Generic real scalar | `c`, `t` | `c\in\rr` for scalar multiplication; `t` for time/index. (`\lambda` is taken — dual-pairing element at `eqn.canonical_dual_sum`.) |
-| Potential | `U\colon Q\to\rr` | `V` for a second potential in a composite (`g\circ f`); also `U\colon X\to\rr` for general state space |
+| Potential | `U\colon Q\to\rr` | `V` for a second potential in a composite (`g\circ f`); also `U\colon X\to\rr` for general state space. **Sanctioned overload:** `V` also denotes the graph vertex set in `sec.graph_laplacian` (`v\in V`)—local exception, since no composite-potential `V` co-occurs there (the graph potential is `U`) |
 
 Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 
