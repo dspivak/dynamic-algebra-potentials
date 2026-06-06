@@ -441,6 +441,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\para}[3][]{\Para_{#2}^{#1}(#3)}
 \trackTerm{\rmfdc}{rmfdc}{\Cat{RMfdC}}
 \trackTerm{\rvect}{rvect}{\Cat{RVect}}
+\trackTerm{\SLens}{SLens}{\Cat{SLens}}% submersion lenses (def. in proof of prop.euler_submersion_lenses)
 \newcommand{\rv}[1]{\mathbf{#1}}% a reactive vector space (object of \rvect): \rv Q=(Q,\sharpR_Q), carrier Q
 \trackTermSymbol{Lens}{\Cat{Lens}}
 \newcommand{\Lens}[1]{\termref{Lens}{\termraw{Lens}}_{#1}}
@@ -1546,15 +1547,16 @@ It is normal iff $e\colon I\to z$ is an isomorphism.
 \begin{proof}
 Define $H_X\coloneqq[\inpt X,z]$ for $X\in\{c,d,e\}$. 
 Given a coKleisli morphism $f\colon\lensob{c}\to\lensob{d}$, define $\psi_f\colon H_c\otimes \outp c\otimes\inpt d\to z$ to be the composite
-\[
+\begin{equation}\label{eqn.psi_f}
 H_c\otimes \outp c\otimes\inpt d\To{\inpt f}
 H_c\otimes\Fun{T}(\inpt c)\To{\sigma}
 \Fun{T}(H_c\otimes\inpt c)\To{\Fun T(\ev_c)}\Fun{T}(z)\To{\alpha}z
-\]
+\end{equation}
 and let $\Theta_\potalg(f)$ be the composite
-\[H_c\otimes\outp c\To{\delta}H_c\otimes\outp c\otimes\outp c\To{\coev_d\otimes\outp f}[\inpt d,H_c\otimes\outp
+\begin{equation}\label{eqn.theta_morphism}
+H_c\otimes\outp c\To{\delta}H_c\otimes\outp c\otimes\outp c\To{\coev_d\otimes\outp f}[\inpt d,H_c\otimes\outp
   c\otimes\inpt d]\otimes\outp d\To{\psi_f}H_d\otimes\outp d.
-  \]
+\end{equation}
 
 Preservation of identities is a short diagram chase from the triangle equation $\coev\then\ev=\id$ and the $\Fun T$-algebra unit law $\alpha\circ\eta_z=\id$; we leave it to the reader.
 %IDENTITIES
@@ -1818,7 +1820,7 @@ A morphism $(\lensob{M_1},\dots,\lensob{M_n})\to\lensob N$ in $\rwd_D$ is a morp
 \item $\outp f\colon J(Q)\otimes\outp M\to\outp N$ is a comonoid homomorphism shuttling internal outputs to external outputs, and
 \item $\inpt f\colon J(Q)\otimes\outp M\otimes\inpt N\to\Fun R(\inpt M)$ is a $\Fun R$-effectful backward pass shuttling internal outputs and external inputs to internal inputs.
 \end{itemize}
-The backward pass $\inpt f$ always carries the effect of the potentials monad, its extra contribution beyond purely shuttling inputs. In our main instance, the writer monad $\Fun R\coloneqq R\otimes\blank$ of a commutative monoid $(R,0,+)$ in $\cat M$ (\cref{lem.monoid_to_monad}), this effect separates out explicitly, with $\inpt f$ splitting into an ordinary input map $J(Q)\otimes\outp M\otimes\inpt N\to\inpt M$ and a scalar potential $U\colon J(Q)\otimes\outp M\otimes\inpt N\to R$, recovering the four-part presentation $(Q,\outp f,\inpt f,U)$ used in the smooth case (\cref{eqn.srw_morphism}).
+The backward pass $\inpt f$ always carries the effect of the potentials monad, its extra contribution beyond purely shuttling inputs. In our main instance, the writer monad $\Fun R\coloneqq R\otimes\blank$ of a commutative monoid $(R,0,+)$ in $\cat M$ (\cref{lem.monoid_to_monad}), this effect separates out explicitly, with $\inpt f$ splitting into an ordinary input map $J(Q)\otimes\outp M\otimes\inpt N\to\inpt M$ and a scalar potential $U\colon J(Q)\otimes\outp M\otimes\inpt N\to R$.
 
 
 \begin{remark}\label{rem.filtration}
@@ -2672,19 +2674,18 @@ Specializing $\Phi_\intg$ to the configuration integrator $\conf$ \eqref{eqn.con
 
 The dynamics functor $\Phiconf\colon\srwd\to\org$ is the simpler of the two. A state is just an element $q\in Q$ of the parameterizing manifold---there is no additional ``momentum'' component---and each step updates it by a descent step on $Q$. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
 
-Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\conf}\circ\Phip{\interpsm}$. The functor $\Psisem{\conf}$ replaces a $\cotof{Q}$-parameter via the configuration integrator's descent update $(-1)\circ\chiQ{\rv Q}$ (\cref{eqn.conf_integrator}) on state set $S\coloneqq\absval{Q}$:
+Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\conf}\circ\Phip{\interpsm}$. The functor $\Psisem{\conf}$ replaces a $\cotof{Q}$-parameter with $\Store(S)$, where $S\coloneqq\absval{Q}$:
 \[
-S\yon^S\To{(-1)\circ\chiQ{\rv Q}}\cotof{Q}.
+\Store(S)\To{(-1)\circ\chiQ{\rv Q}}\cotof{Q}.
 \]
 A state consists of a position $q\in Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $q-\sharpR_q(\xi')$ by \eqref{eqn.conf_integrator}.
 
 However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phip{\interpsm}$ factor from \cref{def.smooth_setup,thm.poly_interpretation}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
-\[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
-for the set of (not-necessarily continuous) \emph{covector fields} on $M$.%
-\footnote{We take all set-theoretic sections because the category $\poly$ remembers only the underlying sets of positions and directions, not their topology.} 
-A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\colon\Omega(N)\to\Omega(M)$ defined by $(f^*\omega)(m)\coloneqq(T_m f)^\top\omega(f(m))$.
+\[\Omega(M)\coloneqq\poly(\cotof M,\yon)\]
+for the set of \emph{covector fields} on $M$: a polynomial map $\omega\colon\cotof M\to\yon$ is exactly a choice of covector $\omega(m)\coloneqq\bk{\omega}{m}(*)\in T^*_mM$ at each position $m\in M$, i.e.\ a (not-necessarily continuous) section of the cotangent projection $\pi\colon T^*M\to M$.
+A smooth map $f\colon M\to N$ induces a \emph{pullback} $f^*\coloneqq\poly(\cotof f,\yon)\colon\Omega(N)\to\Omega(M)$, precomposition with $\cotof f$, which sends $\omega$ to $(f^*\omega)(m)=(T_m f)^\top\omega(f(m))$.
 
 \paragraph{The action of $\termraw{Phiconf}$ on objects.}
 The functor $\Phiconf$ acts on objects as follows:
@@ -2719,11 +2720,11 @@ We now unpack the coalgebra function itself,
 S\To{\Phiconf(\rv Q,f)}
 \left[\Phiconf\lensob M,\Phiconf\lensob N\right](S).
 \]
-Given a state $q\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, define the output point using $\outp{f}$ from \eqref{eqn.para_potential_lens_maps}:
+Given a state $q\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the readout position $b=(\outp n,\omega_N)$ is the on-positions component, at parameter $q$, of the polynomial map $\Phip{\interpsm}(f)$ \eqref{eqn.phi_prime_morphism}. Unwinding \cref{thm.poly_interpretation}, this map applies $\Theta_\potalg$ \eqref{eqn.theta_morphism} to the lens $\binom{\inpt f}{\outp f}$, so its $\outp N$-coordinate is carried by the forward map $\outp f$,
 \begin{equation}\label{eqn.outpn}
-\outp n\coloneqq\outp f(q,\outp m)
+\outp n\coloneqq\outp f(q,\outp m),
 \end{equation}
-and the output covector field $\omega_N\colon\inpt N\to T^*\inpt N$ using the rest of \eqref{eqn.para_potential_lens_maps}:
+and its covector-field coordinate $\omega_N\colon\inpt N\to T^*\inpt N$ is carried by the map $\psi_f$ \eqref{eqn.psi_f}, whose backward map $\inpt f$ contributes a pullback of $\omega_M$ and whose potential algebra $\potd$ contributes the differential of $U$:
 \begin{equation}\label{eqn.omegaprime}
 \omega_N(\inpt n)\coloneqq(\inpt f(q,\outp m,\blank))^*\omega_M\big|_{\inpt n}\;+\;d(U(q,\outp m,\blank))\big|_{\inpt n}.
 \end{equation}
@@ -2734,11 +2735,11 @@ b\coloneqq\bigl(\outp n,\,\omega_N\bigr)\;\in\;\outp N\times\Omega(\inpt N).
 \]
 
 
-Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiconf\lensob N[b]$, the coalgebra function $\Phiconf(\rv Q,f)$ at $(q,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ as follows. Let
+Now given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiconf\lensob N[b]$, the coalgebra function $\Phiconf(\rv Q,f)$ at $(q,a)$ produces a direction in $T^*_{\outp m}\outp M\times\inpt M$ by the on-directions component of the same map $\Phip{\interpsm}(f)$, i.e.\ of $\Theta_\potalg(f)$ \eqref{eqn.theta_morphism}. The input point is pulled back along the backward map $\inpt f$,
 \begin{equation}\label{eqn.inptm}
-\inpt m\coloneqq\inpt f(q,\outp m,\inpt n)
+\inpt m\coloneqq\inpt f(q,\outp m,\inpt n),
 \end{equation}
-and define
+and $\xi_N$, $\omega_M$, and the potential are pulled back along the maps of \eqref{eqn.para_potential_lens_maps} to give
 \begin{equation}\label{eqn.bigtheta}
 (\xi_Q,\,\xi_M,\,\xi_{\inpt N})\coloneqq (T_{(q,\outp m)}\outp f)^\top\xi_N \;+\; (T_{(q,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m) \;+\; dU\big|_{(q,\outp m,\inpt n)}\;
 \end{equation}
@@ -2776,7 +2777,7 @@ We can now fulfill the promise from \cref{sec.related_cls}.
 
 \begin{proposition}[Eulerized submersion lenses]\label{prop.euler_submersion_lenses}
 For $\cat R$ as in \cref{sec.related_cls}, there is a category $\cat S$, whose objects are submersions, and a diagram
-\[
+\begin{equation}\label{eqn.cls_diag}
 \begin{tikzcd}[column sep=large, row sep=large]
 \mathbf{OpenErg}\ar[d, "{\mathrm{collapse}\circ T^*}"'] &
 \cat{R}\ar[l, "{\mathrm{wide}}"']\ar[r, "{\mathrm{ff}}"]\ar[d] &
@@ -2785,12 +2786,12 @@ For $\cat R$ as in \cref{sec.related_cls}, there is a category $\cat S$, whose o
 \cat{S}\ar[l, "{\mathrm{wide}}"]\ar[r] &
 \org
 \end{tikzcd}
-\]
+\end{equation}
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition}
 
 \begin{proof}
-Let $\Cat{SLens}$ denote the symmetric monoidal category whose objects are submersions $p\colon E\surj B$ and whose morphisms $p\to p'$, for $p'\colon E'\surj B'$, are smooth maps
+Let $\defineTerm{SLens}$ denote the symmetric monoidal category whose objects are submersions $p\colon E\surj B$ and whose morphisms $p\to p'$, for $p'\colon E'\surj B'$, are smooth maps
 \[
 \begin{tikzcd}
 E\ar[d, ->>, "p"']&
@@ -2801,19 +2802,20 @@ B\ar[r, "r"']&
 B'\ar[ul, phantom, very near end, "\lrcorner"]
 \end{tikzcd}
 \]
-There is a strong symmetric monoidal functor $P\colon\Cat{SLens}\to\poly$ given on objects by
+The monoidal product is defined by $(E\surj B)\otimes(E'\surj B')\coloneqq(E\times E'\surj B\times B')$, and the unit is $\rr^0\surj\rr^0$.
+There is a strong symmetric monoidal functor $P\colon\SLens\to\poly$ given on objects by
 \[
 P(E\surj B)\coloneqq\sum_{b:B}\yon^{E_b}.
 \]
-It sends a submersion lens $(r,\alpha)\colon p\to p'$ to the polynomial map with forward component $r$ and backward component $\alpha$. It is strong monoidal because the tensor product of submersions is computed by products of total and base spaces.
+It sends a submersion lens $(r,\alpha)\colon p\to p'$ to the polynomial map with forward component $r$ and backward component $\alpha$, and is strong monoidal by construction.
 
 The strong monoidal functor
 \[
-\defineTerm{vectiso}\to\Cat{SLens},
+\defineTerm{vectiso}\to\SLens,
 \qquad
 Q\longmapsto (TQ\surj Q)
 \]
-induces an action of $\vectiso$ on $\Cat{SLens}$; let $\cat{S}\coloneqq\para{\vectiso}{\Cat{SLens}}$. The objects of $\cat S$ are submersions, and a morphism $p\to p'$ in $\cat S$ is a finite-dimensional vector space $Q$ and smooth maps
+induces an action of $\vectiso$ on $\SLens$; let $\cat{S}\coloneqq\para{\vectiso}{\SLens}$. The objects of $\cat S$ are submersions, and a morphism $p\to p'$ in $\cat S$ consists of a tuple $(Q,r,u,\alpha)$, where $Q$ is a finite-dimensional vector space, $r\colon Q\times B\to B'$ is the forward map on bases, and $(u,\alpha)\colon(Q\times B)\times_{B'}E'\to Q\times E$ is the backward map, assembled into the submersion lens
 \[
 \begin{tikzcd}
 Q\times E\ar[d, ->>, "Q\times p"']&
@@ -2825,40 +2827,50 @@ B'\ar[ul, phantom, very near end, "\lrcorner"]
 \end{tikzcd}
 \]
 
-Let $\absval{\blank}\colon\vectiso\to\smsetiso$ be the underlying-set functor. For $Q:\vectiso$ and $p\colon E\surj B$, define a polynomial map
+Let $\absval{\blank}\colon\vectiso\to\smsetiso$ be the underlying-set functor. For $Q:\vectiso$ and $p\colon E\surj B$, define a polynomial map\footnote{The Euler step $\chi'_{Q,p}$ is a sharp-free analogue of $\chi$ (\cref{prop.rvect_polynomial}); we do not spell out the relation here.}
 \[
-\chi_{Q,p}\colon \Store(\absval{Q})\otimes P(p)\to P\bigl((TQ\surj Q)\otimes p\bigr).
+\chi'_{Q,p}\colon \Store(\absval{Q})\otimes P(p)\to P\bigl((TQ\surj Q)\otimes p\bigr).
 \]
-Both sides have positions $(q,b)\in Q\times B$. Using the canonical identification $TQ\cong Q\oplus Q$ \eqref{eqn.TT_def}, the map $\chi_{Q,p}\colon T_qQ\times E_b\to Q\times E_b$ on directions at $(q,b)$ is given by
+Both sides have positions $(q,b)\in Q\times B$, so take $\chi'_{Q,p}$ on positions to be the identity. Using the canonical identification $TQ\cong Q\oplus Q$ \eqref{eqn.TT_def}, the map $\chi'_{Q,p}\colon T_qQ\times E_b\to Q\times E_b$ on directions at $(q,b)$ is given by
 \[
 (\dot q,e)\mapsto (q+\dot q,e).
 \]
 These maps are natural in vector-space isomorphisms and submersion lenses, and monoidal by componentwise addition in direct sums. Thus \cref{prop.para_square} induces a normal lax symmetric monoidal functor
 \[
-\cat{S}=\para{\vectiso}{\Cat{SLens}}\to\para{\smsetiso}{\poly}.
+\cat{S}\coloneqq\para{\vectiso}{\SLens}\to\para{\smsetiso}{\poly}.
 \]
-Composing with the identification $\para{\smsetiso}{\poly}\cong\orgiso$ of \cref{prop.org_as_para} and the inclusion $\orgiso\inj\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the coalgebra with state set $Q$ whose action is
-\[
+Composing with the identification $\para{\smsetiso}{\poly}\cong\orgiso$ of \cref{prop.org_as_para} and the inclusion $\orgiso\inj\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
+\begin{equation}\label{eqn.S_coalgebra}
 q\longmapsto b\longmapsto
 \left(
 r(q,b),\;
 a'\longmapsto\bigl(\alpha(q,b,a'),\,q+u(q,b,a')\bigr)
 \right).
-\]
+\end{equation}
 
 The functor $\cat S\to\mathbf{COrg}$ is more straightforward: an $\cat S$-morphism is a vector space $Q$ together with a lens $(TQ\surj Q)\otimes p\to p'$, hence a $\mathbf{COrg}$ morphism with state manifold $Q$. It is identity-on-objects, hence wide.
 
 For $\cat{R}$ we take the category $\cat R$ from \cref{sec.related_cls}. We define $\cat R\to\cat S$ on objects by $M\mapsto T^*M\surj M$. On morphisms, send $(\rv Q,w,E)\colon M\to N$ to the $\cat S$-morphism with parameter space $Q$, readout $r\coloneqq w$, and for the rest of the data write
 \[
-dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N)=(\xi_Q,\xi_M)\in Q^*\oplus T_m^*M
+(\xi_Q,\xi_M)\coloneqq dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N)\in Q^*\oplus T_m^*M
 \]
 and set $\alpha(q,m,\xi_N)\coloneqq\xi_M$ and $u(q,m,\xi_N)\coloneqq-\sharpR_q(\xi_Q)$, the descent velocity. Functoriality follows from the chain rule.
 
-The lower-right square commutes as follows. Under the fully faithful functor $\cat R\to\srwd$, the morphism $(\rv Q,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
+The right square in \eqref{eqn.cls_diag} commutes as follows. Under the fully faithful functor $\cat R\to\srwd$, the morphism $(\rv Q,w,E)$ is sent to the smooth rewiring diagram with output map $w$, unique input map, and potential $E$. Since the input interface is terminal, the only nonzero terms in \eqref{eqn.bigtheta} are
 \[
 dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N)=(\xi_Q,\xi_M).
 \]
-Thus \eqref{eqn.state_update_gradient} sends the state $q$ to $q-\sharpR_q(\xi_Q)$ and returns the internal covector $\xi_M$, exactly the coalgebra obtained above from the image of $(\rv Q,w,E)$ in $\cat S$. The descent sign here sits in the configuration integrator \eqref{eqn.conf_integrator}---the minus in the velocity $u=-\sharpR_q(\xi_Q)$---while the reaction $\sharpR_Q$ stays sign-free; CLS make the opposite choice, folding the sign into the reaction so that the velocity is $\sharpR_Q(dE)$ directly~\cite[Eq.~1]{capucci2024organizing}. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS collapse construction restricted to $\cat R$.\qedhere
+Thus \eqref{eqn.state_update_gradient} sends the state $q$ to $q-\sharpR_q(\xi_Q)$ and returns the internal covector $\xi_M$. The $\cat S$-image of $(\rv Q,w,E)$ has readout $r=w$, $\alpha(q,m,\xi_N)=\xi_M$, and $u(q,m,\xi_N)=-\sharpR_q(\xi_Q)$, so \eqref{eqn.S_coalgebra} reads
+\[
+q\mapsto m\mapsto
+\Big(
+w(q,m),\;
+\xi_N\mapsto\bigl(\xi_M,\,q-\sharpR_q(\xi_Q)\bigr)
+\Big),
+\qquad
+(\xi_Q,\xi_M)=dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N),
+\]
+which is exactly the $\Phiconf$-coalgebra \eqref{eqn.state_update_gradient} of the same diagram. Hence the right square commutes. The descent vs. ascent sign here sits in the configuration integrator \eqref{eqn.conf_integrator}---seen as the minus in the velocity $u=-\sharpR_q(\xi_Q)$---while the reaction $\sharpR_Q$ stays sign-free; CLS make the opposite choice, folding the sign into the reaction so that the velocity is $\sharpR_Q(dE)$ directly~\cite[Eq.~1]{capucci2024organizing}. The remaining compatibility with $\mathbf{OpenErg}$ is the CLS ``collapse'' construction restricted to $\cat R$ \cite[Prop.~21]{capucci2024organizing}.\qedhere
 \end{proof}
 
 Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) and \cref{sec.dl_warmup} (gradient descent and backpropagation).
@@ -2869,15 +2881,15 @@ Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) 
 
 We remind the reader of \cref{warn.prime}: primes (e.g.\ $\xi', q'$) never denote derivatives in this paper.
 
-Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\phase}\circ\Phip{\interpsm}$. The functor $\Psisem{\phase}$ replaces a $\cotof{Q}$-parameter via the phase integrator \eqref{eqn.phase_update} on state set $S\coloneqq\absval{T^*Q}$:
+Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\phase}\circ\Phip{\interpsm}$. The functor $\Psisem{\phase}$ replaces a $\cotof{Q}$-parameter with $\Store(S)$, where $S\coloneqq\absval{T^*Q}$:
 \[
-S\yon^S\To{\updnu}\cotof{Q}.
+\Store(S)\To{\updnu}\cotof{Q}.
 \]
 A state consists of a position and a momentum $(q,\xi)\in T^*Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $(q+\sharpR_q(\xi),\,\xi-\xi')$
- by \eqref{eqn.phase_update}. The readout and backward pass of the coalgebra $\Phiphase(\rv Q,f)$ are identical to the configuration case---their formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta} depend only on the parameter position $q$, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
+ by \eqref{eqn.phase_update}. The readout and returned direction of the coalgebra $\Phiphase(\rv Q,f)$ are identical to the configuration case---they are the on-positions and on-directions components of the shared factor $\Phip{\interpsm}$, formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta}, which depend only on the parameter position $q$, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
 
 \paragraph{The action of $\termraw{Phiphase}$ on objects.}
-The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case.
+The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case (see \eqref{eqn.Phi_on_obs}).
 
 \paragraph{The action of $\termraw{Phiphase}$ on morphisms.}
 Describing the action of $\Phiphase$ on morphisms will extend to the end of this section, \cref{sec.phase_dynamics}. Let $(Q,\sharpR_Q):\rvect$ and let
@@ -2898,13 +2910,12 @@ We now unpack the coalgebra function itself,
 S\To{\Phiphase(\rv Q,f)}
 \left[\Phiphase\lensob M,\Phiphase\lensob N\right](S).
 \]
-Given a state $s\coloneqq(q,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the output point $\outp n$, output covector field $\omega_N$, and readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ are defined by \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the coalgebra function $\Phiphase(\rv Q,f)$ at $(s,a)$ defines $\inpt m$ via \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ via \eqref{eqn.bigtheta}, returning the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, exactly as in \cref{sec.configuration_dynamics}---the formulas depend on $q$ alone, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(q,\xi)$, the state is updated to
+Given a state $s\coloneqq(q,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ is the on-positions component of $\Phip{\interpsm}(f)$, with $\outp n$ and $\omega_N$ as in \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the on-directions component of $\Phip{\interpsm}(f)$ returns the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, with $\inpt m$ as in \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ as in \eqref{eqn.bigtheta}. These match the configuration case (\cref{sec.configuration_dynamics}): $\Phiphase$ and $\Phiconf$ share the factor $\Phip{\interpsm}$, whose on-positions and on-directions components depend only on the parameter position, which the phase integrator presents as $q$ \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(q,\xi)$, the state is updated to
 \begin{equation}\label{eqn.state_update}
 s+\sharpS_S(\xi_Q,\sharpR_q(\xi))=\bigl(q+\sharpR_q(\xi),\,\xi-\xi_Q\bigr).
 \end{equation}
-We will now break down \cref{eqn.state_update}, which is the phase integrator \eqref{eqn.phase_update} with the substitution $\xi'=\xi_Q$.
 
-Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the Euler step $\chi$ on the phase space $T^*Q$ \eqref{eqn.directions_sharp}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$; and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from $\nu$ \eqref{eqn.nu} at $(q,\xi)$.
+We will now break down \cref{eqn.state_update}, which is the phase integrator \eqref{eqn.phase_update} with the substitution $\xi'=\xi_Q$. Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the Euler step $\chi$ on the phase space $T^*Q$ \eqref{eqn.directions_sharp}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$; and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from $\nu$ \eqref{eqn.nu} at $(q,\xi)$.
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_Q,\sharpR_q(\xi))=(\sharpR_q(\xi),-\xi_Q)$, then componentwise addition with $s=(q,\xi)$ produces $(q+\sharpR_q(\xi),\,\xi-\xi_Q)$.
 
@@ -2939,9 +2950,9 @@ which is the explicit Euler step for the vector field $(\dot q,\dot\xi)$ where
 \qquad
 \dot\xi\coloneqq-dU|_q.
 \]
-In the one-dimensional mass=$m$ case this reads $\dot q=\xi/m$ and $\dot\xi=-dU|_q$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot q$ the usual momentum.
+For instance, take $\sharpR_0(\xi)=\xi/m$ for a scalar mass $m>0$. Then $\dot q=\sharpR_0(\xi)=\xi/m$ and $\dot\xi=-dU|_q$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot q$ the usual momentum.
 
-Finally, when \textbf{the sharp is symmetric}, in the sense that $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in Q^*$, this vector field is \emph{Hamiltonian} meaning that it is the symplectic sharp applied to the derivative of some function, namely
+Finally, when \textbf{the sharp is symmetric}, in the sense that $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in Q^*$, this vector field is \emph{Hamiltonian} meaning that---as we'll soon see---it is the symplectic sharp applied to the derivative of some function, namely
 \[
 H(q,\xi)\coloneqq \tfrac12\xi(\sharpR_0(\xi))+U(q).
 \]
@@ -2954,15 +2965,15 @@ In particular the flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.\qe
 \end{remark}
 
 \begin{remark}[Euler step and energy non-conservation]\label{rmk.euler_energy}
-\Cref{eqn.state_update} can be read two ways. As the defining equation of a discrete dynamical system, it is exact: that's the perspective of \cref{sec.wave_equation} below, where the recurrence formula \eqref{eqn.recurrence} \emph{is} the discrete wave equation we want. But as a numerical time-stepper for the corresponding continuous phase-space dynamics---Hamiltonian in the case presented in \cref{rmk.constant_inverse_mass_hamiltonian}---it is not adequate over many timesteps: explicit Euler is not a \emph{symplectic integrator}, so the simulated trajectory accumulates energy drift and diverges from the true flow. For example, on the harmonic oscillator of \cref{sec.wave_equation}, the simulated energy grows without bound for any positive step size \cite[Ch.~I]{hairer2006geometric}.
+The state update equation \eqref{eqn.state_update} can be read two ways. As the defining equation of a discrete dynamical system, it is exact: that's the perspective of \cref{sec.wave_equation} below, where the recurrence formula \eqref{eqn.recurrence} \emph{is} the discrete wave equation we want. But as a numerical time-stepper for the corresponding continuous phase-space dynamics---Hamiltonian in the case presented in \cref{rmk.constant_inverse_mass_hamiltonian}---it is not adequate over many timesteps: explicit Euler is not a \emph{symplectic integrator}, so the simulated trajectory will accumulate energy drift and diverge from the true flow. For example, on the harmonic oscillator of \cref{sec.wave_equation}, the simulated energy grows without bound for any positive step size \cite[Ch.~I]{hairer2006geometric}.
 
-The configuration analog \eqref{eqn.state_update_gradient} (\cref{sec.configuration_dynamics}) is also explicit Euler, but this time on a gradient flow rather than a Hamiltonian flow. So when we use Euclidean parameter spaces, the constant $\sharp$-case \eqref{eqn.learning_sharp} yields vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$, which is a standard, well-behaved update for sufficiently small $\eta_{\mathrm{LR}}$. 
+The configuration analog \eqref{eqn.state_update_gradient} (\cref{sec.configuration_dynamics}) is also explicit Euler, but it does not have the same issue. Because it is on a gradient flow rather than a Hamiltonian flow and uses Euclidean parameter spaces, the constant $\sharp$-case \eqref{eqn.learning_sharp} yields vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$. This is a standard, well-behaved update for sufficiently small $\eta_{\mathrm{LR}}$. 
 
-The following remark sketches one possible target for such refinements.\qedhere
+The following remark sketches one possible solution for the inadequacy above.\qedhere
 \end{remark}
 
 \begin{remark}[Multi-stage integrators and $\org^{(K)}$]\label{rmk.org_N}
-The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system emits, receives, and updates exactly once. Many useful numerical integrators are instead \emph{multi-stage}: an explicit $K$-stage Runge--Kutta method evaluates the vector field $K$-many times per step, and velocity Verlet (leapfrog) for Hamiltonian flows \cite[Ch.~VI]{hairer2006geometric} queries the force twice, at the initial and at the post-drift positions. We sketch a target bicategory that conjecturally accommodates such schemes.
+The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system emits, receives, and updates exactly once. Many useful numerical integrators, such as Runge--Kutta and velocity Verlet (leapfrog) \cite[Ch.~VI]{hairer2006geometric}, are instead \emph{multi-stage}. We sketch a target bicategory that conjecturally accommodates such schemes.
 
 For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\org$ and hom-categories
 \[
@@ -2973,7 +2984,7 @@ where $p^{\circ K}\coloneqq p\circ\cdots\circ p$ is the $K$-fold composite of th
 }
 For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to p'(p'(S))$. Given a state, it outputs a position $j_1:p'(1)$ and, for every input direction $e_1:p'[j_1]$, outputs another position $j_2:p'(1)$ and, for every input direction $e_2:p'[j_2]$, updates the state. 
 
-We conjecture that by using a modified definition of integrator (\cref{def.integrator}) with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, one again obtains an operad functor $\srwd\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+We conjecture that by using a modified definition of integrator (\cref{def.integrator}), namely with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, one again obtains an operad functor $\srwd\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 
