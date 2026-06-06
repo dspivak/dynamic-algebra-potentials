@@ -120,7 +120,8 @@ edit, where updating the table is the whole point.
 | Underlying / carrier vector space | `Q`, `W` | also: domain for `T^*Q` constructions; abused for the object `\rv Q` when sharp is understood or canonical (`T^*Q`) |
 | Point of a manifold | `m`, `n` | `m\colon\rr^0\to M` style |
 | Point of a vector space | `q` | element tracks the carrier `Q`; position in `(q,\xi)\in T^*Q`; second point `q'`, indexed `q_1,\ldots,q_K` (physics generalized coordinates). `x` is retired as a point, and `q` is never a polynomial |
-| Tangent vector | `v`, `w` | at `T_qQ`; avoid clashing with vector-space `Q` |
+| Tangent vector (generic) | `v`, `w` | at `T_qQ`; avoid clashing with vector-space `Q`. A generic direction with no underlying trajectory — e.g. the reactive-pairing arguments `\pairing{v,v'}_q` (`def.rvect`). For a velocity (derivative of a trajectory) use the dot below |
+| Velocity (tangent vector as time-derivative) | `\dot q`, `\dot m`, `\dot\xi` | the derivative of a `Q`-/`M`-/`Q^*`-valued trajectory; **tracks its basepoint** (so `\dot q\in T_qQ`, not `v`). Used in Euler steps (`q\mapsto q+\dot q`), differentials (`eqn.differential`: `\dot m\in T_mM`), and vector fields (`\dot q=\sharpR_0(\xi)`, `\dot\xi=-dU|_q` in `sec.phase_dynamics`) |
 | Covector | `\xi` | primed/indexed: `\xi'`, `\xi_Q`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,q)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
 | Phase point | `(q,\xi)\in T^*Q` | position–momentum pair |
 | State (underlying set) | `s\in S` | `S=|Q|` when from a reactive vector space |
@@ -130,14 +131,13 @@ Search hints: "manifold", "vector space", "point", "covector", "tangent",
 
 ### Sections of `T^*` (covector fields)
 
-A section of `T^*` is `\omega\colon M\to T^*M` for a generic manifold `M`; on `T^*Q` we use the kinetic datum `\beta`.
+A section of `T^*` is `\omega\colon M\to T^*M` for a generic manifold `M`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
 | Generic section of `T^*` | `\omega` | a covector field on a manifold `M`; also names an induced nat. trans. |
-| Kinetic datum | `\beta` | the `\sharpR`-packaging `\beta_Q(x,\xi)=(0,\sharpR_x\xi)` on `T^*Q`; term-tracked (`\trackTermSymbol{beta_kin}`), anchor `\defineTerm{beta_kin}_Q` at `eqn.kinetic_one_form` |
 
-Search hints: `"kinetic"`, `\\beta`, `\\colon T^*`.
+Search hints: `\\omega`, `\\colon T^*`.
 
 ### p-coalgebras and state-update maps
 
@@ -157,10 +157,10 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 | Parameter interface | `p` | strong monoidal functor `\cat Q\to\poly`; `p_a` (=`p(a)`) is a polynomial for each `a:\cat Q`. Deliberately the generic-polynomial letter, since it is a poly-valued functor; generic polynomial *objects* are primed (`p'`, `p''`), with a probe/variable object `a` |
 | State space | `\Fun S` | strong monoidal functor `\cat Q\to\smsetiso`; `\Fun S(a)` is the state set |
 | Integrator | `\intg` (renders `\mathfrak{i}`) | the pair `\intg=(\Fun S,\upd)` (`def.integrator`). Instances: `\intg_{\mathrm{conf}}` (configuration, `\Fun S=\absval\blank`) and `\intg_{\mathrm{phase}}` (phase, `\Fun S=\absval{T^*\blank}`) |
-| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\chi` (configuration; `\chiQ` for its `\rv Q`-component, distinct from the lax/colax `\theta` of line 213), `\upd_\beta` (phase). The `\Para_{\cat Q}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat Q` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
-| Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\upd_\beta=\nu\circ\chiQ{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
+| Update | `\upd` (renders `u`) | the second component of an integrator: a monoidal nat. trans. `\Store\circ\Fun S\Rightarrow p`. Instances: `\chi` (the Euler step; `\chiQ` for its `\rv Q`-component, distinct from the lax/colax `\theta` of line 213; the configuration update is `(-1)\circ\chi`), `\updnu` (phase; renders `u_\nu`). The `\Para_{\cat Q}^\upd` functors in `prop.integrator_to_org` carry the update as superscript (the action-square datum) and the acting category `\cat Q` as subscript (the identity `F`, per the suppression convention after `prop.para_square`) |
+| Kinetic update | `\nu` | the monoidal nat. trans. `\cot\circ T^*\Rightarrow\cot` that reads out the position and injects `(\xi',\sharpR_x\xi)`; the phase update factors as `\updnu=\nu\circ\chiQ{T^*\blank}` (`sec.phase_integrators`). Greek `\nu`, distinct from `\upd` (which renders `u`) |
 | Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
-| Dynamics functor | `\Phi_{\interp,\intg}`, `\Phip{\interp}` | `\Phi_{\interp,\intg}\colon\rwd_D\to\org` (`thm.dynamics_functor`), smooth instance `\Phi_\intg\colon\srwd\to\org` (`cor.functor`); `\Phip{\interp}` (the macro `\Phip[1]{\Phi'_{#1}}`, renders `\Phi'_\mathfrak{p}`) is the polynomial-interpretation factor into `\para{\Fun c\circ J}\poly` (`thm.poly_interpretation`). **Always write `\Phip{...}`, never a bare `\Phi'`** — the subscript is the in-scope interpretation `\interp` (`\mathfrak p`); the one definitional unfolding `\Phip{\interp}=\Phi'_{\cot,(\yon,\potd)}` is at `prop.smooth_setup`. Named: `\Phiconf=\Phi_{\intg_{\mathrm{conf}}}`, `\Phiphase=\Phi_{\intg_{\mathrm{phase}}}`. See §"Abstract framework" |
+| Dynamics functor | `\Phi_{\interp,\intg}`, `\Phip{\interp}` | **The dynamics functor has two independent inputs — interpretation datum and integrator — and the notation names both, interpretation first: `\Phi_{\interp,\intg}` (`thm.dynamics_functor`, `\rwd_D\to\org`).** Never silently suppress an input. The smooth chapter (`ch.smooth_dynamics`) fixes the interpretation to `\interpsm`=`\mathrm{sm}` and then **explicitly announces** that it drops it from the notation (sentence right after the composite display in the chapter opener), writing `\Phi_\intg` for `\Phi_{\interpsm,\intg}` thereafter. So `\Phi_\intg` is fine *because the drop is declared at that moment* — do not reintroduce the drop anywhere the framework's two-subscript notation is still live, and do not delete the announcement. Named smooth functors render with the dropped form: `\Phiconf`→`\Phi_{\conf}` (macro line 471), `\Phiphase`→`\Phi_{\phase}` (line 469). The polynomial-interpretation *factor* is separate: `\Phip{\interp}` (the macro `\Phip[1]{\Phi'_{#1}}`, renders `\Phi'_\mathfrak{p}`), into `\para{\Fun c\circ J}\poly` (`thm.poly_interpretation`); the prime distinguishes it from the dynamics functor `\Phi`. **Always write `\Phip{...}`, never a bare `\Phi'`** — its subscript is the in-scope interpretation `\interp` (`\mathfrak p`, or `\interpsm` in the smooth chapter), abbreviating the full 4-tuple datum (`def.smooth_setup`). Do not unfold it into a partial subscript like `\Phi'_{\cot,(\yon,\potd)}`: that drops the semantic effect and comparison, which are canonical from `\cot` in the smooth instance but are genuine inputs in the general `thm.poly_interpretation`. See §"Abstract framework" |
 
 Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\upd`, `\\Fun S`, `\\Psisem`, `\\Phi_`, `\\Phip`.
 

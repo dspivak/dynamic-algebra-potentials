@@ -465,7 +465,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\lrn}{\mathrm{lrn}}
 \newcommand{\euc}{\mathrm{Euc}}
 
-\newcommand{\Phip}[1]{\Phi'_{#1}}% polynomial interpretation; subscript is the interpretation symbol (\interp=\mathfrak p). Leave blank with {} only at a definitional unfolding.
+\newcommand{\Phip}[1]{\Phi'_{#1}}% polynomial interpretation; subscript is always the interpretation symbol (\interp=\mathfrak p), abbreviating the full 4-tuple datum. Never a partial unfolding like \Phi'_{\cot,(\yon,\potd)}.
 \trackTermSymbol{Phiphase}{\Phi_{\phase}}
 \newcommand{\Phiphase}{\termref{Phiphase}{\termraw{Phiphase}}}
 \trackTermSymbol{Phiconf}{\Phi_{\conf}}
@@ -478,7 +478,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\updnu}{\termref{updnu}{\termraw{updnu}}}
 \trackTerm{\intg}{intg}{\mathfrak{i}}
 \trackTerm{\interp}{interp}{\mathfrak{p}}
-\trackTerm{\interpsm}{interpsm}{\mathrm{sm}}% smooth (cotangent) polynomial interpretation; concrete named choice (roman, like \conf/\phase), not the generic \interp=\mathfrak p of ch.framework
+\trackTerm{\interpsm}{interpsm}{\mathrm{sm}}% smooth (cotangent) polynomial interpretation datum; concrete named choice (roman, like \conf/\phase), not the generic \interp=\mathfrak p of ch.framework
 \trackTermSymbol{sharpR}{\sharp}
 \newcommand{\sharpR}{\termref{sharp_map}{\termraw{sharpR}}}
 \trackTermSymbol{sharp_symp}{\sharp}
@@ -658,7 +658,7 @@ For $\cat R$ as above, there is a category $\cat S$, whose objects are submersio
 \]
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition*}
-The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\org$ on our side, where the tangent component $\dot x$ becomes the Euler step $x\mapsto x+\dot x$.
+The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\org$ on our side, where the tangent component $\dot q$ becomes the Euler step $q\mapsto q+\dot q$.
 
 
 %--------------------------------------------------------------------
@@ -1923,10 +1923,10 @@ We call the elements of $\md$ \emph{modes}, e.g. ``training mode and inference m
 \section{Polynomial interpretation of rewiring data}\label{sec.poly_interpretation}
 %----------------------------------------------------------------------------
 
-To get a polynomial interpretation of the syntax $\rwd_D$ we fix four further ingredients.
+To interpret the syntax $\rwd_D$ in $\poly$ we fix four further ingredients.
 
-\begin{definition}[Polynomial interpretation]\label{def.polynomial_interpretation}
-A \emph{polynomial interpretation} $\defineTerm{interp}=(\Fun c,\Fun R',\theta,\potalg)$ for a rewiring datum $D=(\cat M,\cat Q,J,\Fun R)$ consists of
+\begin{definition}[Polynomial interpretation datum]\label{def.polynomial_interpretation}
+A \emph{polynomial interpretation datum} $\defineTerm{interp}=(\Fun c,\Fun R',\theta,\potalg)$ for a rewiring datum $D=(\cat M,\cat Q,J,\Fun R)$ consists of
 \begin{enumerate}
   \item an \emph{interface functor}: a strong symmetric monoidal functor $\Fun c\colon(\cat M,1,\times)\to(\poly,\yon,\otimes)$;
   \item a \emph{semantic effect}: a monoidal monad $\Fun R'$ on $\poly$;
@@ -1941,7 +1941,7 @@ In the writer instance $\Fun R=R\otimes\blank$ (\cref{def.rewiring_datum}), the 
 With these in hand we build the polynomial interpretation.
 
 \begin{theorem}[Polynomial interpretation]\label{thm.poly_interpretation}
-A polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for $D$ (\cref{def.polynomial_interpretation}) yields a lax symmetric monoidal functor
+A polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for $D$ (\cref{def.polynomial_interpretation}) yields a lax symmetric monoidal functor
 \[
   \Phip{\interp}\colon\rwd_D\longrightarrow\para{\Fun{c}\circ J}{\poly},
 \]
@@ -1963,7 +1963,7 @@ By \cref{def.rewiring_datum}, $\rwd_D$ is the underlying operad of $\para{\cat Q
 Recall from \cref{prop.moding} that for any finite set $\md$, we can upgrade any rewiring datum $D\coloneqq(\cat{M},\cat Q,J,\Fun{R})$ to an $\md$-mode version $D^\md\coloneqq(\cat{M},\cat Q,J,\Fun{R}^\md)$.
 
 \begin{proposition}[Moded interpretations]\label{prop.moded_algebra}
-Let $D$ be a rewiring datum and $\md$ a finite set. For any polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ of $D$, there is a polynomial interpretation $\interp^\md\coloneqq(\Fun c,(\Fun R')^\md,\theta^\md,\potalg^\md)$ of $D^\md$.
+Let $D$ be a rewiring datum and $\md$ a finite set. For any polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for $D$, there is a polynomial interpretation datum $\interp^\md\coloneqq(\Fun c,(\Fun R')^\md,\theta^\md,\potalg^\md)$ for $D^\md$.
 \end{proposition}
 \begin{proof}
 By \cref{prop.moding}, applied to the symmetric monoidal category $(\poly,\yon,\otimes)$ with its finite products, the composite $(\Fun R')^\md\coloneqq\prod_\md\circ\,\Fun R'$ is a monoidal monad on $(\poly,\otimes)$. The universal property of products gives a map $\Fun c\circ\prod_\md\To{}\prod_\md\circ\,\Fun c$, so we take the required comparison $\theta^\md$ to be the composite
@@ -2079,7 +2079,7 @@ Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat Q}^{\upd
 Let $\rwd_D$ be the rewiring-diagram operad of a rewiring datum $D=(\cat{M},\cat Q,J,\Fun R)$.
 
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
-Every polynomial interpretation $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
+Every polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
 \[
 \Phi_{\interp,\intg}\colon\rwd_D\to\org.
 \]
@@ -2162,7 +2162,11 @@ By standard manifold theory, the canonical global chart on a finite-dimensional 
 \begin{equation}\label{eqn.tangent_vec}
 T_qQ \;\cong\; Q \qqand T^*_qQ \;\cong\; Q^*
 \end{equation}
-at every point $q\in Q$; we use these identifications throughout, often without comment. We also will make frequent use of the canonical identification
+at every point $q\in Q$; we use these identifications throughout, often without comment. Assembling these fibers over all $q$, the same chart trivializes the tangent and cotangent bundles of the manifold $Q$,
+\begin{equation}\label{eqn.TT_def}
+TQ\cong Q\oplus Q\qqand T^*Q\cong Q\oplus Q^*,
+\end{equation}
+so the tangent and cotangent bundles of a vector space are again vector spaces. We also will make frequent use of the canonical identification
 \begin{equation}\label{eqn.canonical_dual_sum}
 (Q\oplus Q^*)^*\cong Q^*\oplus Q,\qquad
 \lambda\leftrightarrow(\xi,q)\quad\text{where}\quad
@@ -2206,7 +2210,7 @@ for all $q\in Q$,
 \end{equation}
 as maps $W^*\to W$.%
 \footnote{
-Restricting to isomorphisms (making $\rvect$ a groupoid) is essential for our development below: each $\rvect$-morphism is used both as $\phi$ on vectors and as $(\phi^*)\inv$ on covectors, e.g.\ in $T^*\phi$ \eqref{eqn.TT_phi} below.
+We require every $\rvect$-morphism to be an isomorphism so that we can define the cotangent endofunctor $T^*\colon\rvect\to\rvect$ (\cref{prop.TT_endofunctors}): its action $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi} needs $\phi$ invertible.
 }
 In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwise pairing-preservation: $\pairing{\phi v,\phi v'}_{\phi(q)}=\pairing{v,v'}_q$.
 
@@ -2233,11 +2237,11 @@ The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\ve
 \end{proof}
 
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
-For any finite-dimensional vector space $Q:\vect$, the direct sum $Q\oplus Q^*$ is a reactive vector space under the \emph{canonical symplectic pairing}: at every basepoint $w\in Q\oplus Q^*$,
+For any finite-dimensional vector space $Q:\vect$, the cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def} is a reactive vector space under the \emph{canonical symplectic pairing}: at every basepoint $(q_0,\xi_0)\in T^*Q$,
 \begin{equation}\label{eqn.canonical_form}
-\pairing{(q,\xi),(q',\xi')}_{w} \;=\; \xi'(q)-\xi(q').
+\pairing{(q,\xi),(q',\xi')}_{(q_0,\xi_0)} \;=\; \xi'(q)-\xi(q').
 \end{equation}
-The right-hand side does not depend on $w$, so the reaction is constant.
+The right-hand side does not depend on $(q_0,\xi_0)$, so the reaction is constant.
 \end{proposition}
 
 \begin{proof}
@@ -2313,6 +2317,8 @@ This chapter turns the syntax $\srwd$ of \cref{ch.smooth_rwd} into dynamics. By 
 \[
 \srwd\To{\Phip{\interpsm}}\para{\cot}{\poly}\To{\Psisem{\intg}}\org.
 \]
+The framework's dynamics functor $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}) records both ingredients; specialized here it is $\Phi_{\interpsm,\intg}$. Since the interpretation is fixed to the smooth one $\interpsm$ throughout this chapter, we drop it from the notation and write $\Phi_\intg$ for $\Phi_{\interpsm,\intg}$ (and $\Phiconf,\Phiphase$ for the configuration and phase integrators of \cref{sec.integrator_semantics}).
+
 \Cref{sec.cot} builds the cotangent functor $\cot\colon\mfd\to\poly$, which is involved in both. \Cref{sec.smooth_interpretation} assembles the polynomial interpretation $\Phip{\interpsm}$, casting each interface as a polynomial and each rewiring diagram as a $\cotof{Q}$-parameterized polynomial map. \Cref{sec.integrator_semantics} constructs the two integrators used in this paper---configuration and phase---each inducing a semantics $\Psisem{\intg}\colon\para{\cot}{\poly}\to\org$. \Cref{sec.dynamics_functor} composes the two to recover the operad functors $\Phiconf,\Phiphase\colon\srwd\to\org$ (\cref{cor.functor}), and \cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying each in full detail.
 
 
@@ -2423,21 +2429,13 @@ It is well known that strong monoidal functors preserve monoids, comonoids, and 
 
 In fact, we will only need that if $G$ is a commutative monoid object in $\mfd$ then $\cotof{G}$ is a commutative monoid object in $\poly$.
 
-
-\begin{notation}\label{not.rvect_polynomials}
-Going forward we denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
-\[
-\cotof Q=Q\yon^{Q^*}\qqand\cotof{T^*Q}=(Q\oplus Q^*)\yon^{Q^*\oplus Q}.
-\]
-\end{notation}
-
 %--------------------------------------------------------------------
 \section{The smooth polynomial interpretation}\label{sec.smooth_interpretation}
 %--------------------------------------------------------------------
 
-We now interpret the syntax $\srwd$ in $\poly$. By \cref{def.polynomial_interpretation}, a polynomial interpretation takes four ingredients: an interface functor, a semantic effect, an effect comparison, and a potential algebra. Three are already at hand: the interface functor is the cotangent functor $\cot$ of \cref{sec.cot}; since $\Sm$ is a writer datum, the semantic effect is canonically $\cotof{\rr}\otimes\blank$; and the effect comparison $\theta$ is induced by the strong monoidality of $\cot$ (\cref{lem.monoid_to_monad}). Only the potential algebra remains a genuine choice, so we pin it down first; \cref{prop.smooth_setup} then assembles all four into the interpretation $\Phip{\interpsm}\colon\srwd\to\para{\cot}{\poly}$.
+We now interpret the syntax $\srwd$ in $\poly$ along the cotangent functor $\cot$ (\cref{sec.cot}). For the semantic effect and effect comparison we take the canonical choices that come with $\cot$: the writer monad $\cotof{\rr}\otimes\blank$ and the comparison $\theta$ from its strong monoidality (\cref{lem.monoid_to_monad}). The one ingredient we actually deliberate over is the potential algebra, so we pin it down first; \cref{def.smooth_setup} then assembles all four into the interpretation $\Phip{\interpsm}\colon\srwd\to\para{\cot}{\poly}$.
 
-The potential algebra is a $(\cotof{\rr}\otimes\blank)$-monoid $(z,e,m,\alpha)$ in $\poly$, the datum that Moore internalization applies (\cref{thm.Theta_T_alpha}). For simplicity of presentation, and with a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cotof{\rr}\to\yon$ is extra data.
+The potential algebra is a $(\cotof{\rr}\otimes\blank)$-monoid $(z,e,m,\alpha)$ in $\poly$, as needed for Moore internalization (\cref{thm.Theta_T_alpha}). With a view toward our physics and learning applications, we take $z\coloneqq\yon$. It has a unique monoid structure, but $\alpha\colon\cotof{\rr}\to\yon$ is extra data.
 
 \begin{lemma}\label{lem.alpha_constant}
 Consider the monad $\Fun{T}\coloneqq(\cotof{\rr}\otimes\blank)$ on $\poly$. The $\Fun{T}$-monoid structures $(z,e,m,\alpha)$ for which $z=\yon$ are in bijection with real numbers $r:\rr$.
@@ -2449,14 +2447,14 @@ There is a unique $\otimes$-monoid structure on $\yon$. Maps $\alpha\colon\cotof
 \left(\omega(q_1),\omega(q_2)\right)=
 \left(\omega(q_1+q_2),\omega(q_1+q_2)\right).
 \]
-Setting $q_2\coloneqq 0$, we find $\omega(0)=\omega(q_1)$ for all $q_1$. In other words, $\omega=r$ is constant at some $r:\rr$. And conversely, any constant covector field is a $\Fun{T}$-monoid.
+Setting $q_2\coloneqq 0$, we find $\omega(0)=\omega(q_1)$ for all $q_1$. In other words, $\omega(\blank)=r$ is constant at some $r:\rr$. And conversely, any constant covector field is a $\Fun{T}$-monoid.
 \end{proof}
 
 \begin{remark}[General form]\label{rmk.alpha_general}
 \Cref{lem.alpha_constant} is an instance of a general fact: $\cotof{\rr}$ can be replaced by any commutative Hopf monoid $m$ in $\poly$. The $(m\otimes\blank)$-monoid structures on $\yon$ are then in bijection with $m[e_m]$, the directions of $m$ at its unit position $e_m$. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$, recovering \cref{lem.alpha_constant}; more generally, for $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\mathfrak{g}^*$, the dual of its Lie algebra.
 \end{remark}
 
-Specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and write the corresponding algebra map as
+Specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and denote the corresponding algebra map as
 \begin{equation}\label{eqn.d_potential}
 \defineTerm{potd}\colon\cotof{\rr}\to\yon,\qquad\bk{\potd}{q}(*)\coloneqq +1\in T^*_q\rr.
 \end{equation}
@@ -2466,21 +2464,22 @@ We call it $\potd$ because this is the choice for which potentials contribute th
 \]
 exactly as in \eqref{eqn.differential}. That is, under the identification of maps $\cotof{X}\to\yon$ with covector fields on $X$, the composite $\potd\circ\cotof{U}$ corresponds to the differential $dU$.
 
-\begin{proposition}[Smooth polynomial interpretation]\label{prop.smooth_setup}
-The cotangent functor $\cot$, the writer-instance semantic monad $\cotof{\rr}\otimes\blank$, the comparison $\theta$, and the potential algebra $(\yon,\potd)$ form a polynomial interpretation
-\[\interpsm\coloneqq\bigl(\cot,\;\cotof{\rr}\otimes\blank,\;\theta,\;(\yon,\potd)\bigr)\]
-(\cref{def.polynomial_interpretation}) for the smooth rewiring datum $\Sm$ (\cref{def.potlens}).
-\end{proposition}
+\begin{definition}[Smooth polynomial interpretation datum]\label{def.smooth_setup}
+We define the \emph{smooth polynomial interpretation datum} for $\Sm$ (\cref{def.potlens}) to be the tuple
+\[
+\interpsm\coloneqq(\cot,\cotof{\rr}\otimes\blank,\theta,(\yon,\potd)),
+\]
+an instance of \cref{def.polynomial_interpretation} whose
+\begin{enumerate}
+  \item \emph{interface functor} is the cotangent functor $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$, strong symmetric monoidal (\cref{prop.cot_monoidal});
+  \item \emph{semantic effect} is the writer monad $\cotof{\rr}\otimes\blank$ on $\poly$, monoidal since $\cotof{\rr}$ is a commutative monoid (\cref{prop.cot_hopf});
+  \item \emph{effect comparison} is the canonical $\theta\colon\cot(\rr\otimes\blank)\cong\cotof{\rr}\otimes\cot(\blank)$ induced by the strong monoidality of $\cot$ (\cref{lem.monoid_to_monad});
+  \item \emph{potential algebra} is the unit $\yon$, equipped with the $(\cotof{\rr}\otimes\blank)$-monoid structure given by $\potd\colon\cotof{\rr}\to\yon$, i.e.\ the choice $r=+1$ of \eqref{eqn.d_potential}.
+  \qedhere
+\end{enumerate}
+\end{definition}
 
-\begin{proof}
-For the interface functor we use that $\cot\colon(\mfd,\rr^0,\times)\to(\poly,\yon,\otimes)$ is strong symmetric monoidal (\cref{prop.cot_monoidal}), carrying $\rr$ to the commutative monoid $\cotof{\rr}$ in $\poly$ (\cref{prop.cot_hopf}).
-
-Since $\Sm$ uses the writer monad $\rr\otimes\blank$ and $\cot$ is strong monoidal, we take as our semantic effect the canonical $\Fun T\coloneqq\cotof{\rr}\otimes\blank$ with $\theta$ the comparison of \cref{def.polynomial_interpretation,lem.monoid_to_monad}.
-
-For the potential algebra we use the unique $\otimes$-monoid structure on $\yon$ and the $(\cotof{\rr}\otimes\blank)$-monoid structure on it given by $\potd\colon\cotof{\rr}\to\yon$, i.e.\ the choice $r=+1$ of \eqref{eqn.d_potential}.
-\end{proof}
-
-Applying \cref{thm.poly_interpretation} to the smooth polynomial interpretation (\cref{prop.smooth_setup}) yields a normal lax symmetric monoidal functor $\Phip{\interpsm}=\Phi'_{\cot,(\yon,\potd)}\colon\srwd\to\para{\cot}{\poly}$. It acts on objects by
+Applying \cref{thm.poly_interpretation} to the smooth polynomial interpretation datum (\cref{def.smooth_setup}) yields a normal lax symmetric monoidal functor $\Phip{\interpsm}\colon\srwd\to\para{\cot}{\poly}$. It acts on objects by
 \[\Phip{\interpsm}\lensob{M}\coloneqq\cotof{\outp{M}}\otimes\ihom{\cotof{\inpt{M}},\yon}.\] 
 And $\Phip{\interpsm}$ sends a smooth rewiring diagram $f\coloneqq\left((Q,\sharpR_Q),\binom{\inpt f}{\outp f},U\right)$ as in \eqref{eqn.srw_morphism}
 \[\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}\To[\quad]{f}\lensob{N}\]
@@ -2498,14 +2497,21 @@ This completes the polynomial interpretation $\Phip{\interpsm}\colon\srwd\to\par
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-Building on the integrator notion of \cref{sec.dynamics_functor_abstract}, this section constructs the two integrators used in the paper. \Cref{sec.integrators} builds the configuration integrator $\conf$; \cref{sec.TT} develops the cotangent endofunctor and \cref{sec.phase_integrators} uses it to build the phase integrator $\phase$.
+With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\upd)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\org$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
 
-\subsection{Integrators}\label{sec.integrators}
+\subsection{The Euler step}\label{sec.integrators}
 
 The polynomial interpretation $\Phip{\interpsm}$ of \cref{sec.smooth_interpretation} produces maps of the form $\cotof{Q}\otimes p\to p'$, or equivalently $\cotof{Q}\to[p,p']$. Our goal in this section is to turn them into $[p,p']$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{Q}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
 We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\orgiso.\]
+
+\begin{notation}\label{not.rvect_polynomials}
+Going forward we denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
+\[
+\cotof Q=Q\yon^{Q^*}\qqand\cotof{T^*Q}=(Q\oplus Q^*)\yon^{Q^*\oplus Q}.
+\]
+\end{notation}
 
 \begin{proposition}\label{prop.rvect_polynomial}
 There is a monoidal natural transformation $\chi\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ of functors $\rvect\to\poly$ whose component $\defineTerm{chiQ}_{\rv Q}\colon\Store(\absval{Q})\to\cotof{Q}$ at $\rv Q=(Q,\sharpR_Q)$ is the polynomial map given on positions by the identity and on directions at $q\in Q$ by
@@ -2532,14 +2538,19 @@ The two are equal iff $\sharpR_q\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(q)}$, wh
 The dynamics functor (\cref{thm.dynamics_functor}) depends on $\rvect$ only through the monoidal natural transformation $\chi$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\chi\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well. One natural source is \emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection~\cite[pp.~49, 108]{Lee:1997a}, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$ replaces the Euler step \eqref{eqn.directions_sharp}, and on flat $Q$ recovers it exactly. Examples include all complete Riemannian manifolds (via Levi-Civita) and all Lie groups (via the canonical connection). We stay with reactive vector spaces for concreteness.
 \end{remark}
 
-The \emph{configuration integrator} $\conf\coloneqq(\absval{\blank},\chi^-)$ has state space
-$Q\mapsto\absval{Q}$; its update $\chi^-$ is the \emph{descent} variant of the natural transformation $\chi$ of \cref{prop.rvect_polynomial},
-\begin{equation}\label{eqn.conf_integrator}
-\chi^-_{\rv Q}\colon\Store(\absval Q)\to\cotof Q,\qquad q\mapsto q-\sharpR_q(\xi).
-\end{equation}
-Its state set is the configuration space $\absval Q$, and an incoming covector $\xi\in Q^*$ updates the state by stepping \emph{against} $\sharpR_q(\xi)$, i.e.\ by $q\mapsto q-\sharpR_q(\xi)$. The minus is what makes the configuration dynamics descent rather than ascent---the role played, in the phase integrator, by the symplectic sharp \eqref{eqn.canonical_sharp}. It is a monoidal natural transformation, hence a $\cot$-integrator, by \cref{prop.rvect_polynomial} with $\sharpR$ replaced by $-\sharpR$.
+\subsection{The configuration integrator}\label{sec.config_integrator}
 
-\subsection{The cotangent endofunctor}\label{sec.TT}
+The \emph{configuration integrator} $\conf\coloneqq(\absval{\blank},(-1)\circ\chi)$ has state space $Q\mapsto\absval{Q}$ and \emph{descends}: it feeds the negative gradient into the Euler step $\chi$ of \cref{prop.rvect_polynomial}. Its update is the composite
+\[
+\Store\circ\absval{\blank}\To{\chi}\cot\To{-1}\cot,
+\]
+where $-1\colon\cot\Rightarrow\cot$ negates the incoming covector and is the identity on positions, so on directions at $q\in Q$ it is
+\begin{equation}\label{eqn.conf_integrator}
+\Store(\absval Q)\to\cotof Q,\qquad \xi\longmapsto\chiQ{\rv Q}(-\xi)=q-\sharpR_q(\xi).
+\end{equation}
+The minus is the integrator's: an incoming covector $\xi\in Q^*$ steps the state \emph{against} $\sharpR_q(\xi)$, by $q\mapsto q-\sharpR_q(\xi)$, which is what makes the configuration dynamics descend rather than ascend. It rides on the gradient, not on the reaction---$\sharpR_Q$ is used exactly as the syntax supplies it, so the one reactive vector space $\rv Q$ drives this integrator and the phase integrator below alike. Both legs are monoidal natural transformations---$\chi$ by \cref{prop.rvect_polynomial} and $-1$ trivially---so the composite is one as well, hence a $\cot$-integrator.
+
+\subsection{The phase integrator}\label{sec.phase_integrators}
 
 We now turn to a physics-based semantics. We consider integrators of the form
 \[
@@ -2551,11 +2562,7 @@ We now turn to a physics-based semantics. We consider integrators of the form
 	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\upd"]
 \end{tikzcd}
 \]
-For a reactive vector space $(Q,\sharpR_Q):\rvect$, define
-\begin{equation}\label{eqn.TT_def}
-T^*Q\coloneqq Q\oplus Q^*.
-\end{equation}
-This agrees with taking the cotangent bundle of $Q$ as a manifold. Thus for these integrators, the stored state is a point $(q,\xi)$ in the phase space $T^*Q=Q\oplus Q^*$, with \emph{position} $q$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\phase$ from the canonical symplectic structure on $T^*Q$.
+On objects, the cotangent endofunctor sends a reactive vector space $(Q,\sharpR_Q):\rvect$ to its cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def}, equipped with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}. Thus for these integrators, the stored state is a point $(q,\xi)$ in the phase space $T^*Q$, with \emph{position} $q$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\phase$ from the canonical symplectic structure on $T^*Q$.
 
 The cotangent bundle is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon Q\To{\cong} W$, define
@@ -2569,55 +2576,49 @@ Equipping $T^*Q$ with the canonical symplectic pairing of \cref{prop.canonical_s
 \end{proposition}
 
 \begin{proof}
-If $\phi\colon Q\to W$ is a linear isomorphism so is $T^*\phi$. Functoriality is obvious. Writing $\psi\coloneqq(\phi^*)\inv\colon Q^*\to W^*$, the defining property of $\phi^*$ states that $(\phi^*\xi')(v) = \xi'(\phi v)$ for all $\xi'\in W^*\text{ and }v\in Q.$ Setting $\xi'\coloneqq\psi\xi$ and using $\phi^*\circ\psi=\id_{Q^*}$, we note that
+To define an endofunctor $T^*\colon\rvect\to\rvect$ we must check that $T^*\phi$ is a morphism of $\rvect$---a linear isomorphism that is moreover sharp-equivariant---and that $T^*$ preserves identities and composites. That $T^*\phi=\phi\oplus(\phi^*)\inv$ is a linear isomorphism is immediate, and preservation of identities and composites is inherited from $\vect$; the substance is sharp-equivariance, which we now verify. 
+
+The defining property of $\phi^*$ states that $(\phi^*\xi')(q) = \xi'(\phi q)$ for all $\xi'\in W^*\text{ and }q\in Q.$ Setting $\xi'\coloneqq\psi(\xi)$, where $\psi\coloneqq(\phi^*)\inv\colon Q^*\to W^*$, and using $\phi^*\circ\psi=\id_{Q^*}$, we note that
 \begin{equation}\label{eqn.dualeval}
-(\psi\xi)(\phi v) = (\phi^*(\psi\xi))(v) = \xi(v).
+(\psi\xi)(\phi q) = (\phi^*(\psi\xi))(q) = \xi(q).
 \end{equation}
-To verify sharp-equivariance \eqref{eqn.pairing_triangle}, we equivalently check pairing-preservation (both pairings are nondegenerate). Fix any basepoint $w\in T^*Q$ and calculate
+To verify sharp-equivariance \eqref{eqn.pairing_triangle}, we equivalently check pairing-preservation (both pairings are nondegenerate). Fix any basepoint $(q_0,\xi_0)\in T^*Q$ and calculate
 \begin{align*}
-\pairing{T^*\phi(q_1,\xi_1),T^*\phi(q_2,\xi_2)}_{T^*\phi(w)}
+\pairing{T^*\phi(q_1,\xi_1),T^*\phi(q_2,\xi_2)}_{T^*\phi(q_0,\xi_0)}
 &= (\psi\xi_2)(\phi q_1)-(\psi\xi_1)(\phi q_2) && \text{[\eqref{eqn.TT_phi}, \eqref{eqn.canonical_form}]}\\
 &= \xi_2(q_1)-\xi_1(q_2) && \text{[\eqref{eqn.dualeval}]}\\
-&= \pairing{(q_1,\xi_1),(q_2,\xi_2)}_{w} && \text{[\eqref{eqn.canonical_form}]};
+&= \pairing{(q_1,\xi_1),(q_2,\xi_2)}_{(q_0,\xi_0)} && \text{[\eqref{eqn.canonical_form}]};
 \end{align*}
-both sides are independent of $w$ by constancy of the canonical symplectic pairing.
+both sides are independent of $(q_0,\xi_0)$ by constancy of the canonical symplectic pairing.
 \end{proof}
-
-\begin{remark}[Constancy of $\sharpS_{T^*Q}$]\label{rmk.constant_canonical_sharp}
-The canonical symplectic pairing depends only on the underlying vector space $Q$, not on $\sharpR_Q$, so $\sharpS_{Q\oplus Q^*}$ is the constant map \eqref{eqn.canonical_sharp} even when $\sharpR_Q$ varies on $Q$. Later in \cref{sec.dynamics_functor}, the phase-space dynamics will see only this constant $\sharpS_{Q\oplus Q^*}$, regardless of any variation in $\sharpR_Q$. However, $\sharpR_Q$ is not discarded by the framework: it drives the integrator update $\chi$ \eqref{eqn.directions_sharp}, turning a gradient $\xi$ into the step $\sharpR_q(\xi)$.
-\qedhere
-\end{remark}
 
 \begin{proposition}\label{prop.TT_monoidal}
 The endofunctor $T^*\colon\rvect\to\rvect$ is strong symmetric monoidal with respect to $(0,\oplus)$.
 \end{proposition}
 
 \begin{proof}
-The unit comparison is the identity since $T^*0=0\oplus 0^*=0$. The product comparison is the swap
+The unitor is the identity since $T^*0=0\oplus 0^*=0$. The productor is the swap
 \begin{equation*}
 (T^*)_2\colon T^*Q_1\oplus T^*Q_2\To{\cong}T^*(Q_1\oplus Q_2),\quad ((q_1,\xi_1),(q_2,\xi_2))\mapsto((q_1,q_2),(\xi_1,\xi_2)).
 \end{equation*}
-It is a linear isomorphism, using $(Q_1\oplus Q_2)^*\cong Q_1^*\oplus Q_2^*$. For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ sends $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
+For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ sends $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
 \end{proof}
 
-\subsection{The phase integrator}\label{sec.phase_integrators}
-
-The \emph{phase integrator} stores a phase point $(q,\xi)$ and updates it by the explicit symplectic Euler step: it reads out the position and feeds the incoming gradient $\xi'$---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*Q$. It is the pair
-\begin{equation}\label{eqn.phase_integrator}
-\phase\coloneqq(\absval{T^*\blank},\updnu),
-\end{equation}
-whose update is the composite
-\[
-\defineTerm{updnu}\colon\quad\Store\circ\absval{T^*\blank}\To{\chiQ{T^*\blank}}\cot\circ T^*\To{\nu}\cot,
-\]
-where $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out $(q,\xi)\mapsto q$ on positions and, on directions, places the gradient in the position coordinate and the velocity in the momentum coordinate,
+The \emph{phase integrator} stores a phase point $(q,\xi)$ and updates it by the explicit symplectic Euler step: it reads out the position and feeds the incoming gradient $\xi'$---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*Q$. The readout is the map $\nu\colon\cot\circ T^*\Rightarrow\cot$ that takes $(q,\xi)\mapsto q$ on positions and, on directions, places the gradient in the position coordinate and the velocity in the momentum coordinate,
 \begin{equation}\label{eqn.nu}
 \bk{\nu}{(q,\xi)}\colon\xi'\mapsto(\xi',\sharpR_q\xi)\in Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q),
 \end{equation}
-using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.
+using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. The update composes this readout after the Euler step $\chiQ{T^*\blank}$ on the phase space,
+\[
+\defineTerm{updnu}\colon\quad\Store\circ\absval{T^*\blank}\To{\chiQ{T^*\blank}}\cot\circ T^*\To{\nu}\cot,
+\]
+and the phase integrator is the pair
+\begin{equation}\label{eqn.phase_integrator}
+\phase\coloneqq(\absval{T^*\blank},\updnu).
+\end{equation}
 This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because the projection is natural and monoidal, while the $\sharpR_q\xi$ term is so by sharp-equivariance \eqref{eqn.pairing_triangle} and the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
 
-The two legs separate the data from the geometry: $\chiQ{T^*\blank}$ is the positive Euler step $\chi$ \eqref{eqn.directions_sharp} on the doubled space $T^*Q$, the same symplectic step regardless of $\sharpR_Q$ (\cref{rmk.constant_canonical_sharp}), while $\nu$ carries the phase-space data. (Here the force's sign is supplied structurally, by the symplectic sharp \eqref{eqn.canonical_sharp}; this is why the phase integrator uses $\chi$ itself, where the configuration integrator uses its descent variant $\chi^-$.) On directions, $\chiQ{T^*Q}$ adds to $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.directions_sharp},
+The two legs separate the data from the geometry: $\chiQ{T^*\blank}$ is the Euler step $\chi$ \eqref{eqn.directions_sharp} on the phase space $T^*Q$, the same symplectic step regardless of $\sharpR_Q$ \eqref{eqn.canonical_sharp}, while $\sharpR_q$ enters only through $\nu$, which converts the stored momentum into a velocity. On directions, $\chiQ{T^*Q}$ adds to $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.directions_sharp},
 \[
 \sharpS_{T^*Q}\bigl(\xi',\sharpR_q(\xi)\bigr)=\bigl(\sharpR_q(\xi),\,-\xi'\bigr),
 \]
@@ -2629,40 +2630,38 @@ so the update reads out $(q,\xi)\mapsto q$ and, on directions, is
 \section{The dynamics functors}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
 
-The smooth rewiring diagrams of \cref{sec.potentialized_lenses} become smooth rewiring dynamics by composing the polynomial interpretation $\Phip{\interpsm}$ (\cref{sec.smooth_interpretation}) with an integrator (\cref{sec.integrator_semantics}). We unpack this composite for the smooth instance.
-
-That interpretation did the bulk of the construction. Our main functor of interest $\Phi$, which depends on an integrator (see \cref{def.integrator}), acts the same as $\Phip{\interpsm}$ does on objects:
-\[\Phi\lensob{M}=\Phip{\interpsm}\lensob{M}.\]
-What \cref{thm.dynamics_functor} does is to first rearrange \eqref{eqn.phi_prime_morphism} to
+The smooth rewiring diagrams of \cref{sec.potentialized_lenses} become smooth rewiring dynamics by composing the polynomial interpretation $\Phip{\interpsm}$ (\cref{sec.smooth_interpretation}) with an integrator $\intg$ (\cref{sec.integrator_semantics}); we unpack this composite for the smooth instance. The interpretation $\Phip{\interpsm}$ already carries most of the construction: the resulting functor $\Phi_\intg$ agrees with it on objects,
+\[\Phi_\intg\lensob{M}=\Phip{\interpsm}\lensob{M},\]
+and \cref{thm.dynamics_functor} supplies only what the integrator contributes. It first rearranges \eqref{eqn.phi_prime_morphism} to
 \[
 \cotof{Q}\to
 \left[
-  \Phi\lensob{M_1}\otimes\cdots\otimes\Phi\lensob{M_K},
-  \Phi\lensob{N}
+  \Phi_\intg\lensob{M_1}\otimes\cdots\otimes\Phi_\intg\lensob{M_K},
+  \Phi_\intg\lensob{N}
 \right],
 \]
 then use the integrator to replace the $\cotof{Q}$ with something of the form $S\yon^S$ for $S=F(Q)$, and finally, to unfold that to a coalgebra via \cref{prop.coalg_as_poly_map}
 \[
 S\to\left[
-  \Phi\lensob{M_1}\otimes\cdots\otimes\Phi\lensob{M_K},
-  \Phi\lensob{N}
+  \Phi_\intg\lensob{M_1}\otimes\cdots\otimes\Phi_\intg\lensob{M_K},
+  \Phi_\intg\lensob{N}
 \right](S).
 \]
-Constructing a precise relationship between $S$ and $Q$ is precisely the role of the integrator: in our two main cases of interest it is the configuration space $\absval{Q}$ and the phase space $\absval{T^*Q}$; see \eqref{eqn.our_phis}.
+The integrator is what fixes the relationship between $S$ and $Q$: in our two main cases of interest $S$ is the configuration space $\absval{Q}$ or the phase space $\absval{T^*Q}$; see \eqref{eqn.our_phis}.
 
 \begin{corollary}\label{cor.functor}
 Every $\cot$-integrator $\intg$ induces an operad functor
 \[
-\Phi_{\intg}\colon\srwd\to\org.
+\Phi_\intg\colon\srwd\to\org.
 \]
 \end{corollary}
 
 \begin{proof}
-This is \cref{thm.dynamics_functor} for the smooth rewiring datum $\Sm$ (\cref{def.potlens,prop.smooth_setup}).
+This is \cref{thm.dynamics_functor} for the smooth rewiring datum $\Sm$ (\cref{def.potlens,def.smooth_setup}).
 \qedhere
 \end{proof}
 
-Specializing $\Phi_{\intg}$ to the configuration integrator $\conf$ \eqref{eqn.conf_integrator} and the phase integrator $\phase$ \eqref{eqn.phase_integrator} gives our two main functors of interest, the \emph{configuration} and \emph{phase dynamics functors}
+Specializing $\Phi_\intg$ to the configuration integrator $\conf$ \eqref{eqn.conf_integrator} and the phase integrator $\phase$ \eqref{eqn.phase_integrator} gives our two main functors of interest, the \emph{configuration} and \emph{phase dynamics functors}
 \begin{equation}\label{eqn.our_phis}
 \defineTerm{Phiconf},\ \defineTerm{Phiphase}\colon\srwd\to\org.
 \end{equation}
@@ -2671,15 +2670,15 @@ Specializing $\Phi_{\intg}$ to the configuration integrator $\conf$ \eqref{eqn.c
 \section{Configuration dynamics \texorpdfstring{$\termraw{Phiconf}$}{Phi conf}}\label{sec.configuration_dynamics}
 %--------------------------------------------------------------------
 
-The dynamics functor $\Phiconf\colon\srwd\to\org$ is the simpler of the two dynamics functors: a state is just an element $q\in Q$ of the parameterizing manifold (no additional ``momentum'' component), and each step updates $q\mapsto q-\sharpR_q(\xi_Q)$, where $\xi_Q\in Q^*$ is a covector assembled from $f$'s backward pass and the differential of its potential. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
+The dynamics functor $\Phiconf\colon\srwd\to\org$ is the simpler of the two. A state is just an element $q\in Q$ of the parameterizing manifold---there is no additional ``momentum'' component---and each step updates it by a descent step on $Q$. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
 
-Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\conf}\circ\Phip{\interpsm}$. The functor $\Psisem{\conf}$ replaces a $\cotof{Q}$-parameter via the configuration integrator's descent update $\chi^-_{\rv Q}$ (\cref{eqn.conf_integrator}) on state set $S\coloneqq\absval{Q}$:
+Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\conf}\circ\Phip{\interpsm}$. The functor $\Psisem{\conf}$ replaces a $\cotof{Q}$-parameter via the configuration integrator's descent update $(-1)\circ\chiQ{\rv Q}$ (\cref{eqn.conf_integrator}) on state set $S\coloneqq\absval{Q}$:
 \[
-S\yon^S\To{\chi^-_{\rv Q}}\cotof{Q}.
+S\yon^S\To{(-1)\circ\chiQ{\rv Q}}\cotof{Q}.
 \]
-A state consists of a position $q\in Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $q-\sharpR_q(\xi')$ by \eqref{eqn.conf_integrator}. Note that in this case $\sharpR$ can depend on $q\in Q$.
+A state consists of a position $q\in Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $q-\sharpR_q(\xi')$ by \eqref{eqn.conf_integrator}.
 
-However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phip{\interpsm}$ factor from \cref{prop.smooth_setup,thm.poly_interpretation}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
+However, the majority of what takes place under $\Phiconf$ is still compressed within the $\Phip{\interpsm}$ factor from \cref{def.smooth_setup,thm.poly_interpretation}. So we now unpack $\Phiconf$ in total, tracing each term and sign in the resulting formulas back to the definitions that produced it.
 
 Let $\inpt M,\outp M:\mfd$ be manifolds, and write
 \[\Omega(M)\coloneqq\{\omega\colon M\to T^*M\mid\pi\circ\omega=\id\}\]
@@ -2755,7 +2754,7 @@ and updates the state (from its original $q$) to
 \begin{equation}\label{eqn.state_update_gradient}
 q-\sharpR_q(\xi_Q),
 \end{equation}
-which is the on-directions component of the descent update $\chi^-_{\rv Q}$ \eqref{eqn.conf_integrator} applied to the covector $\xi_Q\in Q^*$ of \eqref{eqn.bigtheta}. In other words, the state is updated by summing three covectors pulled back along the maps in \eqref{eqn.para_potential_lens_maps}---$\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (yielding $dU$)---projecting to the $Q^*$-component, sharpening to a vector via $\sharpR_q$, and subtracting it from the original state.
+which is the on-directions component of the descent update $(-1)\circ\chiQ{\rv Q}$ \eqref{eqn.conf_integrator}---the Euler step $\chi$ fed the negative gradient---applied to the covector $\xi_Q\in Q^*$ of \eqref{eqn.bigtheta}. In other words, the state is updated by summing three covectors pulled back along the maps in \eqref{eqn.para_potential_lens_maps}---$\xi_N$ along $\outp f$, $\omega_M(\inpt m)$ along $\inpt f$, and $+1$ along $U$ (yielding $dU$)---projecting to the $Q^*$-component, sharpening to a vector via $\sharpR_q$, and subtracting it from the original state.
 
 All in all, one could tersely denote the coalgebra map as follows:
 \[
@@ -2830,7 +2829,7 @@ Let $\absval{\blank}\colon\vectiso\to\smsetiso$ be the underlying-set functor. F
 \[
 \chi_{Q,p}\colon \Store(\absval{Q})\otimes P(p)\to P\bigl((TQ\surj Q)\otimes p\bigr).
 \]
-Both sides have positions $(q,b)\in Q\times B$. Using the canonical identification $TQ\cong Q\times Q$, the map $\chi_{Q,p}\colon T_qQ\times E_b\to Q\times E_b$ on directions at $(q,b)$ is given by
+Both sides have positions $(q,b)\in Q\times B$. Using the canonical identification $TQ\cong Q\oplus Q$ \eqref{eqn.TT_def}, the map $\chi_{Q,p}\colon T_qQ\times E_b\to Q\times E_b$ on directions at $(q,b)$ is given by
 \[
 (\dot q,e)\mapsto (q+\dot q,e).
 \]
@@ -2905,7 +2904,7 @@ s+\sharpS_S(\xi_Q,\sharpR_q(\xi))=\bigl(q+\sharpR_q(\xi),\,\xi-\xi_Q\bigr).
 \end{equation}
 We will now break down \cref{eqn.state_update}, which is the phase integrator \eqref{eqn.phase_update} with the substitution $\xi'=\xi_Q$.
 
-Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the Euler step $\chi$ on the doubled space $T^*Q$ \eqref{eqn.directions_sharp}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$ (\cref{rmk.constant_canonical_sharp}); and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from $\nu$ \eqref{eqn.nu} at $(q,\xi)$.
+Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the Euler step $\chi$ on the phase space $T^*Q$ \eqref{eqn.directions_sharp}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$; and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from $\nu$ \eqref{eqn.nu} at $(q,\xi)$.
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_Q,\sharpR_q(\xi))=(\sharpR_q(\xi),-\xi_Q)$, then componentwise addition with $s=(q,\xi)$ produces $(q+\sharpR_q(\xi),\,\xi-\xi_Q)$.
 
