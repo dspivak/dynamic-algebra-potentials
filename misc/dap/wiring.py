@@ -1,17 +1,16 @@
-"""Wiring constructors in ``potlens`` (sec.wd_operads, sec.spring).
+"""Wiring constructors in ``sarr`` (sec.wd_operads, sec.wave_equation).
 
 Provides:
 
 * ``finset_chain_wire(K)`` -- the lens ``phi_K`` of ex.lens_finsetop /
-  sec.spring_first_pass: ``out_f(*) = K``, ``in_f(n) = n``.
-* ``chain_wire(K)``        -- its image under ``R^-`` (lemma.lens_rr),
-  realized as a parameter-free ``PotLensMap``: a K-ary wiring morphism
-  ``box^K -> box`` in ``potlens`` with ``V = R^0`` and ``U = 0``.
-* ``compose_chain(parts)`` -- the K-ary composite
-  ``chain_wire(K)(Part_1, ..., Part_K)`` directly in ``potlens``,
-  yielding a 0-ary morphism per the formulas of
-  sec.spring_first_pass (eqn.sharp_chain and surrounding prose).
-* ``parallel_potlens(p1, p2)`` -- monoidal product in potlens.
+  sec.spring_first_pass, as the underlying pair of finite-set functions.
+* ``chain_wire(K)``        -- its image under ``R^-`` (lem.lens_pow),
+  realized as a smooth (static) arrangement: a ``K``-ary wiring morphism
+  ``box^K -> box`` with trivial parameter ``R^0`` and ``U = 0``.
+* ``compose_chain(parts)`` -- the ``K``-ary composite
+  ``chain_wire(K)(Part_1, ..., Part_K)`` directly in ``sarr``, the 0-ary
+  morphism of sec.spring_first_pass (eqn.sharp_chain and surrounding prose).
+* ``parallel_arrangements(p1, p2)`` -- the monoidal product in ``sarr``.
 """
 
 from __future__ import annotations
@@ -21,8 +20,8 @@ from typing import List, Sequence, Tuple
 import jax.numpy as jnp
 from jax import Array
 
-from .lens import PotLensMap
-from .pvect import PairedVectorSpace, trivial_pvect
+from .arrangement import SmoothArrangement
+from .rvect import ReactiveVectorSpace, trivial
 
 
 # ---------------------------------------------------------------------------
@@ -31,13 +30,13 @@ from .pvect import PairedVectorSpace, trivial_pvect
 
 
 def finset_chain_wire(K: int) -> Tuple[List[int], List[int]]:
-    """Return ``(out_f, in_f)`` for ``phi_K: <K|K> -> <1|1>``.
+    """Return ``(out_f, in_f)`` for ``phi_K : <K|K> -> <1|1>``.
 
-    Per sec.spring_first_pass, identifying ``K+1`` with the disjoint
-    union of (1) the big-box input and (2) the K small-box outputs:
+    Per sec.spring_first_pass, with the inner finite set ``{1,...,K}`` and the
+    outer box ports labeled by ``{K}`` (output, right) and ``{0}`` (input, left):
 
-        out_f: 1 -> K   chooses the last wire, ``out_f(0) = K-1`` (0-indexed).
-        in_f : K -> K+1 sends ``n |-> n``                (i.e. picks the first K).
+        out_f : {K} -> {1,...,K}        the inclusion, out_f(0) = K-1 (0-indexed),
+        in_f  : {1,...,K} -> {1,...,K}+{0}, n |-> n-1 (feed each from the previous wire).
     """
     out_f = [K - 1]               # singleton; selects index of last small box
     in_f = list(range(K))         # picks the first K of K+1 wires
@@ -45,40 +44,37 @@ def finset_chain_wire(K: int) -> Tuple[List[int], List[int]]:
 
 
 # ---------------------------------------------------------------------------
-# chain_wire(K) as a PotLensMap, the image under R^- (lemma.lens_rr).
+# chain_wire(K) as a SmoothArrangement, the image under R^- (lem.lens_pow).
 # ---------------------------------------------------------------------------
 
 
-def chain_wire(K: int) -> PotLensMap:
-    """Image of ``phi_K`` under ``R^-`` (lemma.lens_rr), as a potlens morphism.
+def chain_wire(K: int) -> SmoothArrangement:
+    """Image of ``phi_K`` under ``R^-`` (lem.lens_pow), as a smooth (static) arrangement.
 
-    Source ``M = box^K = <R^K | R^K>``, target ``N = box = <R | R>``,
-    parameter ``V = R^0``, no potential. Per the paragraph just below
-    ex.lens_finsetop in sec.spring_first_pass:
+    Source ``M = box^K = <R^K | R^K>``, target ``N = box = <R | R>``, trivial
+    parameter ``R^0``, no potential. On coordinates (sec.spring_first_pass):
 
-        out_f((v_1, ..., v_K)) = v_K
-        in_f((v_1, ..., v_K), v_0) = (v_0, v_1, ..., v_{K-1})
+        out_f(q_1, ..., q_K)      = q_K
+        in_f((q_1, ..., q_K), q_0) = (q_0, q_1, ..., q_{K-1}).
     """
 
     if K < 1:
         raise ValueError("K must be >= 1")
 
-    V = trivial_pvect()
+    Q = trivial()
 
-    def out_f(v_wire: Array, m_out: Array) -> Array:
-        # m_out: shape (K,). Output: scalar = v_K = m_out[-1].
-        return m_out[K - 1:K]  # shape (1,)
+    def out_f(q_wire: Array, m_out: Array) -> Array:
+        return m_out[K - 1:K]  # shape (1,); the last coordinate q_K
 
-    def in_f(v_wire: Array, m_out: Array, n_in: Array) -> Array:
-        # m_out: (K,), n_in: (1,). Output: (v_0, v_1, ..., v_{K-1}) of shape (K,).
-        v_0 = n_in[0]
-        return jnp.concatenate([jnp.array([v_0]), m_out[: K - 1]])
+    def in_f(q_wire: Array, m_out: Array, n_in: Array) -> Array:
+        q_0 = n_in[0]
+        return jnp.concatenate([jnp.array([q_0]), m_out[: K - 1]])
 
-    def U(v_wire: Array, m_out: Array, n_in: Array) -> Array:
+    def U(q_wire: Array, m_out: Array, n_in: Array) -> Array:
         return jnp.array(0.0)
 
-    return PotLensMap(
-        V=V,
+    return SmoothArrangement(
+        Q=Q,
         out_dim_M=K,
         in_dim_M=K,
         out_dim_N=1,
@@ -91,85 +87,72 @@ def chain_wire(K: int) -> PotLensMap:
 
 
 # ---------------------------------------------------------------------------
-# Composition in potlens for the chain-of-particles example.
+# Composition in sarr for the chain-of-particles example.
 #
-# Each Part_i: <R^0|R^0> -> <R|R> has parameter V_i and data
-#   out_f_i: V_i -> R    (here identity).
-#   in_f_i:  V_i x R -> R^0 (vacuous).
-#   U_i:     V_i x R -> R   (the per-particle potential).
-# Composing chain_wire(K)(Part_1, ..., Part_K) in potlens (as in
-# sec.para_general / the prose around eqn.sharp_chain) gives a
-# 0-ary morphism with parameter V_{tot} = V_wire (+) V_1 (+) ... (+) V_K,
-# whose data is given in the paper between eqs. (2388)-(2398).
+# Each Part_i : <R^0|R^0> -> <R|R> has parameter Q_i and data
+#   out_f_i : Q_i -> R      (here identity),
+#   in_f_i  : Q_i x R -> R^0 (vacuous),
+#   U_i     : Q_i x R -> R   (the per-particle potential).
+# Composing chain_wire(K)(Part_1, ..., Part_K) in sarr gives a 0-ary morphism
+# with parameter Q_tot = Q_1 (+) ... (+) Q_K (sec.spring_first_pass).
 # ---------------------------------------------------------------------------
 
 
-def compose_chain(parts: Sequence[PotLensMap]) -> PotLensMap:
-    """Compose ``chain_wire(K)(Part_1, ..., Part_K)`` directly in potlens.
+def compose_chain(parts: Sequence[SmoothArrangement]) -> SmoothArrangement:
+    """Compose ``chain_wire(K)(Part_1, ..., Part_K)`` directly in ``sarr``.
 
-    Specialized to the wave-equation chain: each ``Part_i`` must have
-    source ``<R^0 | R^0>`` and target ``<R | R>``. The composite has
+    Specialized to the wave-equation chain: each ``Part_i`` must have source
+    ``<R^0|R^0>`` and target ``<R|R>``. The composite has
 
-        V_tot     = V_1 (+) ... (+) V_K     (V_wire = R^0 absorbs)
-        out_f_tot = out_f_K(v_K, *)          # = v_K when out_f_i = id
+        Q_tot     = Q_1 (+) ... (+) Q_K
+        out_f_tot = q_K
         in_f_tot  vacuous (target is <R^0|R^0>)
-        U_tot     = sum_i U_i(v_i, v_{i-1})  (with v_0 the external in_n)
+        U_tot     = sum_i U_i(q_i, q_{i-1})   (with q_0 the external input).
     """
 
     K = len(parts)
     if K < 1:
         raise ValueError("Need at least one particle in chain")
 
-    # All particles must have <R^0|R^0> source and <R|R> target.
     for i, P in enumerate(parts):
         if not (P.out_dim_M == 0 and P.in_dim_M == 0):
             raise ValueError(f"Part {i}: expected source <R^0|R^0>")
         if not (P.out_dim_N == 1 and P.in_dim_N == 1):
             raise ValueError(f"Part {i}: expected target <R|R>")
 
-    # Combined paired vector space V_tot = V_1 (+) ... (+) V_K. We do
-    # NOT include V_wire = R^0 since direct_sum with the trivial pvect
-    # is the identity but inv(0x0) blows up; just sum the parts.
-    V_tot = parts[0].V
+    # Combined reactive vector space Q_tot = Q_1 (+) ... (+) Q_K.
+    Q_tot = parts[0].Q
     for P in parts[1:]:
-        V_tot = V_tot.direct_sum(P.V)
+        Q_tot = Q_tot.direct_sum(P.Q)
 
-    dims = [P.V.V_dim for P in parts]
+    dims = [P.Q.dim for P in parts]
     offsets = [0]
     for d in dims:
         offsets.append(offsets[-1] + d)
 
-    def split_v(v_tot: Array):
-        return [v_tot[offsets[i]: offsets[i + 1]] for i in range(K)]
+    def split_q(q_tot: Array):
+        return [q_tot[offsets[i]: offsets[i + 1]] for i in range(K)]
 
-    def out_f(v_tot: Array, m_out: Array) -> Array:
-        # m_out: shape (0,); compute v_K using K-th particle's out_f.
-        v_chunks = split_v(v_tot)
-        # Each particle's out_f returns shape (1,). The wire selects v_K.
-        v_K = parts[K - 1].out_f(v_chunks[K - 1], jnp.zeros(0))
-        return v_K  # shape (1,) for target out_dim_N = 1
+    def out_f(q_tot: Array, m_out: Array) -> Array:
+        q_chunks = split_q(q_tot)
+        q_K = parts[K - 1].out_f(q_chunks[K - 1], jnp.zeros(0))
+        return q_K  # shape (1,)
 
-    def in_f(v_tot: Array, m_out: Array, n_in: Array) -> Array:
-        # Target in_dim_M = 0; vacuous.
-        return jnp.zeros(0)
+    def in_f(q_tot: Array, m_out: Array, n_in: Array) -> Array:
+        return jnp.zeros(0)  # target in_dim_M = 0
 
-    def U(v_tot: Array, m_out: Array, n_in: Array) -> Array:
-        # n_in: shape (1,) i.e. v_0 (the external input).
-        v_chunks = split_v(v_tot)
-        # Build the sequence (v_0, v_1, ..., v_K) of "neighbor" inputs
-        # that the wire's in_f would have routed: each Part_i sees
-        # in_n = v_{i-1} (for i = 1, ..., K).
-        v_outs = [parts[i].out_f(v_chunks[i], jnp.zeros(0)) for i in range(K)]
-        # Sum of per-particle potentials with their wired neighbor input:
-        #     U_i(v_i_param, v_{i-1}_output) where v_0_output := n_in.
+    def U(q_tot: Array, m_out: Array, n_in: Array) -> Array:
+        q_chunks = split_q(q_tot)
+        q_outs = [parts[i].out_f(q_chunks[i], jnp.zeros(0)) for i in range(K)]
+        # Each Part_i sees in_n = q_{i-1}; q_0 := n_in (external input).
         total = jnp.array(0.0)
         for i in range(K):
-            neighbor = n_in if i == 0 else v_outs[i - 1]
-            total = total + parts[i].U(v_chunks[i], jnp.zeros(0), neighbor)
+            neighbor = n_in if i == 0 else q_outs[i - 1]
+            total = total + parts[i].U(q_chunks[i], jnp.zeros(0), neighbor)
         return total
 
-    return PotLensMap(
-        V=V_tot,
+    return SmoothArrangement(
+        Q=Q_tot,
         out_dim_M=0,
         in_dim_M=0,
         out_dim_N=1,
@@ -182,51 +165,46 @@ def compose_chain(parts: Sequence[PotLensMap]) -> PotLensMap:
 
 
 # ---------------------------------------------------------------------------
-# Monoidal (parallel) composition in potlens (sec.para_general).
+# Monoidal (parallel) composition in sarr (sec.para_general).
 # ---------------------------------------------------------------------------
 
 
-def parallel_potlens(p1: PotLensMap, p2: PotLensMap) -> PotLensMap:
-    """Monoidal product in potlens: side-by-side independent boxes."""
+def parallel_arrangements(
+    p1: SmoothArrangement, p2: SmoothArrangement
+) -> SmoothArrangement:
+    """Monoidal product in ``sarr``: side-by-side independent boxes."""
 
-    V = p1.V.direct_sum(p2.V)
-    n1 = p1.V.V_dim
+    Q = p1.Q.direct_sum(p2.Q)
+    n1 = p1.Q.dim
 
-    def split(v: Array) -> Tuple[Array, Array]:
-        return v[:n1], v[n1:]
+    def split(q: Array) -> Tuple[Array, Array]:
+        return q[:n1], q[n1:]
 
-    d_out_M = p1.out_dim_M + p2.out_dim_M
-    d_in_M = p1.in_dim_M + p2.in_dim_M
-    d_out_N = p1.out_dim_N + p2.out_dim_N
-    d_in_N = p1.in_dim_N + p2.in_dim_N
-
-    def out_f(v: Array, m_out: Array) -> Array:
-        v1, v2 = split(v)
+    def out_f(q: Array, m_out: Array) -> Array:
+        q1, q2 = split(q)
         m1, m2 = m_out[: p1.out_dim_M], m_out[p1.out_dim_M:]
-        n1_out = p1.out_f(v1, m1)
-        n2_out = p2.out_f(v2, m2)
-        return jnp.concatenate([n1_out, n2_out])
+        return jnp.concatenate([p1.out_f(q1, m1), p2.out_f(q2, m2)])
 
-    def in_f(v: Array, m_out: Array, n_in: Array) -> Array:
-        v1, v2 = split(v)
+    def in_f(q: Array, m_out: Array, n_in: Array) -> Array:
+        q1, q2 = split(q)
         m1, m2 = m_out[: p1.out_dim_M], m_out[p1.out_dim_M:]
         n1_in, n2_in = n_in[: p1.in_dim_N], n_in[p1.in_dim_N:]
-        a = p1.in_f(v1, m1, n1_in)
-        b = p2.in_f(v2, m2, n2_in)
+        a = p1.in_f(q1, m1, n1_in)
+        b = p2.in_f(q2, m2, n2_in)
         return jnp.concatenate([a, b])
 
-    def U(v: Array, m_out: Array, n_in: Array) -> Array:
-        v1, v2 = split(v)
+    def U(q: Array, m_out: Array, n_in: Array) -> Array:
+        q1, q2 = split(q)
         m1, m2 = m_out[: p1.out_dim_M], m_out[p1.out_dim_M:]
         n1_in, n2_in = n_in[: p1.in_dim_N], n_in[p1.in_dim_N:]
-        return p1.U(v1, m1, n1_in) + p2.U(v2, m2, n2_in)
+        return p1.U(q1, m1, n1_in) + p2.U(q2, m2, n2_in)
 
-    return PotLensMap(
-        V=V,
-        out_dim_M=d_out_M,
-        in_dim_M=d_in_M,
-        out_dim_N=d_out_N,
-        in_dim_N=d_in_N,
+    return SmoothArrangement(
+        Q=Q,
+        out_dim_M=p1.out_dim_M + p2.out_dim_M,
+        in_dim_M=p1.in_dim_M + p2.in_dim_M,
+        out_dim_N=p1.out_dim_N + p2.out_dim_N,
+        in_dim_N=p1.in_dim_N + p2.in_dim_N,
         out_f=out_f,
         in_f=in_f,
         U=U,
