@@ -411,9 +411,12 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \newcommand{\coalg}{\tn{-}\Cat{Coalg}}
 \newcommand{\alg}{\tn{-}\Cat{Alg}}
+\newcommand{\Coalg}{\Cat{Coalg}}
+\newcommand{\tripow}[1]{({\blank})^{\triangleleft #1}}
 
-\trackTerm{\org}{org}{\mathbb{O}\Cat{rg}}
-\trackTerm{\orgiso}{orgiso}{\mathbb{O}\Cat{rg}_\cong}
+\trackTerm{\pc}{pc}{\mathbb{P}\Cat{C}}
+\trackTerm{\pciso}{pciso}{\mathbb{P}\Cat{C}_{\cong}}
+\trackTerm{\pcK}{pcK}{\mathbb{P}\Cat{C}^{(K)}}
 \trackTerm{\arr}{rwd}{\mathbb{A}\Cat{rr}}% abstract adaptive-arrangement operad
 
 %--------Paper-specific macros--------%
@@ -526,7 +529,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \begin{abstract}
 We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is an operad $\sarr$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{smooth adaptive arrangements}, which consist of a reactive parameter space, a lens given by smooth output and input maps, and a real-valued potential.
 
-The main technical result of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\org$ into the bicategory $\org$ of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
+The main technical result of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the bicategory of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
 
 When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is conservative and second-order, and $\Phiconf$ gives the discrete heat equation, which is dissipative and first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
 \end{abstract}
@@ -566,9 +569,9 @@ For interfaces $b_1,\ldots,b_K,c$, a morphism $\varphi\colon b_1,\ldots,b_K\to c
 
 In the examples below we need a richer composition syntax: one where the effective coupling is itself part of the data and may adapt to the signals flowing between boxes. The way it adapts is governed by a dynamical system whose behavior depends on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider replacing $\varphi$ by an interaction pattern representing an adaptive spring material for which each connecting edge has a variable spring constant that responds to a chosen potential $U$ and the edge lengths.
 
-We call these richer composition patterns \emph{smooth adaptive arrangements}: each carries an internal state---the parameter---that the dynamics evolve over time, which is what \emph{adaptive} names, together with a real-valued \emph{potential} $U$---the energy in mechanics, the loss in learning---which drives that evolution and is the datum at the center of this paper. Formally, they will be the morphisms in the operad $\sarr$ of smooth adaptive arrangements constructed in \cref{sec.potentialized_lenses}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\org$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
+We call these richer composition patterns \emph{smooth adaptive arrangements}: each carries an internal state---the parameter---that the dynamics evolve over time, which is what \emph{adaptive} names, together with a real-valued \emph{potential} $U$---the energy in mechanics, the loss in learning---which drives that evolution and is the datum at the center of this paper. Formally, they will be the morphisms in the operad $\sarr$ of smooth adaptive arrangements constructed in \cref{sec.potentialized_lenses}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\pc$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
 
-The choice to have semantics land in $\org$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one variable $\yon$ by coproducts and products---$\poly$ is the free distributive category on a single object---so a polynomial
+The choice to have semantics land in $\pc$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one variable $\yon$ by coproducts and products---$\poly$ is the free distributive category on a single object---so a polynomial
 \[
 p=\sum_{i:I}\yon^{p[i]}
 \]
@@ -582,7 +585,7 @@ Because $\poly$ is monoidal closed, such maps are equivalently the positions of 
 \[
 w\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,p'},
 \]
-so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the wiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to p'$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\org$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
+so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the wiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to p'$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\pc$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
 
 %--------------------------------------------------------------------
 \section{From smooth data to dynamics}\label{sec.intro_smooth_to_dynamics}
@@ -612,19 +615,19 @@ whose differential contributes to the dynamics.
 
 The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens $\binom{\inpt f}{\outp f}$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming and database theory, compositional game theory, and categorical accounts of backpropagation~\cite{bohannon2006relational,johnson2012lenses,hedges2017coherence,fong2019backprop,cruttwell2021categorical}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way.
 
-To accommodate the potential---the last ingredient---we pass from lenses to the coKleisli category $\plmfd$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$ \cite{abou2016reflections}: informally, the backward direction now handles both inputs and a real number. Thus we are now ready to define $\sarr$ to be the operad underlying the symmetric monoidal category $\para{\rvect}{\plmfd}$; we call its morphisms \emph{smooth adaptive arrangements}. Under the dynamics functor $\sarr\to\org$, the parameters and potential let the effective coupling not only transport information but also contribute to the parameter update rules, again in a compositional way.
+To accommodate the potential---the last ingredient---we pass from lenses to the coKleisli category $\plmfd$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$ \cite{abou2016reflections}: informally, the backward direction now handles both inputs and a real number. Thus we are now ready to define $\sarr$ to be the operad underlying the symmetric monoidal category $\para{\rvect}{\plmfd}$; we call its morphisms \emph{smooth adaptive arrangements}. Under the dynamics functor $\sarr\to\pc$, the parameters and potential let the effective coupling not only transport information but also contribute to the parameter update rules, again in a compositional way.
 
 The passage from lenses to polynomial coalgebras uses a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\ihom{\inpt c,I}\otimes\outp c$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}). Moore machines \cite{moore1956gedanken}---a simple kind of dynamical system---arise in this way.
 
-Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position---which affects the current moment's dynamics---but also a momentum, which affects the next's. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\org$.
+Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position---which affects the current moment's dynamics---but also a momentum, which affects the next's. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\sarr$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
 We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}): the conservative, second-order regime and the dissipative, first-order one are two readings of a single syntactic object.
 This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime---including the sign that makes the dynamics conserve energy or dissipate it.
 
-That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a commutative monoid. We therefore build $\sarr\to\org$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
+That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a commutative monoid. We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
-The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background section reviews polynomial functors, the Para construction, and the bicategory $\org$, while lenses and Moore internalization have their own section (\cref{ch.lenses}). 
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background section reviews polynomial functors, the Para construction, and the bicategory $\pc$, while lenses and Moore internalization have their own section (\cref{ch.lenses}). 
 
 The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
@@ -637,7 +640,7 @@ The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci202
 \[
 \mathbf{OpenErg}\To{T^*}\mathbf{OpenODE}\To{\mathrm{collapse}}\mathbf{COrg}
 \]
- from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\org$. A first difference is that our semantics $\Phiconf,\Phiphase\colon\sarr\to\org$ is discrete-time, rather than continuous.
+ from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\pc$. A first difference is that our semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ is discrete-time, rather than continuous.
 
 However, neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(\rv Q,w,E)$ where
 \[
@@ -659,27 +662,27 @@ For $\cat R$ as above, there is a category $\cat S$, whose objects are submersio
 \sarr\ar[d, "\Phiconf"]\\
 \mathbf{COrg} &
 \cat{S}\ar[l, "{\mathrm{wide}}"]\ar[r] &
-\org
+\pc
 \end{tikzcd}
 \]
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition*}
-The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\org$ on our side, where the tangent component $\dot q$ becomes the Euler step $q\mapsto q+\dot q$.
+The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\pc$ on our side, where the tangent component $\dot q$ becomes the Euler step $q\mapsto q+\dot q$.
 
 
 %--------------------------------------------------------------------
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
 
-\Cref{ch.background} fixes notation and recalls the categorical background used later: polynomial functors, coalgebras, and the bicategory $\org$; wiring-diagram operads; and the Para construction.
+\Cref{ch.background} fixes notation and recalls the categorical background used later: polynomial functors, coalgebras, and the bicategory $\pc$; wiring-diagram operads; and the Para construction.
 
 \Cref{ch.lenses} reviews lenses and the backward monad construction and builds the \emph{Moore internalization} functor (\cref{cor.Theta}), which turns a lens interface into an object of the ambient category.
 
-\Cref{ch.framework} is the abstract heart of the paper. From a \emph{adaptive-arrangement datum} $D$---a cartesian category of spaces, a parameter category, and a potentials monad---it builds a syntax operad $\arr_D$. An interface functor into $\poly$, a semantic effect carrying the potentials monad into $\poly$, and a potential algebra then give a \emph{polynomial interpretation} via Moore internalization (\cref{cor.Theta}), and an \emph{integrator} turns this into an operad functor $\arr_D\to\org$ (\cref{thm.dynamics_functor}).
+\Cref{ch.framework} is the abstract heart of the paper. From a \emph{adaptive-arrangement datum} $D$---a cartesian category of spaces, a parameter category, and a potentials monad---it builds a syntax operad $\arr_D$. An interface functor into $\poly$, a semantic effect carrying the potentials monad into $\poly$, and a potential algebra then give a \emph{polynomial interpretation} via Moore internalization (\cref{cor.Theta}), and an \emph{integrator} turns this into an operad functor $\arr_D\to\pc$ (\cref{thm.dynamics_functor}).
 
 \Cref{ch.smooth_rwd} instantiates the syntax: it introduces reactive vector spaces and assembles the smooth ingredients into the adaptive-arrangement datum $\Sm$, whose syntax operad is the operad $\sarr$ of smooth adaptive arrangements---$\rvect$-parameterized manifold lenses equipped with potentials (\cref{def.potlens}).
 
-\Cref{ch.smooth_dynamics} instantiates the dynamics by applying the framework of \cref{ch.framework} to the datum $\Sm$: the cotangent polynomial interpretation and the two integrators---configuration and phase---together yield operad functors $\Phiconf\colon\sarr\to\org$ and $\Phiphase\colon\sarr\to\org$ (\cref{cor.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
+\Cref{ch.smooth_dynamics} instantiates the dynamics by applying the framework of \cref{ch.framework} to the datum $\Sm$: the cotangent polynomial interpretation and the two integrators---configuration and phase---together yield operad functors $\Phiconf\colon\sarr\to\pc$ and $\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
 
 \Cref{ch.applications} works out the main examples: Newton's method, gradient descent with backpropagation, the discrete wave equation for a chain of harmonic particles, and the graph-Laplacian dynamics of harmonic particles on an arbitrary finite directed graph.
 
@@ -687,7 +690,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 %--------------------------------------------------------------------
 \section*{Acknowledgments}
 %--------------------------------------------------------------------
-Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, and Scott Viteri for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
+Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, Maximilien Peroux, and Scott Viteri for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
 
 \thanksAFOSR{FA9550-23-1-0376}. 
 
@@ -696,15 +699,15 @@ Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, and Scott Viteri for 
 \chapter{Background}\label{ch.background}
 %====================================================================
 
-This section collects much of the background required for this paper. We first fix our typographic conventions. Then we recall polynomial functors, polynomial coalgebras, and the bicategory $\org$ they assemble into. Finally we review wiring-diagram operads and the Para construction, which together with the lenses of \cref{ch.lenses} provide the compositional ingredients used in the rest of the paper.
+This section collects much of the background required for this paper. We first fix our typographic conventions. Then we recall polynomial functors, polynomial coalgebras, and the bicategory $\pc$ they assemble into. Finally we review wiring-diagram operads and the Para construction, which together with the lenses of \cref{ch.lenses} provide the compositional ingredients used in the rest of the paper.
 
 %--------------------------------------------------------------------
 \section{Notational conventions}\label{sec.prelim}
 %--------------------------------------------------------------------
 
-We fix some typographic conventions. We denote generic categories using calligraphic script, $\cat{C},\cat{M},\cat{A}$, and specifically-named categories using boldface, $\defineTerm{smset},\poly,\mfd$. We write specifically-named functions or operations in roman, $\ev,\coev$, and named functors in sans-serif, $\Fun{T}$. Number systems use blackboard bold, $\nn,\rr$; named bicategorical structures are written with a blackboard-bold initial, such as $\org$ and $\Para$. 
+We fix some typographic conventions. We denote generic categories using calligraphic script, $\cat{C},\cat{M},\cat{A}$, and specifically-named categories using boldface, $\defineTerm{smset},\poly,\mfd$. We write specifically-named functions or operations in roman, $\ev,\coev$, and named functors in sans-serif, $\Fun{T}$. Number systems use blackboard bold, $\nn,\rr$; named bicategorical structures are written with a blackboard-bold initial, such as $\pc$ and $\Para$. 
 
-For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\org$ is clickable.
+For convenience in the electronic version, many recurring pieces of notation are hyperlinked to where they are defined, e.g.\ $\pc$ is clickable.
 
 We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the functor $M\mapsto\rr\times M$. We write $\defineTerm{bang}$ for a unique map when the domain and codomain make it clear, e.g.\ the unique map $\emptyset\to A$ or the unique map $X\to\rr^0$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. In any category, we may use an object name as the name of the identity morphism on that object, e.g.\ $X\otimes f$ in place of $\id_X\otimes f$. For example, $\cat{C}$ can stand as the name of the identity functor $\id_\cat{C}$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
@@ -719,7 +722,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \section{Polynomial functors, coalgebras, and $\mathbb{O}\Cat{rg}$}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal bicategory $\org$ of polynomial coalgebras (\cref{sec.org}).
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal bicategory $\pc$ of polynomial coalgebras (\cref{sec.org}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\termraw{poly}$}{Poly}}\label{sec.poly}
 
@@ -824,11 +827,17 @@ s\colon\nn\to S,\qquad s(0)\coloneqq s_0,\qquad s(t+1)\coloneqq f(s(t)).
 We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $s_0$, and use this notation freely below.
 \end{example}
 
-\subsection{The monoidal bicategory \texorpdfstring{$\termraw{org}$}{Org}}\label{sec.org}
+\subsection{The monoidal bicategory $\pc$ of polynomial coalgebras}\label{sec.org}
 
-We recall the monoidal bicategory $\defineTerm{org}$ from~\cite{spivak2021learners}; see also~\cite{shapiro2022dynamic}. Its objects are polynomials $\ob\org=\ob\poly$, and for polynomials $p,p'$ the hom-category is
-\[\org(p,p')\coloneqq\ihom{p,p'}\tn{-}\Cat{Coalg}.\]
-Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to p'$ in $\org$ is an $\ihom{p,p'}$-coalgebra $(S,\,f\colon S\to\ihom{p,p'}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $p'$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in p'(1)$, then converts each external input $e\in p'[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
+We obtain the semantics category of this paper by a single categorical move: \emph{change of base of enrichment} along a lax monoidal functor. Recall that a lax monoidal functor $c\colon\cat V\to\cat W$ carries each $\cat V$-enriched category to a $\cat W$-enriched category, applying $c$ to the hom-objects and transporting the identities and composites along the lax structure maps of $c$; we write $c_*\cat X$ for the $\cat W$-category so obtained from a $\cat V$-category $\cat X$. When $\cat V$ is moreover monoidal closed, it is enriched in itself: the hom-object from $a$ to $b$ is the internal hom $\ihom{a,b}$, with identities $I\to\ihom{a,a}$ and composites $\ihom{a,b}\otimes\ihom{b,c}\to\ihom{a,c}$. Since $\poly$ is monoidal closed (\cref{sec.poly}), it is self-enriched in this way, and any lax monoidal functor $c$ out of $\poly$ yields a $\cat W$-category $c_*\poly$ whose objects are polynomials and whose hom-object from $p$ to $p'$ is $c\ihom{p,p'}$.\footnote{This change-of-base description is due to Toby St~Clere Smithe; the observation that $\poly$ is enriched in itself, which makes it land on the nose, is due to Maximilien Peroux.}% TODO: \cite{} for Toby once the source is confirmed --- smithe2021polynomial (Polynomial Life) does NOT cover this framing.
+
+The semantics of this paper is the instance in which $c$ is the coalgebra functor. For a polynomial $q$, let $q\coalg$ denote the category of $q$-coalgebras $(S,f\colon S\to q(S))$ and their morphisms; the assignment $q\mapsto q\coalg$ is a lax monoidal functor, which we write
+\[
+\Coalg\colon(\poly,\yon,\otimes)\to(\defineTerm{smcat},1,\times).
+\]
+We write $\defineTerm{pc}\coloneqq\Coalg_*\poly$ for the change of base of self-enriched $\poly$ along it. Its objects are polynomials $\ob\pc=\ob\poly$, and for polynomials $p,p'$ the hom-category is
+\[\pc(p,p')\coloneqq\ihom{p,p'}\coalg.\]
+Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to p'$ in $\pc$ is an $\ihom{p,p'}$-coalgebra $(S,\,f\colon S\to\ihom{p,p'}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $p'$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in p'(1)$, then converts each external input $e\in p'[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
 \[
 \smset(S,\ihom{p,p'}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
 \]
@@ -837,19 +846,19 @@ A morphism $(S,f)\to(S',f')$ in $\ihom{p,p'}\coalg$ is a function $g\colon S\to 
 s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
 \end{equation*}
 
-In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,p'}\cong p'$, a morphism $\yon\to p'$ in $\org$ is precisely a $p'$-coalgebra $S\to p'(S)$.
+In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,p'}\cong p'$, a morphism $\yon\to p'$ in $\pc$ is precisely a $p'$-coalgebra $S\to p'(S)$.
 
-We often elide the difference between $\org$ as a monoidal bicategory and $\org$ as a category-enriched operad, with maps
+We often elide the difference between $\pc$ as a monoidal bicategory and $\pc$ as a category-enriched operad, with maps
 \[
-\org(p_1,\ldots,p_K;p')\coloneqq[p_1\otimes\cdots\otimes p_K,p']\coalg.
+\pc(p_1,\ldots,p_K;p')\coloneqq[p_1\otimes\cdots\otimes p_K,p']\coalg.
 \]
-The operadic perspective is closer to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $p'$---than the monoidal perspective is, but the operadic notation $\org(p_1,\ldots,p_K;p')$ is heavier than the monoidal notation $\org(p,p')$.
+The operadic perspective is closer to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $p'$---than the monoidal perspective is, but the operadic notation $\pc(p_1,\ldots,p_K;p')$ is heavier than the monoidal notation $\pc(p,p')$.
 
 \begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop.org}
-The hom-categories $\ihom{p,p'}\coalg$ assemble into a monoidal bicategory $\org$ with polynomials as objects, with monoidal structure $(\yon,\otimes)$ inherited by the Dirichlet product on polynomials.
+The hom-categories $\ihom{p,p'}\coalg$ assemble into a monoidal bicategory $\pc$, previously denoted $\mathbb{O}\Cat{rg}$, with polynomials as objects and monoidal structure $(\yon,\otimes)$ inherited by the Dirichlet product on polynomials.
 \end{proposition}
 
-This structure arises from the fact that the functor $\blank\coalg$ from $(\poly,\yon,\otimes)$ to $(\defineTerm{smcat},1,\times)$ is lax monoidal:
+Concretely, $\pc$ realizes this change of base through the lax structure maps of $\Coalg$,
 \[
 1\to\yon\coalg
 \qqand
@@ -862,19 +871,29 @@ From here, the structure maps $\yon\to[p,p]$ and $[p,p']\otimes[p',p'']\to[p,p''
 [p,p']\coalg\times[p',p'']\coalg\to[p,p'']\coalg.
 \]
 
-\begin{remark}[$\org$ is monoidal closed]\label{rmk.org_closed}
-The polynomial $[p,p']$ also serves as the internal hom in $\org$:
+\begin{remark}[$\pc$ is monoidal closed]\label{rmk.org_closed}
+The polynomial $[p,p']$ also serves as the internal hom in $\pc$:
 \[
-\org(a,[p,p'])\,=\,[a,[p,p']]\coalg\;\cong\;[a\otimes p,p']\coalg\,=\,\org(a\otimes p,p'),
+\pc(a,[p,p'])\,=\,[a,[p,p']]\coalg\;\cong\;[a\otimes p,p']\coalg\,=\,\pc(a\otimes p,p'),
 \]
 by closedness of $\poly$ (\cref{sec.poly}).
 \end{remark}
 
-We write $\defineTerm{orgiso}$ for the wide sub-$(2,1)$-category of $\org$ with the same objects and 1-cells but only the \emph{invertible} 2-cells, so that each hom-category is replaced by its core:
+Two further instances of the construction $c_*\poly$ will be useful. For the first, write $p\triangleleft q\coloneqq p\circ q$ for the substitution product of polynomials; together with the Dirichlet product $\otimes$ it forms a normal duoidal structure on $\poly$, whose interchange $(w\triangleleft x)\otimes(y\triangleleft z)\to(w\otimes y)\triangleleft(x\otimes z)$ makes the $K$-fold substitution power $\tripow K\colon\poly\to\poly$ a lax monoidal endofunctor of $(\poly,\yon,\otimes)$. Hence $\Coalg\circ\tripow K$ is lax monoidal, and its change of base
 \[
-\orgiso(p,p')\coloneqq\sum_{S:\smsetiso}\smset(S,\ihom{p,p'}(S)).
+\defineTerm{pcK}\coloneqq(\Coalg\circ\tripow K)_*\poly,
+\qquad
+\pcK(p,p')=\bigl(\ihom{p,p'}^{\triangleleft K}\bigr)\coalg,
 \]
-A 1-cell $p\to p'$ is again an $\ihom{p,p'}$-coalgebra $(S,f)$, but a 2-cell $(S,f)\to(S',f')$ is now a \emph{bijection} $g\colon S\To{\cong}S'$ compatible with the coalgebra structure. We write $\orgiso\inj\org$ for the inclusion.
+has polynomials as objects but takes a 1-cell $p\to p'$ to a coalgebra whose single step plays out $K$ rounds of the $\ihom{p,p'}$-interaction---a $K$-stage system. The case $K=1$ recovers $\pc$, since $\tripow 1=\id$.
+
+For the second, the functor $\Fun{core}\colon\smcat\to\Cat{Gpd}$ sending a category to its maximal subgroupoid preserves finite products, so $\Fun{core}\circ\Coalg\colon\poly\to\Cat{Gpd}$ is lax monoidal; its change of base
+\[
+\defineTerm{pciso}\coloneqq(\Fun{core}\circ\Coalg)_*\poly,
+\qquad
+\pciso(p,p')=\Fun{core}\bigl(\ihom{p,p'}\coalg\bigr)=\sum_{S:\smsetiso}\smset(S,\ihom{p,p'}(S)),
+\]
+is the wide sub-$(2,1)$-category of $\pc$ with the same objects and 1-cells but only the \emph{invertible} 2-cells: a 1-cell $p\to p'$ is again an $\ihom{p,p'}$-coalgebra $(S,f)$, while a 2-cell $(S,f)\to(S',f')$ is now a \emph{bijection} $g\colon S\To{\cong}S'$ compatible with the coalgebra structure. The inclusion $\Fun{core}\Rightarrow\id_{\smcat}$ is monoidal, and base-changing it gives the inclusion $\pciso\inj\pc$.
 
 %--------------------------------------------------------------------
 \section{Wiring-diagram operads}\label{sec.wd_operads}
@@ -1048,15 +1067,15 @@ consider the notion of ``traced monoidal categories without identity''; one migh
 Another advantage is that wiring diagram algebras also easily represent $\cat{V}$-enriched categories for monoidal categories $\cat{V}$, namely by using algebras $\cat{W}\to\cat{V}$ valued in $\cat{V}$ in place of $\smset$ as in \eqref{eqn.W_alg}. For example, a $\vect$-enriched category with object set $O$ is an operad functor $\cat{W}_{O\tn{-Cat}}\to\vect$.
 
 
-For our purposes, the goal is to build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras. In \cite{shapiro2022dynamic}, a dynamic category is defined to be a category enriched in $\org$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
+For our purposes, the goal is to build \emph{dynamic} versions of the structures in \eqref{eqn.wd_examples}, in which the ``fillers'' of a box are ``morphisms that change in time'', i.e.\ coalgebras. In \cite{shapiro2022dynamic}, a dynamic category is defined to be a category enriched in $\pc$; similarly for dynamic monoidal categories or dynamic operads. Given the ideas above, these are just operad functors
 \[
-\cat{W}_{O\tn{-Cat}}\to\org
+\cat{W}_{O\tn{-Cat}}\to\pc
 \qquad
-\cat{W}_{O\tn{-MnCat}}\to\org
+\cat{W}_{O\tn{-MnCat}}\to\pc
 \qquad
-\cat{W}_{O\tn{-Opd}}\to\org
+\cat{W}_{O\tn{-Opd}}\to\pc
 \] 
-for any $O:\smset$. We continue with this approach, taking values in the bicategory $\org$ of \cref{sec.org}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
+for any $O:\smset$. We continue with this approach, taking values in the bicategory $\pc$ of \cref{sec.org}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
 
 %--------------------------------------------------------------------
 \section{The Para construction}\label{sec.para_general}
@@ -1795,9 +1814,9 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 \chapter{Abstract framework for adaptive dynamics}\label{ch.framework}
 %====================================================================
 
-This section produces a syntax operad $\arr_D$ of \emph{adaptive arrangements} from a short list of ingredients: a \emph{adaptive-arrangement datum} $D$, including a notion of space, a notion of parameter, and a \emph{potentials monad} through which the backward pass is threaded and potentials accumulate. Two further ingredients then yield functorial semantics, a functor $\arr_D\to\org$: a \emph{polynomial interpretation}, which casts spaces as polynomial interfaces and fixes what potentials do, and an \emph{integrator}, which turns those effects into dynamics. The three play distinct roles: the adaptive-arrangement datum is the material out of which the syntax operad $\arr_D$ is built, the polynomial interpretation interprets that syntax in $\poly$, and the integrator runs it in $\org$.
+This section produces a syntax operad $\arr_D$ of \emph{adaptive arrangements} from a short list of ingredients: a \emph{adaptive-arrangement datum} $D$, including a notion of space, a notion of parameter, and a \emph{potentials monad} through which the backward pass is threaded and potentials accumulate. Two further ingredients then yield functorial semantics, a functor $\arr_D\to\pc$: a \emph{polynomial interpretation}, which casts spaces as polynomial interfaces and fixes what potentials do, and an \emph{integrator}, which turns those effects into dynamics. The three play distinct roles: the adaptive-arrangement datum is the material out of which the syntax operad $\arr_D$ is built, the polynomial interpretation interprets that syntax in $\poly$, and the integrator runs it in $\pc$.
 
-The smooth version $\sarr\To{\Phi}\org$ will be a special case, where: spaces are manifolds, parameters are reactive vector spaces, potentials live in $\rr$, the cotangent bundle gives interfaces, potentials act via their differential, and integration is by Euler steps. This smooth instance is assembled in \cref{ch.smooth_rwd,ch.smooth_dynamics}: its adaptive-arrangement datum $\Sm$ and syntax operad $\sarr$ (the $\sarr$ of the introduction) appear in \cref{def.potlens}, while its polynomial interpretation (\cref{sec.smooth_interpretation}, built on the cotangent bundle of \cref{sec.cot}) and integrator (Euler steps, \cref{sec.integrator_semantics}) assemble into the dynamics functor $\Phi$ in \cref{sec.dynamics_functor}.
+The smooth version $\sarr\To{\Phi}\pc$ will be a special case, where: spaces are manifolds, parameters are reactive vector spaces, potentials live in $\rr$, the cotangent bundle gives interfaces, potentials act via their differential, and integration is by Euler steps. This smooth instance is assembled in \cref{ch.smooth_rwd,ch.smooth_dynamics}: its adaptive-arrangement datum $\Sm$ and syntax operad $\sarr$ (the $\sarr$ of the introduction) appear in \cref{def.potlens}, while its polynomial interpretation (\cref{sec.smooth_interpretation}, built on the cotangent bundle of \cref{sec.cot}) and integrator (Euler steps, \cref{sec.integrator_semantics}) assemble into the dynamics functor $\Phi$ in \cref{sec.dynamics_functor}.
 
 %--------------------------------------------------------------------
 \section{Adaptive-arrangement data}\label{sec.rewiring_datum}
@@ -1993,7 +2012,7 @@ It is easy to check that $\potalg^{\md}$ is a $(\Fun R'\blank)^{\md}$-monoid.
 %----------------------------------------------------------------------------
 
 \label{sec.org_as_para}%
-This section assembles the dynamics functor $\Phi\colon\arr_D\to\org$ in three steps: we repackage $\orgiso$ as a Para construction (\cref{prop.org_as_para,lem.poly_to_org}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
+This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.org_as_para,lem.poly_to_org}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
 
 Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
@@ -2009,17 +2028,17 @@ S\cdot p\coloneqq \Store(S)\otimes p.
 \begin{proposition}\label{prop.org_as_para}
 There is an isomorphism of categories
 \[
-\para{\smsetiso}{\poly}\To{\cong}\orgiso.
+\para{\smsetiso}{\poly}\To{\cong}\pciso.
 \]
 \end{proposition}
 
 \begin{proof}
-Both $\para{\smsetiso}{\poly}$ and $\orgiso$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to p'$ agree
+Both $\para{\smsetiso}{\poly}$ and $\pciso$ are $(2,1)$-categories with object set $\ob\poly$, and the mapping groupoids $p\to p'$ agree
 \begin{align*}
 	\para{\smsetiso}{\poly}(p,p')&=
   \sum_{S:\smsetiso}\poly(\Store(S)\otimes p, p')\\&\cong
   \sum_{S:\smsetiso}\poly(S\yon^S,[p,p'])\\&\cong
-  \sum_{S:\smsetiso}\smset(S,[p,p'](S))=\orgiso(p,p')
+  \sum_{S:\smsetiso}\smset(S,[p,p'](S))=\pciso(p,p')
 \end{align*}
 by \cref{def.store_action,eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It remains to show that the identities and composites agree.
 
@@ -2029,7 +2048,7 @@ In both cases the identity is indexed by the monoidal unit $1:\smsetiso$, and $1
 \begin{lemma}\label{lem.poly_to_org}
 Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
 \[
-D_F\colon\para{\Store\circ F}{\poly}\to\orgiso.
+D_F\colon\para{\Store\circ F}{\poly}\to\pciso.
 \]
 \end{lemma}
 
@@ -2041,7 +2060,7 @@ The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\oti
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\orgiso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
+\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
 The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
@@ -2067,13 +2086,13 @@ We call $\intg$ an \emph{integrator} for what its instances turn out to be. Inde
 
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
-\[\Psisem{\intg}\colon\para{p}{\poly}\to\orgiso.\]
+\[\Psisem{\intg}\colon\para{p}{\poly}\to\pciso.\]
 \end{proposition}
 
 \begin{proof}
 Let $\intg=(\Fun S,\upd)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
 \[
-D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\orgiso.
+D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\pciso.
 \]
 By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
 \[
@@ -2087,7 +2106,7 @@ Let $\arr_D$ be the adaptive-arrangement operad of an adaptive-arrangement datum
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
 Every polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
 \[
-\Phi_{\interp,\intg}\colon\arr_D\to\org.
+\Phi_{\interp,\intg}\colon\arr_D\to\pc.
 \]
 \end{theorem}
 
@@ -2096,7 +2115,7 @@ Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors b
 \[
 \arr_D\To{\Phip{\interp}}
 \para{\Fun{c}\circ J}{\poly}\To{\Psisem{\intg}}
-\orgiso\inj\org.
+\pciso\inj\pc.
 \qedhere
 \]
 \end{proof}
@@ -2105,7 +2124,7 @@ Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\len
 \[
 \Phi_{\interp,\intg}\lensob M=\Fun c(\outp M)\otimes\ihom{\Fun c(\inpt M),z}
 \]
-and a morphism $f=(Q,\outp f,\inpt f)\colon\lensob M\to\lensob N$ to the $\org$-morphism $\Phi_{\interp,\intg}\lensob M\to\Phi_{\interp,\intg}\lensob N$ carried by the state set $\Fun S_Q$: the coalgebra (\cref{prop.coalg_as_poly_map}) whose structure map is the composite
+and a morphism $f=(Q,\outp f,\inpt f)\colon\lensob M\to\lensob N$ to the $\pc$-morphism $\Phi_{\interp,\intg}\lensob M\to\Phi_{\interp,\intg}\lensob N$ carried by the state set $\Fun S_Q$: the coalgebra (\cref{prop.coalg_as_poly_map}) whose structure map is the composite
 \[
 \Store(\Fun{S}_Q)=\Fun{S}^{ }_Q\yon^{\Fun S_Q}
 \To{\upd_Q}
@@ -2121,11 +2140,11 @@ Here $\upd_Q$ is the integrator's update (\cref{def.integrator}) and $\widetilde
 %with an integrator $\intg$ [\,morphisms: TODO\,]. The construction above is the
 %object part of a functor
 %\[
-%  \arr\colon\Data\longrightarrow\SMC_{/\org},
+%  \arr\colon\Data\longrightarrow\SMC_{/\pc},
 %  \qquad (D,\intg)\longmapsto\bigl(\arr_D,\ \Phi_\intg\bigr),
 %\]
 %landing in the (normal-lax, pseudo) slice of symmetric monoidal categories over
-%$\org$.
+%$\pc$.
 %\end{remark}
 
 %====================================================================
@@ -2321,11 +2340,11 @@ This settles the choice of composition syntax $\cat{W}$ deferred at the end of \
 
 This section turns the syntax $\sarr$ of \cref{ch.smooth_rwd} into dynamics. By the framework of \cref{ch.framework}, this takes two semantic ingredients---a polynomial interpretation and an integrator---which compose as
 \[
-\sarr\To{\Phip{\interpsm}}\para{\cot}{\poly}\To{\Psisem{\intg}}\org.
+\sarr\To{\Phip{\interpsm}}\para{\cot}{\poly}\To{\Psisem{\intg}}\pc.
 \]
 The framework's dynamics functor $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}) records both ingredients; specialized here it is $\Phi_{\interpsm,\intg}$. Since the interpretation is fixed to the smooth one $\interpsm$ throughout this section, we drop it from the notation and write $\Phi_\intg$ for $\Phi_{\interpsm,\intg}$ (and $\Phiconf,\Phiphase$ for the configuration and phase integrators of \cref{sec.integrator_semantics}).
 
-\Cref{sec.cot} builds the cotangent functor $\cot\colon\mfd\to\poly$, which is involved in both. \Cref{sec.smooth_interpretation} assembles the polynomial interpretation $\Phip{\interpsm}$, casting each interface as a polynomial and each adaptive arrangement as a $\cotof{Q}$-parameterized polynomial map. \Cref{sec.integrator_semantics} constructs the two integrators used in this paper---configuration and phase---each inducing a semantics $\Psisem{\intg}\colon\para{\cot}{\poly}\to\org$. \Cref{sec.dynamics_functor} composes the two to recover the operad functors $\Phiconf,\Phiphase\colon\sarr\to\org$ (\cref{cor.functor}), and \cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying each in full detail.
+\Cref{sec.cot} builds the cotangent functor $\cot\colon\mfd\to\poly$, which is involved in both. \Cref{sec.smooth_interpretation} assembles the polynomial interpretation $\Phip{\interpsm}$, casting each interface as a polynomial and each adaptive arrangement as a $\cotof{Q}$-parameterized polynomial map. \Cref{sec.integrator_semantics} constructs the two integrators used in this paper---configuration and phase---each inducing a semantics $\Psisem{\intg}\colon\para{\cot}{\poly}\to\pc$. \Cref{sec.dynamics_functor} composes the two to recover the operad functors $\Phiconf,\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}), and \cref{sec.configuration_dynamics,sec.phase_dynamics} unpack the differential geometry underlying each in full detail.
 
 
 %--------------------------------------------------------------------
@@ -2497,20 +2516,20 @@ to a $\cotof{Q}$-parameterized polynomial map of the form
 \Phip{\interpsm}\lensob{N}.
 \end{equation}
 
-This completes the polynomial interpretation $\Phip{\interpsm}\colon\sarr\to\para{\cot}{\poly}$. To run it as dynamics in $\org$, we compose with an integrator $\Psisem{\intg}\colon\para{\cot}{\poly}\to\org$, constructed in \cref{sec.integrator_semantics} and combined with $\Phip{\interpsm}$ in \cref{sec.dynamics_functor}.
+This completes the polynomial interpretation $\Phip{\interpsm}\colon\sarr\to\para{\cot}{\poly}$. To run it as dynamics in $\pc$, we compose with an integrator $\Psisem{\intg}\colon\para{\cot}{\poly}\to\pc$, constructed in \cref{sec.integrator_semantics} and combined with $\Phip{\interpsm}$ in \cref{sec.dynamics_functor}.
 
 %--------------------------------------------------------------------
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\upd)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\org$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
+With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\upd)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
 
 \subsection{The Euler step}\label{sec.integrators}
 
 The polynomial interpretation $\Phip{\interpsm}$ of \cref{sec.smooth_interpretation} produces maps of the form $\cotof{Q}\otimes p\to p'$, or equivalently $\cotof{Q}\to[p,p']$. Our goal in this section is to turn them into $[p,p']$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{Q}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
 We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
-\[\Psisem{\intg}\colon\para{\cot}{\poly}\to\orgiso.\]
+\[\Psisem{\intg}\colon\para{\cot}{\poly}\to\pciso.\]
 
 \begin{notation}\label{not.rvect_polynomials}
 Going forward we denote the composite $\rvect\To{\inc}\mfd\To{\cot}\poly$ simply as $\cot\colon\rvect\to\poly$ and use \eqref{eqn.tangent_vec} and \eqref{eqn.canonical_dual_sum} to make the following identifications:
@@ -2659,7 +2678,7 @@ The integrator is what fixes the relationship between $S$ and $Q$: in our two ma
 \begin{corollary}\label{cor.functor}
 Every $\cot$-integrator $\intg$ induces an operad functor
 \[
-\Phi_\intg\colon\sarr\to\org.
+\Phi_\intg\colon\sarr\to\pc.
 \]
 \end{corollary}
 
@@ -2670,14 +2689,14 @@ This is \cref{thm.dynamics_functor} for the smooth adaptive-arrangement datum $\
 
 Specializing $\Phi_\intg$ to the configuration integrator $\conf$ \eqref{eqn.conf_integrator} and the phase integrator $\phase$ \eqref{eqn.phase_integrator} gives our two main functors of interest, the \emph{configuration} and \emph{phase dynamics functors}
 \begin{equation}\label{eqn.our_phis}
-\defineTerm{Phiconf},\ \defineTerm{Phiphase}\colon\sarr\to\org.
+\defineTerm{Phiconf},\ \defineTerm{Phiphase}\colon\sarr\to\pc.
 \end{equation}
 
 %--------------------------------------------------------------------
 \section{Configuration dynamics \texorpdfstring{$\termraw{Phiconf}$}{Phi conf}}\label{sec.configuration_dynamics}
 %--------------------------------------------------------------------
 
-The dynamics functor $\Phiconf\colon\sarr\to\org$ is the simpler of the two. A state is just an element $q\in Q$ of the parameterizing manifold---there is no additional ``momentum'' component---and each step updates it by a descent step on $Q$. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
+The dynamics functor $\Phiconf\colon\sarr\to\pc$ is the simpler of the two. A state is just an element $q\in Q$ of the parameterizing manifold---there is no additional ``momentum'' component---and each step updates it by a descent step on $Q$. This is the functor we apply to recover Newton's method (\cref{sec.newton_warmup}) and gradient descent (\cref{sec.dl_warmup}).
 
 Recall from \cref{thm.dynamics_functor} that $\Phiconf=\Psisem{\conf}\circ\Phip{\interpsm}$. The functor $\Psisem{\conf}$ replaces a $\cotof{Q}$-parameter with $\Store(S)$, where $S\coloneqq\absval{Q}$:
 \[
@@ -2789,7 +2808,7 @@ For $\cat R$ as in \cref{sec.related_cls}, there is a category $\cat S$, whose o
 \sarr\ar[d, "\Phiconf"]\\
 \mathbf{COrg} &
 \cat{S}\ar[l, "{\mathrm{wide}}"]\ar[r] &
-\org
+\pc
 \end{tikzcd}
 \end{equation}
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
@@ -2844,7 +2863,7 @@ These maps are natural in vector-space isomorphisms and submersion lenses, and m
 \[
 \cat{S}\coloneqq\para{\vectiso}{\SLens}\to\para{\smsetiso}{\poly}.
 \]
-Composing with the identification $\para{\smsetiso}{\poly}\cong\orgiso$ of \cref{prop.org_as_para} and the inclusion $\orgiso\inj\org$ gives a normal lax symmetric monoidal functor $\cat S\to\org$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
+Composing with the identification $\para{\smsetiso}{\poly}\cong\pciso$ of \cref{prop.org_as_para} and the inclusion $\pciso\inj\pc$ gives a normal lax symmetric monoidal functor $\cat S\to\pc$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
 \begin{equation}\label{eqn.S_coalgebra}
 q\longmapsto b\longmapsto
 \left(
@@ -2977,19 +2996,19 @@ The configuration analog \eqref{eqn.state_update_gradient} (\cref{sec.configurat
 The following remark sketches one possible solution for the inadequacy above.\qedhere
 \end{remark}
 
-\begin{remark}[Multi-stage integrators and $\org^{(K)}$]\label{rmk.org_N}
+\begin{remark}[Multi-stage integrators and $\pc^{(K)}$]\label{rmk.org_N}
 The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system emits, receives, and updates exactly once. Many useful numerical integrators, such as Runge--Kutta and velocity Verlet (leapfrog) \cite[Ch.~VI]{hairer2006geometric}, are instead \emph{multi-stage}. We sketch a target bicategory that conjecturally accommodates such schemes.
 
-For any $K:\nn$, let $\org^{(K)}$ be the bicategory with the same objects as $\org$ and hom-categories
+For any $K:\nn$, let $\pc^{(K)}$ be the bicategory with the same objects as $\pc$ and hom-categories
 \[
-\org^{(K)}(p,p')\coloneqq\ihom{p,p'}^{\circ K}\coalg,
+\pc^{(K)}(p,p')\coloneqq\ihom{p,p'}^{\circ K}\coalg,
 \]
 where $p^{\circ K}\coloneqq p\circ\cdots\circ p$ is the $K$-fold composite of the polynomial functor $p$ with itself.%
-\footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\org^C$ with objects given by $\ob\cat{P}$ and $\org^C(p,p')\coloneqq C([p,p'])$. Then $\org$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\org^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\circ K}}\poly\To{\blank\coalg}\smcat$.
+\footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\pc^C$ with objects given by $\ob\cat{P}$ and $\pc^C(p,p')\coloneqq C([p,p'])$. Then $\pc$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\pc^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\circ K}}\poly\To{\blank\coalg}\smcat$.
 }
-For example, a morphism in $\org^{(2)}$ is a coalgebra of the form $S\to p'(p'(S))$. Given a state, it outputs a position $j_1:p'(1)$ and, for every input direction $e_1:p'[j_1]$, outputs another position $j_2:p'(1)$ and, for every input direction $e_2:p'[j_2]$, updates the state. 
+For example, a morphism in $\pc^{(2)}$ is a coalgebra of the form $S\to p'(p'(S))$. Given a state, it outputs a position $j_1:p'(1)$ and, for every input direction $e_1:p'[j_1]$, outputs another position $j_2:p'(1)$ and, for every input direction $e_2:p'[j_2]$, updates the state. 
 
-We conjecture that by using a modified definition of integrator (\cref{def.integrator}), namely with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, one again obtains an operad functor $\sarr\to\org^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
+We conjecture that by using a modified definition of integrator (\cref{def.integrator}), namely with the state space $\Fun S$ unchanged but whose update is of the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, one again obtains an operad functor $\sarr\to\pc^{(K)}$. We do not pursue this here. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 
@@ -2999,13 +3018,13 @@ Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec
 \chapter{Applications}\label{ch.applications}
 %====================================================================
 
-In this concluding section we illustrate the two dynamics functors on four concrete examples. \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
+In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{This paper is precise enough to be turned into runnable code by a language model: point one at this paper with the prompt given at \url{https://github.com/dspivak/dap}, and you obtain a program you can run and modify. The implementation in that repository---written entirely by a language model (Claude) from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---reproduces all four examples below.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
 
 %--------------------------------------------------------------------
 \section{Newton's method}\label{sec.newton_warmup}
 %--------------------------------------------------------------------
 
-A \emph{scalar} in a symmetric monoidal category is an endomorphism $f\colon I\to I$ of the monoidal unit $I$; normal monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\para{\rvect}{\plmfd}$ representing $\sarr$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Under $\Phiconf$, it determines a scalar in $\org$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
+A \emph{scalar} in a symmetric monoidal category is an endomorphism $f\colon I\to I$ of the monoidal unit $I$; normal monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\para{\rvect}{\plmfd}$ representing $\sarr$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Under $\Phiconf$, it determines a scalar in $\pc$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
 
 Newton's method for \emph{minimization}---given an objective $U$, find a critical point, i.e.\ a point where the gradient $dU$ vanishes---is such a scalar. Its one standing hypothesis is that the Hessian of $U$ is invertible at every point of $Q$~\cite[Ch.~3]{nocedal2006numerical}; this holds in particular when $U$ is strictly convex, the prototypical case, where the critical point found is the global minimum. 
 
@@ -3051,10 +3070,10 @@ This is genuinely different from gradient descent: there the reactive structure 
 %--------------------------------------------------------------------
 
 By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation~\cite{rumelhart1986learning}. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{\rr^0}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf$ yields a normal lax symmetric monoidal functor
-\[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\sarr\To{\Phiconf}\org,\]
+\[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\sarr\To{\Phiconf}\pc,\]
 whose composite we denote by
 \begin{equation}\label{eqn.lrn}
-\lrn\colon\para{\rvect}{\mfd}\too\org.
+\lrn\colon\para{\rvect}{\mfd}\too\pc.
 \end{equation} 
 Training a neural network is a case of our configuration dynamics construction, in the case that input manifolds and potentials are trivial: $\inpt M=\rr^0$ and $U=0$.
 
@@ -3133,7 +3152,7 @@ The parameter covector $\xi_Q$ drives the descent update \eqref{eqn.dl_gradient_
 it is vanilla gradient descent at rate $\eta_{\mathrm{LR}}$. The returned $\xi_M$ is propagated backward to the previous interface, if any; for a composite network these repeated $\xi_M$'s are the usual backpropagated gradient signal. Backpropagation is thus the chain rule, packaged as the functoriality of $\Phiconf$.
 
 \begin{example}[Training data as an environment]\label{ex.training_data}
-The composite $g$ leaves two interfaces open---the input $\rr^m$ and the label $\Lambda$---which we close with an \emph{environment}: an $\org$-map
+The composite $g$ leaves two interfaces open---the input $\rr^m$ and the label $\Lambda$---which we close with an \emph{environment}: an $\pc$-map
 \[
 e\colon\yon\to\Phiconf\bigl(\tbinom{\rr^0}{\rr^m}\ltens\tbinom{\rr^0}{\Lambda}\bigr)
 \]
@@ -3150,7 +3169,7 @@ When $e$ ignores these covectors it is an externally specified supervised stream
 \section{The wave equation}\label{sec.wave_equation}
 %--------------------------------------------------------------------
 
-We first illustrate $\Phiphase\colon\sarr\to\org$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth adaptive arrangement $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$, and we arrange such particles into a chain via a $K$-ary smooth (static) arrangement $\fun{wire}_K\colon\boxob\ltpow{K}\to\boxob$. In \cref{sec.spring_first_pass} we compose the particles and the wiring in $\sarr$, apply $\Phiphase$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we apply $\Phiphase$ to the particle and wiring separately, compose the resulting coalgebras in $\org$, and verify term-by-term agreement as a check on signs, indices, and routing.
+We first illustrate $\Phiphase\colon\sarr\to\pc$ by deriving the wave equation. We describe a single particle (with harmonic potential) as a $0$-ary smooth adaptive arrangement $\Part\colon\binom{\rr^0}{\rr^0}\to\boxob$, and we arrange such particles into a chain via a $K$-ary smooth (static) arrangement $\fun{wire}_K\colon\boxob\ltpow{K}\to\boxob$. In \cref{sec.spring_first_pass} we compose the particles and the wiring in $\sarr$, apply $\Phiphase$, and recover the discrete wave equation. In \cref{sec.spring_second_pass} we apply $\Phiphase$ to the particle and wiring separately, compose the resulting coalgebras in $\pc$, and verify term-by-term agreement as a check on signs, indices, and routing.
 
 We begin with a single particle whose state is a transverse displacement and momentum, which we put into a ``box'' that delivers the displacement to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the displacements of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
@@ -3192,7 +3211,7 @@ We will work in the full suboperad of $\sarr$ (in the sense of \cref{sec.wd_oper
 \]
 for varying $n$. Note that $\boxob\ltpow{0}=\binom{\rr^0}{\rr^0}$ is the monoidal unit.
 
-We derive the wave equation, then audit the derivation via functoriality. First, we describe the particle and the wiring in $\sarr$, compose them there, and apply $\Phiphase$ to the resulting $0$-ary smooth adaptive arrangement $\boxob\ltpow{0}\to\boxob$ to read off the dynamics. Then, as a bookkeeping check, we apply $\Phiphase$ to the particle and to the wiring separately, compose in $\org$, and verify that the same coalgebra is obtained.
+We derive the wave equation, then audit the derivation via functoriality. First, we describe the particle and the wiring in $\sarr$, compose them there, and apply $\Phiphase$ to the resulting $0$-ary smooth adaptive arrangement $\boxob\ltpow{0}\to\boxob$ to read off the dynamics. Then, as a bookkeeping check, we apply $\Phiphase$ to the particle and to the wiring separately, compose in $\pc$, and verify that the same coalgebra is obtained.
 
 \subsection{First pass: composing in \texorpdfstring{$\termraw{srwd}$}{SRWD}}\label{sec.spring_first_pass}
 
@@ -3240,7 +3259,7 @@ Here, the sum in the above formula for $U$ comes from the productor \eqref{eqn.m
 
 \paragraph{The discrete dynamics.}
 
-The discrete dynamics appear when we apply the functor $\Phiphase\colon\sarr\to\org$. The object $\boxob$ is sent to
+The discrete dynamics appear when we apply the functor $\Phiphase\colon\sarr\to\pc$. The object $\boxob$ is sent to
 \[
 \Phiphase(\boxob)=\sum_{(q,\omega):\rr\times\Omega(\rr)}\yon^{T^*_q\rr\times \rr}.
 \]
@@ -3317,13 +3336,13 @@ This is the calculation of \eqref{eqn.state_update_explicit}: writing the state 
 The above chain \eqref{eqn.wave_wd} uses a single constant coupling $\kappa$, but the $\sarr$ formalism supports adaptive ones, as mentioned in \cref{sec.intro_smooth_rewiring}. One could give each bond its own spring constant $\kappa_j$ and treat these constants as reactive parameters in their own right, evolving alongside the displacements. How they respond to the state---softening under strain, say---is a modeling choice, governed by whatever potential one picks to encode the intended material behavior; the formalism turns that choice into coupled dynamics.\qedhere
 \end{remark}
 
-\subsection{Functoriality audit: composing in \texorpdfstring{$\termraw{org}$}{Org}}\label{sec.spring_second_pass}
+\subsection{Functoriality audit: composing in \texorpdfstring{$\pc$}{Coalg*Poly}}\label{sec.spring_second_pass}
 
 The wave equation was derived in \cref{sec.spring_first_pass}; operad-functoriality of $\Phiphase$ forces equality of the two sides below:
 \[
 \Phiphase\bigl(\fun{wire}_K(\Part,\ldots,\Part)\bigr)=\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr),
 \]
-We now work out the right-hand side term by term---applying $\Phiphase$ to the particle and to the wiring separately, then composing in $\org$---as an explicit check on signs, indices, and the routing of inputs through the formulas. 
+We now work out the right-hand side term by term---applying $\Phiphase$ to the particle and to the wiring separately, then composing in $\pc$---as an explicit check on signs, indices, and the routing of inputs through the formulas. 
 
 \paragraph{The particle dynamics.}
 
@@ -3360,7 +3379,7 @@ The routing $\omega_{i+1}(q_i)$ into box $i$'s $\xi$-component is how the wiring
 
 \paragraph{Composition.}
 
-The $\org$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\org$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\org$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
+The $\pc$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\pc$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\pc$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
 \[
 \Store(T^*\rr^K)\To{\Phiphase(\Part)^{\otimes K}}\Phiphase(\boxob)^{\otimes K}\To{\Phiphase(\fun{wire}_K)}\Phiphase(\boxob).
 \]
@@ -3374,7 +3393,7 @@ Beginning with $(\vec q,\vec\xi):T^*\rr^K$, the coalgebras output $(\vec q,\vec\
 
 \section{Graph Laplacian on a directed graph}\label{sec.graph_laplacian}
 
-The chain of \cref{sec.spring_first_pass} is one instance of a more general construction: again using the harmonic particle, any finite directed graph $G=(E\tto V)$ yields a $0$-ary smooth adaptive arrangement $\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}$ whose image under $\Phiphase$ is the discrete dynamics of the \emph{graph Laplacian} of $G$. This serves as a sanity check on the formalism of this paper.
+The chain of \cref{sec.spring_first_pass} is one instance of a more general construction: again using the harmonic particle, any finite directed graph $G=(E\tto V)$ yields a $0$-ary smooth adaptive arrangement $\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}$ whose image under $\Phiphase$ is the discrete dynamics of the \emph{graph Laplacian} of $G$. The orientation of $G$ sets up the wiring, but we will see that it drops out of the dynamics: because the harmonic potential is symmetric in each edge's endpoints, what we recover is the \emph{symmetrized} Laplacian, so $G$ behaves like its underlying undirected multigraph. This serves as a sanity check on the formalism of this paper.
 
 \paragraph{From directed graph to static arrangement.}
 
@@ -3496,7 +3515,7 @@ We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contrib
 (L_G)_{vw}=-\sum_{v\,\To{e}\,w}\kappa_e-\sum_{w\,\To{e}\,v}\kappa_e
 %-\sum_{\{\src(e),\tgt(e)\}=\{v,w\}}\kappa_e
 \]
-This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite{spielman2012spectral}.
+This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite{spielman2012spectral}. The symmetrization occurs because the harmonic potential \eqref{eqn.graph_potential} sees each edge only through $(q_{\tgt(e)}-q_{\src(e)})^2$, which is invariant under swapping source and target. Getting the symmetrized Laplacian is exactly what one expects of a conservative network of springs.
 
 Fixing an initial state $(\vec q(0),\vec\xi(0))\in T^*\rr^V$ and iterating $\Phiphase(\fun{wire}_{\mathbf G})$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec q(t),\vec\xi(t)\bigr)_{t\in\nn}$. As in \eqref{eqn.doubledot}, write $\ddot{q}_v(t)\coloneqq q_v(t+2)-2q_v(t+1)+q_v(t)$.
 
@@ -3527,11 +3546,11 @@ i.e.\ explicit-Euler diffusion on $G$ with vertex ``masses'' $m_v$ serving as he
 
 \section*{Conclusion}
 
-The operad $\sarr$ of smooth adaptive arrangements provides a single compositional syntax in which gradient-based learning and Hamiltonian-style mechanics coexist as functorial semantics $\Phiconf,\Phiphase\colon\sarr\to\org$. The key mediating construction is Moore internalization, which converts lens interfaces into polynomial interfaces, and integrators, which determine how stored state relates to the parameter space.
+The operad $\sarr$ of smooth adaptive arrangements provides a single compositional syntax in which gradient-based learning and Hamiltonian-style mechanics coexist as functorial semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$. The key mediating construction is Moore internalization, which converts lens interfaces into polynomial interfaces, and integrators, which determine how stored state relates to the parameter space.
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same $\sarr$-morphism may yield momentum-based weight dynamics. This places standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-stage (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
+Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The multi-stage bicategory $\pc^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-stage (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
 %See "superposition-era" branch in the github repo for more on this.
 
 \printbibliography
