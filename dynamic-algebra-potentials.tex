@@ -899,8 +899,8 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
   		node[right=3pt of Cat_out1] {$C$}
   	;
   %
-  	\node[bb={1}{2}, above right=-1 and 6.5 of Catf] (Monf) {$f_1$};
-  	\node[bb={2}{1}, below right=-.5 and 1 of Monf] (Mong) {$f_2$};
+  	\node[bb={1}{2}, above right=-1 and 6.1 of Catf] (Monf) {$f_1$};
+  	\node[bb={2}{1}, below right=-.5 and 1.3 of Monf] (Mong) {$f_2$};
   	\node[bb={0}{0}, inner ysep=8pt, fit=(Monf) (Mong)] (Mon) {};
   	\node[coordinate] at (Mon.west|-Monf_in1) (Mon_in1) {};
   	\node[coordinate] at (Mon.west|-Mong_in2) (Mon_in2) {};
@@ -935,9 +935,9 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
   	\draw[label]
   		node[left=3pt of Tr_in1] {$A$}
   		node[left=3pt of Tr_in2] {$B$}
-  		node at ($(Trf_out1)!.4!(Trg_in1)+(0,1)$) {$D$}
+  		node at ($(Trf_out1)!.4!(Trg_in1)+(0,.8)$) {$D$}
   		node[right=3pt of Tr_out2] {$E$}
-  		node at ($(Trf.north)+(0,1.5)$) {$C$}
+  		node at ($(Trf.north)+(0,1.3)$) {$C$}
   	;
   \end{scope}
   \begin{scope}[circuit logic US, thick, every to/.style={out=0,in=180}]
@@ -952,10 +952,10 @@ Categories, monoidal categories, traced categories, operads, etc.\ can be unders
   	\draw (Opdf.output) to (Opdg.input 1);
   	\draw (Opdg.output) to (Opd_out);
   	\draw[label]
-  		node[left=3pt of Opd_in1] {$A$}
-  		node[left=3pt of Opd_in2] {$B$}
-  		node at ($(Opdf.output)!.5!(Opdg.input 1)+(.1,.25)$) {$C$}
-  		node[right=3pt of Opd_out] {$D$}
+  		node[left=-1pt of Opd_in1] {$A$}
+  		node[left=-1pt of Opd_in2] {$B$}
+  		node at ($(Opdf.output)!.5!(Opdg.input 1)+(.1,.2)$) {$C$}
+  		node[right=-1pt of Opd_out] {$D$}
   	;
   \end{scope}
 	\node[below=.3 of Cat.south] (Cat name) {category};
@@ -1290,7 +1290,7 @@ By a \emph{semicategory} we mean almost a category, except without the notion of
   \node[coordinate] at (Y.east|-X1_out2) (Y_out2) {};
   \draw[ar] (Y_in1) -- node[above, font=\scriptsize] {$A$} (X1_in2);
   \draw[ar] (X1_out1) -- node[above, font=\scriptsize] {$B$} (X2_in1);
-  \draw[ar] (X2_out1) -- node[above, font=\scriptsize] {$C$} (Y_out1);
+  \draw[ar] (X2_out1) -- node[above right=0 and -5pt, font=\scriptsize] {$C$} (Y_out1);
   \draw[ar] (X1_out2) -- node[below, font=\scriptsize] {$D$} (Y_out2);
   \draw[ar] let \p1=(X2.north east), \p2=(X1.north west), \n1={\y2+\bby}, \n2=\bbportlen in
           (X2_out1) to[in=0,in looseness=.9] (\x1+.7*\n2,\n1) -- node[above, font=\scriptsize] {$C$} (\x2-.7*\n2,\n1) to[out=180] (X1_in1);
@@ -1792,7 +1792,7 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 \end{proof}
 
 %====================================================================
-\chapter{Abstract framework for adaptive-arrangement dynamics}\label{ch.framework}
+\chapter{Abstract framework for adaptive dynamics}\label{ch.framework}
 %====================================================================
 
 This section produces a syntax operad $\arr_D$ of \emph{adaptive arrangements} from a short list of ingredients: a \emph{adaptive-arrangement datum} $D$, including a notion of space, a notion of parameter, and a \emph{potentials monad} through which the backward pass is threaded and potentials accumulate. Two further ingredients then yield functorial semantics, a functor $\arr_D\to\org$: a \emph{polynomial interpretation}, which casts spaces as polynomial interfaces and fixes what potentials do, and an \emph{integrator}, which turns those effects into dynamics. The three play distinct roles: the adaptive-arrangement datum is the material out of which the syntax operad $\arr_D$ is built, the polynomial interpretation interprets that syntax in $\poly$, and the integrator runs it in $\org$.
@@ -1838,7 +1838,7 @@ The simplest---those coming from the leftmost category in the chain---are static
 
 We can realize each such static arrangement as a lens in $\cat M$ via $\Lens{X^\blank}$ (\cref{lem.lens_pow}), but compositions coming from $\Lens{\cat M}$ are more general: there are many more maps in $\cat M$ than just the projections. For example, there are two projections $\rr\times\rr\to\rr$ but uncountably many smooth maps. Moving to $\Lcokl{\cat M}{\Fun R}$ threads the backward pass through the potentials monad but still includes only the trivial parameter ($Q\coloneqq I$); in the writer instance $\Fun R=R\otimes\blank$ this assigns a value in $R$ to the interaction data consisting of the internal-box outputs together with the external-box input, e.g.\ a prediction error.
 
-Finally, the richest adaptive arrangements are the maps of $\arr_D=\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}$ themselves, which add a parameterizing object $Q:\cat Q$. Here, the interaction pattern itself depends on the current $v:Q$, and under the dynamics functor that parameter is updated over time according to the potential as well as by whatever is backpropagated from the external box. Exactly how these dynamics work is the subject of \cref{sec.dynamics_functor_abstract}.
+Finally, the richest adaptive arrangements are the maps of $\arr_D=\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}$ themselves, which add a parameterizing object $Q:\cat Q$. Here, the interaction pattern itself depends on the current $v:Q$, and under the dynamics functor that parameter is updated over time according to the potential as well as by whatever is backpropagated from the external box. \Cref{rem.huge_wiring_diagram} draws the composite of two such arrangements explicitly.
 \end{remark}
 
 \begin{remark}\label{rem.huge_wiring_diagram}
@@ -2316,7 +2316,7 @@ This settles the choice of composition syntax $\cat{W}$ deferred at the end of \
 
 
 %====================================================================
-\chapter{Smooth adaptive-arrangement dynamics}\label{ch.smooth_dynamics}
+\chapter{Smooth adaptive dynamics}\label{ch.smooth_dynamics}
 %====================================================================
 
 This section turns the syntax $\sarr$ of \cref{ch.smooth_rwd} into dynamics. By the framework of \cref{ch.framework}, this takes two semantic ingredients---a polynomial interpretation and an integrator---which compose as
@@ -2457,7 +2457,7 @@ Setting $q_2\coloneqq 0$, we find $\omega(0)=\omega(q_1)$ for all $q_1$. In othe
 \end{proof}
 
 \begin{remark}[General form]\label{rmk.alpha_general}
-\Cref{lem.alpha_constant} is an instance of a general fact: $\cotof{\rr}$ can be replaced by any commutative Hopf monoid $m$ in $\poly$. The $(m\otimes\blank)$-monoid structures on $\yon$ are then in bijection with $m[e_m]$, the directions of $m$ at its unit position $e_m$. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$, recovering \cref{lem.alpha_constant}; more generally, for $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\mathfrak{g}^*$, the dual of its Lie algebra.
+\Cref{lem.alpha_constant} is an instance of a general fact: $\cotof{\rr}$ can be replaced by any commutative Hopf monoid $m$ in $\poly$. The $(m\otimes\blank)$-monoid structures on $\yon$ are then in bijection with $m[e_m]$, the directions of $m$ at its unit position $e_m$. For $m=\cotof{\rr}$ this is $T^*_0\rr\cong\rr$, recovering \cref{lem.alpha_constant}; more generally, for $m\coloneqq\cotof{G}$ with $G$ a commutative Lie group, $m[e_m]=T^*_{e_G}G=\mathfrak{g}^*$, the dual of its Lie algebra. The Hopf structure is essential here: recovering the direction at an arbitrary position $i$ from the one at $e_m$ pairs $i$ with its inverse (so that the product is $e_m$), so it is the antipode that makes the value at $e_m$ determine the whole structure.
 \end{remark}
 
 Specializing \cref{lem.alpha_constant} to $m\coloneqq\cotof{\rr}$ and $z\coloneqq\yon$, we choose the homomorphism corresponding to $r\coloneqq+1$ and denote the corresponding algebra map as
@@ -2637,7 +2637,7 @@ This is one explicit Euler step of Hamilton's equations: the position moves by a
 \section{The dynamics functors}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
 
-The smooth adaptive arrangements of \cref{sec.potentialized_lenses} become smooth adaptive-arrangement dynamics by composing the polynomial interpretation $\Phip{\interpsm}$ (\cref{sec.smooth_interpretation}) with an integrator $\intg$ (\cref{sec.integrator_semantics}); we unpack this composite for the smooth instance. The interpretation $\Phip{\interpsm}$ already carries most of the construction: the resulting functor $\Phi_\intg$ agrees with it on objects,
+The smooth adaptive arrangements of \cref{sec.potentialized_lenses} become smooth adaptive dynamics by composing the polynomial interpretation $\Phip{\interpsm}$ (\cref{sec.smooth_interpretation}) with an integrator $\intg$ (\cref{sec.integrator_semantics}); we unpack this composite for the smooth instance. The interpretation $\Phip{\interpsm}$ already carries most of the construction: the resulting functor $\Phi_\intg$ agrees with it on objects,
 \[\Phi_\intg\lensob{M}=\Phip{\interpsm}\lensob{M},\]
 and \cref{thm.dynamics_functor} supplies only what the integrator contributes. It first rearranges \eqref{eqn.phi_prime_morphism} to
 \[
@@ -3181,7 +3181,10 @@ and aim to show that the resulting state dynamics evolves according to the discr
 \begin{equation}\label{eqn.discrete_wave}
 m\ddot q_i=\kappa(q_{i-1}-2q_i+q_{i+1}),
 \end{equation}
-where $\ddot q_i(t)=q_i(t+2)-2q_i(t+1)+q_i(t).$
+where we use $\ddot q_i(t)$ to denote
+\begin{equation}\label{eqn.doubledot}
+\ddot q_i(t)\coloneqq q_i(t+2)-2q_i(t+1)+q_i(t).
+\end{equation}
 
 We will work in the full suboperad of $\sarr$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider morphisms of the form
 \[
@@ -3478,23 +3481,24 @@ where $\xi_Q\in(\rr^V)^*$ is as in \eqref{eqn.bigtheta}. With $\outp f$ and $\in
 &=\partial_{q_v}\sum_{e\in E}\tfrac{\kappa_e}{2}\bigl(q_{\tgt(e)}^2-2\,q_{\tgt(e)}q_{\src(e)}+q_{\src(e)}^2\bigr)\\\nonumber
 &=\sum_{e\in\inpt{v}}\kappa_e(q_v-q_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(q_v-q_{\tgt(e)}).
 \end{align}
-We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contribute nothing to the sum \eqref{eqn.no_self}. Define a $(V\times V)$-matrix $L_G$ to be the linear function that sends $\vec{q}$ to the vector with the following components:
+Define a $(V\times V)$-matrix $L_G$ to be the linear function that sends $\vec{q}$ to the vector with the following components:
 \begin{equation}\label{eqn.graph_laplacian}
-(L_G\,\vec q)_v\;\coloneqq\;\sum_{e\in\inpt{v}}\kappa_e(q_v-q_{\src(e)})\;+\;\sum_{e\in\outp{v}}\kappa_e(q_v-q_{\tgt(e)}).
+(L_G\,\vec q)_v\;\coloneqq\;\sum_{w\,\To{e}\,v}\kappa_e(q_v-q_w)\;+\;\sum_{v\,\To{e}\,w}\kappa_e(q_v-q_w).
 \end{equation}
 Comparing the last line of \eqref{eqn.no_self} with this definition, the backward covector of \eqref{eqn.bigtheta} is
 \begin{equation}\label{eqn.xiQ_is_laplacian}
 \xi_Q\;=\;dU(\vec q)\;=\;L_G\,\vec q.
 \end{equation}
-One can check that $L_G$ has diagonal and off-diagonal entries given by
+We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contribute nothing to the sum \eqref{eqn.no_self}. One can check that $L_G$ has diagonal and off-diagonal entries given by
 \[
 (L_G)_{vv}=\sum_{e\in\inpt{v}\cup\outp{v}}\kappa_e
 \qqand
-(L_G)_{vw}=-\sum_{\{\src(e),\tgt(e)\}=\{v,w\}}\kappa_e
+(L_G)_{vw}=-\sum_{v\,\To{e}\,w}\kappa_e-\sum_{w\,\To{e}\,v}\kappa_e
+%-\sum_{\{\src(e),\tgt(e)\}=\{v,w\}}\kappa_e
 \]
 This is the (weighted, symmetrized) \emph{graph Laplacian} of $G$~\cite{spielman2012spectral}.
 
-Fixing an initial state $(\vec q(0),\vec\xi(0))\in T^*\rr^V$ and iterating $\Phiphase(\fun{wire}_{\mathbf G})$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec q(t),\vec\xi(t)\bigr)_{t\in\nn}$. As in \eqref{eqn.discrete_wave}, write $\ddot{q}_v(t)\coloneqq q_v(t+2)-2q_v(t+1)+q_v(t)$.
+Fixing an initial state $(\vec q(0),\vec\xi(0))\in T^*\rr^V$ and iterating $\Phiphase(\fun{wire}_{\mathbf G})$ yields, by \cref{ex.y_coalgebra_trajectory}, a trajectory $\bigl(\vec q(t),\vec\xi(t)\bigr)_{t\in\nn}$. As in \eqref{eqn.doubledot}, write $\ddot{q}_v(t)\coloneqq q_v(t+2)-2q_v(t+1)+q_v(t)$.
 
 \begin{proposition}\label{prop.graph_laplacian}
 For $\fun{wire}_{\mathbf G}$ as in \eqref{eqn.psi_graph_lap}, every trajectory of $\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ satisfies
@@ -3505,11 +3509,11 @@ m_v\,\ddot{q}_v(t)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
 where $L_G$ is the graph Laplacian \eqref{eqn.graph_laplacian} of $G$.
 \end{proposition}
 \begin{proof}
-From the state update equation \eqref{eqn.graph_state_update}, the position update is $q_v(t+1)=q_v(t)+\xi_v(t)/m_v$; solving for momentum we get $\xi_v(t)=m_v\bigl(q_v(t+1)-q_v(t)\bigr)$. And the momentum update is $\xi_v(t+1)=\xi_v(t)-(\xi_Q)_v=\xi_v(t)-(L_G\vec q(t))_v$, using \eqref{eqn.xiQ_is_laplacian} for the last equality. Substituting the first into the second gives
+From the state update equation \eqref{eqn.graph_state_update}, the position update is $q_v(t+1)\coloneqq q_v(t)+\xi_v(t)/m_v$; solving for momentum we get $\xi_v(t)=m_v\bigl(q_v(t+1)-q_v(t)\bigr)$. And the momentum update is $\xi_v(t+1)=\xi_v(t)-(\xi_Q)_v=\xi_v(t)-(L_G\vec q(t))_v$, using \eqref{eqn.xiQ_is_laplacian} for the last equality. Substituting the first into the second gives
 \[
 m_v\bigl(q_v(t+2)-q_v(t+1)\bigr)\;=\;m_v\bigl(q_v(t+1)-q_v(t)\bigr)-(L_G\vec q(t))_v,
 \]
-and collecting the position terms on the left yields \eqref{eqn.graph_laplacian_dynamics}.
+and collecting the position terms on the left, and using notation \eqref{eqn.doubledot}, yields \eqref{eqn.graph_laplacian_dynamics}.
 \end{proof}
 
 \begin{remark}[Heat equation from the configuration integrator]\label{rmk.graph_heat}
@@ -3518,7 +3522,7 @@ Rather than $\Phiphase$, if we apply $\Phiconf$ to the \emph{very same} smooth a
 m_v\bigl(q_v(t+1)-q_v(t)\bigr)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
 \qquad(v\in V,\ t\in\nn),
 \]
-i.e.\ explicit-Euler diffusion on $G$ with vertex ``masses'' $m_v$ serving as heat capacities. Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative one are two semantics of one syntactic object.
+i.e.\ explicit-Euler diffusion on $G$ with vertex ``masses'' $m_v$ serving as heat capacities. Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative regime are two semantics of one syntactic object.
 \end{remark}
 
 \section*{Conclusion}
@@ -3527,7 +3531,7 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same $\sarr$-morphism may yield momentum-based weight dynamics. This places standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-stage (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). A stochastic variant---replacing the potential carrier $\yon$ with the finite-distribution monad $\mathrm{rand}$ (as discussed under the name $\mathrm{lott}$ in~\cite{Spivak2023lotteries})---would have the potential algebra emit distributions over directions rather than single covectors, yielding stochastic update rules and perhaps compositional stochastic dynamics. Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
+Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The multi-stage bicategory $\org^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-stage (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
 %See "superposition-era" branch in the github repo for more on this.
 
 \printbibliography
