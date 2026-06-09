@@ -478,10 +478,10 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\Phiconf}{\termref{Phiconf}{\termraw{Phiconf}}}
 \trackTermSymbol{sharpEuc}{\sharp_{\euc}}
 \newcommand{\sharpEuc}{\termref{sharpEuc}{\termraw{sharpEuc}}}
-\trackTermSymbol{upd}{u}
-\newcommand{\upd}{\termref{upd}{\termraw{upd}}}
-\trackTermSymbol{updphase}{u_{\mathrm{phase}}}% phase-integrator update (def. at eqn.phase_integrator)
-\newcommand{\updphase}{\termref{updphase}{\termraw{updphase}}}
+\trackTermSymbol{dyn}{\mathrm{dyn}}
+\newcommand{\dyn}{\termref{dyn}{\termraw{dyn}}}
+\trackTermSymbol{dynphase}{\mathrm{dyn}_{\mathrm{phase}}}% phase-integrator dynamics (def. at eqn.phase_integrator)
+\newcommand{\dynphase}{\termref{dynphase}{\termraw{dynphase}}}
 \trackTerm{\intg}{intg}{\mathfrak{i}}
 \trackTerm{\interp}{interp}{\mathfrak{p}}
 \trackTerm{\interpsm}{interpsm}{\mathrm{sm}}% smooth (cotangent) polynomial interpretation datum; concrete named choice (roman, like \conf/\phase), not the generic \interp=\mathfrak p of ch.framework
@@ -2057,22 +2057,22 @@ The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\y
 
 
 \begin{definition}[Integrator]\label{def.integrator}
-Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor, the \emph{parameter interface}. A \emph{$p$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\upd)$
+Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor, the \emph{parameter interface}. A \emph{$p$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\dyn)$
 \[
 \begin{tikzcd}[column sep=60pt]
 	\cat Q\ar[d, equal]\ar[r, "\Fun S", ""' name=top]&
 	\smsetiso\ar[d, "\Store"]\\
 	\cat Q\ar[r, "p"', ""{name=bot}]&
 	\poly
-	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\upd"]
+	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\dyn"]
 \end{tikzcd}
 \]
-where $\Fun S\colon\cat Q\to\smsetiso$, the \emph{state space} functor, is strong symmetric monoidal and $\defineTerm{upd}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{update map}, is a monoidal natural transformation.
+where $\Fun S\colon\cat Q\to\smsetiso$, the \emph{state space} functor, is strong symmetric monoidal and $\defineTerm{dyn}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{dynamics map}, is a monoidal natural transformation.
 \end{definition}
 
-By \cref{prop.coalg_as_poly_map}, any component $\upd_a\colon\Store(\Fun S_a)\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S_a$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
+By \cref{prop.coalg_as_poly_map}, any component $\dyn_a\colon\Store(\Fun S_a)\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S_a$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
 
-We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the update $\upd$.
+We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
 
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
@@ -2080,15 +2080,15 @@ Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a stro
 \end{proposition}
 
 \begin{proof}
-Let $\intg=(\Fun S,\upd)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
+Let $\intg=(\Fun S,\dyn)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
 \[
 D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\pciso.
 \]
-By \cref{prop.para_strong_induced,prop.para_square}, the update $\upd\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
+By \cref{prop.para_strong_induced,prop.para_square}, the dynamics $\dyn\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
 \[
-\Para_{\cat Q}^{\upd}(\poly)\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
+\Para_{\cat Q}^{\dyn}(\poly)\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
 \]
-Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat Q}^{\upd}(\poly)$; it is normal lax monoidal because $\Para_{\cat Q}^{\upd}(\poly)$ is strong.
+Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat Q}^{\dyn}(\poly)$; it is normal lax monoidal because $\Para_{\cat Q}^{\dyn}(\poly)$ is strong.
 \end{proof}
 
 Let $\arr_D$ be the adaptive-arrangement operad of an adaptive-arrangement datum $D=(\cat{M},\cat Q,J,\Fun R)$.
@@ -2117,12 +2117,12 @@ Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\len
 and a morphism $f=(Q,\outp f,\inpt f)\colon\lensob M\to\lensob N$ to the $\pc$-morphism $\Phi_{\interp,\intg}\lensob M\to\Phi_{\interp,\intg}\lensob N$ carried by the state set $\Fun S_Q$: the coalgebra (\cref{prop.coalg_as_poly_map}) whose structure map is the composite
 \[
 \Store(\Fun{S}_Q)=\Fun{S}^{ }_Q\yon^{\Fun S_Q}
-\To{\upd_Q}
+\To{\dyn_Q}
 \Fun c(JQ)
 \To{\widetilde{\Phip{\interp}(f)}}
 \ihom*{\Phi_{\interp,\intg}\lensob M,\Phi_{\interp,\intg}\lensob N}.
 \]
-Here $\upd_Q$ is the integrator's update (\cref{def.integrator}) and $\widetilde{\Phip{\interp}(f)}$ is the transpose under \eqref{eqn.dirichlet_adjunction} of the $\Fun c(JQ)$-parameterized polynomial map $\Phip{\interp}(f)$ of \cref{thm.poly_interpretation}. The integrator enters only through $\upd_Q$, which trades the parameter $\Fun c(JQ)$ for the stored state $\Fun S_Q$, while the backward pass $\inpt f$ and the output map $\outp f$ are recorded inside $\Phip{\interp}(f)$ (in the writer instance, $\inpt f$ carries the potential $U$).
+Here $\dyn_Q$ is the integrator's dynamics (\cref{def.integrator}) and $\widetilde{\Phip{\interp}(f)}$ is the transpose under \eqref{eqn.dirichlet_adjunction} of the $\Fun c(JQ)$-parameterized polynomial map $\Phip{\interp}(f)$ of \cref{thm.poly_interpretation}. The integrator enters only through $\dyn_Q$, which trades the parameter $\Fun c(JQ)$ for the stored state $\Fun S_Q$, while the backward pass $\inpt f$ and the output map $\outp f$ are recorded inside $\Phip{\interp}(f)$ (in the writer instance, $\inpt f$ carries the potential $U$).
 
 %
 %\begin{remark}[Functoriality in the datum]\label{rmk.rwd_functor}
@@ -2512,7 +2512,7 @@ This completes the polynomial interpretation $\Phip{\interpsm}\colon\sarr\to\par
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\upd)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
+With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
 
 \subsection{The Euler step}\label{sec.integrators}
 
@@ -2555,7 +2555,7 @@ The dynamics functor (\cref{thm.dynamics_functor}) depends on $\rvect$ only thro
 
 \subsection{The configuration integrator}\label{sec.config_integrator}
 
-The \emph{configuration integrator} $\conf\coloneqq(\absval{\blank},(-1)\circ\chi)$ has state space $Q\mapsto\absval{Q}$ and \emph{descends}: it feeds the negative gradient into the Euler step $\chi$ of \cref{prop.rvect_polynomial}. Its update is the composite
+The \emph{configuration integrator} $\conf\coloneqq(\absval{\blank},(-1)\circ\chi)$ has state space $Q\mapsto\absval{Q}$ and \emph{descends}: it feeds the negative gradient into the Euler step $\chi$ of \cref{prop.rvect_polynomial}. Its dynamics is the composite
 \[
 \Store\circ\absval{\blank}\To{\chi}\cot\To{-1}\cot,
 \]
@@ -2574,7 +2574,7 @@ We now turn to a physics-based semantics. We consider integrators of the form
 	\smsetiso\ar[d, "\Store"]\\
 	\rvect\ar[r, "\cot"', ""{name=bot}]&
 	\poly
-	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\upd"]
+	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\dyn"]
 \end{tikzcd}
 \]
 On objects, the cotangent endofunctor sends a reactive vector space $(Q,\sharpR_Q):\rvect$ to its cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def}, equipped with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}. Thus for these integrators, the stored state is a point $(q,\xi)$ in the phase space $T^*Q$, with \emph{position} $q$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\phase$ from the canonical symplectic structure on $T^*Q$.
@@ -2623,13 +2623,13 @@ The \emph{phase integrator} stores a phase point $(q,\xi)$ and updates it by the
 \begin{equation}\label{eqn.nu}
 \bk{\nu}{(q,\xi)}\colon\xi'\mapsto(\xi',\sharpR_q\xi)\in Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q),
 \end{equation}
-using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. The update composes this readout after the Euler step $\chiQ{T^*\blank}$ on the phase space,
+using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. The dynamics composes this readout after the Euler step $\chiQ{T^*\blank}$ on the phase space,
 \[
-\defineTerm{updphase}\colon\quad\Store\circ\absval{T^*\blank}\To{\chiQ{T^*\blank}}\cot\circ T^*\To{\nu}\cot,
+\defineTerm{dynphase}\colon\quad\Store\circ\absval{T^*\blank}\To{\chiQ{T^*\blank}}\cot\circ T^*\To{\nu}\cot,
 \]
 and the phase integrator is the pair
 \begin{equation}\label{eqn.phase_integrator}
-\phase\coloneqq(\absval{T^*\blank},\updphase).
+\phase\coloneqq(\absval{T^*\blank},\dynphase).
 \end{equation}
 This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because the projection is natural and monoidal, while the $\sharpR_q\xi$ term is so by sharp-equivariance \eqref{eqn.pairing_triangle} and the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
 
@@ -2897,7 +2897,7 @@ We remind the reader of \cref{warn.prime}: primes (e.g.\ $\xi', q'$) never denot
 
 Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\phase}\circ\Phip{\interpsm}$. The functor $\Psisem{\phase}$ replaces a $\cotof{Q}$-parameter with $\Store(S)$, where $S\coloneqq\absval{T^*Q}$:
 \[
-\Store(S)\To{\updphase}\cotof{Q}.
+\Store(S)\To{\dynphase}\cotof{Q}.
 \]
 A state consists of a position and a momentum $(q,\xi)\in T^*Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $(q+\sharpR_q(\xi),\,\xi-\xi')$
  by \eqref{eqn.phase_update}. The readout and returned direction of the coalgebra $\Phiphase(\rv Q,f)$ are identical to the configuration case---they are the on-positions and on-directions components of the shared factor $\Phip{\interpsm}$, formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta}, which depend only on the parameter position $q$, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
@@ -2998,7 +2998,7 @@ where $p^{\circ K}\coloneqq p\circ\cdots\circ p$ is the $K$-fold composite of th
 }
 For example, a morphism in $\pc^{(2)}$ is a coalgebra of the form $S\to p(p(S))$. Given a state, it outputs a position $i_1:p(1)$ and, for every input direction $d_1:p[i_1]$, outputs another position $i_2:p(1)$ and, for every input direction $d_2:p[j_2]$, updates the state. 
 
-A modified integrator (\cref{def.integrator}), with the state space $\Fun S$ unchanged but whose update instead takes the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, should likewise yield an operad functor $\sarr\to\pc^{(K)}$. An LLM (Claude) has implemented the $K=2$ case (velocity Verlet) in companion code (\url{https://github.com/dspivak/dap}), where it visibly integrates the wave equation stably; we have not independently audited it, and leave the general functoriality to future work. See also \cite{ngotiaoco2017compositionality}.\qedhere
+A modified integrator (\cref{def.integrator}), with the state space $\Fun S$ unchanged but whose update instead takes the form $\dyn\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, should likewise yield an operad functor $\sarr\to\pc^{(K)}$. An LLM (Claude) has implemented the $K=2$ case (velocity Verlet) in companion code (\url{https://github.com/dspivak/dap}), where it visibly integrates the wave equation stably; we have not independently audited it, and leave the general functoriality to future work. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
 
 
@@ -3529,9 +3529,15 @@ and collecting the position terms on the left, and using notation \eqref{eqn.dou
 Rather than $\Phiphase$, if we apply $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.psi_graph_lap}---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and using the same $\xi_Q=L_G\vec q$ from \eqref{eqn.xiQ_is_laplacian}, the configuration integrator's descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ reads component-wise as
 \[
 m_v\bigl(q_v(t+1)-q_v(t)\bigr)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
-\qquad(v\in V,\ t\in\nn),
+\qquad(v\in V,\ t\in\nn).
 \]
-i.e.\ explicit-Euler diffusion on $G$ with vertex ``masses'' $m_v$ serving as heat capacities. Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative regime are two semantics of one syntactic object.
+Writing $\dot q_v(t)\coloneqq q_v(t+1)-q_v(t)$ for the one-step difference---the first-order analogue of the second difference $\ddot q_v$ in \eqref{eqn.doubledot}---and $M\coloneqq\operatorname{diag}(m_v)_{v\in V}$ for the diagonal mass matrix, the update is the discrete heat equation
+\[
+M\,\dot{\vec q}\;=\;-L_G\,\vec q,
+\]
+diffusion on $G$ with the masses $m_v$ serving as heat capacities.
+
+Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative regime are two semantics of one syntactic object.
 \end{remark}
 
 \section*{Conclusion}
