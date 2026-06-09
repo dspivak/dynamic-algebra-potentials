@@ -1,0 +1,11 @@
+#!/bin/sh
+# dap — launch the executable companion (misc/dap submodule).
+#
+#   ./dap          build & run your own arrangement (interactive)
+#   ./dap demo     run the worked examples
+#
+# No "python -m ..." needed; uses this repo's .venv.
+here="$(cd "$(dirname "$0")" && pwd)"
+mod="dap.build"
+[ "$1" = "demo" ] && mod="dap.demo"
+cd "$here/misc/dap" && exec "$here/.venv/bin/python" -m "$mod"
