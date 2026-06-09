@@ -380,7 +380,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \trackTerm{\finset}{finset}{\Cat{Fin}}
 \trackTerm{\smset}{smset}{\Cat{Set}}
 \trackTerm{\smsetiso}{smsetiso}{\Cat{Set}_\cong}
-\trackTerm{\smcat}{smcat}{\mathbb{C}\Cat{at}}
+\trackTerm{\smcat}{smcat}{\Cat{Cat}}
 \trackTerm{\vect}{vect}{\Cat{Vect}}
 \trackTerm{\vectiso}{vectiso}{\Cat{Vect}_\cong}
 
@@ -411,12 +411,11 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \newcommand{\coalg}{\tn{-}\Cat{Coalg}}
 \newcommand{\alg}{\tn{-}\Cat{Alg}}
-\newcommand{\Coalg}{\Cat{Coalg}}
-\newcommand{\tripow}[1]{({\blank})^{\triangleleft #1}}
+\newcommand{\Coalg}{\Fun{Coalg}}
+\newcommand{\enrcat}[1]{#1\tn{-}\smcat}% category of #1-enriched categories
 
 \trackTerm{\pc}{pc}{\mathbb{P}\Cat{C}}
 \trackTerm{\pciso}{pciso}{\mathbb{P}\Cat{C}_{\cong}}
-\trackTerm{\pcK}{pcK}{\mathbb{P}\Cat{C}^{(K)}}
 \trackTerm{\arr}{rwd}{\mathbb{A}\Cat{rr}}% abstract adaptive-arrangement operad
 
 %--------Paper-specific macros--------%
@@ -529,7 +528,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \begin{abstract}
 We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is an operad $\sarr$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{smooth adaptive arrangements}, which consist of a reactive parameter space, a lens given by smooth output and input maps, and a real-valued potential.
 
-The main technical result of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the bicategory of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
+The main technical result of the paper is what we call a \emph{Moore internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the 2-category of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
 
 When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is conservative and second-order, and $\Phiconf$ gives the discrete heat equation, which is dissipative and first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
 \end{abstract}
@@ -569,7 +568,11 @@ For interfaces $b_1,\ldots,b_K,c$, a morphism $\varphi\colon b_1,\ldots,b_K\to c
 
 In the examples below we need a richer composition syntax: one where the effective coupling is itself part of the data and may adapt to the signals flowing between boxes. The way it adapts is governed by a dynamical system whose behavior depends on continuous parameters, on the values exposed by the internal boxes, and on values received by the external box. For example, consider replacing $\varphi$ by an interaction pattern representing an adaptive spring material for which each connecting edge has a variable spring constant that responds to a chosen potential $U$ and the edge lengths.
 
-We call these richer composition patterns \emph{smooth adaptive arrangements}: each carries an internal state---the parameter---that the dynamics evolve over time, which is what \emph{adaptive} names, together with a real-valued \emph{potential} $U$---the energy in mechanics, the loss in learning---which drives that evolution and is the datum at the center of this paper. Formally, they will be the morphisms in the operad $\sarr$ of smooth adaptive arrangements constructed in \cref{sec.potentialized_lenses}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\pc$, whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
+We call these richer composition patterns \emph{smooth adaptive arrangements}: each carries an internal state---the parameter---that the dynamics evolve over time, which is what \emph{adaptive} names, together with a real-valued \emph{potential} $U$---the energy in mechanics, the loss in learning---which drives that evolution and is the datum at the center of this paper. Formally, they will be the morphisms in the operad $\sarr$ of smooth adaptive arrangements constructed in \cref{sec.potentialized_lenses}. Instead of giving this syntax static semantics in $\smset$, we give it dynamical semantics in $\pc$,%
+\footnote{
+In previous work \cite{spivak2021learners,shapiro2022dynamic}, the author has referred to $\pc$ as $\mathbb{O}\Cat{rg}$.
+}
+whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
 
 The choice to have semantics land in $\pc$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one variable $\yon$ by coproducts and products---$\poly$ is the free distributive category on a single object---so a polynomial
 \[
@@ -627,7 +630,7 @@ This is the sense in which smooth adaptive arrangements are syntax: the diagram 
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a commutative monoid. We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
-The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background section reviews polynomial functors, the Para construction, and the bicategory $\pc$, while lenses and Moore internalization have their own section (\cref{ch.lenses}). 
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background section reviews polynomial functors, the Para construction, and the 2-category $\pc$, while lenses and Moore internalization have their own section (\cref{ch.lenses}). 
 
 The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
@@ -674,7 +677,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
 
-\Cref{ch.background} fixes notation and recalls the categorical background used later: polynomial functors, coalgebras, and the bicategory $\pc$; wiring-diagram operads; and the Para construction.
+\Cref{ch.background} fixes notation and recalls the categorical background used later: polynomial functors, coalgebras, and the 2-category $\pc$; wiring-diagram operads; and the Para construction.
 
 \Cref{ch.lenses} reviews lenses and the backward monad construction and builds the \emph{Moore internalization} functor (\cref{cor.Theta}), which turns a lens interface into an object of the ambient category.
 
@@ -690,7 +693,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 %--------------------------------------------------------------------
 \section*{Acknowledgments}
 %--------------------------------------------------------------------
-Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, Maximilien Peroux, and Scott Viteri for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
+Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, Maximilien P\'eroux, and Scott Viteri for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
 
 \thanksAFOSR{FA9550-23-1-0376}. 
 
@@ -699,7 +702,7 @@ Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, Maximilien Peroux, an
 \chapter{Background}\label{ch.background}
 %====================================================================
 
-This section collects much of the background required for this paper. We first fix our typographic conventions. Then we recall polynomial functors, polynomial coalgebras, and the bicategory $\pc$ they assemble into. Finally we review wiring-diagram operads and the Para construction, which together with the lenses of \cref{ch.lenses} provide the compositional ingredients used in the rest of the paper.
+This section collects much of the background required for this paper. We first fix our typographic conventions. Then we recall polynomial functors, polynomial coalgebras, and the 2-category $\pc$ they assemble into. Finally we review wiring-diagram operads and the Para construction, which together with the lenses of \cref{ch.lenses} provide the compositional ingredients used in the rest of the paper.
 
 %--------------------------------------------------------------------
 \section{Notational conventions}\label{sec.prelim}
@@ -722,7 +725,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \section{Polynomial functors, coalgebras, and $\mathbb{O}\Cat{rg}$}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal bicategory $\pc$ of polynomial coalgebras (\cref{sec.org}).
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.org}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\termraw{poly}$}{Poly}}\label{sec.poly}
 
@@ -786,6 +789,8 @@ f_1\colon S\to p(1),\qquad
 \end{equation}
 where $f_1(s)$ returns a position and $\bk{f}{s}\colon p[f_1(s)]\to S$ returns a state-update function---from directions to new states---for each $s:S$. Given a state $s:S$, we call $r_s\coloneqq f_1(s):p(1)$ its \emph{readout} position and $\bk{f}{s}\colon p[r_s]\to S$ its \emph{update} function, sending each direction $d:p[r_s]$ to a new state $s_d\coloneqq\bk{f}{s}(d)$.
 
+A morphism $(S,f)\to(S',f')$ of $p$-coalgebras is a function $g\colon S\to S'$ such that $p(g)\circ f=f'\circ g$. We denote the category of $p$-coalgebras and their morphisms by $p\coalg$.
+
 When $p=B\yon^A$ then a $p$-coalgebra $S\to B\times S^A$ is equivalently a readout function $S\to B$ and an update function $S\times A\to S$, which is independent of the readout. Such a coalgebra is called an $(A,B)$-\emph{Moore machine}~\cite{moore1956gedanken}. In general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$, so could be called a \emph{dependent} Moore machine.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[f_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes, and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
@@ -827,73 +832,58 @@ s\colon\nn\to S,\qquad s(0)\coloneqq s_0,\qquad s(t+1)\coloneqq f(s(t)).
 We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $s_0$, and use this notation freely below.
 \end{example}
 
-\subsection{The monoidal bicategory $\pc$ of polynomial coalgebras}\label{sec.org}
+\subsection{The monoidal 2-category $\pc$ of polynomial coalgebras}\label{sec.org}
 
-We obtain the semantics category of this paper by a single categorical move: \emph{change of base of enrichment} along a lax monoidal functor. Recall that a lax monoidal functor $c\colon\cat V\to\cat W$ carries each $\cat V$-enriched category to a $\cat W$-enriched category, applying $c$ to the hom-objects and transporting the identities and composites along the lax structure maps of $c$; we write $c_*\cat X$ for the $\cat W$-category so obtained from a $\cat V$-category $\cat X$. When $\cat V$ is moreover monoidal closed, it is enriched in itself: the hom-object from $a$ to $b$ is the internal hom $\ihom{a,b}$, with identities $I\to\ihom{a,a}$ and composites $\ihom{a,b}\otimes\ihom{b,c}\to\ihom{a,c}$. Since $\poly$ is monoidal closed (\cref{sec.poly}), it is self-enriched in this way, and any lax monoidal functor $c$ out of $\poly$ yields a $\cat W$-category $c_*\poly$ whose objects are polynomials and whose hom-object from $p$ to $p'$ is $c\ihom{p,p'}$.\footnote{This change-of-base description is due to Toby St~Clere Smithe; the observation that $\poly$ is enriched in itself, which makes it land on the nose, is due to Maximilien Peroux.}% TODO: \cite{} for Toby once the source is confirmed --- smithe2021polynomial (Polynomial Life) does NOT cover this framing.
+The semantics category of this paper, called $\mathbb{O}\Cat{rg}$ in \cite{spivak2021learners,shapiro2022dynamic}, arises naturally from a simple categorical construction: \emph{change of base of enrichment} along a lax monoidal functor. 
 
-The semantics of this paper is the instance in which $c$ is the coalgebra functor. For a polynomial $q$, let $q\coalg$ denote the category of $q$-coalgebras $(S,f\colon S\to q(S))$ and their morphisms; the assignment $q\mapsto q\coalg$ is a lax monoidal functor, which we write
+Recall that for any monoidal category $(\cat{V},I,\otimes)$, a \emph{$\cat{V}$-category} $\cat{C}$ has objects as usual, but instead of having sets of morphisms, it has $\cat{V}$-objects: $\cat{C}(c_1,c_2)\in\ob\cat{V}$. The identities and compositions are given by maps 
+\[
+I\to\cat{C}(c,c)
+\qqand
+\cat{C}(c_1,c_2)\otimes\cat{C}(c_2,c_3)\too\cat{C}(c_1,c_3)
+\]
+in $\cat{V}$, which satisfy unitality and associativity equations in $\cat{V}$. For example, any monoidal closed category---having an internal hom $\ihom{\blank,\blank}$---is self-enriched: $\cat{C}(c,c')\coloneqq\ihom{c,c'}\in\ob\cat{C}$ and there are natural maps $I\to\ihom{c,c}$ and $\ihom{c_1,c_2}\otimes\ihom{c_2,c_3}\to\ihom{c_1,c_3}$ that satisfy unitality and associativity.
+
+The category of $\cat{V}$-categories is denoted $\enrcat{\cat V}$. For any lax monoidal functor $F\colon\cat V\to\cat W$, there is an induced functor $F_*\colon\enrcat{\cat V}\to\enrcat{\cat W}$ that carries each $\cat V$-enriched category to a $\cat W$-enriched category with the same objects, applying $F$ to the hom-objects and transporting the identities and composites along the lax structure maps of $F$. When $\cat{V}$ and $\cat{W}$ are symmetric monoidal and $F$ is symmetric lax monoidal, $F_*$ carries monoidal (resp.\ monoidal closed) $\cat{V}$-categories to monoidal (resp.\ monoidal closed) $\cat{W}$-categories.
+
+For a polynomial $q$, let $q\coalg$ denote the category of $q$-coalgebras $(S,f\colon S\to q(S))$ and their morphisms; the assignment $q\mapsto q\coalg$ is a lax symmetric monoidal functor, which we write
 \[
 \Coalg\colon(\poly,\yon,\otimes)\to(\defineTerm{smcat},1,\times).
 \]
-We write $\defineTerm{pc}\coloneqq\Coalg_*\poly$ for the change of base of self-enriched $\poly$ along it. Its objects are polynomials $\ob\pc=\ob\poly$, and for polynomials $p,p'$ the hom-category is
-\[\pc(p,p')\coloneqq\ihom{p,p'}\coalg.\]
-Its monoidal structure $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials. A morphism $p\to p'$ in $\pc$ is an $\ihom{p,p'}$-coalgebra $(S,\,f\colon S\to\ihom{p,p'}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $p'$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in p'(1)$, then converts each external input $e\in p'[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
+Indeed, given $S\yon^S\to p$ and $T\yon^T\to q$, one obtains $ST\yon^{ST}\cong S\yon^S\otimes T\yon^T\to p\otimes q$. 
+
+
+Since $(\poly,\yon,\otimes,\ihom{\blank,\blank})$ is monoidal closed (\cref{sec.poly}), it is self-enriched and since $\Coalg$ is lax monoidal, we can form the $\smcat$-enriched category
+\[\defineTerm{pc}\coloneqq\Coalg_*\poly.\]
+Its objects are polynomials and its hom-objects are
 \[
-\smset(S,\ihom{p,p'}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
+\pc(p,p')\coloneqq\ihom{p,p'}\coalg.
 \]
-A morphism $(S,f)\to(S',f')$ in $\ihom{p,p'}\coalg$ is a function $g\colon S\to S'$ such that $\ihom{p,p'}(g)\circ f=f'\circ g$. Concisely, we denote the function $f$ by
-\begin{equation*}
-s\;\mapsto\;i\;\mapsto\;\Bigl(j(s,i),\;e\mapsto\bigl(d(s,i,e),s'(s,i,e)\bigr)\Bigr).
-\end{equation*}
 
-In particular, taking the internal interface to be the monoidal unit recovers \cref{sec.coalgebras}: indeed, since $\ihom{\yon,p'}\cong p'$, a morphism $\yon\to p'$ in $\pc$ is precisely a $p'$-coalgebra $S\to p'(S)$.
+This 2-category has been discussed under the name $\mathbb{O}\Cat{rg}\cong\pc$ previously.
 
-We often elide the difference between $\pc$ as a monoidal bicategory and $\pc$ as a category-enriched operad, with maps
+\begin{proposition}[\cite{spivak2021learners,smithe2021polynomial,shapiro2022dynamic}]\label{prop.org}
+$\pc$ is symmetric monoidal closed: the monoidal product $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials, and the internal hom is $\ihom{p,p'}$.
+\end{proposition} 
+
+
+We often elide the difference between $\pc$ as a monoidal 2-category and $\pc$ as a category-enriched operad, with maps
 \[
-\pc(p_1,\ldots,p_K;p')\coloneqq[p_1\otimes\cdots\otimes p_K,p']\coalg.
+\pc(p_1,\ldots,p_K;p')\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,p'}\coalg.
 \]
 The operadic perspective is closer to the intended semantics---internal interfaces $p_1,\ldots,p_K$ within a larger external interface $p'$---than the monoidal perspective is, but the operadic notation $\pc(p_1,\ldots,p_K;p')$ is heavier than the monoidal notation $\pc(p,p')$.
 
-\begin{proposition}[\cite{spivak2021learners,shapiro2022dynamic}]\label{prop.org}
-The hom-categories $\ihom{p,p'}\coalg$ assemble into a monoidal bicategory $\pc$, previously denoted $\mathbb{O}\Cat{rg}$, with polynomials as objects and monoidal structure $(\yon,\otimes)$ inherited by the Dirichlet product on polynomials.
-\end{proposition}
+To be explicit, a morphism $p\to p'$ in $\pc$ is an $\ihom{p,p'}$-coalgebra $(S,\,f\colon S\to\ihom{p,p'}(S))$. We refer to $S$ as the \emph{state set}. We regard $(S,\,f)$ as an interaction, regarding $p$ as an \emph{internal} interface and $p'$ as an \emph{external} one: at each state $s\in S$ the coalgebra converts each internal output $i\in p(1)$ into an external output $j\in p'(1)$, then converts each external input $e\in p'[j]$ into an internal input $d\in p[i]$ together with a new state $s'\in S$. This can be read off from the formula
+\[
+\smset(S,\ihom{p,p'}(S))\cong\prod_{s:S}\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\;\sum_{d: p[i]}\sum_{s':S}1.
+\]
+Since $\ihom{\yon,p}\cong p$, a morphism $\yon\to p$ in $\pc$ is precisely a $p$-coalgebra $S\to p(S)$.
 
-Concretely, $\pc$ realizes this change of base through the lax structure maps of $\Coalg$,
+Another instance of the construction $F_*\poly$ will be useful. Recall that one can always replace a category with its \emph{core groupoid}: the same objects but only the isomorphisms. The functor $\Fun{core}\colon\smcat\to\Cat{Gpd}$ finite products, so the composite $\Fun{core}\circ\Coalg\colon\poly\to\Cat{Gpd}$ is lax monoidal. We can thus define $\defineTerm{pciso}\coloneqq(\Fun{core}\circ\Coalg)_*\poly$,
 \[
-1\to\yon\coalg
-\qqand
-p\coalg\times p'\coalg\to(p\otimes p')\coalg.
+\pciso(p,p')\coloneqq\Fun{core}\bigl(\ihom{p,p'}\coalg\bigr)\cong\sum_{S:\smsetiso}\smset(S,\ihom{p,p'}(S)).
 \]
-From here, the structure maps $\yon\to[p,p]$ and $[p,p']\otimes[p',p'']\to[p,p'']$ induce the identity and composition functors
-\[
-1\to[p,p]\coalg
-\qqand
-[p,p']\coalg\times[p',p'']\coalg\to[p,p'']\coalg.
-\]
-
-\begin{remark}[$\pc$ is monoidal closed]\label{rmk.org_closed}
-The polynomial $[p,p']$ also serves as the internal hom in $\pc$:
-\[
-\pc(a,[p,p'])\,=\,[a,[p,p']]\coalg\;\cong\;[a\otimes p,p']\coalg\,=\,\pc(a\otimes p,p'),
-\]
-by closedness of $\poly$ (\cref{sec.poly}).
-\end{remark}
-
-Two further instances of the construction $c_*\poly$ will be useful. For the first, write $p\triangleleft q\coloneqq p\circ q$ for the substitution product of polynomials; together with the Dirichlet product $\otimes$ it forms a normal duoidal structure on $\poly$, whose interchange $(w\triangleleft x)\otimes(y\triangleleft z)\to(w\otimes y)\triangleleft(x\otimes z)$ makes the $K$-fold substitution power $\tripow K\colon\poly\to\poly$ a lax monoidal endofunctor of $(\poly,\yon,\otimes)$. Hence $\Coalg\circ\tripow K$ is lax monoidal, and its change of base
-\[
-\defineTerm{pcK}\coloneqq(\Coalg\circ\tripow K)_*\poly,
-\qquad
-\pcK(p,p')=\bigl(\ihom{p,p'}^{\triangleleft K}\bigr)\coalg,
-\]
-has polynomials as objects but takes a 1-cell $p\to p'$ to a coalgebra whose single step plays out $K$ rounds of the $\ihom{p,p'}$-interaction---a $K$-stage system. The case $K=1$ recovers $\pc$, since $\tripow 1=\id$.
-
-For the second, the functor $\Fun{core}\colon\smcat\to\Cat{Gpd}$ sending a category to its maximal subgroupoid preserves finite products, so $\Fun{core}\circ\Coalg\colon\poly\to\Cat{Gpd}$ is lax monoidal; its change of base
-\[
-\defineTerm{pciso}\coloneqq(\Fun{core}\circ\Coalg)_*\poly,
-\qquad
-\pciso(p,p')=\Fun{core}\bigl(\ihom{p,p'}\coalg\bigr)=\sum_{S:\smsetiso}\smset(S,\ihom{p,p'}(S)),
-\]
-is the wide sub-$(2,1)$-category of $\pc$ with the same objects and 1-cells but only the \emph{invertible} 2-cells: a 1-cell $p\to p'$ is again an $\ihom{p,p'}$-coalgebra $(S,f)$, while a 2-cell $(S,f)\to(S',f')$ is now a \emph{bijection} $g\colon S\To{\cong}S'$ compatible with the coalgebra structure. The inclusion $\Fun{core}\Rightarrow\id_{\smcat}$ is monoidal, and base-changing it gives the inclusion $\pciso\inj\pc$.
+It is the wide sub-$(2,1)$-category of $\pc$ with the same objects $p:\poly$, same 1-cells  $S\To{f}\ihom{p,p'}(S)$, but only the \emph{invertible} 2-cells $(S,f)\cong (S',f')$ between them. The inclusion $\Fun{core}\Rightarrow\id_{\smcat}$ is monoidal, and base-changing it gives the inclusion $\pciso\inj\pc$.
 
 %--------------------------------------------------------------------
 \section{Wiring-diagram operads}\label{sec.wd_operads}
@@ -1075,7 +1065,7 @@ For our purposes, the goal is to build \emph{dynamic} versions of the structures
 \qquad
 \cat{W}_{O\tn{-Opd}}\to\pc
 \] 
-for any $O:\smset$. We continue with this approach, taking values in the bicategory $\pc$ of \cref{sec.org}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
+for any $O:\smset$. We continue with this approach, taking values in the 2-category $\pc$ of \cref{sec.org}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
 
 %--------------------------------------------------------------------
 \section{The Para construction}\label{sec.para_general}
@@ -1356,15 +1346,15 @@ The monad unit and multiplication are $0\otimes\id$ and $(+)\otimes\id$. The mon
 The coherence diagrams arise from the monoid laws and commutativity of $R$. Functoriality in $(\cat C,R)$ is straightforward.
 \end{proof}
 
-We will add a notion of potentials to our lenses by proving a more general result: any strong monad on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad on $\cat{C}$ into a comonad on $\Lens{\cat{C}}$.
+We will add a notion of potentials to our lenses by proving a more general result: any monad-with-strength on $\cat{C}$ induces a comonad on $\Lens{\cat{C}}$ by applying it to the input / backward-pass part. We pun on the word ``backwards'' to refer to the fact that it applies to the backward pass and the fact that, as such, it turns a monad on $\cat{C}$ into a comonad on $\Lens{\cat{C}}$.
 
-\label{txt.monoidal_monad}Recall that a monad $(\Fun{T},\eta,\mu)$ on a monoidal category $(\cat{C},I,\otimes)$ is \emph{strong} if there are natural maps $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$, satisfying four diagrams~\cite{kock1972strong}. It is \emph{monoidal} if $\Fun{T}$ is lax monoidal (with unitor $\tau_0\colon I\to\Fun{T}(I)$ and productor $\tau_{X,Y}\colon \Fun{T}(X)\otimes\Fun{T}(Y)\to\Fun{T}(X\otimes Y)$) and whose natural transformations are monoidal. Each monoidal monad is strong by defining $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ to be the composite
+\label{txt.monoidal_monad}Recall that a \emph{strength} on a monad $(\Fun{T},\eta,\mu)$ on a monoidal category $(\cat{C},I,\otimes)$ is a natural map $\sigma\colon X\otimes\Fun{T}Y\to\Fun{T}(X\otimes Y)$ satisfying four diagrams~\cite{kock1972strong}; a monad equipped with one is a \emph{monad-with-strength}. The monad is \emph{monoidal} if $\Fun{T}$ is lax monoidal (with unitor $\tau_0\colon I\to\Fun{T}(I)$ and productor $\tau_{X,Y}\colon \Fun{T}(X)\otimes\Fun{T}(Y)\to\Fun{T}(X\otimes Y)$) and whose natural transformations are monoidal. Each monoidal monad carries a canonical strength, with $\sigma_{X,Y}\colon X\otimes \Fun{T}Y\to\Fun{T}(X\otimes Y)$ the composite
 \[
 X\otimes \Fun{T}Y\To{\eta_X}\Fun{T}(X)\otimes \Fun{T}(Y)\To{\tau_{X,Y}}\Fun{T}(X\otimes Y).
 \]
 
 \begin{proposition}\label{prop.backward_comonad}
-Let $(\Fun{T},\eta,\mu,\sigma)$ be a strong monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\defineTerm{LensFun}^{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$. We denote its coKleisli category by $\defineTerm{Lcokl}\coloneqq(\Lens{\cat{C}})_{\LensFun{\Fun T}}$.
+Let $(\Fun{T},\eta,\mu,\sigma)$ be a monad-with-strength on a symmetric monoidal category $(\cat{C},I,\otimes)$. Then there is a comonad $\defineTerm{LensFun}^{\Fun{T}}$ on $\Lens{\cat{C}}$ sending $\lensob{c}\mapsto \binom{\Fun{T}\inpt c}{\outp c}$. We denote its coKleisli category by $\defineTerm{Lcokl}\coloneqq(\Lens{\cat{C}})_{\LensFun{\Fun T}}$.
 
 If moreover $\Fun{T}$ is a monoidal monad, then $\LensFun{\Fun T}$ is a colax monoidal comonad, thus the coKleisli category $(\Lens{\cat{C}}^{\Fun{T}},I,\otimes)$ is naturally monoidal.
 \end{proposition}
@@ -1381,7 +1371,7 @@ The counit and comultiplication of $\LensFun{\Fun{T}}$ are given by the identity
 \outp c\otimes\Fun{T}\Fun{T}\inpt c\To{\varepsilon_{\outp c}\otimes\id}\Fun{T}\Fun{T}\inpt c\To{\mu}\Fun{T}\inpt c.
 \end{equation*}
 We need to prove that $\LensFun{\Fun{T}}$ preserves identity and composition (is a functor) and that the functor is counital and coassociative. These four axioms correspond to the four axioms of a monad strength.
-%The unit axiom~\cite[(1.7)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strong monad gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
+%The unit axiom~\cite[(1.7)]{kock1972strong} (left unitor coherence) gives preservation of identity, via $\sigma_{X,Y}\then\Fun{T}\pi_Y=\pi_{\Fun{T}Y}$. The $\eta$-coherence axiom of the strength gives the two counit laws. The $\mu$-coherence axiom, together with associativity of $\mu$, gives coassociativity.
 
 We include only the least trivial here: preservation of composition. For $f\colon\lensob c\to\lensob d$ and $g\colon\lensob d\to\lensob e$, it suffices to show that the following commutes (at which point we post-compose with $\Fun{T}\inpt f\colon\Fun{T}(\outp c\otimes\inpt d)\to\Fun{T}\inpt c$ to obtain equality of maps $\outp c\otimes\Fun{T}\inpt e\to\Fun{T}\inpt c$):
 \[
@@ -1439,7 +1429,7 @@ where $\outp f$ is a comonoid homomorphism.
 % \end{example}
 
 \begin{lemma}\label{lem.lens_T_functoriality}
-The construction of \cref{prop.backward_comonad} is functorial in $(\cat{C},\Fun{T})$: a strong symmetric monoidal $F\colon\cat C\to\cat C'$ and strong monad morphism $\theta\colon F\circ\Fun T\Rightarrow\Fun T'\circ F$ induce
+The construction of \cref{prop.backward_comonad} is functorial in $(\cat{C},\Fun{T})$: a strong symmetric monoidal $F\colon\cat C\to\cat C'$ and a morphism of monads-with-strength $\theta\colon F\circ\Fun T\Rightarrow\Fun T'\circ F$ induce
 \[
 \defineTerm{LensMor}_{F}^{\theta}\colon\Lens{\cat C}^{\Fun T}\to\Lens{\cat C'}^{\Fun T'}\;,\qquad
 \lensob c\mapsto\binom{F(\inpt c)}{F(\outp c)},\qquad
@@ -1471,13 +1461,13 @@ Unfolding, its backward component is
 \[
 F(\outp c)\otimes F(\inpt d)\To{F_2}F(\outp c\otimes\inpt d)\To{F(\inpt f)}F(\Fun T\inpt c)\To{\theta_{\inpt c}}\Fun T'F(\inpt c),
 \]
-and its output component is $F(\outp f)$, as claimed. The strong monad-morphism axioms for $\theta$ say exactly that $\gamma$ is compatible with the counits and comultiplications of the two comonads; hence $\LensMor{F}{\theta}$ preserves coKleisli identities and composition.
+and its output component is $F(\outp f)$, as claimed. The axioms for $\theta$ as a morphism of monads-with-strength say exactly that $\gamma$ is compatible with the counits and comultiplications of the two comonads; hence $\LensMor{F}{\theta}$ preserves coKleisli identities and composition.
 
 If the monads are monoidal and $\theta$ is monoidal, the natural transformation $\gamma$ is monoidal, so $\LensMor{F}{\theta}$ is strong symmetric monoidal.\qedhere
 \end{proof}
 
 % \begin{example}
-% For any finite set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, this monad distributes under any other strong monad $\Fun T$,
+% For any finite set $S$ there is a monoidal monad $M\mapsto M^S$ on $\mfd$. In fact, this monad distributes under any other monad-with-strength $\Fun T$,
 % \[
 % \Fun T(M^S)\to \Fun T(M)^S.
 % \]
@@ -1494,7 +1484,7 @@ Let $(\cat{C}, 1, \times)$ be a cartesian monoidal category and $\Fun{T}$ a mono
 sending $f\colon X\to Y$ to the coKleisli lens with $\outp f=f$ and $\inpt f=(\bang\then\eta_1)\colon X\times 1\To{\bang} 1\To{\eta_1}\Fun{T}(1)$.\end{proposition}
 
 \begin{lemma}\label{lem.parameter_lens_action}
-Let $\cat A$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a strong monad on $\cat C$, and let $J\colon\cat A\to\cat C$ be a strong monoidal functor such that each object $J(a)$ carries a comonoid structure $(\delta_{J(a)},\varepsilon_{J(a)})$ in $\cat C$ and each morphism $J(u)$ is a comonoid homomorphism. Then we have an action $\cat A\times\Lens{\cat C}^{\Fun T}\to\Lens{\cat C}^{\Fun T}$ given by
+Let $\cat A$ and $\cat C$ be symmetric monoidal, let $\Fun T$ be a monad-with-strength on $\cat C$, and let $J\colon\cat A\to\cat C$ be a strong monoidal functor such that each object $J(a)$ carries a comonoid structure $(\delta_{J(a)},\varepsilon_{J(a)})$ in $\cat C$ and each morphism $J(u)$ is a comonoid homomorphism. Then we have an action $\cat A\times\Lens{\cat C}^{\Fun T}\to\Lens{\cat C}^{\Fun T}$ given by
 \[
 a\cdot\lensob c\coloneqq\binom{\inpt c}{J(a)\otimes\outp c}.
 \]
@@ -2997,14 +2987,14 @@ The following remark sketches one possible solution for the inadequacy above.\qe
 \end{remark}
 
 \begin{remark}[Multi-stage integrators and $\pc^{(K)}$]\label{rmk.org_N}
-The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system emits, receives, and updates exactly once. Many useful numerical integrators, such as Runge--Kutta and velocity Verlet (leapfrog) \cite[Ch.~VI]{hairer2006geometric}, are instead \emph{multi-stage}. We sketch a target bicategory that conjecturally accommodates such schemes.
+The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system emits, receives, and updates exactly once. Many useful numerical integrators, such as Runge--Kutta and velocity Verlet (leapfrog) \cite[Ch.~VI]{hairer2006geometric}, are instead \emph{multi-stage}. We sketch a target 2-category that conjecturally accommodates such schemes.
 
-For any $K:\nn$, let $\pc^{(K)}$ be the bicategory with the same objects as $\pc$ and hom-categories
+For any $K:\nn$, let $\pc^{(K)}$ be the 2-category---another instance of the construction of \cref{sec.org}---with the same objects as $\pc$ and hom-categories
 \[
 \pc^{(K)}(p,p')\coloneqq\ihom{p,p'}^{\circ K}\coalg,
 \]
 where $p^{\circ K}\coloneqq p\circ\cdots\circ p$ is the $K$-fold composite of the polynomial functor $p$ with itself.%
-\footnote{Indeed, for any symmetric monoidal closed category $\cat{P}$, symmetric monoidal category $\cat{V}$, and lax symmetric monoidal functor $C\colon\cat{P}\to\cat{V}$, there is a symmetric monoidal $\cat{V}$-category $\pc^C$ with objects given by $\ob\cat{P}$ and $\pc^C(p,p')\coloneqq C([p,p'])$. Then $\pc$ arises from this construction where $\cat{P}\coloneqq\poly$, $\cat{V}\coloneqq\smcat$, and $C\coloneqq\blank\coalg$. I believe I learned this abstraction from Toby St Clere Smithe. Under this same setup $\pc^{(K)}$ is constructed with $C$ instead given by the composite $\poly\To{\blank^{\circ K}}\poly\To{\blank\coalg}\smcat$.
+\footnote{Explicitly, $\pc^{(K)}=\bigl(\Coalg\circ(\blank^{\circ K})\bigr)_*\poly$, the change of base along the composite $\poly\To{\blank^{\circ K}}\poly\To{\Coalg}\smcat$, using that the substitution power $\blank^{\circ K}$ is lax monoidal for $\otimes$.
 }
 For example, a morphism in $\pc^{(2)}$ is a coalgebra of the form $S\to p'(p'(S))$. Given a state, it outputs a position $j_1:p'(1)$ and, for every input direction $e_1:p'[j_1]$, outputs another position $j_2:p'(1)$ and, for every input direction $e_2:p'[j_2]$, updates the state. 
 
@@ -3018,7 +3008,7 @@ Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec
 \chapter{Applications}\label{ch.applications}
 %====================================================================
 
-In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{This paper is precise enough to be turned into runnable code by a language model: point one at this paper with the prompt given at \url{https://github.com/dspivak/dap}, and you obtain a program you can run and modify. The implementation in that repository---written entirely by a language model (Claude) from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---reproduces all four examples below.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
+In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{These constructions are precise enough for a language model to turn into runnable code: point one at this paper with the prompt at \url{https://github.com/dspivak/dap}, and you should obtain a program you can run and modify. The implementation there---written entirely by Claude from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---reproduces all four examples below.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
 
 %--------------------------------------------------------------------
 \section{Newton's method}\label{sec.newton_warmup}
@@ -3550,7 +3540,7 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same $\sarr$-morphism may yield momentum-based weight dynamics. This places standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The multi-stage bicategory $\pc^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-stage (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
+Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The multi-stage 2-category $\pc^{(K)}$ sketched in \cref{rmk.org_N} is a natural target for multi-stage (e.g.\ symplectic) integrators such as leapfrog, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
 %See "superposition-era" branch in the github repo for more on this.
 
 \printbibliography
