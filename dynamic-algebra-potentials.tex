@@ -3,7 +3,7 @@
 
 \linespread{1.15}\selectfont % set leading before the layout, so it is computed on the real \baselineskip
 \settrims{0pt}{0pt} % page and stock same size
-\settypeblocksize{*}{35.3pc}{*} % {height}{width}{ratio}
+\settypeblocksize{*}{35.4pc}{*} % {height}{width}{ratio}
 \setlrmargins{*}{*}{1} % {spine}{edge}{ratio}
 \setulmarginsandblock{0.85in}{0.85in}{*} % top fixed; [lines] grows the bottom margin
 \setheadfoot{\onelineskip}{2.66\onelineskip} % {headheight}{footskip}
@@ -643,7 +643,7 @@ The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci202
 \[
 \mathbf{OpenErg}\To{T^*}\mathbf{OpenODE}\To{\mathrm{collapse}}\mathbf{COrg}
 \]
- from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, a continuous-time analog of $\pc$. A first difference is that our semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ is discrete-time, rather than continuous.
+ from their category of \emph{open energy-driven systems}, through \emph{open ODEs}, to $\mathbf{COrg}$, which is a continuous-time analog of $\pc$ (also known as $\mathbb{O}\Cat{rg}$). A first difference is that our semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ is discrete-time, rather than continuous.
 
 However, neither their framework nor the one in this paper subsumes the other. There is a common subcategory $\cat{R}$ whose objects are manifolds and whose morphisms $M\to N$ are---in CLS notation---tuples $(\rv Q,w,E)$ where
 \[
@@ -1098,7 +1098,7 @@ When $\cat D$ is a monoidal $\cat A$-actegory, $\para{\cat A}{\cat D}$ is symmet
 the first isomorphism coming from $\cat D$ being a monoidal $\cat A$-actegory.
 \end{lemma}
 
-The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in $\para{\cat A}{\cat D}(d_1,d_2)$ is a morphism $g\colon a\to a'$ in $\cat A$ such that $f'\circ(g\cdot d_1)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(d_1,d_2)$ is a groupoid.
+The Para construction extends to a bicategory: a 2-cell $(a,f)\Rightarrow(a',f')$ in the hom-category $\para{\cat A}{\cat D}(d_1,d_2)$ consists of a morphism $g\colon a\to a'$ in $\cat A$ such that $f'\circ(g\cdot d_1)=f$. When $\cat A$ is a groupoid, all 2-cells are invertible, and each hom-category $\para{\cat A}{\cat D}(d_1,d_2)$ is a groupoid.
 In this paper, all of our parameter categories are groupoids, so these Para constructions are naturally $(2,1)$-categories; by the convention of \cref{sec.prelim}, we will usually call them categories.
 
 The following is straightforward.
@@ -1813,7 +1813,7 @@ The smooth version $\sarr\To{\Phi}\pc$ will be a special case, where: spaces are
 %--------------------------------------------------------------------
 
 \begin{definition}[Adaptive-arrangement datum]\label{def.rewiring_datum}
-A \emph{adaptive-arrangement datum} $D=(\cat M,\cat Q,J,\Fun R)$ consists of
+We define a \emph{adaptive-arrangement datum} $D=(\cat M,\cat Q,J,\Fun R)$ to consist of
 \begin{enumerate}
   \item a cartesian monoidal category $\cat M$, objects are called \emph{spaces};
   \item a symmetric monoidal category $\cat Q$, objects are called \emph{parameters};
@@ -1923,7 +1923,7 @@ The composite $g\circ f$ has parameter $Q\otimes Q'$, forward and backward compo
 
 We conclude this section with a free supply of monads---the power monads---that can be used in conjunction with any other monad $\Fun R$.
 
-\begin{proposition}[Moded adaptive-arrangement data]\label{prop.moding}
+\begin{proposition}[Modes]\label{prop.moding}
 Let $(\cat M,I,\otimes)$ be a symmetric monoidal category with finite products, and let $\md:\finset$ be a finite set. The power functor $(\blank)^{\md}$ is a monoidal monad on $\cat M$, and for every monoidal monad $\Fun R$ on $\cat M$ the composite $(\Fun R)^{\md}$ is again a monoidal monad.
 \end{proposition}
 \begin{proof}
@@ -2050,7 +2050,7 @@ The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\oti
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
+\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with the isomorphism $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
 The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
@@ -2306,7 +2306,7 @@ The \emph{smooth adaptive-arrangement datum} is
 \[
 \Sm\coloneqq(\mfd,\rvect,\inc,\rr),
 \]
-an adaptive-arrangement datum in the sense of \cref{def.rewiring_datum}: $\mfd$ is cartesian monoidal, $(\rr,0,+)$ is a commutative monoid object in it---giving the writer potentials monad $\rr\otimes\blank$ (\cref{lem.monoid_to_monad}), which we abbreviate by its carrier $\rr$---$\rvect$ is symmetric monoidal (\cref{prop.rvect_monoidal}), and $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal (\cref{prop.rvect_smc_action}). Its adaptive-arrangement operad $\defineTerm{srwd}$ is the underlying operad of the symmetric monoidal category $\para{\rvect}{\plmfd}$ (\cref{lem.para_monoidal}).
+an adaptive-arrangement datum (\cref{def.rewiring_datum}): $\mfd$ is cartesian monoidal, $(\rr,0,+)$ is a commutative monoid object in it---giving the writer potentials monad $\rr\otimes\blank$, which we abbreviate by its carrier $\rr$---$\rvect$ is symmetric monoidal (\cref{prop.rvect_monoidal}), and $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal (\cref{prop.rvect_smc_action}). Its adaptive-arrangement operad $\defineTerm{srwd}$ is the underlying operad of the symmetric monoidal category $\para{\rvect}{\plmfd}$ (\cref{lem.para_monoidal}).
 \end{definition}
 
 A morphism $f\colon\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}\to\lensob{N}$ is a tuple $f\coloneqq\left(\rv Q,\binom{\inpt f}{\outp f},U\right)$ with $\rv Q\coloneqq(Q,\sharpR_Q):\rvect$. Writing $\lensob M\coloneqq\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}$ for the tensored domain, so that $\outp M=\prod_{i=1}^K\outp M_i$ and $\inpt M=\prod_{i=1}^K\inpt M_i$, the components are smooth maps
@@ -2616,7 +2616,7 @@ The unitor is the identity since $T^*0=0\oplus 0^*=0$. The productor is the swap
 \begin{equation*}
 (T^*)_2\colon T^*Q_1\oplus T^*Q_2\To{\cong}T^*(Q_1\oplus Q_2),\quad ((q_1,\xi_1),(q_2,\xi_2))\mapsto((q_1,q_2),(\xi_1,\xi_2)).
 \end{equation*}
-For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ acts by the map $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
+For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ acts by the map $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives the map $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
 \end{proof}
 
 The \emph{phase integrator} stores a phase point $(q,\xi)$ and updates it by the explicit symplectic Euler step: it reads out the position and feeds the incoming gradient $\xi'$---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*Q$. The map $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out the position, $(q,\xi)\mapsto q$, and on directions takes in a gradient and appends the stored velocity to it,
@@ -2991,12 +2991,12 @@ The functor $\Phi$ produces one-step coalgebras: at each macro-tick, the system 
 
 For any $K:\nn$, let $\pc^{(K)}$ be the 2-category---another instance of the construction of \cref{sec.org}---with the same objects as $\pc$ and hom-categories
 \[
-\pc^{(K)}(p,p')\coloneqq\ihom{p,p'}^{\circ K}\coalg,
+\pc^{(K)}(p_1,p_2)\coloneqq\ihom{p_1,p_2}^{\circ K}\coalg,
 \]
 where $p^{\circ K}\coloneqq p\circ\cdots\circ p$ is the $K$-fold composite of the polynomial functor $p$ with itself.%
 \footnote{Explicitly, $\pc^{(K)}=\bigl(\Coalg\circ(\blank^{\circ K})\bigr)_*\poly$, the change of base along the composite $\poly\To{\blank^{\circ K}}\poly\To{\Coalg}\smcat$, using that the substitution power $\blank^{\circ K}$ is lax monoidal for $\otimes$.
 }
-For example, a morphism in $\pc^{(2)}$ is a coalgebra of the form $S\to p'(p'(S))$. Given a state, it outputs a position $j_1:p'(1)$ and, for every input direction $e_1:p'[j_1]$, outputs another position $j_2:p'(1)$ and, for every input direction $e_2:p'[j_2]$, updates the state. 
+For example, a morphism in $\pc^{(2)}$ is a coalgebra of the form $S\to p(p(S))$. Given a state, it outputs a position $i_1:p(1)$ and, for every input direction $d_1:p[i_1]$, outputs another position $i_2:p(1)$ and, for every input direction $d_2:p[j_2]$, updates the state. 
 
 A modified integrator (\cref{def.integrator}), with the state space $\Fun S$ unchanged but whose update instead takes the form $\upd\colon\Store\circ\Fun S\Rightarrow p^{\circ K}$, should likewise yield an operad functor $\sarr\to\pc^{(K)}$. An LLM (Claude) has implemented the $K=2$ case (velocity Verlet) in companion code (\url{https://github.com/dspivak/dap}), where it visibly integrates the wave equation stably; we have not independently audited it, and leave the general functoriality to future work. See also \cite{ngotiaoco2017compositionality}.\qedhere
 \end{remark}
@@ -3089,7 +3089,7 @@ On objects, $\lrn(\rr^m)$ is given by
 =\cotof{\rr^m}\otimes\ihom{\cotof{\rr^0},\yon}
 \cong\cotof{\rr^m}=\sum_{x:\rr^m}\yon^{T^*_x\rr^m},
 \]
-because $\cotof{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phiconf(f)$ is a coalgebra, $Q\to [\cotof{\rr^m},\cotof{\rr^n}](Q)$.
+because $\cotof{\rr^0}\cong\yon$ and $\ihom{\yon,\yon}\cong\yon$. Hence $\Phiconf(f)$ is a coalgebra of the form $Q\to [\cotof{\rr^m},\cotof{\rr^n}](Q)$.
 
 \paragraph{The coalgebra.}
 Because we are using the configuration integrator, the state set is $\absval{Q}$ by \eqref{eqn.state_space_conf}; an element is a vector of the ``weights and biases'' of the artificial neural network. We unpack the coalgebra step at fixed $q\in Q$, given an input position $x\in\rr^m$ from upstream and a covector $\xi\in T^*_{F(q,x)}\rr^n$ from downstream; where these come from during the training process is taken up in the loss construction below and \cref{ex.training_data}.
@@ -3471,7 +3471,7 @@ its vertices weighted by masses and its edges by spring constants. Composing $\r
 \begin{equation}\label{eqn.psi_graph_lap}
 \fun{wire}_{\mathbf G}\coloneqq\rr^{\varphi_G}\bigl((\Part_v)_{v\in V}\bigr)\colon\binom{\rr^0}{\rr^0}\to\binom{\rr^0}{\rr^0}
 \end{equation}
-with composite parameter space $Q_G\coloneqq\bigoplus_{v\in V}Q_v=\rr^V$, constant sharp $\sharpR_{\vec q}(\vec\xi)\coloneqq(\xi_v/m_v)_{v\in V}$, vacuous output and input maps, and composite potential $\rr^V\to\rr$ calculated as
+with composite parameter space $Q_G\coloneqq\bigoplus_{v\in V}Q_v=\rr^V$, the composite constant sharp $\sharpR_{\vec q}(\vec\xi)\coloneqq(\xi_v/m_v)_{v\in V}$, vacuous output and input maps, and composite potential $\rr^V\to\rr$ calculated as
 \begin{equation}\label{eqn.graph_potential}
 U(\vec q)\;=\;\sum_{v\in V}U_v\bigl(q_v,(q_{\src(e)})_{e\in\inpt{v}}\bigr)\;=\;\sum_{e\in E}\tfrac{\kappa_e}{2}\,(q_{\tgt(e)}-q_{\src(e)})^2.
 \end{equation}
