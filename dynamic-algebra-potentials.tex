@@ -615,7 +615,7 @@ Together, $\cot$ and Moore internalization turn ordinary smooth data---output ma
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\sarr$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
 We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}): the conservative, second-order regime and the dissipative, first-order one are two readings of a single syntactic object.
-This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime---including the sign that makes the dynamics conserve energy or dissipate it.
+This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime---the sign that makes the dynamics conserve or dissipate. We make the conservative side precise: for closed systems with quadratic potential, a single step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a commutative monoid. We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
@@ -2973,54 +2973,51 @@ All in all, one could tersely denote the coalgebra map as follows:
 \end{multline*}
 where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\inpt m$ in \eqref{eqn.inptm}, and $\xi_M$ and $\xi_Q$ in \eqref{eqn.bigtheta}, all evaluated at the presented position $\tilde q$.
 
-\begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
-In this remark we aim to justify the Hamiltonian terminology that we allude to elsewhere in the paper. The assumptions that make the dynamics Hamiltonian are written in bold.
+\paragraph{Closed systems.}
+When the domain and codomain interfaces are closed, $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the potential reduces to a map $U\colon Q\to\rr$ and the two pullback terms of \eqref{eqn.bigtheta} vanish, leaving $\xi_Q=dU|_{\tilde q}$, the differential at the presented position $\tilde q=q+\sharpR_q(\xi)$. Such an $f$ is a scalar $I\to I$, and \eqref{eqn.state_update} makes its image $\Phiphase(f)$ a $\yon$-coalgebra---a self-map of the state set $\absval{T^*Q}$---namely
+\begin{equation}\label{eqn.closed_update}
+(q,\xi)\;\longmapsto\;\bigl(q+\sharpR_q(\xi),\;\xi-dU|_{\tilde q}\bigr).
+\end{equation}
+This is the setting of the harmonic-chain and graph-Laplacian examples (\cref{sec.wave_equation,sec.graph_laplacian}), with $Q=\rr^K$ or $Q=\rr^V$. We read \eqref{eqn.closed_update} two ways: as the time-step of a continuous Hamiltonian flow (\cref{rmk.constant_inverse_mass_hamiltonian}), and as a map that conserves the canonical symplectic pairing in its own right (\cref{prop.closed_conservation}).
 
-Suppose \textbf{the domain and codomain interfaces are closed}, i.e.\ $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, so that in particular $\xi_N=0$ and $\omega_M=0$ and $U\colon Q\to\rr$ depends only on $q$. Then \eqref{eqn.bigtheta} gives $\xi_Q=dU|_{\tilde q}$, the differential at the presented position. If moreover \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, so that $\tilde q=q+\sharpR_0(\xi)$, then \eqref{eqn.state_update} becomes
+\begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
+This remark justifies the Hamiltonian terminology used elsewhere; the assumptions that make the closed dynamics \eqref{eqn.closed_update} Hamiltonian are written in bold. If \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then $\tilde q=q+\sharpR_0(\xi)$ and \eqref{eqn.closed_update} is
 \[
-s+\sharpS_S(dU|_{\tilde q},\sharpR_0(\xi))
-=
-(q+\sharpR_0(\xi),\,\xi-dU|_{\tilde q})
-=
-(\tilde q,\,\xi-dU|_{\tilde q}),
+(q,\xi)\longmapsto\bigl(q+\sharpR_0(\xi),\,\xi-dU|_{\tilde q}\bigr)=\bigl(\tilde q,\,\xi-dU|_{\tilde q}\bigr).
 \]
-which steps the vector field $(\dot q,\dot\xi)$ below by first moving the position along the velocity and then evaluating the force at the moved position, where
+This is the \emph{semi-implicit} Euler step of the vector field
 \[
 \dot q\coloneqq \sharpR_0(\xi),
 \qquad
-\dot\xi\coloneqq-dU|_q.
+\dot\xi\coloneqq-dU|_q,
 \]
-For instance, take $\sharpR_0(\xi)=\xi/m$ for a scalar mass $m>0$. Then $\dot q=\sharpR_0(\xi)=\xi/m$ and $\dot\xi=-dU|_q$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot q$ the usual momentum.
+advancing the position along the velocity and then evaluating the force at the new position $\tilde q$. For instance, take $\sharpR_0(\xi)=\xi/m$ for a scalar mass $m>0$; then $\dot q=\xi/m$ and $\dot\xi=-dU|_q$, the familiar (velocity, force) form of Newton's second law, with $\xi=m\dot q$ the usual momentum.
 
-Finally, when \textbf{the sharp is symmetric}, in the sense that $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in Q^*$, this vector field is \emph{Hamiltonian} meaning that---as we'll soon see---it is the symplectic sharp applied to the derivative of some function, namely
+When moreover \textbf{the sharp is symmetric}, $\xi'(\sharpR_0(\xi))=\xi(\sharpR_0(\xi'))$ for all $\xi,\xi'\in Q^*$, this vector field is \emph{Hamiltonian}: it is the symplectic sharp applied to the differential of
 \[
-H(q,\xi)\coloneqq \tfrac12\xi(\sharpR_0(\xi))+U(q).
+H(q,\xi)\coloneqq \tfrac12\xi(\sharpR_0(\xi))+U(q),
 \]
-This $H$ is the energy of a \emph{simple mechanical system}~\cite[\S 3.7]{abraham1978foundations}: kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ plus potential energy $U$.
-Indeed, the symmetry condition and the linearity of $\sharpR$ give $dH|_{(q,\xi)}=(dU|_q,\sharpR_0(\xi))=\bk{\nu}{(q,\xi)}(dU|_q)\in Q^*\oplus Q$ by \eqref{eqn.nu}, and applying the canonical symplectic sharp \eqref{eqn.sharp_S} recovers the vector field:
+the energy of a \emph{simple mechanical system}~\cite[\S 3.7]{abraham1978foundations}---kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ plus potential energy $U$. Indeed, the symmetry condition and linearity of $\sharpR$ give $dH|_{(q,\xi)}=(dU|_q,\sharpR_0(\xi))=\bk{\nu}{(q,\xi)}(dU|_q)\in Q^*\oplus Q$ by \eqref{eqn.nu}, and \eqref{eqn.sharp_S} recovers the vector field,
 \[
 \sharpS_S(dH|_{(q,\xi)})=(\sharpR_0(\xi),-dU|_q)=(\dot{q},\dot{\xi}).
 \]
-In particular the flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.\qedhere
+In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}; the discrete step \eqref{eqn.closed_update} need not, as \cref{prop.closed_conservation} makes precise.\qedhere
 \end{remark}
 
-In the closed constant-symmetric case above, the update preserves the canonical symplectic pairing, for a compositional reason: it factors as a \emph{drift}, which moves the position along the stored velocity, followed by a \emph{kick}, which moves the momentum by the force at the new position---and each factor preserves the pairing. We record this in the quadratic case, where both factors are linear. Let the sharp be constant and symmetric as in \cref{rmk.constant_inverse_mass_hamiltonian}, let $\kappa\colon Q\to Q^*$ be a linear map that is symmetric in the corresponding sense, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and let $U(q)\coloneqq\tfrac12(\kappa q)(q)$ be the corresponding quadratic potential; then $dU|_q=\kappa q$, since symmetry of $\kappa$ gives $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$. Define linear maps
+The continuous flow conserves the energy $H$, but the discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly. What it conserves is the canonical symplectic pairing---at least in the quadratic case, where the step is linear. Let $\sharpR_0$ be constant and symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the quadratic potential $U(q)\coloneqq\tfrac12(\kappa q)(q)$, for which $dU|_q=\kappa q$ (using symmetry of $\kappa$: $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$). The step \eqref{eqn.closed_update} then factors through the linear maps
 \begin{equation}\label{eqn.drift_kick}
 \fun{drift}(q,\xi)\coloneqq\bigl(q+\sharpR_0(\xi),\;\xi\bigr)
 \qqand
 \fun{kick}(q,\xi)\coloneqq\bigl(q,\;\xi-\kappa q\bigr),
 \end{equation}
-so that the closed update displayed in \cref{rmk.constant_inverse_mass_hamiltonian} is exactly their composite:
-\[
-(\fun{kick}\circ\fun{drift})(q,\xi)=\bigl(q+\sharpR_0(\xi),\;\xi-\kappa(q+\sharpR_0(\xi))\bigr)=\bigl(\tilde q,\;\xi-dU|_{\tilde q}\bigr).
-\]
+a \emph{drift} advancing the position and a \emph{kick} applying the force.
 
-\begin{proposition}[Drift and kick are reactive]\label{prop.drift_kick_reactive}
-The maps $\fun{drift}$ and $\fun{kick}$ are endomorphisms of the reactive vector space $T^*Q$ of \cref{prop.canonical_symplectic_pairing} in $\rvect$. Hence so is the closed quadratic update $\fun{kick}\circ\fun{drift}$.
+\begin{proposition}[Closed quadratic dynamics conserve the symplectic pairing]\label{prop.closed_conservation}
+With $\sharpR_0$, $\kappa$, and $U$ as above, the closed phase step \eqref{eqn.closed_update} equals the composite $\fun{kick}\circ\fun{drift}$ \eqref{eqn.drift_kick} and is an endomorphism of the reactive vector space $T^*Q$ (\cref{prop.canonical_symplectic_pairing}) in $\rvect$: a linear isomorphism preserving the canonical symplectic pairing \eqref{eqn.canonical_form}.
 \end{proposition}
 
 \begin{proof}
-Each map is a linear isomorphism, inverted by negating the second summand in its formula. Since the canonical symplectic pairing is nondegenerate and constant in the basepoint, sharp-equivariance \eqref{eqn.pairing_triangle} is pairing-preservation (\cref{def.rvect}), which we check directly from \eqref{eqn.canonical_form}. For the drift, for all $(q,\xi),(q',\xi')\in Q\oplus Q^*$:
+Since $dU|_q=\kappa q$ and $\tilde q=q+\sharpR_0(\xi)$, the step \eqref{eqn.closed_update} sends $(q,\xi)$ to $\bigl(q+\sharpR_0(\xi),\,\xi-\kappa(q+\sharpR_0(\xi))\bigr)$, which is $\fun{kick}\bigl(\fun{drift}(q,\xi)\bigr)$. Each of $\fun{drift}$ and $\fun{kick}$ is a linear isomorphism, inverted by negating the second summand of its formula. Because the canonical symplectic pairing is nondegenerate and constant in the basepoint, sharp-equivariance \eqref{eqn.pairing_triangle} is pairing-preservation (\cref{def.rvect}), which we check from \eqref{eqn.canonical_form}. For the drift, for all $(q,\xi),(q',\xi')\in Q\oplus Q^*$:
 \begin{align*}
 \pairing{\fun{drift}(q,\xi),\,\fun{drift}(q',\xi')}
 &=\xi'\bigl(q+\sharpR_0(\xi)\bigr)-\xi\bigl(q'+\sharpR_0(\xi')\bigr)\\
@@ -3032,7 +3029,7 @@ and the last two terms cancel by symmetry of the sharp. For the kick:
 =(\xi'-\kappa q')(q)-(\xi-\kappa q)(q')
 =\pairing{(q,\xi),\,(q',\xi')}-(\kappa q')(q)+(\kappa q)(q'),
 \]
-and the last two terms cancel by symmetry of $\kappa$. The composite is an endomorphism because $\rvect$-morphisms are closed under composition (\cref{def.rvect}).
+and the last two terms cancel by symmetry of $\kappa$. Hence $\fun{drift},\fun{kick}\in\rvect(T^*Q,T^*Q)$, and so is their composite, since $\rvect$-morphisms compose (\cref{def.rvect}).
 \end{proof}
 
 Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec.wave_equation} (recovering the discrete wave equation on a chain) and \cref{sec.graph_laplacian} (the graph Laplacian on an arbitrary finite directed graph).
