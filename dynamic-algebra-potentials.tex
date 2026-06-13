@@ -2078,7 +2078,8 @@ We call $\intg$ an \emph{integrator} for what its instances turn out to be. Inde
 
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat Q$ be a symmetric monoidal category and $F\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $\ell$-stage $F$-integrator $\intg$ induces a normal lax symmetric monoidal functor
-\[\defineTerm{Psisem}_{\intg}\colon\para{F}{\poly}\to\pcstage{\ell}_{\cong}.\]
+\[\defineTerm{Psisem}_{\intg}\colon\para{F}{\poly}\to\pcstage{\ell}_{\cong},\]
+where $\pcstage{\ell}_{\cong}$ is the multi-stage $(2,1)$-category of \cref{def.pcK}.
 \end{proposition}
 
 \begin{proof}
@@ -3033,14 +3034,6 @@ and the last two terms cancel by symmetry of the sharp. For the kick:
 \]
 and the last two terms cancel by symmetry of $\kappa$. The composite is an endomorphism because $\rvect$-morphisms are closed under composition (\cref{def.rvect}).
 \end{proof}
-
-\begin{remark}[Multi-stage integrators]\label{rmk.org_N}
-The integrators built above are \emph{single-stage}: at each macro-tick the system emits, receives, and updates exactly once, producing a one-step coalgebra in $\pc=\pcstage{1}$. Many useful numerical integrators, such as Runge--Kutta and velocity Verlet (leapfrog) \cite[Ch.~VI]{hairer2006geometric}, are instead \emph{multi-stage}, taking several emit--receive rounds per tick.
-
-The framework already accommodates such semantics. The multi-stage 2-category $\pcstage{\ell}$ (\cref{def.pcK}) has hom-categories $\pcstage{\ell}(p,p')=\ihom{p,p'}\tripow{\ell}\coalg$, so that a morphism in $\pcstage{2}$, say, is a coalgebra of the form $S\to p(p(S))$: given a state it outputs a position $i_1:p(1)$ and, for every input direction $d_1:p[i_1]$, outputs another position $i_2:p(1)$ and, for every input direction $d_2:p[i_2]$, updates the state. Moreover \cref{def.integrator,thm.dynamics_functor} are stated for arbitrary $\ell$: an $\ell$-stage integrator induces an operad functor $\sarr\to\pcstage{\ell}$.
-
-What remains is to realize specific multi-stage schemes as $\ell$-stage integrators in this sense. An LLM (Claude) has implemented the $\ell=2$ case (velocity Verlet) in companion code (\url{https://github.com/dspivak/dap}), where it visibly integrates the wave equation stably; we have not independently audited it, and leave the systematic treatment of multi-stage integrators to future work. See also \cite{ngotiaoco2017compositionality}.\qedhere
-\end{remark}
 
 Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec.wave_equation} (recovering the discrete wave equation on a chain) and \cref{sec.graph_laplacian} (the graph Laplacian on an arbitrary finite directed graph).
 
