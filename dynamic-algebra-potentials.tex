@@ -2978,7 +2978,7 @@ When the domain and codomain interfaces are closed, $\inpt M=\outp M=\inpt N=\ou
 \begin{equation}\label{eqn.closed_update}
 (q,\xi)\;\longmapsto\;\bigl(q+\sharpR_q(\xi),\;\xi-dU|_{\tilde q}\bigr).
 \end{equation}
-This is the setting of the harmonic-chain and graph-Laplacian examples (\cref{sec.wave_equation,sec.graph_laplacian}), with $Q=\rr^K$ or $Q=\rr^V$. We read \eqref{eqn.closed_update} two ways: as the time-step of a continuous Hamiltonian flow (\cref{rmk.constant_inverse_mass_hamiltonian}), and as a map that conserves the canonical symplectic pairing in its own right (\cref{prop.closed_conservation}).
+This is the setting of the harmonic-chain and graph-Laplacian examples (\cref{sec.wave_equation,sec.graph_laplacian}), with $Q=\rr^K$ or $Q=\rr^V$.
 
 \begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
 This remark justifies the Hamiltonian terminology used elsewhere; the assumptions that make the closed dynamics \eqref{eqn.closed_update} Hamiltonian are written in bold. If \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then $\tilde q=q+\sharpR_0(\xi)$ and \eqref{eqn.closed_update} is
@@ -3001,7 +3001,7 @@ the energy of a \emph{simple mechanical system}~\cite[\S 3.7]{abraham1978foundat
 \[
 \sharpS_S(dH|_{(q,\xi)})=(\sharpR_0(\xi),-dU|_q)=(\dot{q},\dot{\xi}).
 \]
-In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}; the discrete step \eqref{eqn.closed_update} need not, as \cref{prop.closed_conservation} makes precise.\qedhere
+In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.\qedhere
 \end{remark}
 
 The continuous flow conserves the energy $H$, but the discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly. What it conserves is the canonical symplectic pairing---at least in the quadratic case, where the step is linear. Let $\sharpR_0$ be constant and symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the quadratic potential $U(q)\coloneqq\tfrac12(\kappa q)(q)$, for which $dU|_q=\kappa q$ (using symmetry of $\kappa$: $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$). The step \eqref{eqn.closed_update} then factors through the linear maps
@@ -3031,6 +3031,8 @@ and the last two terms cancel by symmetry of the sharp. For the kick:
 \]
 and the last two terms cancel by symmetry of $\kappa$. Hence $\fun{drift},\fun{kick}\in\rvect(T^*Q,T^*Q)$, and so is their composite, since $\rvect$-morphisms compose (\cref{def.rvect}).
 \end{proof}
+
+This is the structural signature of a conservative integrator. A pairing-preserving step also preserves phase-space volume, so it can introduce neither artificial damping nor the energy blow-up of a volume-distorting step; it is what lets the harmonic chain of \cref{sec.wave_equation} simulate without spurious drift.
 
 Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec.wave_equation} (recovering the discrete wave equation on a chain) and \cref{sec.graph_laplacian} (the graph Laplacian on an arbitrary finite directed graph).
 
@@ -3557,6 +3559,8 @@ m_v\bigl(q_v(t+2)-q_v(t+1)\bigr)\;=\;m_v\bigl(q_v(t+1)-q_v(t)\bigr)-(L_G\vec q(t
 \]
 and collecting the position terms on the left, and using notation \eqref{eqn.doubledot}, yields \eqref{eqn.graph_laplacian_dynamics}.
 \end{proof}
+
+The reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_{v\in V}$ is constant and symmetric, and the potential \eqref{eqn.graph_potential} is quadratic with $dU=L_G$ symmetric, so \cref{prop.closed_conservation} applies (with $\kappa=L_G$): every step of $\Phiphase(\fun{wire}_{\mathbf G})$ is a linear symplectomorphism of $T^*\rr^V$, preserving the canonical symplectic pairing.
 
 \begin{remark}[Heat equation from the configuration integrator]\label{rmk.graph_heat}
 Rather than $\Phiphase$, if we apply $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.psi_graph_lap}---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and the same computation \eqref{eqn.no_self} applies---except that the configuration integrator presents the stored position itself, so here $\xi_Q=dU(\vec q)=L_G\vec q$. Its descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ then reads component-wise as
