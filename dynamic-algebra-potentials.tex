@@ -611,7 +611,7 @@ To accommodate the potential---the last ingredient---we pass from lenses to the 
 
 The passage from lenses to polynomial coalgebras uses a functor we call \emph{Moore internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\ihom{\inpt c,I}\otimes\outp c$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}). Moore machines \cite{moore1956gedanken}---a simple kind of dynamical system---arise in this way.
 
-Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position---which affects the current moment's dynamics---but also a momentum, which affects the next's. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
+Together, $\cot$ and Moore internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position but also a momentum, which carries the position forward. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\sarr$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
 We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}): the conservative, second-order regime and the dissipative, first-order one are two readings of a single syntactic object.
@@ -2074,7 +2074,7 @@ where $\Fun S\colon\cat Q\to\smsetiso$, the \emph{state space} functor, is stron
 
 Though in this section we consider the arbitrary-$\ell$ case, most of this document will focus on the $\ell=1$ case, so we discuss intuition for the $\ell=1$ case here. By \cref{prop.coalg_as_poly_map}, any component $\dyn_a\colon\Store(\Fun S_a)\to F_a$ is equivalently an $F_a$-coalgebra structure on the state set $\Fun S_a$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel. Each component $\dyn_a$ is a ``view / update'' pair: it lets the larger system read some aspect of the stored state as a position of $F_a$ and then updates the stored state based on whatever direction of $F_a$ the larger system sends back.
 
-We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
+We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of Euler type: Euler on configuration space, and a phase-space variant that evaluates forces at the position the step moves to. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
 
 \begin{proposition}\label{prop.integrator_to_org}
 Let $\cat Q$ be a symmetric monoidal category and $F\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $\ell$-stage $F$-integrator $\intg$ induces a normal lax symmetric monoidal functor
@@ -2447,6 +2447,10 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 On positions $\cotof{\Delta_M}$ and $\cotof{\bang_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(\bang_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
 \end{proof}
 
+\begin{remark}[Covectors add along fan-out]\label{rmk.fanout_addition}
+\Cref{lem.cot_comonoid} is where the formalism makes outputs shareable. When one output is consumed in several places, the wiring routes it through the diagonal $\Delta_M$, and the lemma computes what this does to the backward pass: the backward component of $\cotof{\Delta_M}$ sums the covectors returned by the several consumers before they reach the producer. Two familiar principles are instances. In mechanics, the net force on a particle is the sum of the forces exerted by its couplings: superposition of forces is not an axiom here but the backward component of a comultiplication. In reverse-mode automatic differentiation, the same map is the rule that gradients accumulate additively at fan-out.\qedhere
+\end{remark}
+
 \begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop.cot_hopf}
 Let $G$ be a Lie group with unit $\eta\colon\rr^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cotof{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
 \[
@@ -2635,7 +2639,11 @@ The unitor is the identity since $T^*0=0\oplus 0^*=0$. The productor is the swap
 For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ acts by the map $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives the map $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
 \end{proof}
 
-The \emph{phase integrator} stores a phase point $(q,\xi)$ and updates it by the explicit symplectic Euler step: it reads out the position and feeds the incoming gradient $\xi'$---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum---through the symplectic sharp on $T^*Q$. The map $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out the position, $(q,\xi)\mapsto q$, and on directions takes in a gradient and appends the stored velocity to it,
+The \emph{phase integrator} stores a phase point $(q,\xi)$ and reads out the \emph{presented position}: the position the point is moving to,
+\begin{equation}\label{eqn.presented_position}
+\tilde q\coloneqq q+\sharpR_q(\xi).
+\end{equation}
+It then feeds the incoming gradient $\xi'$---which the environment computes at the presented position---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum, through the symplectic sharp on $T^*Q$. The map $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out the presented position, $(q,\xi)\mapsto\tilde q$, and on directions takes in a gradient and appends the stored velocity to it,
 \begin{equation}\label{eqn.nu}
 \bk{\nu}{(q,\xi)}\colon\xi'\mapsto(\xi',\sharpR_q\xi)\in Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q),
 \end{equation}
@@ -2647,17 +2655,17 @@ and the phase integrator is the pair
 \begin{equation}\label{eqn.phase_integrator}
 \phase\coloneqq(\absval{T^*\blank},\dynphase).
 \end{equation}
-This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because the projection is natural and monoidal, while the $\sharpR_q\xi$ term is so by sharp-equivariance \eqref{eqn.pairing_triangle} and the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
+This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because both of its components are built from the reaction: the presented position $q+\sharpR_q(\xi)$ and the appended velocity $\sharpR_q(\xi)$ are natural by sharp-equivariance \eqref{eqn.pairing_triangle} and linearity, and monoidal by the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), while the $\xi'$ component is the inclusion $\xi'\mapsto(\xi',0)$, natural and monoidal under \eqref{eqn.canonical_dual_sum}.
 
-The two legs play complementary roles: $\chiQ{T^*\blank}$ \eqref{eqn.directions_sharp} is the symplectic Euler step on $T^*Q$ \eqref{eqn.canonical_sharp}, identical for every reactive vector space, whereas $\nu$ uses the reaction $\sharpR_Q$ to convert the stored momentum into a velocity $\sharpR_q(\xi)$ and appends it to the incoming force $\xi'$. On directions, $\chiQ{T^*Q}$ adds to the current point $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.directions_sharp},
+The two legs play complementary roles: $\chiQ{T^*\blank}$ \eqref{eqn.directions_sharp} is the symplectic update on $T^*Q$ \eqref{eqn.canonical_sharp}, identical for every reactive vector space, whereas $\nu$ uses the reaction $\sharpR_Q$ to present the position and to convert the stored momentum into a velocity $\sharpR_q(\xi)$, appending the latter to the incoming force $\xi'$. On directions, $\chiQ{T^*Q}$ adds to the current point $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.directions_sharp},
 \[
 \sharpS_{T^*Q}\bigl(\xi',\sharpR_q(\xi)\bigr)=\bigl(\sharpR_q(\xi),\,-\xi'\bigr),
 \]
-so the update reads out $(q,\xi)\mapsto q$ and, on directions, is
+so the update reads out $(q,\xi)\mapsto\tilde q$ and, on directions, is
 \begin{equation}\label{eqn.phase_update}
 \absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((q,\xi),\xi')\mapsto(q+\sharpR_q(\xi),\,\xi-\xi').
 \end{equation}
-This is one explicit Euler step of Hamilton's equations: the position moves by adding the velocity $\sharpR_q\xi$, and the momentum moves by subtracting the gradient $\xi'$.
+This is one step of Hamilton's equations: the position moves by adding the velocity $\sharpR_q\xi$---landing exactly on the presented position $\tilde q$---and the momentum moves by subtracting a gradient $\xi'$ that the environment computed there.
 %--------------------------------------------------------------------
 \section{The dynamics functors}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
@@ -2914,8 +2922,8 @@ Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\phase}\circ\Phi
 \[
 \Store(S)\To{\dynphase}\cotof{Q}.
 \]
-A state consists of a position and a momentum $(q,\xi)\in T^*Q$, and an incoming covector $\xi'\in T^*_qQ$ updates that state to $(q+\sharpR_q(\xi),\,\xi-\xi')$
- by \eqref{eqn.phase_update}. The readout and returned direction of the coalgebra $\Phiphase(\rv Q,f)$ are identical to the configuration case---they are the on-positions and on-directions components of the shared factor $\Phip{\interpsm}$, formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta}, which depend only on the parameter position $q$, and the phase integrator maps $(q,\xi)\mapsto q$ on positions by \eqref{eqn.phase_update}. What changes is the state space and the state update; we unpack it all below.
+A state consists of a position and a momentum $(q,\xi)\in T^*Q$, and an incoming covector $\xi'$ updates that state to $(q+\sharpR_q(\xi),\,\xi-\xi')$
+ by \eqref{eqn.phase_update}. The readout and returned direction of the coalgebra $\Phiphase(\rv Q,f)$ have the same formulas as the configuration case---they are the on-positions and on-directions components of the shared factor $\Phip{\interpsm}$, formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta}, which depend only on the parameter position---but the phase integrator evaluates them at the presented position $\tilde q=q+\sharpR_q(\xi)$ \eqref{eqn.presented_position}, where $\Phiconf$ evaluates them at the stored $q$. What changes beyond this substitution is the state space and the state update; we unpack it all below.
 
 \paragraph{The action of $\termraw{Phiphase}$ on objects.}
 The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case (see \eqref{eqn.Phi_on_obs}).
@@ -2939,12 +2947,12 @@ We now unpack the coalgebra function itself,
 S\To{\Phiphase(\rv Q,f)}
 \left[\Phiphase\lensob M,\Phiphase\lensob N\right](S).
 \]
-Given a state $s\coloneqq(q,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ is the on-positions component of $\Phip{\interpsm}(f)$, with $\outp n$ and $\omega_N$ as in \eqref{eqn.outpn} and \eqref{eqn.omegaprime}. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the on-directions component of $\Phip{\interpsm}(f)$ returns the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, with $\inpt m$ as in \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ as in \eqref{eqn.bigtheta}. These match the configuration case (\cref{sec.configuration_dynamics}): $\Phiphase$ and $\Phiconf$ share the factor $\Phip{\interpsm}$, whose on-positions and on-directions components depend only on the parameter position, which the phase integrator presents as $q$ \eqref{eqn.phase_update}. The only difference is in the state update: starting from $s=(q,\xi)$, the state is updated to
+Given a state $s\coloneqq(q,\xi)\in S$ and a position $a\coloneqq(\outp m,\omega_M):\outp M\times\Omega(\inpt M)$, the readout position $b=(\outp n,\omega_N)\in\outp N\times\Omega(\inpt N)$ is the on-positions component of $\Phip{\interpsm}(f)$ at the parameter position $\tilde q$, with $\outp n$ and $\omega_N$ as in \eqref{eqn.outpn} and \eqref{eqn.omegaprime} with $\tilde q$ in place of $q$. Given a direction $(\xi_N,\inpt n):T^*_{\outp n}\outp N\times\inpt N=\Phiphase\lensob N[b]$, the on-directions component of $\Phip{\interpsm}(f)$ returns the direction $(\xi_M,\inpt m):T^*_{\outp m}\outp M\times\inpt M=\Phiphase\lensob M[a]$, with $\inpt m$ as in \eqref{eqn.inptm} and the triple $(\xi_Q,\,\xi_M,\,\xi_{\inpt N})$ as in \eqref{eqn.bigtheta}, again at $\tilde q$. These have the same form as the configuration case (\cref{sec.configuration_dynamics}): $\Phiphase$ and $\Phiconf$ share the factor $\Phip{\interpsm}$, whose on-positions and on-directions components depend only on the parameter position; the phase integrator presents it as $\tilde q$ \eqref{eqn.phase_update} where the configuration integrator presents the stored $q$. The remaining difference is in the state update: starting from $s=(q,\xi)$, the state is updated to
 \begin{equation}\label{eqn.state_update}
 s+\sharpS_S(\xi_Q,\sharpR_q(\xi))=\bigl(q+\sharpR_q(\xi),\,\xi-\xi_Q\bigr).
 \end{equation}
 
-We will now break down \cref{eqn.state_update}, which is the phase integrator \eqref{eqn.phase_update} with the substitution $\xi'=\xi_Q$. Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the Euler step $\chi$ on the phase space $T^*Q$ \eqref{eqn.directions_sharp}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$; and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from $\nu$ \eqref{eqn.nu} at $(q,\xi)$.
+We will now break down \cref{eqn.state_update}, which is the phase integrator \eqref{eqn.phase_update} with the substitution $\xi'=\xi_Q$; note that the updated position is exactly the presented one, $q+\sharpR_q(\xi)=\tilde q$. Its left-hand side records where the three ingredients of this update come from. The sum $s+\sharpS_S(\blank)$ is the Euler step $\chi$ on the phase space $T^*Q$ \eqref{eqn.directions_sharp}; the use of $\sharpS_S$ comes from the canonical symplectic pairing on $T^*Q$, \eqref{eqn.canonical_sharp}, which is constant in $s$ regardless of variation in $\sharpR_Q$; and the pair $(\xi_Q,\sharpR_q(\xi))\in T^*_sS$ comes from $\nu$ \eqref{eqn.nu} at $(q,\xi)$, with $\xi_Q$ computed at $\tilde q$.
 
 The right-hand side of \cref{eqn.state_update} is the computation: \eqref{eqn.canonical_sharp} gives $\sharpS_S(\xi_Q,\sharpR_q(\xi))=(\sharpR_q(\xi),-\xi_Q)$, then componentwise addition with $s=(q,\xi)$ produces $(q+\sharpR_q(\xi),\,\xi-\xi_Q)$.
 
@@ -2962,18 +2970,20 @@ All in all, one could tersely denote the coalgebra map as follows:
 	\big)
 \Big),
 \end{multline*}
-where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\inpt m$ in \eqref{eqn.inptm}, and $\xi_M$ and $\xi_Q$ in \eqref{eqn.bigtheta}.
+where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\inpt m$ in \eqref{eqn.inptm}, and $\xi_M$ and $\xi_Q$ in \eqref{eqn.bigtheta}, all evaluated at the presented position $\tilde q$.
 
 \begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
 In this remark we aim to justify the Hamiltonian terminology that we allude to elsewhere in the paper. The assumptions that make the dynamics Hamiltonian are written in bold.
 
-Suppose \textbf{the domain and codomain interfaces are closed}, i.e.\ $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, so that in particular $\xi_N=0$ and $\omega_M=0$ and $U\colon Q\to\rr$ depends only on $q$. Then \eqref{eqn.bigtheta} gives $\xi_Q=dU|_q$. If moreover \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then \eqref{eqn.state_update} becomes
+Suppose \textbf{the domain and codomain interfaces are closed}, i.e.\ $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, so that in particular $\xi_N=0$ and $\omega_M=0$ and $U\colon Q\to\rr$ depends only on $q$. Then \eqref{eqn.bigtheta} gives $\xi_Q=dU|_{\tilde q}$, the differential at the presented position. If moreover \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, so that $\tilde q=q+\sharpR_0(\xi)$, then \eqref{eqn.state_update} becomes
 \[
-s+\sharpS_S(dU|_q,\sharpR_0(\xi))
+s+\sharpS_S(dU|_{\tilde q},\sharpR_0(\xi))
 =
-(q+\sharpR_0(\xi),\,\xi-dU|_q),
+(q+\sharpR_0(\xi),\,\xi-dU|_{\tilde q})
+=
+(\tilde q,\,\xi-dU|_{\tilde q}),
 \]
-which is the explicit Euler step for the vector field $(\dot q,\dot\xi)$ where
+which steps the vector field $(\dot q,\dot\xi)$ below by first moving the position along the velocity and then evaluating the force at the moved position, where
 \[
 \dot q\coloneqq \sharpR_0(\xi),
 \qquad
@@ -2993,13 +3003,36 @@ Indeed, the symmetry condition and the linearity of $\sharpR$ give $dH|_{(q,\xi)
 In particular the flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.\qedhere
 \end{remark}
 
-\begin{remark}[Euler step and energy non-conservation]\label{rmk.euler_energy}
-The state update equation \eqref{eqn.state_update} can be read two ways. As the defining equation of a discrete dynamical system, it is exact: that's the perspective of \cref{sec.wave_equation} below, where the recurrence formula \eqref{eqn.recurrence} \emph{is} the discrete wave equation we want. But as a numerical time-stepper for the corresponding continuous phase-space dynamics---Hamiltonian in the case presented in \cref{rmk.constant_inverse_mass_hamiltonian}---it is not adequate over many timesteps: explicit Euler is not a \emph{symplectic integrator}, so the simulated trajectory will accumulate energy drift and diverge from the true flow. For example, on the harmonic oscillator of \cref{sec.wave_equation}, the simulated energy grows without bound for any positive step size \cite[Ch.~I]{hairer2006geometric}.
+In the closed constant-symmetric case above, the update preserves the canonical symplectic pairing, for a compositional reason: it factors as a \emph{drift}, which moves the position along the stored velocity, followed by a \emph{kick}, which moves the momentum by the force at the new position---and each factor preserves the pairing. We record this in the quadratic case, where both factors are linear. Let the sharp be constant and symmetric as in \cref{rmk.constant_inverse_mass_hamiltonian}, let $\kappa\colon Q\to Q^*$ be a linear map that is symmetric in the corresponding sense, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and let $U(q)\coloneqq\tfrac12(\kappa q)(q)$ be the corresponding quadratic potential; then $dU|_q=\kappa q$, since symmetry of $\kappa$ gives $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$. Define linear maps
+\begin{equation}\label{eqn.drift_kick}
+\fun{drift}(q,\xi)\coloneqq\bigl(q+\sharpR_0(\xi),\;\xi\bigr)
+\qqand
+\fun{kick}(q,\xi)\coloneqq\bigl(q,\;\xi-\kappa q\bigr),
+\end{equation}
+so that the closed update displayed in \cref{rmk.constant_inverse_mass_hamiltonian} is exactly their composite:
+\[
+(\fun{kick}\circ\fun{drift})(q,\xi)=\bigl(q+\sharpR_0(\xi),\;\xi-\kappa(q+\sharpR_0(\xi))\bigr)=\bigl(\tilde q,\;\xi-dU|_{\tilde q}\bigr).
+\]
 
-The configuration analog \eqref{eqn.state_update_gradient} (\cref{sec.configuration_dynamics}) is also explicit Euler, but it does not have the same issue. Because it is on a gradient flow rather than a Hamiltonian flow and uses Euclidean parameter spaces, the constant $\sharp$-case \eqref{eqn.learning_sharp} yields vanilla gradient descent with learning rate $\eta_{\mathrm{LR}}$. This is a standard, well-behaved update for sufficiently small $\eta_{\mathrm{LR}}$. 
+\begin{proposition}[Drift and kick are reactive]\label{prop.drift_kick_reactive}
+The maps $\fun{drift}$ and $\fun{kick}$ are endomorphisms of the reactive vector space $T^*Q$ of \cref{prop.canonical_symplectic_pairing} in $\rvect$. Hence so is the closed quadratic update $\fun{kick}\circ\fun{drift}$.
+\end{proposition}
 
-The following remark sketches one possible solution for the inadequacy above.\qedhere
-\end{remark}
+\begin{proof}
+Each map is a linear isomorphism, inverted by negating the second summand in its formula. Since the canonical symplectic pairing is nondegenerate and constant in the basepoint, sharp-equivariance \eqref{eqn.pairing_triangle} is pairing-preservation (\cref{def.rvect}), which we check directly from \eqref{eqn.canonical_form}. For the drift, for all $(q,\xi),(q',\xi')\in Q\oplus Q^*$:
+\begin{align*}
+\pairing{\fun{drift}(q,\xi),\,\fun{drift}(q',\xi')}
+&=\xi'\bigl(q+\sharpR_0(\xi)\bigr)-\xi\bigl(q'+\sharpR_0(\xi')\bigr)\\
+&=\pairing{(q,\xi),\,(q',\xi')}+\xi'\bigl(\sharpR_0(\xi)\bigr)-\xi\bigl(\sharpR_0(\xi')\bigr),
+\end{align*}
+and the last two terms cancel by symmetry of the sharp. For the kick:
+\[
+\pairing{\fun{kick}(q,\xi),\,\fun{kick}(q',\xi')}
+=(\xi'-\kappa q')(q)-(\xi-\kappa q)(q')
+=\pairing{(q,\xi),\,(q',\xi')}-(\kappa q')(q)+(\kappa q)(q'),
+\]
+and the last two terms cancel by symmetry of $\kappa$. The composite is an endomorphism because $\rvect$-morphisms are closed under composition (\cref{def.rvect}).
+\end{proof}
 
 \begin{remark}[Multi-stage integrators]\label{rmk.org_N}
 The integrators built above are \emph{single-stage}: at each macro-tick the system emits, receives, and updates exactly once, producing a one-step coalgebra in $\pc=\pcstage{1}$. Many useful numerical integrators, such as Runge--Kutta and velocity Verlet (leapfrog) \cite[Ch.~VI]{hairer2006geometric}, are instead \emph{multi-stage}, taking several emit--receive rounds per tick.
@@ -3015,7 +3048,7 @@ Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec
 \chapter{Applications}\label{ch.applications}
 %====================================================================
 
-In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{These constructions are precise enough for a language model to turn into runnable code: point one at this paper with the prompt at \url{https://github.com/dspivak/dap}, and you should obtain a program you can run and modify. The implementation there---written entirely by Claude from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---has tests reproducing all four examples below, though we have not independently audited it.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
+In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{These constructions are precise enough for a language model to turn into runnable code: point one at this paper with the prompt at \url{https://github.com/dspivak/dap}, and you should obtain a program you can run and modify. The implementation there---written entirely by Claude from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---has tests reproducing all four examples below (up to the phase integrator's readout, which the code takes to be the stored position rather than the presented one \eqref{eqn.presented_position}; an update is pending), though we have not independently audited it.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
 
 %--------------------------------------------------------------------
 \section{Newton's method}\label{sec.newton_warmup}
@@ -3266,58 +3299,59 @@ The map $\fun{wire}_K(\Part,\ldots,\Part)$ is sent to a coalgebra
 \]
 with state set $S\coloneqq T^*\rr^K$, with elements written $s=((q_1,\ldots,q_K),(\xi_1,\ldots,\xi_K))$ for positions and momenta, and with the function given by
 \begin{equation*}
-(\vec q,\vec\xi)\mapsto\Bigl(\bigl(q_K,\,\omega_1\bigr),\;(\xi_{\fun{ext}},q_0)\mapsto\bigl(\vec q+\tfrac{1}{m}\vec\xi,\,\vec\xi-\xi_Q\bigr)\Bigr),
+(\vec q,\vec\xi)\mapsto\Bigl(\bigl(\tilde q_K,\,\omega_1\bigr),\;(\xi_{\fun{ext}},q_0)\mapsto\bigl(\vec{\tilde q},\,\vec\xi-\xi_Q\bigr)\Bigr),
 \end{equation*}
-where each ingredient is read off from the unpacking in \cref{sec.phase_dynamics}:
+where $\vec{\tilde q}\coloneqq\vec q+\tfrac{1}{m}\vec\xi$ is the presented position \eqref{eqn.presented_position}, computed with the sharp \eqref{eqn.sharp_chain}, and each ingredient is read off from the unpacking in \cref{sec.phase_dynamics}:
 \begin{itemize}
-\item The output position $q_K$ comes from $\outp f$ via \eqref{eqn.outpn}.
+\item The output position $\tilde q_K$ comes from $\outp f$ via \eqref{eqn.outpn}, evaluated at $\vec{\tilde q}$.
 \item The \emph{harmonic spring} covector field on the left-hand side,
-\[\omega_1(q_0)=d\bigl[\tfrac{\kappa}{2}(q_1-q_0)^2\bigr]\big|_{q_0}=-\kappa(q_1-q_0),\]
+\[\omega_1(q_0)=d\bigl[\tfrac{\kappa}{2}(\tilde q_1-q_0)^2\bigr]\big|_{q_0}=-\kappa(\tilde q_1-q_0),\]
 comes from \eqref{eqn.omegaprime} (with $\inpt f$ and the incoming covector field vacuous, and $dq_0=+1$ via \eqref{eqn.d_potential}).
-\item The pullback covector $\xi_Q\in T^*_{\vec q}Q$ comes from \eqref{eqn.bigtheta}. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec q}Q\cong Q^*=(\rr^K)^*$) by
+\item The pullback covector $\xi_Q\in T^*_{\vec{\tilde q}}Q$ comes from \eqref{eqn.bigtheta}, evaluated at $\vec{\tilde q}$. It is given component-wise (via \eqref{eqn.tangent_vec} identifying $T^*_{\vec{\tilde q}}Q\cong Q^*=(\rr^K)^*$) by
 \begin{align*}
 (\xi_Q)_i&=
-\bigl((T_{\vec q}\outp f)^\top\xi_{\fun{ext}}\bigr)_i+\partial_{q_i}U(\vec q,q_0)\\&=
-\begin{cases}\partial_{q_i}U(\vec q,q_0)+0&1\leq i<K\\ \partial_{q_K}U(\vec q,q_0)+\xi_{\fun{ext}}&i=K\end{cases}\\&=
-\begin{cases}\kappa(2q_i-q_{i-1}-q_{i+1})&1\leq i<K\\ \kappa(q_K-q_{K-1})+\xi_{\fun{ext}}&i=K\end{cases}
+\bigl((T_{\vec{\tilde q}}\outp f)^\top\xi_{\fun{ext}}\bigr)_i+\partial_{q_i}U(\vec{\tilde q},q_0)\\&=
+\begin{cases}\partial_{q_i}U(\vec{\tilde q},q_0)+0&1\leq i<K\\ \partial_{q_K}U(\vec{\tilde q},q_0)+\xi_{\fun{ext}}&i=K\end{cases}\\&=
+\begin{cases}\kappa(2\tilde q_i-\tilde q_{i-1}-\tilde q_{i+1})&1\leq i<K\\ \kappa(\tilde q_K-\tilde q_{K-1})+\xi_{\fun{ext}}&i=K\end{cases}
 \end{align*}
+(for $i=1$, read $\tilde q_0\coloneqq q_0$, the external input).
 \item The state update applied to $s=(\vec q,\vec\xi)$ comes from \eqref{eqn.state_update}: using our (constant) sharp $\sharpR_{\vec q}(\vec\xi)=\vec\xi/m$ from \eqref{eqn.sharp_chain} and the symplectic sharp $\sharpS_S\colon(\xi,q)\mapsto(q,-\xi)$ from \eqref{eqn.sharp_S}, we get
 \[
-s'\coloneqq s+\sharpS_S(\xi_Q,\sharpR_{\vec q}(\vec\xi))=(\vec q+\vec\xi/m,\,\vec\xi-\xi_Q).
+s'\coloneqq s+\sharpS_S(\xi_Q,\sharpR_{\vec q}(\vec\xi))=(\vec q+\vec\xi/m,\,\vec\xi-\xi_Q)=(\vec{\tilde q},\,\vec\xi-\xi_Q).
 \]
 In other words, writing $s'\coloneqq(q_1',\ldots,q_K',\xi_1',\ldots,\xi_K')$, we have
 \begin{equation}\label{eqn.potlens_composite_final}
-q_i'\coloneqq q_i+\xi_i/m
+q_i'\coloneqq q_i+\xi_i/m=\tilde q_i
 \qqand
-\xi_i'\coloneqq\begin{cases}\xi_i+\kappa(q_{i-1}+q_{i+1}-2q_i)&1\leq i<K\\ \xi_i+\kappa(q_{K-1}-q_K)-\xi_{\fun{ext}}&i=K.\end{cases}
+\xi_i'\coloneqq\begin{cases}\xi_i+\kappa(\tilde q_{i-1}+\tilde q_{i+1}-2\tilde q_i)&1\leq i<K\\ \xi_i+\kappa(\tilde q_{K-1}-\tilde q_K)-\xi_{\fun{ext}}&i=K.\end{cases}
 \end{equation}
 \end{itemize}
 
 \paragraph{Recovering the wave equation.}
 To recover the discrete wave equation everywhere, we pin both ends of the chain by fixing the phantom neighbor displacements outside the chain to zero:
 \begin{equation}\label{eqn.wave_pin}
-  q_0\coloneqq 0
+  \tilde q_0\coloneqq 0
   \qqand
-  q_{K+1}\coloneqq 0.
+  \tilde q_{K+1}\coloneqq 0.
 \end{equation}
-Supplying these via the external input $(\xi_{\fun{ext}},q_0)$ means choosing the following data:%
-\footnote{Equivalently, we can present the data of a pinned chain as a closed system  by composing with a map $\boxob\to I$ whose lens is $\bang$ forward and $q\mapsto 0$ backgward, and whose potential is $U'(q_K)\coloneqq\tfrac\kappa2 q_K^2$.
+Supplying these via the external input $(\xi_{\fun{ext}},q_0)$ means choosing the following data, the second being the environment's response to the output $\tilde q_K$ it receives:%
+\footnote{Equivalently, we can present the data of a pinned chain as a closed system  by composing with a map $\boxob\to I$ whose lens is $\bang$ forward and $q\mapsto 0$ backward, and whose potential is $U'(q_K)\coloneqq\tfrac\kappa2 q_K^2$.
 }
 \begin{equation}\label{eqn.wave_bc}
-q_0\coloneqq 0\qqand\xi_{\fun{ext}}\coloneqq \kappa\,q_K.
+q_0\coloneqq 0\qqand\xi_{\fun{ext}}\coloneqq \kappa\,\tilde q_K.
 \end{equation}
-With these choices, the boundary case at $i=K$ becomes $\xi_K'=\xi_K+\kappa(q_{K-1}+q_{K+1}-2q_K)$, same as the others, so the above state update formula reduces to the following for all $1\leq i\leq K$:
+With these choices, the boundary case at $i=K$ becomes $\xi_K'=\xi_K+\kappa(\tilde q_{K-1}+\tilde q_{K+1}-2\tilde q_K)$, same as the others, so the above state update formula reduces to the following for all $1\leq i\leq K$:
 \begin{equation}\label{eqn.state_update_explicit}
 q_i'\coloneqq q_i+\xi_i/m
 \qqand
-\xi_i'\coloneqq\xi_i+\kappa(q_{i-1}+q_{i+1}-2q_i).
+\xi_i'\coloneqq\xi_i+\kappa(\tilde q_{i-1}+\tilde q_{i+1}-2\tilde q_i).
 \end{equation}
 
-Following \cref{ex.y_coalgebra_trajectory}, fix any initial $s(0)\coloneqq(\vec{q}(0),\vec{\xi}(0))$ and write $s(t)$ for the resulting trajectory under \eqref{eqn.state_update_explicit}; in particular $s(t+1)=s(t)'$. We then rewrite the first equation as $\xi_i(t)=mq_i(t+1)-mq_i(t)$ and substitute it into the second equation of \eqref{eqn.state_update_explicit}:
+Following \cref{ex.y_coalgebra_trajectory}, fix any initial $s(0)\coloneqq(\vec{q}(0),\vec{\xi}(0))$ and write $s(t)$ for the resulting trajectory under \eqref{eqn.state_update_explicit}; in particular $s(t+1)=s(t)'$. We then rewrite the first equation as $\xi_i(t)=mq_i(t+1)-mq_i(t)$---equivalently $\tilde q_i(t)=q_i(t+1)$: the presented position is the next position---and substitute it into the second equation of \eqref{eqn.state_update_explicit}:
 \begin{equation}\label{eqn.recurrence}
-mq_i(t+2)-mq_i(t+1)=mq_i(t+1)-mq_i(t)+\kappa(q_{i-1}(t)+q_{i+1}(t)-2q_i(t))
+mq_i(t+2)-mq_i(t+1)=mq_i(t+1)-mq_i(t)+\kappa(q_{i-1}(t+1)+q_{i+1}(t+1)-2q_i(t+1))
 \end{equation}
-Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave} with the same notation as used there.
+Rearranging, we obtain the wave equation formula \eqref{eqn.discrete_wave}: the second difference $\ddot q_i(t)$ of \eqref{eqn.doubledot} spans $t,t+1,t+2$ and is centered at $t+1$, which is exactly where the right-hand side is evaluated.
 
 \begin{proposition}\label{prop.wave_equation}
 \leavevmode\par\nobreak
@@ -3358,9 +3392,9 @@ S\To{\Phiphase(\Part)}
 \]
 is given by
 \[
-(q,\xi)\mapsto\Bigl(\bigl(q,\,q_{\fun{prev}}\mapsto\kappa(q_{\fun{prev}}-q)\bigr),\;(\xi_{\fun{next}},q_{\fun{prev}})\mapsto\bigl(q+\xi/m,\,\xi-\xi_{\fun{next}}+\kappa(q_{\fun{prev}}-q)\bigr)\Bigr).
+(q,\xi)\mapsto\Bigl(\bigl(\tilde q,\,q_{\fun{prev}}\mapsto\kappa(q_{\fun{prev}}-\tilde q)\bigr),\;(\xi_{\fun{next}},q_{\fun{prev}})\mapsto\bigl(\tilde q,\,\xi-\xi_{\fun{next}}+\kappa(q_{\fun{prev}}-\tilde q)\bigr)\Bigr),
 \]
-In other words, starting at position $q$ and momentum $\xi$, it outputs $q$ to the right and the covector field $q_{\fun{prev}}\mapsto\kappa(q_{\fun{prev}}-q)$, which ``pulls'' $q_{\fun{prev}}$ toward $q$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $q_{\fun{prev}}$ from the left, it updates its position by adding velocity (momentum divided by mass) and updates its momentum by adding the spring force $\kappa(q_{\fun{prev}}-q)$, which ``pulls'' $q$ toward $q_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
+where $\tilde q=q+\xi/m$ is the presented position \eqref{eqn.presented_position}. In other words, starting at position $q$ and momentum $\xi$, it outputs $\tilde q$---the position it is moving to---to the right, along with the covector field $q_{\fun{prev}}\mapsto\kappa(q_{\fun{prev}}-\tilde q)$, which ``pulls'' $q_{\fun{prev}}$ toward $\tilde q$. Then, receiving a covector $\xi_{\fun{next}}$ from the right and a point $q_{\fun{prev}}$ from the left, it moves to $\tilde q$ and updates its momentum by adding the spring force $\kappa(q_{\fun{prev}}-\tilde q)$, which ``pulls'' $\tilde q$ toward $q_{\fun{prev}}$, and subtracting the received covector $\xi_{\fun{next}}$.
  
 \paragraph{The static wiring.}
 
@@ -3384,11 +3418,11 @@ The $\pc$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiph
 \]
 Read back as a coalgebra $T^*\rr^K\to\Phiphase(\boxob)(T^*\rr^K)$, the composite acts on a state $(\vec q,\vec\xi)$ as follows. The parallel particles $\Phiphase(\Part)^{\otimes K}$ output
 \begin{equation*}
-\Bigl(\bigl(q_i,\,q_i'\mapsto\kappa(q_i'-q_i)\bigr)_{i=1}^K,\;(\vec\xi_{\fun{next}},\vec q_{\fun{prev}})\mapsto\bigl(\vec q+\vec\xi/m,\,\vec\xi-\vec\xi_{\fun{next}}+\kappa(\vec q_{\fun{prev}}-\vec q)\bigr)\Bigr).
+\Bigl(\bigl(\tilde q_i,\,q_i'\mapsto\kappa(q_i'-\tilde q_i)\bigr)_{i=1}^K,\;(\vec\xi_{\fun{next}},\vec q_{\fun{prev}})\mapsto\bigl(\vec{\tilde q},\,\vec\xi-\vec\xi_{\fun{next}}+\kappa(\vec q_{\fun{prev}}-\vec{\tilde q})\bigr)\Bigr).
 \end{equation*}
 and the wiring \eqref{eqn.org_wiring_concise} then threads them as follows.
 
-Beginning with $(\vec q,\vec\xi):T^*\rr^K$, the coalgebras output $(\vec q,\vec\omega)\coloneqq\bigl(q_i,\,q_i'\mapsto\kappa(q_i'-q_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(q_K,\omega_1)$, and asks for $(\xi_{\fun{ext}},q_0)$. Upon receiving it, it sends $\bigl((\omega_2(q_1),\ldots,\omega_K(q_{K-1}),\xi_{\fun{ext}}),\,(q_0,q_1,\ldots,q_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec q_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(q_i)=\kappa(q_i-q_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_{\fun{ext}}$, and $(q_{\fun{prev}})_i=q_{i-1}$. This in turn is sent to $(\vec q+\vec\xi/m,\,\vec\xi-\vec\xi_{\fun{next}}+\kappa(\vec q_{\fun{prev}}-\vec q))$. This is exactly \eqref{eqn.potlens_composite_final}: the two routes through the functoriality square agree term by term, confirming the signs, indices, and covector-field evaluations in the formulas above.
+Beginning with $(\vec q,\vec\xi):T^*\rr^K$, the coalgebras output $(\vec{\tilde q},\vec\omega)\coloneqq\bigl(\tilde q_i,\,q_i'\mapsto\kappa(q_i'-\tilde q_i)\bigr)_{i=1}^K$. The wiring takes that, outputs the last point and the first covector field, $(\tilde q_K,\omega_1)$, and asks for $(\xi_{\fun{ext}},q_0)$. Upon receiving it, it sends $\bigl((\omega_2(\tilde q_1),\ldots,\omega_K(\tilde q_{K-1}),\xi_{\fun{ext}}),\,(q_0,\tilde q_1,\ldots,\tilde q_{K-1})\bigr)$ back to the coalgebras. In other words, it sends $(\vec\xi_{\fun{next}},\vec q_{\fun{prev}})$ where $(\xi_{\fun{next}})_i\coloneqq\omega_{i+1}(\tilde q_i)=\kappa(\tilde q_i-\tilde q_{i+1})$ for $1\leq i<K$ and $(\xi_{\fun{next}})_K\coloneqq\xi_{\fun{ext}}$, and $(q_{\fun{prev}})_i=\tilde q_{i-1}$ (with $\tilde q_0\coloneqq q_0$). This in turn is sent to $(\vec{\tilde q},\,\vec\xi-\vec\xi_{\fun{next}}+\kappa(\vec q_{\fun{prev}}-\vec{\tilde q}))$. This is exactly \eqref{eqn.potlens_composite_final}: the two routes through the functoriality square agree term by term, confirming the signs, indices, and covector-field evaluations in the formulas above.
 
 \section{Graph Laplacian on a directed graph}\label{sec.graph_laplacian}
 
@@ -3492,7 +3526,7 @@ Next we will apply $\Phiphase$ to $\fun{wire}_{\mathbf G}\colon\binom{\rr^0}{\rr
 \begin{equation}\label{eqn.graph_state_update}
 \Phiphase(\fun{wire}_{\mathbf G})(\vec q,\vec\xi)\coloneqq\bigl(\vec q+(\xi_v/m_v)_{v\in V},\,\vec\xi-\xi_Q\bigr),
 \end{equation}
-where $\xi_Q\in(\rr^V)^*$ is as in \eqref{eqn.bigtheta}. With $\outp f$ and $\inpt f$ both vacuous, the two pullback terms in \eqref{eqn.bigtheta} vanish, leaving $\xi_Q=dU(\vec q)$, i.e.\ the differential of \eqref{eqn.graph_potential}. Component-wise (via \eqref{eqn.tangent_vec}):
+where $\xi_Q\in(\rr^V)^*$ is as in \eqref{eqn.bigtheta}, evaluated at the presented position $\vec{\tilde q}\coloneqq\vec q+(\xi_v/m_v)_{v\in V}$ \eqref{eqn.presented_position}. With $\outp f$ and $\inpt f$ both vacuous, the two pullback terms in \eqref{eqn.bigtheta} vanish, leaving $\xi_Q=dU(\vec{\tilde q})$, i.e.\ the differential of \eqref{eqn.graph_potential} at $\vec{\tilde q}$. Component-wise, at a generic argument $\vec q$ (via \eqref{eqn.tangent_vec}):
 \begin{align}\label{eqn.no_self}
 (\xi_Q)_v
 &=\partial_{q_v}\sum_{e\in E}\tfrac{\kappa_e}{2}(q_{\tgt(e)}-q_{\src(e)})^2\\\nonumber
@@ -3503,9 +3537,9 @@ Define a $(V\times V)$-matrix $L_G$ to be the linear function that sends $\vec{q
 \begin{equation}\label{eqn.graph_laplacian}
 (L_G\,\vec q)_v\;\coloneqq\;\sum_{w\,\To{e}\,v}\kappa_e(q_v-q_w)\;+\;\sum_{v\,\To{e}\,w}\kappa_e(q_v-q_w).
 \end{equation}
-Comparing the last line of \eqref{eqn.no_self} with this definition, the backward covector of \eqref{eqn.bigtheta} is
+Comparing the last line of \eqref{eqn.no_self} with this definition, $dU(\vec q)=L_G\,\vec q$ at every $\vec q$, so the backward covector of \eqref{eqn.bigtheta} is
 \begin{equation}\label{eqn.xiQ_is_laplacian}
-\xi_Q\;=\;dU(\vec q)\;=\;L_G\,\vec q.
+\xi_Q\;=\;dU(\vec{\tilde q})\;=\;L_G\,\vec{\tilde q}.
 \end{equation}
 We may assume that $\src(e)\neq \tgt(e)$ for all $e$, because self-loops contribute nothing to the sum \eqref{eqn.no_self}. One can check that $L_G$ has diagonal and off-diagonal entries given by
 \[
@@ -3521,21 +3555,21 @@ Fixing an initial state $(\vec q(0),\vec\xi(0))\in T^*\rr^V$ and iterating $\Phi
 \begin{proposition}\label{prop.graph_laplacian}
 For $\fun{wire}_{\mathbf G}$ as in \eqref{eqn.psi_graph_lap}, every trajectory of $\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ satisfies
 \begin{equation}\label{eqn.graph_laplacian_dynamics}
-m_v\,\ddot{q}_v(t)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
+m_v\,\ddot{q}_v(t)\;=\;-\bigl(L_G\,\vec q(t+1)\bigr)_v
 \qquad(v\in V,\ t\in\nn),
 \end{equation}
-where $L_G$ is the graph Laplacian \eqref{eqn.graph_laplacian} of $G$.
+where $L_G$ is the graph Laplacian \eqref{eqn.graph_laplacian} of $G$ and the right-hand side is evaluated at $t+1$, the center of the stencil \eqref{eqn.doubledot}.
 \end{proposition}
 \begin{proof}
-From the state update equation \eqref{eqn.graph_state_update}, the position update is $q_v(t+1)\coloneqq q_v(t)+\xi_v(t)/m_v$; solving for momentum we get $\xi_v(t)=m_v\bigl(q_v(t+1)-q_v(t)\bigr)$. And the momentum update is $\xi_v(t+1)=\xi_v(t)-(\xi_Q)_v=\xi_v(t)-(L_G\vec q(t))_v$, using \eqref{eqn.xiQ_is_laplacian} for the last equality. Substituting the first into the second gives
+From the state update equation \eqref{eqn.graph_state_update}, the position update is $q_v(t+1)\coloneqq q_v(t)+\xi_v(t)/m_v$, i.e.\ $\vec{\tilde q}(t)=\vec q(t+1)$; solving for momentum we get $\xi_v(t)=m_v\bigl(q_v(t+1)-q_v(t)\bigr)$. And the momentum update is $\xi_v(t+1)=\xi_v(t)-(\xi_Q)_v=\xi_v(t)-(L_G\vec q(t+1))_v$, using \eqref{eqn.xiQ_is_laplacian} for the last equality. Substituting the first into the second gives
 \[
-m_v\bigl(q_v(t+2)-q_v(t+1)\bigr)\;=\;m_v\bigl(q_v(t+1)-q_v(t)\bigr)-(L_G\vec q(t))_v,
+m_v\bigl(q_v(t+2)-q_v(t+1)\bigr)\;=\;m_v\bigl(q_v(t+1)-q_v(t)\bigr)-(L_G\vec q(t+1))_v,
 \]
 and collecting the position terms on the left, and using notation \eqref{eqn.doubledot}, yields \eqref{eqn.graph_laplacian_dynamics}.
 \end{proof}
 
 \begin{remark}[Heat equation from the configuration integrator]\label{rmk.graph_heat}
-Rather than $\Phiphase$, if we apply $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.psi_graph_lap}---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and using the same $\xi_Q=L_G\vec q$ from \eqref{eqn.xiQ_is_laplacian}, the configuration integrator's descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ reads component-wise as
+Rather than $\Phiphase$, if we apply $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.psi_graph_lap}---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and the same computation \eqref{eqn.no_self} applies---except that the configuration integrator presents the stored position itself, so here $\xi_Q=dU(\vec q)=L_G\vec q$. Its descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ then reads component-wise as
 \[
 m_v\bigl(q_v(t+1)-q_v(t)\bigr)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
 \qquad(v\in V,\ t\in\nn).
@@ -3555,7 +3589,7 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same $\sarr$-morphism may yield momentum-based weight dynamics. This places standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. It also remains to realize specific multi-stage (e.g.\ symplectic) integrators such as leapfrog as $\ell$-stage integrators, which would address the energy drift inherent in the explicit-Euler step (\cref{rmk.euler_energy}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
+Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. It also remains to realize specific multi-stage integrators such as leapfrog as $\ell$-stage integrators. Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
 %See "superposition-era" branch in the github repo for more on this.
 
 \printbibliography
