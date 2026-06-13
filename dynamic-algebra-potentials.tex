@@ -2926,6 +2926,8 @@ Recall from \cref{thm.dynamics_functor} that $\Phiphase=\Psisem{\phase}\circ\Phi
 A state consists of a position and a momentum $(q,\xi)\in T^*Q$, and an incoming covector $\xi'$ updates that state to $(q+\sharpR_q(\xi),\,\xi-\xi')$
  by \eqref{eqn.phase_update}. The readout and returned direction of the coalgebra $\Phiphase(\rv Q,f)$ have the same formulas as the configuration case---they are the on-positions and on-directions components of the shared factor $\Phip{\interpsm}$, formulas \eqref{eqn.outpn}, \eqref{eqn.omegaprime}, \eqref{eqn.inptm}, \eqref{eqn.bigtheta}, which depend only on the parameter position---but the phase integrator evaluates them at the presented position $\tilde q=q+\sharpR_q(\xi)$ \eqref{eqn.presented_position}, where $\Phiconf$ evaluates them at the stored $q$. What changes beyond this substitution is the state space and the state update; we unpack it all below.
 
+\subsection{The phase coalgebra}\label{sec.phase_coalgebra}
+
 \paragraph{The action of $\termraw{Phiphase}$ on objects.}
 The functor $\Phiphase$ acts on objects exactly as $\Phiconf$ in \eqref{eqn.Phi_on_obs}: a position in $\Phiphase\lensob M$ is a pair $(\outp m,\omega)$ and a direction at $(\outp m,\omega)$ is a pair $(\xi,\inpt m)$, with the same types as in the configuration case (see \eqref{eqn.Phi_on_obs}).
 
@@ -2973,12 +2975,13 @@ All in all, one could tersely denote the coalgebra map as follows:
 \end{multline*}
 where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegaprime}, $\inpt m$ in \eqref{eqn.inptm}, and $\xi_M$ and $\xi_Q$ in \eqref{eqn.bigtheta}, all evaluated at the presented position $\tilde q$.
 
-\paragraph{Closed systems.}
+\subsection{Closed systems and conservation}\label{sec.closed_conservation}
+
 When the domain and codomain interfaces are closed, $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the potential reduces to a map $U\colon Q\to\rr$ and the two pullback terms of \eqref{eqn.bigtheta} vanish, leaving $\xi_Q=dU|_{\tilde q}$, the differential at the presented position $\tilde q=q+\sharpR_q(\xi)$. Such an $f$ is a scalar $I\to I$, and \eqref{eqn.state_update} makes its image $\Phiphase(f)$ a $\yon$-coalgebra---a self-map of the state set $\absval{T^*Q}$---namely
 \begin{equation}\label{eqn.closed_update}
 (q,\xi)\;\longmapsto\;\bigl(q+\sharpR_q(\xi),\;\xi-dU|_{\tilde q}\bigr).
 \end{equation}
-This is the setting of the harmonic-chain and graph-Laplacian examples (\cref{sec.wave_equation,sec.graph_laplacian}), with $Q=\rr^K$ or $Q=\rr^V$.
+The construction imposes nothing further. But the phenomena that make the phase integrator worth singling out---a Hamiltonian reading and exact conservation---appear only in a special regime within this closed setting: \textbf{constant symmetric reaction and quadratic potential}, which is precisely where the harmonic chain (\cref{sec.wave_equation}) and graph Laplacian (\cref{sec.graph_laplacian}) live, with $Q=\rr^K$ or $Q=\rr^V$. The rest of this subsection works there. (For a nonquadratic potential the step is still symplectic, but as a nonlinear self-map it leaves the linear category $\rvect$ in which we work, so we do not pursue it.)
 
 \begin{remark}[Hamilton's equations in the constant symmetric case]\label{rmk.constant_inverse_mass_hamiltonian}
 This remark justifies the Hamiltonian terminology used elsewhere; the assumptions that make the closed dynamics \eqref{eqn.closed_update} Hamiltonian are written in bold. If \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then $\tilde q=q+\sharpR_0(\xi)$ and \eqref{eqn.closed_update} is
