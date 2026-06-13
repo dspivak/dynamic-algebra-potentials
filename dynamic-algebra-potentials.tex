@@ -403,11 +403,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \trackTerm{\pc}{pc}{\mathbb{P}\Cat{C}}
 \trackTerm{\pciso}{pciso}{\mathbb{P}\Cat{C}_{\cong}}
-\newcommand{\pcstage}[1]{\pc^{(#1)}}% \ell-stage coalgebra 2-category
 \trackTerm{\arr}{rwd}{\mathbb{A}\Cat{rr}}% abstract adaptive-arrangement operad
-\trackTermSymbol{tri}{\triangleleft}
-\newcommand{\tri}{\mathbin{\termref{tri}{\termraw{tri}}}}
-\newcommand{\tripow}[1]{^{\tri #1}}% iterated substitution power
 
 %--------Paper-specific macros--------%
 
@@ -710,7 +706,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \section{Polynomial functors, coalgebras, and $\mathbb{O}\Cat{rg}$}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the substitution product and the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.org}).
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.org}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\termraw{poly}$}{Poly}}\label{sec.poly}
 
@@ -749,41 +745,7 @@ naturally in $a$. Note that $\ihom{p,p'}(1)=\poly(p,p')$, as is immediate from c
 \ihom{p,p'}\cong\sum_{\varphi: \poly(p,p')}\yon^{\sum_{i: p(1)}p'[\varphi_1(i)]}.
 \end{equation*}
 
-\subsection{The substitution product and the store comonad}\label{sec.substitution_store}
-
-The \emph{substitution} (or \emph{composition}) \emph{product} on $\poly$ is defined by $(p\tri q)(S)\coloneqq p(q(S))$; it is a (nonsymmetric) monoidal structure with unit $\yon$. Using the expanded form of \eqref{eqn.poly}:
-\begin{align*}
-p\hypertarget{term.tri}{\mathbin{\termraw{tri}}} q&=
-\sum_{i: p(1)}\;\prod_{d: p[i]}\;\sum_{j: q(1)}\;\prod_{e: q[j]}\yon\\\nonumber&\cong
-\sum_{i:p(1)}\;\sum_{j\colon p[i]\to q(1)}\prod_{d:p[i]}\prod_{e:q[j(d)]}\yon.
-\end{align*}
-A position of $p\tri q$ is a pair $(i,j)$ where $i: p(1)$ and $j\colon p[i]\to q(1)$; the direction set is $(p\tri q)[(i,j)]=\sum_{d:p[i]}q[j_d]$. In particular, viewing a set $S:\smset$ as the constant polynomial $S\yon^0$, we recover the notion of applying $\smset\To{p}\smset$ to $S$ using substition: $p\tri S=p(S)$.
-
-Together, $\otimes$ and $\tri$ form a \emph{normal duoidal} category. That is, they share a unit, $\yon$, and there is a map of the form
-\begin{equation}\label{eqn.duoidal}
-(p_1\tri p_2)\otimes(q_1\tri q_2)\too(p_1\otimes q_1)\tri(p_2\otimes q_2)
-\end{equation}
-making the required diagrams commute. See \cite{aguiar2010monoidal,niu2025polynomial} for details.
-
-Iterating the interchange \eqref{eqn.duoidal} promotes each substitution power to a lax monoidal functor, which we record now for use in multi-stage dynamics.
-
-\begin{lemma}\label{lem.tripow_lax}
-For any $\ell:\nn$, the substitution power $(\blank)\tripow{\ell}\colon\poly\to\poly$ is lax symmetric monoidal, with laxator obtained by iterating the duoidal interchange \eqref{eqn.duoidal}.
-\end{lemma}
-
-\begin{proof}
-The unitor we use the identity: since $\yon$ is the shared unit of $\otimes$ and $\tri$, we have $\yon\tripow{\ell}=\yon$, so the requisite map $\yon\to\yon\tripow{\ell}$ is $\id_\yon$.
-
-For the productor we need a natural map $\mu^\ell\colon p\tripow{\ell}\otimes q\tripow{\ell}\to(p\otimes q)\tripow{\ell}$. When $\ell=0$, both sides are $\yon$, and we use the identity. For the inductive step we use
-\[
-(p\tri p\tripow{\ell})\otimes(q\tri q\tripow{\ell})
-\To{\eqref{eqn.duoidal}}
-(p\otimes q)\tri\bigl(p\tripow{\ell}\otimes q\tripow{\ell}\bigr)
-\To{(p\otimes q)\,\tri\,\mu^{\ell}}
-(p\otimes q)\tri(p\otimes q)\tripow{\ell}.
-\qedhere
-\]
-\end{proof}
+\subsection{The store comonad}\label{sec.substitution_store}
 
 \begin{definition}[The store comonad]\label{def.store}
 For any set $S$, define $\defineTerm{Store}(S)\coloneqq S\yon^S$. It arises as the comonad associated to the adjunction $S\times\blank\;\dashv\;(\blank)^S$ on $\smset$, i.e.\ the comonad with underlying endofunctor $X\mapsto S\times X^S$.
@@ -903,20 +865,6 @@ Another instance of the construction $F_*\poly$ will be useful. Recall that one 
 \pciso(p,p')\coloneqq\Fun{core}\bigl(\ihom{p,p'}\coalg\bigr)\cong\sum_{S:\smsetiso}\smset(S,\ihom{p,p'}(S)).
 \]
 It is the wide sub-$(2,1)$-category of $\pc$ with the same objects $p:\poly$, same 1-cells  $S\To{f}\ihom{p,p'}(S)$, but only the \emph{invertible} 2-cells $(S,f)\cong (S',f')$ between them. The inclusion $\Fun{core}\Rightarrow\id_{\smcat}$ is monoidal, and base-changing it gives the inclusion $\pciso\inj\pc$.
-
-A further instance accommodates multi-stage dynamics. By \cref{lem.tripow_lax} the substitution power $(\blank)\tripow{\ell}\colon\poly\to\poly$ is lax symmetric monoidal, hence so is the composite $\poly\To{(\blank)\tripow{\ell}}\poly\To{\Coalg}\smcat$.
-
-\begin{definition}[Multi-stage coalgebras]\label{def.pcK}
-For any $\ell:\nn$, base-changing along $\Coalg\circ(\blank)\tripow{\ell}$ gives the monoidal 2-category
-\[
-\pcstage{\ell}\coloneqq\bigl(\Coalg\circ(\blank)\tripow{\ell}\bigr)_*\poly,
-\]
-with the same objects as $\pc$ and hom-categories
-\[
-\pcstage{\ell}(p,p')\coloneqq\ihom{p,p'}\tripow{\ell}\coalg.
-\]
-A morphism $p\to p'$ in $\pcstage{\ell}$ is thus an \emph{$\ell$-stage} coalgebra $S\to\ihom{p,p'}\tripow{\ell}(S)$: from a state it reads out a position, responds to an incoming direction with a further position, and so on through $\ell$ rounds, the last incoming direction determining the new state. In particular $\pcstage{1}=\pc$. Base-changing instead along $\Fun{core}\circ\Coalg\circ(\blank)\tripow{\ell}$ gives the wide sub-$(2,1)$-category $\pcstage{\ell}_{\cong}\inj\pcstage{\ell}$, just as $\pciso\inj\pc$.
-\end{definition}
 
 %--------------------------------------------------------------------
 \section{Wiring-diagram operads}\label{sec.wd_operads}
@@ -2023,7 +1971,7 @@ It is easy to check that $\potalg^{\md}$ is a $(\Fun R'\blank)^{\md}$-monoid.
 %----------------------------------------------------------------------------
 
 \label{sec.org_as_para}%
-This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.org_as_para}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
+This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.org_as_para,lem.poly_to_org}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
 
 Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
@@ -2056,71 +2004,68 @@ by \cref{def.store_action,eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It r
 In both cases the identity is indexed by the monoidal unit $1:\smsetiso$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}p'\To{(T,\psi)}p''$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
 
-Recall from \cref{lem.tripow_lax} that the substitution power $(\blank)\tripow{\ell}$, sending $p\mapsto p\tripow{\ell}$, is lax symmetric monoidal.
+\begin{lemma}\label{lem.poly_to_org}
+Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
+\[
+D_F\colon\para{\Store\circ F}{\poly}\to\pciso.
+\]
+\end{lemma}
+
+\begin{proof}
+The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\otimes p$. The following action square, whose lower edge is the store action (\cref{def.store_action}), obviously commutes:
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
+\cat A\times\poly\ar[r,"\Store(F(\blank))\otimes\blank"]\ar[d,"F\times\id_\poly"', ""{name=L}]\& \poly\ar[d, equal, ""' {name=R}]\\
+\smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
+\end{tikzcd}
+\]
+\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with the isomorphism $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
+\end{proof}
+
+The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
+
 
 \begin{definition}[Integrator]\label{def.integrator}
-Let $\cat Q$ be a symmetric monoidal category, $F\colon\cat Q\to\poly$ a strong symmetric monoidal functor (the \emph{parameter interface}), and $\ell:\nn$. An \emph{$\ell$-stage $F$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\dyn)$
+Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor, the \emph{parameter interface}. A \emph{$p$-integrator} is a pair $\defineTerm{intg}=(\Fun S,\dyn)$
 \[
 \begin{tikzcd}[column sep=60pt]
 	\cat Q\ar[d, equal]\ar[r, "\Fun S", ""' name=top]&
 	\smsetiso\ar[d, "\Store"]\\
-	\cat Q\ar[r, "F\tripow{\ell}"', ""{name=bot}]&
+	\cat Q\ar[r, "p"', ""{name=bot}]&
 	\poly
 	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\dyn"]
 \end{tikzcd}
 \]
-where $\Fun S\colon\cat Q\to\smsetiso$, the \emph{state space} functor, is strong symmetric monoidal and $\defineTerm{dyn}\colon\Store\circ\Fun S\Rightarrow F\tripow{\ell}$, the \emph{dynamics map}, is a monoidal natural transformation. By an \emph{$F$-integrator}, we mean a $1$-stage $F$-integrator, i.e.\ a monoidal natural transformation $\dyn\colon\Store\circ\Fun S\Rightarrow F$.
+where $\Fun S\colon\cat Q\to\smsetiso$, the \emph{state space} functor, is strong symmetric monoidal and $\defineTerm{dyn}\colon\Store\circ\Fun S\Rightarrow p$, the \emph{dynamics map}, is a monoidal natural transformation.
 \end{definition}
 
-Though in this section we consider the arbitrary-$\ell$ case, most of this document will focus on the $\ell=1$ case, so we discuss intuition for the $\ell=1$ case here. By \cref{prop.coalg_as_poly_map}, any component $\dyn_a\colon\Store(\Fun S_a)\to F_a$ is equivalently an $F_a$-coalgebra structure on the state set $\Fun S_a$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel. Each component $\dyn_a$ is a ``view / update'' pair: it lets the larger system read some aspect of the stored state as a position of $F_a$ and then updates the stored state based on whatever direction of $F_a$ the larger system sends back.
+By \cref{prop.coalg_as_poly_map}, any component $\dyn_a\colon\Store(\Fun S_a)\to p_a$ is equivalently a $p_a$-coalgebra structure on the state set $\Fun S_a$, and for any $a,a'$, the coalgebra associated to $a\otimes a'$ is the Dirichlet product of those associated to $a$ and $a'$, i.e.\ the two coalgebras running in parallel.
 
-We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of Euler type: Euler on configuration space, and a phase-space variant that evaluates forces at the position the step moves to. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
+We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
 
 \begin{proposition}\label{prop.integrator_to_org}
-Let $\cat Q$ be a symmetric monoidal category and $F\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $\ell$-stage $F$-integrator $\intg$ induces a normal lax symmetric monoidal functor
-\[\defineTerm{Psisem}_{\intg}\colon\para{F}{\poly}\to\pcstage{\ell}_{\cong},\]
-where $\pcstage{\ell}_{\cong}$ is the multi-stage $(2,1)$-category of \cref{def.pcK}.
+Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
+\[\Psisem{\intg}\colon\para{p}{\poly}\to\pciso.\]
 \end{proposition}
 
 \begin{proof}
-Let $\intg=(\Fun S,\dyn)$. On objects take $\Psisem{\intg}\coloneqq\id_{\ob\poly}$ to be the identity. A morphism in $\para{F}{\poly}(p,p')$ is a pair $(Q,g)$ with $g\colon F(Q)\otimes p\to p'$; we define  $\Psisem{\intg}$ to send it to the composite
+Let $\intg=(\Fun S,\dyn)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
 \[
-\Store(\Fun S_Q)\To{\dyn_Q}F(Q)\tripow{\ell}\To{\hat g\tripow{\ell}}\ihom{p,p'}\tripow{\ell},
+D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\pciso.
 \]
-where $\hat{g}\coloneqq F(Q)\to\ihom{p,p'}$ is the transpose of $g$. We check that $\Psisem{\intg}$ preserves composition; preservation of identities is analogous. Given also $(Q',g')\colon p'\to p''$, preserving composition comes down to the commutativity of the following:
+By \cref{prop.para_strong_induced,prop.para_square}, the dynamics $\dyn\colon\Store\circ\Fun S\Rightarrow p$ induces a strong symmetric monoidal functor
 \[
-\begin{tikzcd}[column sep=50pt]
-\Store(\Fun S_{Q\otimes Q'})
-	\ar[r, "\dyn_Q\otimes\dyn_{Q'}"]
-	\ar[d, "\dyn_{Q\otimes Q'}"']
-&[5pt]
-F(Q)\tripow{\ell}\otimes F(Q')\tripow{\ell}
-	\ar[r, "\hat g\tripow{\ell}\otimes\hat{g'}\tripow{\ell}"]
-	\ar[d, "\mu^\ell"]
-&
-\ihom{p,p'}\tripow{\ell}\otimes\ihom{p',p''}\tripow{\ell}
-	\ar[d, "\mu^\ell"]
-\\
-F(Q\otimes Q')\tripow{\ell}
-	\ar[r, "(F_2^{-1})\tripow{\ell}"']
-&
-\bigl(F(Q)\otimes F(Q')\bigr)\tripow{\ell}
-	\ar[r, "(\hat g\otimes\hat{g'})\tripow{\ell}"']
-&
-\bigl(\ihom{p,p'}\otimes\ihom{p',p''}\bigr)\tripow{\ell}
-\end{tikzcd}
+\Para_{\cat Q}^{\dyn}(\poly)\colon\para{p}{\poly}\to\para{\Store\circ\Fun S}{\poly}.
 \]
-where $F_2$ is $F$'s (invertible) productor, $\mu^\ell$ is the productor of $(\blank)\tripow{\ell}$ (\cref{lem.tripow_lax}), and the top map labeled ``$\dyn_Q\otimes\dyn_{Q'}$'' stands for the composite of the isomorphism $\Store(\Fun S_{Q\otimes Q'})\cong\Store(\Fun S_Q)\otimes\Store(\Fun S_{Q'})$ with $\dyn_Q\otimes\dyn_{Q'}$, using that $\Fun S$ and $\Store$ are strong monoidal. The left square commutes by the monoidality of $\dyn$, where  $F\tripow{\ell}$ has productor $(F_2)\tripow{\ell}\circ\mu^\ell$; the right square is naturality of $\mu^\ell$. Composing the left-bottom and top-right paths with the map $(\ihom{p,p'}\otimes\ihom{p',p''})\tripow{\ell}\to\ihom{p,p''}\tripow{\ell}$, they become the structure maps of $\Psisem{\intg}\bigl((Q',g')\circ(Q,g)\bigr)$ and $\Psisem{\intg}(Q',g')\circ\Psisem{\intg}(Q,g)$ respectively, so they are equal. 
-
-Since $\Psisem{\intg}$ is identity on objects and since $\para{F}{\poly}$ and $\pcstage{\ell}_{\cong}$ carry the same Dirichlet product $(\yon,\otimes)$ on objects, the unitor and productor of $\Psisem{\intg}$ are identity, and it is easy to check that they commute with $\otimes$ on morphisms: states multiply and the structure maps tensor via $\mu^\ell$. Finally, the unitor $\yon\to\Psisem{\intg}(\yon)$ has one state and is thus the identity, so $\Psisem{\intg}$ is normal.
+Define $\defineTerm{Psisem}_{\intg}\coloneqq D_{\Fun S}\circ\Para_{\cat Q}^{\dyn}(\poly)$; it is normal lax monoidal because $\Para_{\cat Q}^{\dyn}(\poly)$ is strong.
 \end{proof}
 
 Let $\arr_D$ be the adaptive-arrangement operad of an adaptive-arrangement datum $D=(\cat{M},\cat Q,J,\Fun R)$.
 
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
-Every polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $\ell$-stage $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
+Every polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
 \[
-\Phi_{\interp,\intg}\colon\arr_D\to\pcstage{\ell}.
+\Phi_{\interp,\intg}\colon\arr_D\to\pc.
 \]
 \end{theorem}
 
@@ -2129,12 +2074,12 @@ Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors b
 \[
 \arr_D\To{\Phip{\interp}}
 \para{\Fun{c}\circ J}{\poly}\To{\Psisem{\intg}}
-\pcstage{\ell}_{\cong}\inj\pcstage{\ell}.
+\pciso\inj\pc.
 \qedhere
 \]
 \end{proof}
 
-We again return to the $\ell=1$ case, which occupies the bulk of this article. Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\lensob M$ to the polynomial interface
+Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\lensob M$ to the polynomial interface
 \[
 \Phi_{\interp,\intg}\lensob M=\Fun c(\outp M)\otimes\ihom{\Fun c(\inpt M),z}
 \]
@@ -2534,7 +2479,7 @@ This completes the polynomial interpretation $\Phip{\interpsm}\colon\sarr\to\par
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: an $F$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{F}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
+With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; and \cref{sec.phase_integrators} develops the cotangent endofunctor and builds the phase integrator.
 
 \subsection{The Euler step}\label{sec.integrators}
 
@@ -3036,6 +2981,10 @@ and the last two terms cancel by symmetry of $\kappa$. Hence $\fun{drift},\fun{k
 \end{proof}
 
 This is the structural signature of a conservative integrator. A pairing-preserving step also preserves phase-space volume, so it can introduce neither artificial damping nor the energy blow-up of a volume-distorting step; it is what lets the harmonic chain of \cref{sec.wave_equation} simulate without spurious drift.
+
+\begin{remark}[Multi-stage integrators]\label{rmk.multistage}
+The integrators built here are \emph{single-stage}: at each tick the system emits a position, receives a direction, and updates once. Many numerical integrators---Runge--Kutta methods, or velocity Verlet (leapfrog)~\cite[Ch.~VI]{hairer2006geometric}---instead take several emit--receive rounds per tick, producing a coalgebra of the form $S\to p^{\circ\ell}(S)$, where $p^{\circ\ell}=p\circ\cdots\circ p$ is the $\ell$-fold composite. A correspondingly modified integrator (\cref{def.integrator}), with state space $\Fun S$ unchanged but dynamics of the form $\Store\circ\Fun S\Rightarrow(\Fun c\circ J)^{\circ\ell}$, should again yield an operad functor into the analogous $2$-category of $\ell$-round coalgebras. An LLM (Claude) has implemented the $\ell=2$ case (velocity Verlet) in companion code (\url{https://github.com/dspivak/dap}), where it integrates the wave equation stably; we have not independently audited it, and leave the general treatment to future work. See also \cite{ngotiaoco2017compositionality}.\qedhere
+\end{remark}
 
 Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec.wave_equation} (recovering the discrete wave equation on a chain) and \cref{sec.graph_laplacian} (the graph Laplacian on an arbitrary finite directed graph).
 
@@ -3586,7 +3535,7 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same $\sarr$-morphism may yield momentum-based weight dynamics. This places standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. It also remains to realize specific multi-stage integrators such as leapfrog as $\ell$-stage integrators. Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
+Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. It also remains to realize specific multi-stage integrators such as leapfrog (\cref{rmk.multistage}). Finally, it may be that the superposition principle exhibited by the wave and heat examples can be generalized to a ``linear stratum'' suboperad $\sarr^{\tn{lin}}\ss\sarr$ by restricting to constant sharps, linear lens maps, and quadratic potentials. In fact this inclusion factors through a suboperad of ``critically pointed diagrams,'' on which we expect second-order Taylor expansion about the critical point to provide a retraction onto $\sarr^{\tn{lin}}$.
 %See "superposition-era" branch in the github repo for more on this.
 
 \printbibliography
