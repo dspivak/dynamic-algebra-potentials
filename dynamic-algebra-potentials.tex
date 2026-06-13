@@ -2340,7 +2340,7 @@ U\colon Q\times\outp M\times\inpt N\to\rr.
 \end{gathered}
 \end{equation}
 
-From this point on we work in $\sarr$. Multimorphisms in $\sarr$ are called \emph{smooth adaptive arrangements}: the adjective marks the internal state that the dynamics evolve, and each carries a real-valued potential $U$. When the parameter is the trivial reactive vector space $\rr^0$, so that no state evolves, we call such a morphism a \emph{smooth (static) arrangement}; when its potential vanishes, a \emph{(potential-free)} one; and when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$, a \emph{closed system}.
+From this point on we work in $\sarr$. Multimorphisms in $\sarr$ are called \emph{smooth adaptive arrangements}: the adjective marks the internal state that the dynamics evolve, and each carries a real-valued potential $U$. When the parameter is the trivial reactive vector space $\rr^0$, so that no state evolves, we call such a morphism a \emph{smooth (static) arrangement}; when its potential vanishes, a \emph{(potential-free)} one. As for the interfaces, we call a morphism \emph{closed} when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$ (it exposes no output), a \emph{system} when its domain is $I$ (it takes no input, so runs on its own), and a \emph{closed system} when both---a morphism $I\to I$, sometimes called a \emph{scalar}. Every normal monoidal functor, such as $\Phi$, preserves closed systems.
 
 This settles the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take $\cat{W}\coloneqq\sarr$.
 
@@ -2977,7 +2977,7 @@ where $\outp n$ is defined in \eqref{eqn.outpn}, $\omega_N$ in \eqref{eqn.omegap
 
 \subsection{Closed systems and conservation}\label{sec.closed_conservation}
 
-When the domain and codomain interfaces are closed, $\inpt M=\outp M=\inpt N=\outp N=\rr^0$, the potential reduces to a map $U\colon Q\to\rr$ and the two pullback terms of \eqref{eqn.bigtheta} vanish, leaving $\xi_Q=dU|_{\tilde q}$, the differential at the presented position $\tilde q=q+\sharpR_q(\xi)$. Such an $f$ is a scalar $I\to I$, and \eqref{eqn.state_update} makes its image $\Phiphase(f)$ a $\yon$-coalgebra---a self-map of the state set $\absval{T^*Q}$---namely
+When $f$ is a closed system---both interfaces trivial, $\inpt M=\outp M=\inpt N=\outp N=\rr^0$---the potential reduces to a map $U\colon Q\to\rr$ and the two pullback terms of \eqref{eqn.bigtheta} vanish, leaving $\xi_Q=dU|_{\tilde q}$, the differential at the presented position $\tilde q=q+\sharpR_q(\xi)$. Then \eqref{eqn.state_update} makes its image $\Phiphase(f)$ a $\yon$-coalgebra---a self-map of the state set $\absval{T^*Q}$---namely
 \begin{equation}\label{eqn.closed_update}
 (q,\xi)\;\longmapsto\;\bigl(q+\sharpR_q(\xi),\;\xi-dU|_{\tilde q}\bigr).
 \end{equation}
@@ -3043,15 +3043,15 @@ Applications of $\Phiphase$ to harmonic-oscillator particles appear in \cref{sec
 \chapter{Applications}\label{ch.applications}
 %====================================================================
 
-In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{These constructions are precise enough for a language model to turn into runnable code: point one at this paper with the prompt at \url{https://github.com/dspivak/dap}, and you should obtain a program you can run and modify. The implementation there---written entirely by Claude from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---has tests reproducing all four examples below (up to the phase integrator's readout, which the code takes to be the stored position rather than the presented one \eqref{eqn.presented_position}; an update is pending), though we have not independently audited it.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a $\sarr$-scalar to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
+In this concluding section we illustrate the two dynamics functors on four concrete examples.\footnote{These constructions are precise enough for a language model to turn into runnable code: point one at this paper with the prompt at \url{https://github.com/dspivak/dap}, and you should obtain a program you can run and modify. The implementation there---written entirely by Claude from the definitions in \cref{ch.smooth_rwd,ch.smooth_dynamics}---has tests reproducing all four examples below (up to the phase integrator's readout, which the code takes to be the stored position rather than the presented one \eqref{eqn.presented_position}; an update is pending), though we have not independently audited it.} \Cref{sec.newton_warmup} applies $\Phiconf$ to a closed system in $\sarr$ to recover Newton's method. \Cref{sec.dl_warmup} applies $\Phiconf$ to a feedforward $\sarr$-morphism to recover gradient descent, with backpropagation appearing as the lens backward pass. \Cref{sec.wave_equation} applies $\Phiphase$ to a chain of harmonic-oscillator particles to recover the discrete wave equation, computed two ways to illustrate functoriality. \Cref{sec.graph_laplacian} generalizes this---again using $\Phiphase$---to any finite directed graph of harmonic particles, recovering its graph Laplacian as a sanity check on the formalism.
 
 %--------------------------------------------------------------------
 \section{Newton's method}\label{sec.newton_warmup}
 %--------------------------------------------------------------------
 
-A \emph{scalar} in a symmetric monoidal category is an endomorphism $f\colon I\to I$ of the monoidal unit $I$; normal monoidal functors like $\Phi$ preserve scalars. In the symmetric monoidal category $\para{\rvect}{\plmfd}$ representing $\sarr$ (\cref{def.potlens}), the monoidal unit is $I=\binom{\rr^0}{\rr^0}$, so for a scalar both interfaces are trivial: both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Under $\Phiconf$, it determines a scalar in $\pc$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
+Newton's method is a \emph{closed system}: a morphism $f\colon I\to I$ in $\sarr$, whose monoidal unit is $I=\binom{\rr^0}{\rr^0}$ (\cref{def.potlens}). Both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Normal monoidal functors such as $\Phi$ preserve closed systems, so under $\Phiconf$ it determines a closed system in $\pc$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
 
-Newton's method for \emph{minimization}---given an objective $U$, find a critical point, i.e.\ a point where the gradient $dU$ vanishes---is such a scalar. Its one standing hypothesis is that the Hessian of $U$ is invertible at every point of $Q$~\cite[Ch.~3]{nocedal2006numerical}; this holds in particular when $U$ is strictly convex, the prototypical case, where the critical point found is the global minimum. 
+Newton's method for \emph{minimization}---given an objective $U$, find a critical point, i.e.\ a point where the gradient $dU$ vanishes---is such a closed system. Its one standing hypothesis is that the Hessian of $U$ is invertible at every point of $Q$~\cite[Ch.~3]{nocedal2006numerical}; this holds in particular when $U$ is strictly convex, the prototypical case, where the critical point found is the global minimum. 
 
 Let $U\colon Q\to\rr$ be a smooth map on a finite-dimensional real vector space $Q$. Its differential $dU\colon Q\to Q^*$ is a smooth map sending $q\in Q$ to the gradient covector $dU|_q\in Q^*$. Wanting it to vanish, we approximate $dU$ to first order about $q$; the linear part of that approximation is the differential of $dU$ at $q$, itself a linear map
 \begin{equation*}
@@ -3065,7 +3065,7 @@ which is symmetric by equality of mixed partials. By the standing hypothesis it 
 \[
 \sharpR^{U}_q\coloneqq\bigl(T_q(dU)\bigr)^{-1}\colon Q^*\To{\cong}Q,
 \]
-so $\rv Q\coloneqq (Q,\sharpR^{U})\in\rvect$. We thus have a scalar in $\sarr$ with potential $U$,
+so $\rv Q\coloneqq (Q,\sharpR^{U})\in\rvect$. We thus have a closed system in $\sarr$ with potential $U$,
 \[
 f=\bigl(\rv Q,\ \outp f=\bang,\ \inpt f=\bang,\ U\bigr)\colon I\to I,
 \]
@@ -3157,7 +3157,7 @@ Altogether, suppressing the unique $\rr^0$-components, the coalgebra is
 where $(\xi_Q,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
 
 \paragraph{Losses and backpropagation.}
-Recall the network $f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ (the weights, with $\sharpR_Q$ the position-dependent learning rate), forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential. This zero potential does not mean there is no learning signal; it means the signal is supplied by whatever the network is wired into. We supply it with a \emph{loss}: a $2$-ary closed system (\cref{sec.potentialized_lenses})
+Recall the network $f\colon\binom{\rr^0}{\rr^m}\to\binom{\rr^0}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ (the weights, with $\sharpR_Q$ the position-dependent learning rate), forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential. This zero potential does not mean there is no learning signal; it means the signal is supplied by whatever the network is wired into. We supply it with a \emph{loss}: a $2$-ary closed morphism (\cref{sec.potentialized_lenses})
 \[
 \fun{loss}\colon\binom{\rr^0}{\rr^n}\ltens\binom{\rr^0}{\Lambda}\to I,
 \]
@@ -3165,7 +3165,7 @@ with trivial parameter and maps and potential $U\colon\rr^n\times\Lambda\to\rr$ 
 \[
 \binom{\rr^0}{\rr^m}\ltens\binom{\rr^0}{\Lambda}\To{f\,\ltens\,\binom{\rr^0}{\Lambda}}\binom{\rr^0}{\rr^n}\ltens\binom{\rr^0}{\Lambda}\To{\fun{loss}}I,
 \]
-a closed system with potential $U(F(q,x),\lambda)$ and open inputs a datum $x\in\rr^m$ and its label $\lambda\in\Lambda$. Applying $\Phiconf$, functoriality splits the result along the composition,
+a closed morphism with potential $U(F(q,x),\lambda)$ and open inputs a datum $x\in\rr^m$ and its label $\lambda\in\Lambda$. Applying $\Phiconf$, functoriality splits the result along the composition,
 \[
 \Phiconf(g)=\Phiconf(\fun{loss})\circ\Phiconf\bigl(f\ltens\tbinom{\rr^0}{\Lambda}\bigr),
 \]
