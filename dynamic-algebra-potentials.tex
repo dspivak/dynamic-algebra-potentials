@@ -611,7 +611,8 @@ Together, $\cot$ and Moore internalization turn ordinary smooth data---output ma
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the $\sarr$-morphism corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
 We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}): the conservative, second-order regime and the dissipative, first-order one are two readings of a single syntactic object.
-This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime---the sign that makes the dynamics conserve or dissipate. We make the conservative side precise: for closed systems with quadratic potential, a single step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
+
+This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime, conservative or dissipative. On the conservative side, a single step of the phase dynamics applied to a closed system with quadratic potential preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a commutative monoid. We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
@@ -2598,26 +2599,31 @@ using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.
 The components \eqref{eqn.presented_position}, \eqref{eqn.nu} assemble into a monoidal natural transformation $\nu\colon\cot\circ T^*\Rightarrow\cot$.
 \end{lemma}
 \begin{proof}
-Naturality at an $\rvect$-isomorphism $\phi\colon Q\To{\cong}W$ is commutativity of the square
-\[
-\begin{tikzcd}[column sep=3.2em]
-\cotof{T^*Q}\ar[r,"\nu_Q"]\ar[d,"\cotof{T^*\phi}"']&\cotof{Q}\ar[d,"\cotof{\phi}"]\\
-\cotof{T^*W}\ar[r,"\nu_W"']&\cotof{W}.
-\end{tikzcd}
-\]
-A polynomial map is determined by its action on positions and on directions, so we check the square on each. Recall that $\cotof{g}$ has position map $g$ and direction maps the pullbacks along $g$; that $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}; and that $\nu$ reads out $(q,\xi)\mapsto q+\sharpR_q\xi$ on positions and sends $\xi'\mapsto(\xi',\sharpR_q\xi)$ on directions \eqref{eqn.nu}.
-
-\emph{Positions.} Tracing a phase point $(q,\xi)$ along the top-then-right and the left-then-bottom of the square gives, respectively,
+Let $\phi\colon Q\To{\cong}W$ be an $\rvect$ map; its naturality is 
+\begin{equation}\label{eqn.nu_natural}
+	\cotof{\phi}\circ\nu_Q=\nu_W\circ\cotof{T^*\phi}
+\end{equation}
+ as maps $\cotof{T^*Q}\to\cotof{W}$,
+%is commutativity of the square
+%\[
+%\begin{tikzcd}[column sep=3.2em]
+%\cotof{T^*Q}\ar[r,"\nu_Q"]\ar[d,"\cotof{T^*\phi}"']&\cotof{Q}\ar[d,"\cotof{\phi}"]\\
+%\cotof{T^*W}\ar[r,"\nu_W"']&\cotof{W}.
+%\end{tikzcd}
+%\]
+which we check on positions and directions. So let $(q,\xi)$ be a position of $\cotof{T^*Q}$. Using $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}, the lefthand and righthand composites of \eqref{eqn.nu_natural} respectively give
 \[
 \phi\bigl(q+\sharpR_q\xi\bigr)
 \qquad\text{and}\qquad
 \phi q+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr),
 \]
-the first applying $\nu_Q$ then $\phi$, the second applying $T^*\phi$ then $\nu_W$. These agree: sharp-equivariance \eqref{eqn.pairing_triangle} gives $\sharpR_{\phi q}=\phi\circ\sharpR_q\circ\phi^*$, so $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=\phi(\sharpR_q\xi)$, and $\phi$ is linear.
+These agree: sharp equivariance \eqref{eqn.pairing_triangle} gives $\sharpR_{\phi q}=\phi\circ\sharpR_q\circ\phi^*$, so $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=\phi(\sharpR_q\xi)$, and $\phi$ is linear.
 
-\emph{Directions.} At $(q,\xi)$, both routes send a covector $\zeta$ (at the readout point) to the same pair $(\phi^*\zeta,\,\sharpR_q\xi)\in Q^*\oplus Q$. The gradient entry is the pullback $\phi^*\zeta$ either way. For the velocity entry, $\nu_W$ stores $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$, which the pullback along $T^*\phi$---acting as $\phi\inv$ on the velocity coordinate---returns to $\sharpR_q\xi$, matching the velocity $\nu_Q$ stores directly.
+Now let $\zeta\in W^*$ be a covector at the readout point. Then both sides of \eqref{eqn.nu_natural} send it to the same pair $(\phi^*\zeta,\,\sharpR_q\xi)\in Q^*\oplus Q$. Indeed, the gradient entry is the pullback $\phi^*\zeta$ either way; and for the velocity entry, the lefthand side appends $\sharpR_q\xi$ directly, whereas the righthand side appends $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$ and pulls it back along $T^*\phi$, which acts as $\phi\inv$ on the velocity coordinate, recovering $\sharpR_q\xi$.
 
-\emph{Monoidality over $\oplus$.} Each component is additive in the reactive vector space: the readout and the velocity respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the gradient inclusion $\xi'\mapsto(\xi',0)$ for $Q\oplus W$ is the direct sum of those for $Q$ and $W$.
+%$\nu_W$ stores $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$, which the pullback along $T^*\phi$---acting as $\phi\inv$ on the velocity coordinate---returns to $\sharpR_q\xi$, matching the velocity $\nu_Q$ stores directly.
+
+\emph{Monoidality over $\oplus$.} Each component of $\nu$ is additive in the reactive vector space: the readout \eqref{eqn.presented_position} and the appended velocity \eqref{eqn.nu} respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the gradient inclusion $\xi'\mapsto(\xi',0)$ for $Q\oplus W$ is the direct sum of those for $Q$ and $W$.
 \end{proof}
 
 The dynamics applies the Euler step $\chiQ{T^*\blank}$ after this readout,
