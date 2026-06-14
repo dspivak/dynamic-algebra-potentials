@@ -2,14 +2,14 @@
 
 ## Instructions (read first)
 
-This file lists every passage in `dynamic-algebra-potentials.tex` that **Claude (Fable) authored or substantially reworded** during the symplectic/conservation/terminology work on the `sympl-phase` branch. The goal of the review is to **rewrite this prose in David's voice**. The mathematics, structure, and equations are settled — this pass is about *voice and phrasing only*.
+This file lists every passage in `dynamic-algebra-potentials.tex` that **Claude (Fable) authored or substantially reworded** during the symplectic/conservation/terminology work on the `sympl-phase` branch. The mathematics, structure, and equations are settled — this pass is about *voice and phrasing only*. **David does the rewriting.**
 
-**How to use this file with the LLM reviewer:**
+**The LLM's only job is to locate, not to rewrite.** The division of labor:
 1. Work top to bottom (entries are in document order).
-2. Line numbers are approximate and **drift as you edit**. Locate each entry by its **anchor phrase**, not its line number: `grep -n '<anchor>' dynamic-algebra-potentials.tex`.
-3. For each entry, rewrite the passage in David's voice, then **delete the entry** from this file.
-4. Periodically refresh the remaining line numbers by re-grepping the anchors (a helper grep loop over the anchors works).
-5. Consult the voice conventions in `~/.claude/.../memory/feedback_voice.md` (variable conventions, let-binding cadence, univocity, definition-companion paragraph, remark closers) and `feedback_proof_style.md` (slow, explicit proofs).
+2. For the next undeleted entry, grep its **anchor phrase** to find the current line(s): `grep -n '<anchor>' dynamic-algebra-potentials.tex`. Report only: `next spot: lines X–Y` (plus the anchor, so David can find it). Do **not** propose rewrites, draft prose, or comment on voice unless David asks.
+3. David rewrites the passage himself in his own voice.
+4. When David says an entry is done, **delete that entry** from this file, then point to the next spot.
+5. Line numbers below are stale and **drift as the file is edited** — always re-grep the anchor; never trust the stored number.
 
 **Tags:** `[new]` = whole block written from scratch · `[rewrite]` = Claude's words replacing David's · `[gloss]` = a connective phrase inserted into David's existing derivation.
 
@@ -22,7 +22,6 @@ This file lists every passage in `dynamic-algebra-potentials.tex` that **Claude 
 ## Entries
 
 ### Introduction
-- `[rewrite]` ≈L610 — `a momentum, which carries the position forward`
 - `[rewrite]` ≈L614 — `We make the conservative side precise` (the closed-systems / symplectic-pairing sentence)
 
 ### Syntax chapter — terminology

@@ -2595,10 +2595,29 @@ the position the step moves to, with $\sharpR_q(\xi)$ the velocity read off the 
 using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.
 
 \begin{lemma}\label{lem.nu_monoidal}
-The components \eqref{eqn.nu} assemble into a monoidal natural transformation $\nu\colon\cot\circ T^*\Rightarrow\cot$.
+The components \eqref{eqn.presented_position}, \eqref{eqn.nu} assemble into a monoidal natural transformation $\nu\colon\cot\circ T^*\Rightarrow\cot$.
 \end{lemma}
 \begin{proof}
-Let $\phi\colon Q\To{\cong}W$ be an $\rvect$-isomorphism, so $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}. On positions, naturality is the equation $\phi(q+\sharpR_q\xi)=\phi q+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)$, which holds because sharp-equivariance \eqref{eqn.pairing_triangle} gives $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=\phi(\sharpR_q\xi)$. On directions, the velocity entry $\sharpR_q\xi$ is natural for the same reason, and the gradient entry is the inclusion $\xi'\mapsto(\xi',0)$, natural in $\phi$. Monoidality over $\oplus$ is componentwise: the readout and velocity respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the inclusion for $Q\oplus W$ is the direct sum of those for $Q$ and $W$.
+Naturality at an $\rvect$-isomorphism $\phi\colon Q\To{\cong}W$ is commutativity of the square
+\[
+\begin{tikzcd}[column sep=3.2em]
+\cotof{T^*Q}\ar[r,"\nu_Q"]\ar[d,"\cotof{T^*\phi}"']&\cotof{Q}\ar[d,"\cotof{\phi}"]\\
+\cotof{T^*W}\ar[r,"\nu_W"']&\cotof{W}.
+\end{tikzcd}
+\]
+A polynomial map is determined by its action on positions and on directions, so we check the square on each. Recall that $\cotof{g}$ has position map $g$ and direction maps the pullbacks along $g$; that $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}; and that $\nu$ reads out $(q,\xi)\mapsto q+\sharpR_q\xi$ on positions and sends $\xi'\mapsto(\xi',\sharpR_q\xi)$ on directions \eqref{eqn.nu}.
+
+\emph{Positions.} Tracing a phase point $(q,\xi)$ along the top-then-right and the left-then-bottom of the square gives, respectively,
+\[
+\phi\bigl(q+\sharpR_q\xi\bigr)
+\qquad\text{and}\qquad
+\phi q+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr),
+\]
+the first applying $\nu_Q$ then $\phi$, the second applying $T^*\phi$ then $\nu_W$. These agree: sharp-equivariance \eqref{eqn.pairing_triangle} gives $\sharpR_{\phi q}=\phi\circ\sharpR_q\circ\phi^*$, so $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=\phi(\sharpR_q\xi)$, and $\phi$ is linear.
+
+\emph{Directions.} At $(q,\xi)$, both routes send a covector $\zeta$ (at the readout point) to the same pair $(\phi^*\zeta,\,\sharpR_q\xi)\in Q^*\oplus Q$. The gradient entry is the pullback $\phi^*\zeta$ either way. For the velocity entry, $\nu_W$ stores $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$, which the pullback along $T^*\phi$---acting as $\phi\inv$ on the velocity coordinate---returns to $\sharpR_q\xi$, matching the velocity $\nu_Q$ stores directly.
+
+\emph{Monoidality over $\oplus$.} Each component is additive in the reactive vector space: the readout and the velocity respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the gradient inclusion $\xi'\mapsto(\xi',0)$ for $Q\oplus W$ is the direct sum of those for $Q$ and $W$.
 \end{proof}
 
 The dynamics applies the Euler step $\chiQ{T^*\blank}$ after this readout,
