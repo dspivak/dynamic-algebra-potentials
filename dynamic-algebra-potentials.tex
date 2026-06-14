@@ -2595,23 +2595,13 @@ using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.
 The components \eqref{eqn.presented_position}, \eqref{eqn.nu} assemble into a monoidal natural transformation $\nu\colon\cot\circ T^*\Rightarrow\cot$.
 \end{lemma}
 \begin{proof}
-Let $\phi\colon Q\To{\cong}W$ be an $\rvect$ map; its naturality is 
-\begin{equation}\label{eqn.nu_natural}
-	\cotof{\phi}\circ\nu_Q\overset{?}{=}\nu_W\circ\cotof{T^*\phi}
-\end{equation}
- as maps $\cotof{T^*Q}\to\cotof{W}$, which we check on positions and directions. So let $(q,\xi)$ be a position of $\cotof{T^*Q}$. Using $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}, the lefthand and righthand composites of \eqref{eqn.nu_natural} respectively give $\phi(q+\sharpR_q\xi)$ and $\phi q+\sharpR_{\phi q}((\phi^*)\inv\xi)$, and since $\phi$ is linear it suffices to show
+The transformation $\nu$ factors as
 \[
-\phi(\sharpR_q\xi)
-=
-\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=
-\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr),
+\cot\circ T^*\xrightarrow{\;\cot(\Delta)\;}(\cot\circ T^*)\otimes(\cot\circ T^*)\xrightarrow{\;\sigma\,\otimes\,\beta\;}\cot\otimes\yon\xrightarrow{\;\cong\;}\cot,
 \]
-which holds by sharp equivariance \eqref{eqn.pairing_triangle}.
+where $\Delta=\Delta_{T^*\blank}$ is the diagonal; $\sigma\colon\cot\circ T^*\Rightarrow\cot$ reads out the presented position, $(q,\xi)\mapsto q+\sharpR_q\xi$, and includes gradients $\xi'\mapsto(\xi',0)$; and $\beta\colon\cot\circ T^*\Rightarrow\yon$ has trivial readout and selects the velocity $(0,\sharpR_q\xi)$. The backward map of $\cot(\Delta)$ is fiberwise addition (\cref{lem.cot_comonoid}), so this composite carries an incoming gradient $\xi'$ to $(\xi',0)+(0,\sharpR_q\xi)=(\xi',\sharpR_q\xi)$ and reads out $q+\sharpR_q\xi$---that is, it is $\nu$ \eqref{eqn.nu}.
 
-Now let $\zeta\in W^*$ be a covector at the readout point; both sides of \eqref{eqn.nu_natural} send it to $(\phi^*\zeta,\,\sharpR_q\xi)\in Q^*\oplus Q$. The two pullbacks are the duals of $\phi$ and of $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}, the latter being $\phi^*\oplus\phi\inv$ (as $\bigl((\phi^*)\inv\bigr)^*=\phi\inv$). So the gradient entry is $\phi^*\zeta$ either way; and for the velocity entry, the lefthand side appends $\sharpR_q\xi$ directly, while the righthand side appends $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$ (sharp equivariance, as above) and applies the velocity block $\phi\inv$, recovering $\sharpR_q\xi$.
-
-
-\emph{Monoidality over $\oplus$.} Each component of $\nu$ is additive in the reactive vector space: the readout \eqref{eqn.presented_position} and the appended velocity \eqref{eqn.nu} respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the gradient inclusion $\xi'\mapsto(\xi',0)$ for $Q\oplus W$ is the direct sum of those for $Q$ and $W$.
+It remains that each factor is a monoidal natural transformation, whence so is $\nu$. The comultiplication $\cot(\Delta)$ is one because $\Delta$ is natural and $\cot$ is strong monoidal (\cref{prop.cot_monoidal}), and the unitor is one because $\yon$ is the monoidal unit. The readout $\sigma$ is natural: on positions this is $\phi(q+\sharpR_q\xi)=\phi q+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)$, which is sharp-equivariance \eqref{eqn.pairing_triangle} together with linearity of $\phi$; on directions it is the inclusion $\xi'\mapsto(\xi',0)$, trivially natural since its velocity slot is $0$. The 1-form $\beta$ is natural because its velocity transforms correctly: $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$ by sharp-equivariance, which the dual of $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi} carries back to $\sharpR_q\xi$. Monoidality of $\sigma$ and $\beta$ over $\oplus$ is the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
 \end{proof}
 
 The dynamics applies the Euler step $\chiQ{T^*\blank}$ after this readout,
@@ -2632,7 +2622,7 @@ so the update is
 \begin{equation}\label{eqn.phase_update}
 \absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((q,\xi),\xi')\mapsto(q+\sharpR_q(\xi),\,\xi-\xi').
 \end{equation}
-This is one step of Hamilton's equations: the position moves by the velocity $\sharpR_q\xi$---landing on $\tilde q$---and the momentum moves by $-\xi'$, the gradient that the environment computed there. See ***.
+This is one step of Hamilton's equations: the position moves by the velocity $\sharpR_q\xi$---landing on $\tilde q$---and the momentum moves by $-\xi'$, the gradient that the environment computed there. See \cref{rmk.constant_inverse_mass_hamiltonian}.
 
 %--------------------------------------------------------------------
 \section{The dynamics functors}\label{sec.dynamics_functor}
