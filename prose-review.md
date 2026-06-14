@@ -21,21 +21,10 @@ This file lists every passage in `dynamic-algebra-potentials.tex` that **Claude 
 
 ## Entries
 
-### Introduction
-- `[rewrite]` ≈L614 — `We make the conservative side precise` (the closed-systems / symplectic-pairing sentence)
-
-### Syntax chapter — terminology
-- `[rewrite]` ≈L2287 — `As for the interfaces, we call a morphism` (the closed / system / closed system definition, incl. the "sometimes called a scalar" aside)
-
-### Cotangent section
-- `[new]` ≈L2395 — `Covectors add along fan-out` (the whole `rmk.fanout_addition`: net force = autodiff gradient accumulation)
-
 ### Phase integrator (§"Integrator semantics")
-- `[rewrite]` ≈L2587 — `and steps it by the symplectic sharp on` (phase-integrator opening) and the readout/ν sentence at `On positions, the map $\nu`
-- `[new]` ≈L2598 — `assemble into a monoidal natural transformation` (`lem.nu_monoidal` statement **and** proof)
-- `[rewrite]` ≈L2604 — `and $\nu$ is by \cref{lem.nu_monoidal}` (the "This is a $\cot$-integrator" sentence)
-- `[rewrite]` ≈L2614 — `The two legs divide the labor`
-- `[rewrite]` ≈L2622 — `This is one step of Hamilton's equations: the position moves by the velocity`
+- `[new]` ≈L2726 — `is the instance of \cref{lem.combined_update} built from the exponential readout` (phase-integrator opening: now framed as the instance ν=ν_{σ¹,β}, presented position)
+- `[new]` ≈L2757 — `The readout and the 1-form are independent dials` (the whole `rmk.phase_design_space`: damped/lookahead variants)
+- note: the *Readouts and one-forms* subsection (`def.monoidal_one_form`…`lem.combined_update`) is restored from your pre-cut text, not Claude prose — out of scope, except the reworded sentence `Fed through the symplectic sharp, a monoidal 1-form contributes to the phase integrator`
 
 ### Phase dynamics (§"Phase-space dynamics")
 - `[new]` ≈L2882 — subsection title `\subsection{The phase coalgebra}`
