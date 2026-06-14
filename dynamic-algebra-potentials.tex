@@ -2595,11 +2595,17 @@ using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}.
 The components \eqref{eqn.presented_position}, \eqref{eqn.nu} assemble into a monoidal natural transformation $\nu\colon\cot\circ T^*\Rightarrow\cot$.
 \end{lemma}
 \begin{proof}
-Naturality of $\nu$ at an $\rvect$-isomorphism $\phi\colon Q\To{\cong}W$ is the identity
+Naturality at an $\rvect$-isomorphism $\phi\colon Q\To{\cong}W$ amounts to checking
 \begin{equation}\label{eqn.nu_natural}
-\cotof{\phi}\circ\nu_Q=\nu_W\circ\cotof{T^*\phi}\qquad\text{as maps }\cotof{T^*Q}\to\cotof{W}.
+\cotof{\phi}\circ\nu_Q=^?\nu_W\circ\cotof{T^*\phi}\colon\cotof{T^*Q}\to\cotof{W}.
 \end{equation}
-Both pieces of $\nu$ \eqref{eqn.nu} are built from the sharp---the position readout $(q,\xi)\mapsto q+\sharpR_q\xi$ and the appended velocity $\sharpR_q\xi$---so \eqref{eqn.nu_natural} reduces to a single identity: on positions directly, and on directions once functoriality of $\cot$ supplies the pullback along $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}. That identity is $\sharpR_{\phi q}\circ(\phi^*)\inv=\phi\circ\sharpR_q$, i.e.\ sharp-equivariance \eqref{eqn.pairing_triangle}. Monoidality over $\oplus$ is the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), with the $\xi'$-component the evident inclusion $\xi'\mapsto(\xi',0)$.
+A map of polynomials is a forward function on positions together with a backward function on directions, so we compare the two composites on each, and then check monoidality.
+
+\emph{Positions.} A position of $\cotof{T^*Q}$ is a phase point $(q,\xi)$. The lefthand composite reads out the presented position $q+\sharpR_q\xi$ and relabels it by $\phi$, giving $\phi(q+\sharpR_q\xi)$; the righthand composite first relabels $(q,\xi)$ by $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi} and then reads out, giving $\phi q+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)$. The two agree because $\phi$ is linear and $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$, which is sharp-equivariance \eqref{eqn.pairing_triangle}.
+
+\emph{Directions.} Over each position, $\nu$ sends an incoming gradient $\xi'$ to the pair $(\xi',\sharpR_q\xi)$ \eqref{eqn.nu}. Both composites send a gradient $\zeta$ to $(\phi^*\zeta,\,\sharpR_q\xi)$: the gradient slot is $\zeta$ pulled back along $\phi$, and the velocity slot agrees again by sharp-equivariance---the righthand composite stores $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$, which the pullback along $T^*\phi$ (its dual $\phi^*\oplus\phi\inv$, from \eqref{eqn.TT_phi}) sends back to $\sharpR_q\xi$.
+
+\emph{Monoidality.} Both the readout $q+\sharpR_q\xi$ and the velocity $\sharpR_q\xi$ respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the inclusion $\xi'\mapsto(\xi',0)$ is a direct sum, so $\nu_{Q\oplus W}=\nu_Q\oplus\nu_W$.
 \end{proof}
 
 The dynamics applies the Euler step $\chiQ{T^*\blank}$ after this readout,
