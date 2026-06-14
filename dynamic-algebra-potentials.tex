@@ -2584,15 +2584,15 @@ The unitor is the identity since $T^*0=0\oplus 0^*=0$. The productor is the swap
 For sharp-equivariance \eqref{eqn.pairing_triangle}, the canonical symplectic sharp on $T^*(Q_1\oplus Q_2)$ acts by the map $(\xi_1,\xi_2,q_1,q_2)\mapsto(q_1,q_2,-\xi_1,-\xi_2)$ by \eqref{eqn.canonical_sharp}. Conjugating by $(T^*)_2$ gives the map $(\xi_1,q_1,\xi_2,q_2)\mapsto(q_1,-\xi_1,q_2,-\xi_2)$, which is the direct-sum sharp $\sharpS_{T^*Q_1}\oplus\sharpS_{T^*Q_2}$ from \eqref{eqn.directsum_sharp}.\qedhere
 \end{proof}
 
-The \emph{phase integrator} stores a phase point $(q,\xi)$ and reads out the \emph{presented position}: the position the point is moving to,
+The \emph{phase integrator} stores a phase point $(q,\xi)\in T^*Q$ and steps it by the symplectic sharp on $T^*Q$. Its readout is the \emph{presented position}\footnote{This is one of a real vector space of readouts---natural, $\oplus$-monoidal maps $T^*Q\to Q$; the projection $(q,\xi)\mapsto q$ and the family $(q,\xi)\mapsto q+\alpha\,\sharpR_q(\xi)$ are others. We use the exponential ($\alpha=1$); \cref{prop.closed_conservation} shows the closed dynamics it produces conserves the symplectic pairing.}
 \begin{equation}\label{eqn.presented_position}
-\tilde q\coloneqq q+\sharpR_q(\xi).
+\tilde q\coloneqq q+\sharpR_q(\xi),
 \end{equation}
-It then feeds the incoming gradient $\xi'$---which the environment computes at the presented position---together with the velocity $\sharpR_q(\xi)$ read off the stored momentum, through the symplectic sharp on $T^*Q$. The map $\nu\colon\cot\circ T^*\Rightarrow\cot$ reads out the presented position, $(q,\xi)\mapsto\tilde q$, and on directions takes in a gradient and appends the stored velocity to it,
+the position the step moves to, with $\sharpR_q(\xi)$ the velocity read off the stored momentum. The map $\nu\colon\cot\circ T^*\Rightarrow\cot$ realizes the readout: it returns $\tilde q$ on positions, and on directions takes the incoming gradient $\xi'$---which the environment computes at $\tilde q$---and appends the stored velocity,
 \begin{equation}\label{eqn.nu}
 \bk{\nu}{(q,\xi)}\colon\xi'\mapsto(\xi',\sharpR_q\xi)\in Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q),
 \end{equation}
-using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. The dynamics composes this readout after the Euler step $\chiQ{T^*\blank}$ on the phase space,
+using \eqref{eqn.T_products} and \eqref{eqn.tangent_vec}. The dynamics applies the Euler step $\chiQ{T^*\blank}$ after this readout,
 \[
 \defineTerm{dynphase}\colon\quad\Store\circ\absval{T^*\blank}\To{\chiQ{T^*\blank}}\cot\circ T^*\To{\nu}\cot,
 \]
@@ -2600,17 +2600,17 @@ and the phase integrator is the pair
 \begin{equation}\label{eqn.phase_integrator}
 \phase\coloneqq(\absval{T^*\blank},\dynphase).
 \end{equation}
-This is a $\cot$-integrator: the state space $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}), hence strong monoidal; $\chiQ{T^*\blank}$ is a monoidal natural transformation by \cref{prop.rvect_polynomial}; and $\nu$ is one because both of its components are built from the reaction: the presented position $q+\sharpR_q(\xi)$ and the appended velocity $\sharpR_q(\xi)$ are natural by sharp-equivariance \eqref{eqn.pairing_triangle} and linearity, and monoidal by the direct-sum convention $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), while the $\xi'$ component is the inclusion $\xi'\mapsto(\xi',0)$, natural and monoidal under \eqref{eqn.canonical_dual_sum}.
+This is a $\cot$-integrator: $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{prop.TT_monoidal}); $\chiQ{T^*\blank}$ is monoidal-natural by \cref{prop.rvect_polynomial}; and so is $\nu$, since its readout and appended velocity are built from $\sharpR$---natural by sharp-equivariance \eqref{eqn.pairing_triangle}, monoidal by $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal})---while the $\xi'$ component is the inclusion $\xi'\mapsto(\xi',0)$ \eqref{eqn.canonical_dual_sum}.
 
-The two legs play complementary roles: $\chiQ{T^*\blank}$ \eqref{eqn.directions_sharp} is the symplectic update on $T^*Q$ \eqref{eqn.canonical_sharp}, identical for every reactive vector space, whereas $\nu$ uses the reaction $\sharpR_Q$ to present the position and to convert the stored momentum into a velocity $\sharpR_q(\xi)$, appending the latter to the incoming force $\xi'$. On directions, $\chiQ{T^*Q}$ adds to the current point $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.directions_sharp},
+The two legs divide the labor: $\chiQ{T^*\blank}$ \eqref{eqn.directions_sharp} is the symplectic Euler step on $T^*Q$ \eqref{eqn.canonical_sharp}, the same for every reactive vector space, while $\nu$ is where the reaction $\sharpR_Q$ enters. On directions, $\chiQ{T^*Q}$ adds to $(q,\xi)$ the symplectic sharp \eqref{eqn.canonical_sharp} of the covector $(\xi',\sharpR_q\xi)$ that $\nu$ produces,
 \[
 \sharpS_{T^*Q}\bigl(\xi',\sharpR_q(\xi)\bigr)=\bigl(\sharpR_q(\xi),\,-\xi'\bigr),
 \]
-so the update reads out $(q,\xi)\mapsto\tilde q$ and, on directions, is
+so the update is
 \begin{equation}\label{eqn.phase_update}
 \absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((q,\xi),\xi')\mapsto(q+\sharpR_q(\xi),\,\xi-\xi').
 \end{equation}
-This is one step of Hamilton's equations: the position moves by adding the velocity $\sharpR_q\xi$---landing exactly on the presented position $\tilde q$---and the momentum moves by subtracting a gradient $\xi'$ that the environment computed there.
+This is one step of Hamilton's equations: the position moves by the velocity $\sharpR_q\xi$---landing on $\tilde q$---and the momentum moves by $-\xi'$, the gradient the environment computed there.
 %--------------------------------------------------------------------
 \section{The dynamics functors}\label{sec.dynamics_functor}
 %--------------------------------------------------------------------
