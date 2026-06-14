@@ -2285,7 +2285,7 @@ U\colon Q\times\outp M\times\inpt N\to\rr.
 \end{gathered}
 \end{equation}
 
-From this point on we work in $\sarr$. Multimorphisms in $\sarr$ are called \emph{smooth adaptive arrangements}: the adjective marks the internal state that the dynamics evolve, and each carries a real-valued potential $U$. When the parameter is the trivial reactive vector space $\rr^0$, so that no state evolves, we call such a morphism a \emph{smooth (static) arrangement}; when its potential vanishes, a \emph{(potential-free)} one. As for the interfaces, we call a morphism \emph{closed} when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$ (it exposes no output), a \emph{system} when its domain is $I$ (it takes no input, so runs on its own), and a \emph{closed system} when both---a morphism $I\to I$, sometimes called a \emph{scalar}. Every normal monoidal functor, such as $\Phi$, preserves closed systems.
+From this point on we work in $\sarr$. Multimorphisms in $\sarr$ are called \emph{smooth adaptive arrangements}: the adjective marks the internal state that the dynamics evolve, and each carries a real-valued potential $U$. When the parameter is the trivial reactive vector space $\rr^0$, so that no state evolves, we call such a morphism a \emph{smooth (static) arrangement}; when its potential vanishes, a \emph{(potential-free)} one. As for the interfaces, we call a morphism \emph{closed} when its codomain is the monoidal unit $I=\binom{\rr^0}{\rr^0}$ (it exposes no output), a \emph{system} when its domain is $I$ (it takes no input, so runs on its own), and a \emph{closed system} when both are true, i.e.\ it is a morphism $I\to I$, sometimes called a \emph{scalar}. Every normal monoidal functor, such as $\Phi$, preserves closed systems.
 
 This settles the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: we take $\cat{W}\coloneqq\sarr$.
 
@@ -2392,10 +2392,6 @@ i.e.\ fiberwise addition and zero. Thus the $\otimes$-comonoid structure on $\co
 \begin{proof}
 On positions $\cotof{\Delta_M}$ and $\cotof{\bang_M}$ are given $m\mapsto(m,m)$ and $m\mapsto *$. On directions, $T_m\Delta_M$ is the diagonal $T_mM\to T_mM\times T_mM$, $v\mapsto(v,v)$; its transpose is addition $T^*_mM\times T^*_mM\to T^*_mM$. The map $T_m(\bang_M)$ is $T_mM\to\rr^0$, whose transpose is the map $\rr^0\to T^*_mM$ that selects the zero covector.
 \end{proof}
-
-\begin{remark}[Covectors add along fan-out]\label{rmk.fanout_addition}
-\Cref{lem.cot_comonoid} is where the formalism makes outputs shareable. When one output is consumed in several places, the wiring routes it through the diagonal $\Delta_M$, and the lemma computes what this does to the backward pass: the backward component of $\cotof{\Delta_M}$ sums the covectors returned by the several consumers before they reach the producer. Two familiar principles are instances. In mechanics, the net force on a particle is the sum of the forces exerted by its couplings: superposition of forces is not an axiom here but the backward component of a comultiplication. In reverse-mode automatic differentiation, the same map is the rule that gradients accumulate additively at fan-out.\qedhere
-\end{remark}
 
 \begin{proposition}[Hopf monoid structure on cotangent bundles of Lie groups]\label{prop.cot_hopf}
 Let $G$ be a Lie group with unit $\eta\colon\rr^0\to G$, multiplication $\mu\colon G\times G\to G$, and inversion $\iota\colon G\to G$. Then $\cotof{G}$ is a Hopf monoid in $(\poly,\yon,\otimes)$: the monoid structure is
@@ -2601,27 +2597,16 @@ The components \eqref{eqn.presented_position}, \eqref{eqn.nu} assemble into a mo
 \begin{proof}
 Let $\phi\colon Q\To{\cong}W$ be an $\rvect$ map; its naturality is 
 \begin{equation}\label{eqn.nu_natural}
-	\cotof{\phi}\circ\nu_Q=\nu_W\circ\cotof{T^*\phi}
+	\cotof{\phi}\circ\nu_Q\overset{?}{=}\nu_W\circ\cotof{T^*\phi}
 \end{equation}
- as maps $\cotof{T^*Q}\to\cotof{W}$,
-%is commutativity of the square
-%\[
-%\begin{tikzcd}[column sep=3.2em]
-%\cotof{T^*Q}\ar[r,"\nu_Q"]\ar[d,"\cotof{T^*\phi}"']&\cotof{Q}\ar[d,"\cotof{\phi}"]\\
-%\cotof{T^*W}\ar[r,"\nu_W"']&\cotof{W}.
-%\end{tikzcd}
-%\]
-which we check on positions and directions. So let $(q,\xi)$ be a position of $\cotof{T^*Q}$. Using $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}, the lefthand and righthand composites of \eqref{eqn.nu_natural} respectively give
+ as maps $\cotof{T^*Q}\to\cotof{W}$, which we check on positions and directions. So let $(q,\xi)$ be a position of $\cotof{T^*Q}$. Using $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi}, the lefthand and righthand composites of \eqref{eqn.nu_natural} respectively give $\phi(q+\sharpR_q\xi)$ and $\phi q+\sharpR_{\phi q}((\phi^*)\inv\xi)$, and since $\phi$ is linear the first is $\phi q+\phi(\sharpR_q\xi)$, so the two coincide once
 \[
-\phi\bigl(q+\sharpR_q\xi\bigr)
-\qquad\text{and}\qquad
-\phi q+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr),
+\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=\phi(\sharpR_q\xi),
 \]
-These agree: sharp equivariance \eqref{eqn.pairing_triangle} gives $\sharpR_{\phi q}=\phi\circ\sharpR_q\circ\phi^*$, so $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi\,\sharpR_q\,\phi^*(\phi^*)\inv\xi=\phi(\sharpR_q\xi)$, and $\phi$ is linear.
+which holds by sharp equivariance \eqref{eqn.pairing_triangle}.
 
 Now let $\zeta\in W^*$ be a covector at the readout point. Then both sides of \eqref{eqn.nu_natural} send it to the same pair $(\phi^*\zeta,\,\sharpR_q\xi)\in Q^*\oplus Q$. Indeed, the gradient entry is the pullback $\phi^*\zeta$ either way; and for the velocity entry, the lefthand side appends $\sharpR_q\xi$ directly, whereas the righthand side appends $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$ and pulls it back along $T^*\phi$, which acts as $\phi\inv$ on the velocity coordinate, recovering $\sharpR_q\xi$.
 
-%$\nu_W$ stores $\sharpR_{\phi q}\bigl((\phi^*)\inv\xi\bigr)=\phi(\sharpR_q\xi)$, which the pullback along $T^*\phi$---acting as $\phi\inv$ on the velocity coordinate---returns to $\sharpR_q\xi$, matching the velocity $\nu_Q$ stores directly.
 
 \emph{Monoidality over $\oplus$.} Each component of $\nu$ is additive in the reactive vector space: the readout \eqref{eqn.presented_position} and the appended velocity \eqref{eqn.nu} respect $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}), and the gradient inclusion $\xi'\mapsto(\xi',0)$ for $Q\oplus W$ is the direct sum of those for $Q$ and $W$.
 \end{proof}
