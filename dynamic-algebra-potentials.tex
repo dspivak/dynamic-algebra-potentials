@@ -2609,10 +2609,11 @@ Whiskering $\pi$ by $T^*$ we obtain a monoidal natural transformation
 Two kinds of data on the phase space will combine into integrators: \emph{1-forms}, which feed the backward pass, and \emph{readouts}, which set the position the forward pass reports. We discuss them in turn.
 
 \begin{definition}\label{def.monoidal_one_form}
-A \emph{monoidal 1-form on $T^*$} is a smooth family of sections $\omega_{\rv Q}\colon T^*Q\to T^*(T^*Q)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{\rv Q\oplus\rv W}=\omega_{\rv Q}\oplus\omega_{\rv W}$. In other words, $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ is a monoidal section of the bundle projection $\pi_{T^*Q}\colon T^*(T^*Q)\to T^*Q$, from \eqref{eqn.pi_whiskered}.
+A \emph{monoidal 1-form on $T^*$} is a monoidal natural transformation $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ that is a section of the projection $\pi_{T^*Q}\colon T^*(T^*Q)\to T^*Q$, from \eqref{eqn.pi_whiskered}.
 \end{definition}
 
-\begin{proposition}\label{prop.one_forms_monoid}
+In other words, a monoidal 1-form on $T^*$ consists of a smooth family of sections $\omega_{\rv Q}\colon T^*Q\to T^*(T^*Q)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{\rv Q\oplus\rv W}=\omega_{\rv Q}\oplus\omega_{\rv W}$.
+\begin{proposition}\label{prop.one_forms_vector_space}
 Under pointwise addition and scalar multiplication, the monoidal 1-forms on $T^*$ form a real vector space.
 \end{proposition}
 
@@ -2634,7 +2635,7 @@ using the identification $Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q)$ from \eqref{eqn.
 It is a monoidal 1-form on $T^*$: naturality follows from sharp-equivariance \eqref{eqn.pairing_triangle}, and monoidality holds because $\sharpR_{Q\oplus W}=\sharpR_Q\oplus\sharpR_W$ (\cref{prop.rvect_monoidal}).
 \end{example}
 
-More generally, when a 1-form $\omega_{\rv Q}(q,\xi)=(a,b)$ is fed through the symplectic sharp $\sharpS_{T^*Q}$ and added to the state---as it will be under the phase integrator \eqref{eqn.phase_integrator} below---it contributes $(+b,-a)$ to the update, since $\sharpS$ swaps coordinates and negates the second \eqref{eqn.canonical_sharp}. Thus the $Q$-component of $\omega$ drives position and the $Q^*$-component drives momentum with a sign flip: the kinetic 1-form ends up adding velocity $\sharpR_q(\xi)$ to position, and the next example ends up dissipating momentum by $-c\,\xi$.
+More generally, when a 1-form $\omega_{\rv Q}(q,\xi)=(a,b)$ is fed through the symplectic sharp $\sharpS_{T^*Q}$ and added to the state---as it will be under the phase integrator \eqref{eqn.phase_integrator} below---it contributes $(+b,-a)$ to the update, since $\sharpS_{T^*Q}$ swaps coordinates and negates the second \eqref{eqn.canonical_sharp}. Thus the $Q$-component of $\omega$ drives position and the $Q^*$-component drives momentum with a sign flip: the kinetic 1-form ends up adding velocity $\sharpR_q(\xi)$ to position, and the next example ends up dissipating momentum by $-c\,\xi$.
 
 \begin{example}[Dissipation 1-form]\label{ex.dissipation_one_form}
 The \emph{dissipation 1-form} is the section
@@ -2642,7 +2643,7 @@ The \emph{dissipation 1-form} is the section
 \zeta_{\rv Q}\colon T^*Q\to T^*(T^*Q),\qquad
 (q,\xi)\mapsto(\xi,\,0),
 \end{equation}
-a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of the momentum coordinate. For a \emph{damping coefficient} $c\in[0,1]$, the scalar multiple $c\,\zeta$ is again a monoidal 1-form (\cref{prop.one_forms_monoid}); it dissipates a fraction $c$ of the momentum at each step.
+which is a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of the momentum coordinate. For a \emph{damping coefficient} $c\in[0,1]$, the scalar multiple $c\,\zeta$ is again a monoidal 1-form (\cref{prop.one_forms_vector_space}); it dissipates a fraction $c$ of the momentum at each step.
 \end{example}
 
 \begin{lemma}\label{lem.one_form_to_poly}
@@ -2671,7 +2672,7 @@ Under pointwise addition and scalar multiplication, the monoidal readouts on $T^
 \end{proposition}
 
 \begin{proof}
-The pointwise argument of \cref{prop.one_forms_monoid} applies verbatim, with values in $Q$ in place of the fiber $Q^*\oplus Q$.
+The pointwise argument of \cref{prop.one_forms_vector_space} applies verbatim, with values in $Q$ in place of the fiber $Q^*\oplus Q$.
 \end{proof}
 
 \begin{lemma}\label{lem.readout_examples}

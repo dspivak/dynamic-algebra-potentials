@@ -42,7 +42,6 @@ This file lists every passage in `dynamic-algebra-potentials.tex` that **Claude 
 - `[new]` ≈L2994 — `The integrators built here are \emph{single-stage}` (the whole `rmk.multistage`)
 
 ### Applications chapter
-- `[rewrite]` ≈L3003 — `up to the phase integrator's readout` (dap footnote parenthetical)
 - `[rewrite]` ≈L3009 — `Newton's method is a \emph{closed system}` (Newton opening)
 - `[gloss]` ≈L3117 — `a $2$-ary closed morphism` (DL loss term)
 - `[gloss]` ≈L3256 — `is the presented position \eqref{eqn.presented_position}, computed with the sharp` (wave, first pass)
