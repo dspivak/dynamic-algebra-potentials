@@ -2625,19 +2625,21 @@ Whiskering $\pi$ by $T^*$ we obtain a monoidal natural transformation
 Two kinds of data on the phase space will combine into integrators: \emph{readouts}, which set the position the forward pass reports, and \emph{1-forms}, which feed the backward pass. We discuss them in turn.
 
 \begin{definition}\label{def.monoidal_readout}
-A \emph{monoidal readout on $T^*$} is a monoidal natural transformation $\sigma\colon\inc\circ T^*\Rightarrow\inc$.
+A \emph{monoidal readout on $T^*$} is a monoidal natural transformation 
+\[\rho\colon\inc\circ T^*\Rightarrow\inc\]
+between functors $\rvect\to\mfd$.
 \end{definition}
 
-In other words, a monoidal readout is a family of smooth maps $\sigma_{\rv Q}\colon T^*Q\to Q$, natural in $\rvect$-isomorphisms and monoidal over direct sums, $\sigma_{\rv Q\oplus\rv W}=\sigma_{\rv Q}\oplus\sigma_{\rv W}$.
+In other words, a monoidal readout is a family of smooth maps $\rho_{\rv Q}\colon T^*Q\to Q$, natural in $\rvect$-isomorphisms and monoidal over direct sums, $\rho_{\rv Q\oplus\rv W}=\rho_{\rv Q}\oplus\rho_{\rv W}$.
 
 \begin{proposition}\label{prop.readouts_vector_space}
 Under pointwise addition and scalar multiplication, the monoidal readouts on $T^*$ form a real vector space.
 \end{proposition}
 
 \begin{proof}
-Given monoidal readouts $\sigma,\sigma'$ and a scalar $c\in\rr$ we may set $(\sigma+\sigma')_{\rv Q}(q,\xi)\coloneqq\sigma_{\rv Q}(q,\xi)+\sigma'_{\rv Q}(q,\xi)$ and $(c\,\sigma)_{\rv Q}(q,\xi)\coloneqq c\,\sigma_{\rv Q}(q,\xi)$, the operations taken in the real vector space $Q$. These are again smooth, natural in $\rvect$-isomorphisms (which act linearly), and monoidal, e.g.\
+Given monoidal readouts $\rho,\rho'$ and a scalar $c\in\rr$ we may set $(\rho+\rho')_{\rv Q}(q,\xi)\coloneqq\rho_{\rv Q}(q,\xi)+\rho'_{\rv Q}(q,\xi)$ and $(c\,\rho)_{\rv Q}(q,\xi)\coloneqq c\,\rho_{\rv Q}(q,\xi)$, the operations taken in the real vector space $Q$. These are again smooth, natural in $\rvect$-isomorphisms (which act linearly), and monoidal, e.g.\
 \[
-(\sigma+\sigma')_{\rv Q\oplus\rv W}=\sigma_{\rv Q\oplus\rv W}+\sigma'_{\rv Q\oplus\rv W}=(\sigma_{\rv Q}\oplus\sigma_{\rv W})+(\sigma'_{\rv Q}\oplus\sigma'_{\rv W})=(\sigma+\sigma')_{\rv Q}\oplus(\sigma+\sigma')_{\rv W}.
+(\rho+\rho')_{\rv Q\oplus\rv W}=\rho_{\rv Q\oplus\rv W}+\rho'_{\rv Q\oplus\rv W}=(\rho_{\rv Q}\oplus\rho_{\rv W})+(\rho'_{\rv Q}\oplus\rho'_{\rv W})=(\rho+\rho')_{\rv Q}\oplus(\rho+\rho')_{\rv W}.
 \qedhere\]
 \end{proof}
 
@@ -2657,25 +2659,26 @@ the first equality by linearity of $\phi$, the second by sharp-equivariance \eqr
 \end{proof}
 
 \begin{lemma}\label{lem.readout_to_poly}
-Every monoidal readout $\sigma$ on $T^*$ induces a monoidal natural transformation
+Every monoidal readout $\rho$ on $T^*$ induces a monoidal natural transformation
 \[
-\sigma\colon \cot\circ T^*\Rightarrow\cot ,
+\rho\colon \cot\circ T^*\Rightarrow\cot ,
 \]
-with on-positions $\sigma_{\rv Q}$ and on-directions the injection $\xi'\mapsto(\xi',0)$.
+with on-positions $\rho_{\rv Q}$ and on-directions the injection $\xi'\mapsto(\xi',0)$.
 \end{lemma}
 
 \begin{proof}
-At each $\rv Q$, the on-positions $\sigma_{\rv Q}\colon T^*Q\to Q$ and the backward maps $\xi'\mapsto(\xi',0)$, from $Q^*$ to $Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q)$, constitute a polynomial map $\cotof{T^*Q}\to\cotof{Q}$.
+At each $\rv Q$, the on-positions $\rho_{\rv Q}\colon T^*Q\to Q$ and the backward maps $\xi'\mapsto(\xi',0)$, from $Q^*$ to $Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q)$, constitute a polynomial map $\cotof{T^*Q}\to\cotof{Q}$.
 
-For naturality at an $\rvect$-isomorphism $\phi\colon Q\to W$, compare $\cotof{\phi}\circ\sigma_{\rv Q}$ with $\sigma_{\rv W}\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\sigma_{\rv Q}$ and $\sigma_{\rv W}\circ T^*\phi$, equal because $\sigma$ is natural (\cref{def.monoidal_readout}). On directions at $(q,\xi)$, a covector $\xi'\in W^*$ pulls back along both maps to $(\phi^*\xi',0)$.
-
-For $\oplus$-monoidality, on positions $\sigma_{\rv Q\oplus\rv W}=\sigma_{\rv Q}\oplus\sigma_{\rv W}$ since $\sigma$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $Q^*\oplus W^*\to(Q^*\oplus Q)\oplus(W^*\oplus W)$ is the direct sum of those for $Q$ and $W$.
+For naturality at an $\rvect$-isomorphism $\phi\colon Q\to W$, compare $\cotof{\phi}\circ\rho_{\rv Q}$ with $\rho_{\rv W}\circ\cotof{T^*\phi}$. On positions these are $\phi\circ\rho_{\rv Q}$ and $\rho_{\rv W}\circ T^*\phi$, equal because $\rho$ is natural (\cref{def.monoidal_readout}). On directions at $(q,\xi)$, a covector $\xi'\in W^*$ pulls back along both maps to $(\phi^*\xi',0)$. The $\oplus$-monoidality is straightforward.
+%On positions $\rho_{\rv Q\oplus\rv W}=\rho_{\rv Q}\oplus\rho_{\rv W}$ since $\rho$ is a monoidal readout (\cref{def.monoidal_readout}), and on directions the inclusion $Q^*\oplus W^*\to(Q^*\oplus Q)\oplus(W^*\oplus W)$ is the direct sum of those for $Q$ and $W$.
 \end{proof}
 
 Whereas a readout is about the forward pass, the following notion is about the backward pass.
 
 \begin{definition}\label{def.monoidal_one_form}
-A \emph{monoidal 1-form on $T^*$} is a monoidal natural transformation $\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*$ that is a section of the projection $\pi_{T^*Q}\colon T^*(T^*Q)\to T^*Q$, from \eqref{eqn.pi_whiskered}.
+A \emph{monoidal 1-form on $T^*$} is a monoidal natural transformation
+\[\omega\colon\inc\circ T^*\Rightarrow\inc\circ T^*\circ T^*\] 
+that is a section of the projection $\pi_{T^*Q}\colon T^*(T^*Q)\to T^*Q$, from \eqref{eqn.pi_whiskered}.
 \end{definition}
 
 In other words, a monoidal 1-form on $T^*$ consists of a smooth family of sections $\omega_{\rv Q}\colon T^*Q\to T^*(T^*Q)$, natural in $\rvect$-isomorphisms, that is monoidal over direct sums: $\omega_{\rv Q\oplus\rv W}=\omega_{\rv Q}\oplus\omega_{\rv W}$.
@@ -2727,24 +2730,24 @@ We use the same symbol to denote both a monoidal 1-form and the polynomial map i
 The following lemma combines monoidal readouts and 1-forms into a package we will use shortly.
 
 \begin{lemma}\label{lem.combined_update}
-A monoidal readout $\sigma$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $\nu_{\sigma,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
+A monoidal readout $\rho$ and a monoidal 1-form $\omega$ combine into a monoidal natural transformation $\nu_{\rho,\omega}\colon\cot\circ T^*\Rightarrow\cot$, given by the composite
 \[
 \begin{tikzcd}[column sep=2.5em]
 \cot\circ T^*
-  \ar[rrr, bend left=12, "\nu_{\sigma,\omega}"]
+  \ar[rrr, bend left=12, "\nu_{\rho,\omega}"]
   \ar[r, "\cotof{\Delta_{T^*\blank}}"']
 & (\cot\circ T^*)\otimes(\cot\circ T^*)
-  \ar[r, "\sigma\otimes\omega"']
+  \ar[r, "\rho\otimes\omega"']
 & \cot\otimes\yon
   \ar[r, "\cong"']
 & \cot.
 \end{tikzcd}
 \]
-On positions $\nu_{\sigma,\omega}$ is $\sigma_{\rv Q}$; on directions at $(q,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_{\rv Q}(q,\xi)$.
+On positions $\nu_{\rho,\omega}$ is $\rho_{\rv Q}$; on directions at $(q,\xi)$ it sends $\xi'\mapsto(\xi',0)+\omega_{\rv Q}(q,\xi)$.
 \end{lemma}
 
 \begin{proof}
-Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, the readout $\sigma$ by \cref{lem.readout_to_poly}, the 1-form $\omega$ by \cref{lem.one_form_to_poly}, and the unitor $\cot\otimes\yon\cong\cot$ because $\yon$ is the monoidal unit. On positions, $\cotof{\Delta_{T^*\blank}}$ is the diagonal and $\sigma\otimes\omega$ applies $\sigma_{\rv Q}$ in the first factor while $\omega$ lands in $\yon$, so the composite reads out $\sigma_{\rv Q}$. On directions at $(q,\xi)$, a covector $\xi'\in Q^*$ pulls back through $\sigma\otimes\omega$ to $(\xi',0)$ and $\omega_{\rv Q}(q,\xi)$ in the two factors, which the diagonal adds.
+Each arrow is a monoidal natural transformation: $\cotof{\Delta_{T^*\blank}}$ by \cref{lem.TT_projection_diagonal_monoidal,prop.cot_monoidal}, the readout $\rho$ by \cref{lem.readout_to_poly}, the 1-form $\omega$ by \cref{lem.one_form_to_poly}, and the unitor $\cot\otimes\yon\cong\cot$ because $\yon$ is the monoidal unit. On positions, $\cotof{\Delta_{T^*\blank}}$ is the diagonal and $\rho\otimes\omega$ applies $\rho_{\rv Q}$ in the first factor while $\omega$ lands in $\yon$, so the composite reads out $\rho_{\rv Q}$. On directions at $(q,\xi)$, a covector $\xi'\in Q^*$ pulls back through $\rho\otimes\omega$ to $(\xi',0)$ and $\omega_{\rv Q}(q,\xi)$ in the two factors, which the diagonal adds.
 \end{proof}
 
 \subsection{The phase integrator}\label{sec.phase_integrators}
