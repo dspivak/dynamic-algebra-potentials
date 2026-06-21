@@ -3296,9 +3296,9 @@ Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: reactive parame
 \fun{loss}\colon\binom{1}{\rr^n}\ltens\binom{1}{\Lambda}\to I,
 \end{equation}
 with trivial maps and potential $U\colon\rr^n\times\Lambda\to\rr$ comparing a prediction $y\in\rr^n$ against a label $\lambda\in\Lambda$ (for regression, $\Lambda=\rr^n$ and $U(y,\lambda)=\tfrac12\lVert y-\lambda\rVert^2$). Define $g\colon\binom{1}{\rr^m}\ltens\binom{1}{\Lambda}\to I$ to be the composite
-\[
+\begin{equation}\label{eqn.dl_composite}
 \binom{1}{\rr^m}\ltens\binom{1}{\Lambda}\To{f\,\ltens\,\binom{1}{\Lambda}}\binom{1}{\rr^n}\ltens\binom{1}{\Lambda}\To{\fun{loss}}I,
-\]
+\end{equation}
 a closed arrangement with potential $U(F(q,x),\lambda)$ and open inputs a datum $x\in\rr^m$ and its label $\lambda\in\Lambda$. Applying $\Phiconf$, functoriality splits the result along the composition,
 \[
 \Phiconf(g)=\Phiconf(\fun{loss})\circ\Phiconf\bigl(f\ltens\tbinom{1}{\Lambda}\bigr),
@@ -3321,9 +3321,8 @@ whose job is to present the training stream. At any state, it emits a datum $(x,
 \]
 is a closed discrete dynamical system on $\absval{Q}\times Q_e$, with $Q_e$ the carrier of $e$: at each step $e$ emits $(x,\lambda)$, the network computes $y=F(q,x)$, the loss seeds the output covector $\xi=dU(\blank,\lambda)|_{y}\in T^*_y\rr^n$, which pulls back to the parameter gradient $\xi_Q$; the parameter descends by \eqref{eqn.dl_gradient_update}, and the two backward covectors return to $e$---the input-gradient $\xi_M$ and the label-gradient $\xi_\Lambda=\partial_\lambda U(y,\lambda)$---after which $e$ advances.
 
-When $e$ ignores these covectors it is an externally specified supervised stream---a fixed dataset of pairs $(x,\lambda)$. When its transitions are based on them, the stream adapts to the model. For instance, for squared-error regression $\xi_\Lambda=\lambda-y$, so $e$---which knows $\lambda$---can read off the prediction $y$ and adapt to it.
+When $e$ ignores these covectors it is an externally specified supervised stream, i.e.\ a fixed dataset of pairs $(x,\lambda)$. When its transitions are based on them, the stream adapts to the model's backpropagated covectors. For instance, for squared-error regression $\xi_\Lambda=\lambda-y$, so $e$---which knows $\lambda$---can read off the prediction $y$ and adapt to it.
 \end{example}
-
 %--------------------------------------------------------------------
 \section{The wave equation}\label{sec.wave_equation}
 %--------------------------------------------------------------------
@@ -3419,12 +3418,12 @@ Indeed, the map $\Part\colon\binom{1}{1}\to\binom{\rr}{\rr}$ is actually the com
 	\draw (dot) to (bond_in1);
 \end{tikzpicture}
 \]
-So $\Part=\varphi(\RealPart,\Bond)$ where $\RealPart\cong\binom{1}{1}\to\binom{1}{\rr}$ is potential-free with state $Q=\rr$ and $\outp\RealPart=\id$, and $\Bond\colon\binom{1}{1}\to\binom{\rr^2}{1}$ is stateless with potential $U(q_1,q_2)=\frac\kappa2(q_1-q_2)^2$. We will not use these pictures again.
+So $\Part=\varphi(\RealPart,\Bond)$ where $\RealPart\cong\binom{1}{1}\to\binom{1}{\rr}$ is potential-free with state $Q=\rr$ and $\outp\RealPart=\id$, and $\Bond\colon\binom{1}{1}\to\binom{\rr^2}{1}$ is stateless with potential $U(q_1,q_2)=\frac\kappa2(q_1-q_2)^2$. We will not use these pictures $\RealPart$, $\Bond$ again.
 
 So what we have called the particle $\Part$ already carries its own bond: it is a pure mass (vertex) with a stateless bond attached on one side. If one wishes, the asymmetry in the presentation to follow can be avoided by working this way: replace edges with stateless bonds and vertices with potential-free (pure) particles.%
 \footnote{I thank Ryan Tavenner for this observation.}
 
-A stateless bond is, formally, the same construct as the training loss \eqref{eqn.loss}: a stateless $2$-ary closed arrangement whose only content is a potential $U$ of its two arguments. Indeed the squared-error loss $\tfrac12\lVert y-\lambda\rVert^2$ is exactly a harmonic bond of unit spring constant tying the prediction $y$ to its label $\lambda$. So each bond is like a ``training loss'' provided to each mass by its neighbor.
+A stateless bond is, formally, the same construct as the training loss \eqref{eqn.loss}: a stateless $2$-ary closed arrangement whose only content is a potential $U$ of its two arguments. Indeed the squared-error loss $\tfrac12\lVert y-\lambda\rVert^2$ is exactly a harmonic bond that ties the prediction $y$ to its label $\lambda$. So each bond is like a ``training loss'' provided to each mass by its neighbor.
 \end{remark}
 
 \paragraph{The wiring diagram.}
@@ -3760,6 +3759,18 @@ M\,\dot{\vec q}\;=\;-L_G\,\vec q,
 diffusion on $G$ with the masses $m_v$ serving as heat capacities.
 
 Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative regime are two semantics of one syntactic object.
+\end{remark}
+
+\begin{remark}[Predicting a closed system]\label{rmk.graph_environment}
+The environment of \cref{ex.training_data} need not be a dataset; it can be a closed system, observed. Given a closed system $c\colon S\to S$ (a $\yon$-coalgebra, \cref{ex.y_coalgebra_trajectory}) and an observation $o\colon S\to X$, the carrier $S$ with readout and update
+\[
+\langle o,\ o\circ c\rangle\colon S\to X\times X
+\qqand
+c\colon S\to S
+\]
+is a $\cotof X\otimes\cotof X$-coalgebra---an environment $\yon\to\Phiconf(\tbinom1X\ltens\tbinom1X)$ in $\pc$---presenting the observation now, $o(s)$, as input and one step ahead, $o(c(s))$, as label, then advancing by $c$. Closing the learner \eqref{eqn.dl_composite} (with $\rr^m=\Lambda=X$) with it descends the weights \eqref{eqn.dl_gradient_update} toward predicting $o\circ c$ from $o$, the system's one-step map.
+
+For the graph, $c\coloneqq\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ \eqref{eqn.graph_state_update} and $o\coloneqq\pi\colon T^*\rr^V\to\rr^V$ the bundle projection (\cref{lem.TT_projection_diagonal_monoidal}), $X\coloneqq\rr^V$; then $\langle\pi,\pi\circ c\rangle(q,\xi)=\bigl(q,\ q+\sharpR_q\xi\bigr)$ is the current and next configuration, and the network is fit to the graph's propagator, here linear in $L_G$. Any other closed system $c$ in its place---Newton's method, gradient descent---trains a predictor of that one instead.
 \end{remark}
 
 \section*{Conclusion}
