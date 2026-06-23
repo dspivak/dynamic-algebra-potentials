@@ -86,6 +86,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
   	quotes,
   	intersections,
   	circuits.logic.US,
+  	backgrounds,
   }
 
   \tikzset{
@@ -412,6 +413,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 %--------Paper-specific macros--------%
 
 \trackTerm{\mfd}{mfd}{\Cat{Mfd}}
+\trackTerm{\etaLR}{etaLR}{\eta_{\mathrm{LR}}}% learning rate
 \trackTerm{\Store}{Store}{\Fun{Store}}
 \newcommand{\inc}{\Fun{inc}}
 \trackTermSymbol{cot}{\Fun{cot}}
@@ -532,7 +534,7 @@ When applied to a parameterized function, $\Phiconf$ recovers the gradient desce
 \chapter{Introduction}\label{ch.intro}
 %====================================================================
 
-There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. The covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
+There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
 
 The goal of this paper is to build a compositional syntax for such smooth reactive, adaptive systems---one in which the couplings between subsystems can themselves adapt---and a functorial semantics that turns this syntax into explicit discrete update rules.
 
@@ -704,7 +706,7 @@ For convenience in the electronic version, many recurring pieces of notation are
 
 We write $\blank$ for a ``blank'' placeholder argument in expressions, e.g.\ $\rr\times\blank\colon\mfd\to\mfd$ for the functor $M\mapsto\rr\times M$. We write $\defineTerm{bang}$ for a unique map when the domain and codomain make it clear, e.g.\ the unique map $\emptyset\to A$ or the unique map $X\to 1$. We write $\inc$ for any inclusion functor that is clear from its domain and codomain categories, and we sometimes elide them, e.g. sometimes writing $F$ for $F\circ\inc$. In any category, we may use an object name as the name of the identity morphism on that object, e.g.\ $X\otimes f$ in place of $\id_X\otimes f$. For example, $\cat{C}$ can stand as the name of the identity functor $\id_\cat{C}$. For composable maps $A\To{f}B\To{g}C$, we may write $f\then g$ or $g\circ f$ as their composite, based on convenience.
 
-We reserve $\eta$ and $\mu$ for units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\eta_{\mathrm{LR}}$.
+We reserve $\eta$ and $\mu$ for units and multiplications, and $\varepsilon$ and $\delta$ for comonoid counits and comultiplications. Since $\eta$ is also the usual notation for a learning rate, we write learning rates as $\defineTerm{etaLR}$.
 
 We sometimes refer to a $(2,1)$-category simply as a category. More precisely, its homs are groupoids and composition is associative and unital up to coherent isomorphism.
 
@@ -2835,6 +2837,21 @@ Specializing $\Phi_\intg$ to the configuration integrator $\conf$ \eqref{eqn.con
 \defineTerm{Phiconf},\ \defineTerm{Phiphase}\colon\sarr\to\pc.
 \end{equation}
 
+\begin{remark}[Varying the parameterizing category]\label{rmk.adam}
+
+Given an adaptive-arrangement datum $D=(\cat M,\cat Q,J,\Fun R)$, composing $J$ with any strong monoidal functor $\iota\colon\cat{Q}'\to\cat{Q}$ induces a new adaptive-arrangement datum $D'$. This operation doesn't affect a polynomial interpretation datum, and any $(\Fun c\circ J)$-integrator restricts to a $(\Fun c\circ J\circ\iota)$-integrator, so \cref{thm.dynamics_functor} goes through to give a functor $\arr_{D'}\to\pc$. However, there may be more integrators for $J\circ\iota$ than there were for $J$. In particular, removing morphisms from $\cat{Q}$ allows for more integrators because the naturality condition is weakened.
+
+In $\rvect$, the sharp-equivariant isomorphisms between Euclidean parameter spaces (\cref{ex.euclidean_sharp}) are exactly the orthogonal maps. But several optimizers used in practice do not require naturality with respect to orthogonal maps. Any method that acts coordinatewise---e.g.\ an elementwise square or a per-coordinate step
+size---singles out a basis and admits no natural transformation over $\rvect$. Such a method is not outside the framework; it just lives over a smaller $\cat Q$. For example, we could restrict our attention to vector spaces equipped with a Euclidean sharp and take as morphisms any of the following nested classes of isometries:%
+\footnote{With the Euclidean reaction structure fixed, this is as far as the restriction can go while keeping $\cat Q$ symmetric monoidal: the braidings are themselves coordinate permutations, so dropping them too would leave $\cat Q$ without its symmetry.}
+\[
+  \text{orthogonal}\;\supset\;\text{signed coordinate permutations}\;\supset\;\text{coordinate permutations}.
+\]
+We conjecture that \textsc{Adam}~\cite{kingma2014adam} is an integrator when $\cat{Q}$ is restricted to the subcategory whose objects are Euclidean vector spaces $\rr^n$ equipped with Euclidean sharp and whose morphisms are signed permutations. That is, that \textsc{Adam}'s behavior does not depend on the order of the coordinate axes, nor on the direction of each axis. 
+
+The monoidal requirement of integrators cannot be negotiated like the naturality can. The monoidality of $\intg$ corresponds to the compositionality of the semantics, that each box can compute its own update. Many optimizers thus arise from our construction as integrators over varying $\cat Q$. 
+\end{remark}
+
 %--------------------------------------------------------------------
 \section{Configuration dynamics \texorpdfstring{$\termraw{Phiconf}$}{Phi conf}}\label{sec.configuration_dynamics}
 %--------------------------------------------------------------------
@@ -3222,7 +3239,7 @@ Its unique fixed point is the minimum at $x=0$. The dynamical system $\rr\To{\eq
 
 In general, the reactive structure $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic, and the configuration integrator's descent step jumps to that quadratic's critical point. When $U$ is exactly quadratic, the Hessian $T_q(dU)$ is constant, so this quadratic model lands on the true critical point in one step. In dimension $>1$, this could be a maximum, minimum, or saddle. 
 
-This is genuinely different from gradient descent: there the reactive structure $\sharpR=\eta_{\mathrm{LR}}\,\id$ is a fixed metric on the parameter space, chosen independently of the potential, whereas here $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ is derived from the potential itself. It is this dependence on the second derivative of $U$ that makes the method second-order, and that lets the same descent step find any critical point rather than only moving downhill toward minima.
+This is genuinely different from gradient descent: there the reactive structure $\sharpR=\etaLR\,\id$ is a fixed metric on the parameter space, chosen independently of the potential, whereas here $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ is derived from the potential itself. It is this dependence on the second derivative of $U$ that makes the method second-order, and that lets the same descent step find any critical point rather than only moving downhill toward minima.
 
 %--------------------------------------------------------------------
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
@@ -3246,10 +3263,11 @@ Suppose we are given a smooth parameterized map
 F\colon Q\times\rr^m\to\rr^n,
 \end{equation}
   thought of as a feedforward neural network with parameter space $(Q,\sharpR_Q):\rvect$---i.e., $Q$ comes equipped with a smooth map $\sharpR_Q\colon Q\to\vect(Q^*,Q)$ (\cref{def.rvect}), whose value $\sharpR_q\colon Q^*\to Q$ at $q\in Q$ will act as a position-dependent learning rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a smooth adaptive arrangement
-\[
-f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}
-\]
-with parameter $Q$, by taking $\outp f=F\colon Q\times \rr^m\to\rr^n$, taking $\inpt f\colon Q\times\rr^m\times 1\to 1$ to be the unique map, and taking the potential to be $0$. 
+\begin{equation}\label{eqn.learning_lens}
+f=\bigl(\rv Q,\ \outp f=F,\ \inpt f=\bang,\ U=0\bigr)\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n},
+\end{equation}
+with output map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map $\inpt f=\bang$, and zero potential.
+
 
 \paragraph{The interfaces.}
 On objects, $\lrn(\rr^m)$ is given by
@@ -3291,7 +3309,7 @@ Altogether, suppressing the unique $1$-components, the coalgebra is
 where $(\xi_Q,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
 
 \paragraph{Losses and backpropagation.}
-Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ (the weights, with $\sharpR_Q$ the position-dependent learning rate), forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential. This zero potential does not mean there is no learning signal; it means the signal is supplied by whatever the network is wired into. We supply it with a \emph{loss}: a stateless $2$-ary closed arrangement (\cref{sec.potentialized_lenses})
+Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ (the weights, with $\sharpR_Q$ the position-dependent learning rate), forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential (though see \cref{def.reg_potential}). With the potential zero, the learning signal comes from whatever the network is wired into. We supply it with a \emph{loss}: a stateless $2$-ary closed arrangement (\cref{sec.potentialized_lenses})
 \begin{equation}\label{eqn.loss}
 \fun{loss}\colon\binom{1}{\rr^n}\ltens\binom{1}{\Lambda}\to I,
 \end{equation}
@@ -3304,14 +3322,18 @@ a closed arrangement with potential $U(F(q,x),\lambda)$ and open inputs a datum 
 \Phiconf(g)=\Phiconf(\fun{loss})\circ\Phiconf\bigl(f\ltens\tbinom{1}{\Lambda}\bigr),
 \]
 whose second factor runs $\lrn(F)$ on the input while carrying the label through. The loss factor $\Phiconf(\fun{loss})$ supplies the output covector $\xi=dU(\blank,\lambda)|_{F(q,x)}$---the differential of $U(\blank,\lambda)\colon\rr^n\to\rr$ at the prediction---which $\lrn(F)$ pulls back as in \eqref{eqn.dl_pullback}. 
-The parameter covector $\xi_Q$ drives the descent update \eqref{eqn.dl_gradient_update}: on a Euclidean parameter space (\cref{ex.euclidean_sharp}), with the constant sharp scaled by a \emph{learning rate} $\eta_{\mathrm{LR}}>0$,
+The parameter covector $\xi_Q$ drives the descent update \eqref{eqn.dl_gradient_update}. On a Euclidean parameter space (\cref{ex.euclidean_sharp}), with the constant sharp scaled by a \emph{learning rate} $\etaLR>0$,
 \begin{equation}\label{eqn.learning_sharp}
-\sharpR_q=\eta_{\mathrm{LR}}\sharpEuc{},
+\sharpR_q=\etaLR\sharpEuc{},
 \end{equation}
-it is vanilla gradient descent at rate $\eta_{\mathrm{LR}}$. The returned $\xi_M$ is propagated backward to the previous interface, if any; for a composite network these repeated $\xi_M$'s are the usual backpropagated gradient signal. Backpropagation is thus the chain rule, packaged as the functoriality of $\Phiconf$.
+this becomes vanilla gradient descent at rate $\etaLR$:
+\begin{equation}\label{eqn.gradient_descent}
+q\longmapsto q-\sharpR_q(\xi_Q)=q-\etaLR\,\bigl(T_qF(\blank,x)\bigr)^\top\xi.
+\end{equation}
+The returned $\xi_M$ is propagated backward to the previous interface, if any; for a composite network these repeated $\xi_M$'s are the usual backpropagated gradient signal. Backpropagation is thus the chain rule, packaged as the functoriality of $\Phiconf$.
 
 \begin{example}[Training data as an environment]\label{ex.training_data}
-The composite $g$ leaves two interfaces open---the input $\rr^m$ and the label $\Lambda$---which we close with an \emph{environment}: an $\pc$-map
+The composite $g$ \eqref{eqn.dl_composite} leaves two interfaces open---the input $\rr^m$ and the label $\Lambda$---which we close with an \emph{environment}: an $\pc$-map
 \[
 e\colon\yon\to\Phiconf\bigl(\tbinom{1}{\rr^m}\ltens\tbinom{1}{\Lambda}\bigr)
 \]
@@ -3319,10 +3341,39 @@ whose job is to present the training stream. At any state, it emits a datum $(x,
 \[
 \yon\To{e}\Phiconf\bigl(\tbinom{1}{\rr^m}\ltens\tbinom{1}{\Lambda}\bigr)\To{\Phiconf(g)}\yon
 \]
-is a closed discrete dynamical system on $\absval{Q}\times Q_e$, with $Q_e$ the carrier of $e$: at each step $e$ emits $(x,\lambda)$, the network computes $y=F(q,x)$, the loss seeds the output covector $\xi=dU(\blank,\lambda)|_{y}\in T^*_y\rr^n$, which pulls back to the parameter gradient $\xi_Q$; the parameter descends by \eqref{eqn.dl_gradient_update}, and the two backward covectors return to $e$---the input-gradient $\xi_M$ and the label-gradient $\xi_\Lambda=\partial_\lambda U(y,\lambda)$---after which $e$ advances.
+is a closed discrete dynamical system on $\absval{Q}\times Q_e$, with $Q_e$ the carrier of $e$: at each step the training environment $e$ emits $(x,\lambda)$, the network computes $y=F(q,x)$, the loss seeds the output covector $\xi=dU(\blank,\lambda)|_{y}\in T^*_y\rr^n$, which pulls back to the parameter gradient $\xi_Q$; the parameter descends by \eqref{eqn.dl_gradient_update}, and the two backward covectors return to $e$---the input-gradient $\xi_M$ and the label-gradient $\xi_\Lambda=\partial_\lambda U(y,\lambda)$---after which $e$ advances.
 
 When $e$ ignores these covectors it is an externally specified supervised stream, i.e.\ a fixed dataset of pairs $(x,\lambda)$. When its transitions are based on them, the stream adapts to the model's backpropagated covectors. For instance, for squared-error regression $\xi_\Lambda=\lambda-y$, so $e$---which knows $\lambda$---can read off the prediction $y$ and adapt to it.
 \end{example}
+
+\paragraph{Regularization.}
+The architecture above \eqref{eqn.learning_lens} carried the zero potential, and the entire learning signal arrived from the downstream loss. But using a potential can be useful, it costs no new machinery---\eqref{eqn.covector_triple} already accounts for it---and it is precisely where regularization comes in.
+
+\begin{definition}[Regularizing potential]\label{def.reg_potential}
+A \emph{regularizing potential} on a map $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$ in $\sarr$ is a choice of potential $U\colon Q\times\rr^m\to\rr$ in \eqref{eqn.para_potential_lens_maps}. It is \emph{weight-only} if $U(q,x)=R(q)$ is independent of the input $x$.
+\end{definition}
+
+The simplest weight-only potential recovers a standard ingredient of training. 
+
+\begin{proposition}[Weight decay]\label{prop.weight_decay}
+Switching the potential of the arrangement \eqref{eqn.learning_lens} from $0$ to the weight-only $R(q)\coloneqq\tfrac\lambda2\lVert q\rVert^2$, on a Euclidean parameter space with $\sharpR_q=\etaLR\,\sharpEuc{}$ (\cref{ex.euclidean_sharp}, \eqref{eqn.learning_sharp}), changes the gradient-descent update \eqref{eqn.gradient_descent} to
+\[
+q\longmapsto (1-\etaLR\lambda)\,q-\etaLR\,\bigl(T_qF(\blank,x)\bigr)^\top\xi,
+\]
+i.e.\ it adds a weight decay at rate $\lambda$.
+\end{proposition}
+
+\begin{proof}
+Take $U=R$. Since $\inpt f=\bang$, the input summand of \eqref{eqn.covector_triple} vanishes, and since $R$ is weight-only, $\partial_qR=\lambda q$ and $\partial_xR=0$. Hence the $Q^*$-component of \eqref{eqn.covector_triple} is the sum
+\[
+\xi_Q=(T_qF(\blank,x))^\top\xi+\lambda q,
+\]
+the parameter covector of \eqref{eqn.dl_pullback} plus $\lambda q$, and its $\outp M$-component $\xi_M$ is exactly that of \eqref{eqn.dl_pullback}, since $\partial_xR=0$. Substituting $\xi_Q$ into \eqref{eqn.state_update_gradient}, with $\sharpR_q=\etaLR\sharpEuc{}$ \eqref{eqn.learning_sharp} and $\sharpEuc{}\colon Q^*\cong Q$ the identity, we obtain the desired equation:
+\[
+q\mapsto q-\sharpR_q(\xi_Q)=q-\etaLR\bigl((T_qF(\blank,x))^\top\xi+\lambda q\bigr)=(1-\etaLR\lambda)\,q-\etaLR\,(T_qF(\blank,x))^\top\xi.\qedhere
+\]
+\end{proof}
+
 %--------------------------------------------------------------------
 \section{The wave equation}\label{sec.wave_equation}
 %--------------------------------------------------------------------
@@ -3331,26 +3382,31 @@ We first illustrate $\Phiphase\colon\sarr\to\pc$ by deriving the wave equation. 
 
 We begin with a single particle whose state is a transverse displacement and momentum, which we put into a ``box'' that delivers the displacement to its neighbors and updates its state based on some fixed parameters $\kappa,m>0$ and the displacements of its neighboring particles. We wire these boxes together in series
 \begin{equation}\label{eqn.wave_wd}
-\begin{tikzpicture}[oriented WD, bb port length=4pt, bb port sep=1.5, bb min width=.35cm, bbx=.4cm, bby=.8ex, baseline=(lbox1), particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
-  \def\N{7}
-  \node[bb={1}{1}, particle] (lbox1) {};
+\begin{tikzpicture}[oriented WD, bb port length=4pt, bb port sep=1.5, bb min width=.35cm, bbx=.5cm, bby=.8ex, baseline=(box1), particle/.style={path picture={\fill (path picture bounding box.center) circle (2.4pt);}}]
+  \def\N{13}
+  \node[bb={1}{1}, particle] (box1) {};
   \foreach \i [evaluate=\i as \prev using int(\i-1)] in {2,...,\N} {
-    \node[bb={1}{1}, particle, right=.7 of lbox\prev] (lbox\i) {};
-    \draw (lbox\prev_out1) -- (lbox\i_in1);
+    \node[bb={1}{1}, particle, right=.7 of box\prev] (box\i) {};
+    \draw (box\prev_out1) -- (box\i_in1);
   }
-  \node[right=.4 of lbox\N] (dots) {$\cdots$};
-  \draw (lbox\N_out1) -- (dots.west);
-  \node[bb={1}{1}, particle, right=.4 of dots] (rbox1) {};
-  \draw (dots.east) -- (rbox1_in1);
-  \foreach \i [evaluate=\i as \prev using int(\i-1)] in {2,...,\N} {
-    \node[bb={1}{1}, particle, right=.7 of rbox\prev] (rbox\i) {};
-    \draw (rbox\prev_out1) -- (rbox\i_in1);
-  }
-  \node[bb={0}{0}, fit={(lbox1) (rbox\N)}] (Y) {};
-  \node[coordinate] at (Y.west|-lbox1_in1) (Y_in1) {};
-  \node[coordinate] at (Y.east|-rbox\N_out1) (Y_out1) {};
-  \draw (Y_in1) -- (lbox1_in1);
-  \draw (rbox\N_out1) -- (Y_out1);
+  \node[bb={0}{0}, fit={(box1) (box\N)}] (Y) {};
+  \node[coordinate] at (Y.west|-box1_in1) (Y_in1) {};
+  \node[coordinate] at (Y.east|-box\N_out1) (Y_out1) {};
+  \draw (Y_in1) -- (box1_in1);
+  \draw (box\N_out1) -- (Y_out1);
+  % transverse-wave decoration: a dotted rail through each particle and a
+  % gray copy of each particle displaced along its rail to trace a standing wave
+  \begin{scope}[on background layer]
+    \def\P{1.5}% number of wavelengths across the chain
+    \xdef\wave{}
+    \foreach \i [evaluate=\i as \ang using (\i-1)/(\N-1)*\P*360] in {1,...,\N} {
+      \draw[gray!50, thick, densely dotted] ([yshift=22pt]box\i.center) -- ([yshift=-22pt]box\i.center);
+      \coordinate (p\i) at ([yshift={15pt*sin(\ang)}]box\i.center);
+      \xdef\wave{\wave (p\i)}
+    }
+    \draw[gray!55] plot[smooth] coordinates {\wave};
+    \foreach \i in {1,...,\N} {\fill[gray!50] (p\i) circle (2.4pt);}
+  \end{scope}
 \end{tikzpicture}
 \end{equation}
 and aim to show that the resulting state dynamics evolves according to the discrete wave equation:%
