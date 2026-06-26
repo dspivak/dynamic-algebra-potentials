@@ -29,6 +29,19 @@ def partition_modes(obs: np.ndarray, N: int) -> List[np.ndarray]:
     return [obs[:, g] for g in groups]
 
 
+def sense(obs: np.ndarray, N: int, *, noise: float, seed: int) -> List[np.ndarray]:
+    """Per-box *noisy* observations: each box's mode-slice plus independent sensor noise.
+
+    The independent noise is the observation/sensor model (this layer, not the world
+    dynamics, which stays a pure Phiphase oscillator).  It is what makes a single box's
+    view genuinely insufficient -- pooling averages independent noise away -- so the
+    necessary-communication regime does not rest on linear observability alone.
+    """
+    views = partition_modes(obs, N)
+    rng = np.random.default_rng(seed)
+    return [v + rng.standard_normal(v.shape) * noise for v in views]
+
+
 def embed_views(views: List[np.ndarray], E: int, *, seed: int) -> List[np.ndarray]:
     """Encode each box's raw modes into the residual width ``R^E`` (a fixed sensor).
 

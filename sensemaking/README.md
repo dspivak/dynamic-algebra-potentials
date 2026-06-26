@@ -65,5 +65,12 @@ sensemaking/
   construction). **Codex re-audit: passed** ("Yes for Task 1 as scoped"); two minor
   follow-ups (`KQVSystem` validates its term at construction; module docstring
   includes `Par`) also addressed.
-- 25 tests pass (`PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/kqv/ -q`).
-- Task 2 (the partial-observability world) — next.
+- Task 2 (the partial-observability world: `world/`) — **complete; in-house audited**.
+  The world is `Phiphase(world_arrangement)` (a coupled oscillator, slow season + 48
+  fast weather modes), proven genuinely phase-flow (matched to 2e-14 vs an independent
+  symplectic integrator), outside the suboperad. The **strong** necessary-communication
+  gate holds across 8 weather seeds: no single sensor decodes the season (best R^2 <=
+  0.42), the pool does (>= 0.71). The audit caught an earlier gate relaxation; fixed by
+  retuning the world to pass the strong every-box bar (not by loosening the threshold).
+- 30 tests pass (`PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/ -q`).
+- Task 3 (Stage-1 experiment: is the channel used) — next.

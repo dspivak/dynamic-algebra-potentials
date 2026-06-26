@@ -3204,21 +3204,6 @@ and the last two terms cancel by symmetry of the sharp. For the kick:
 and the last two terms cancel by symmetry of $\kappa$. Each of $\fun{drift}$ and $\fun{kick}$ therefore preserves the pairing, hence lies in $\rvect(T^*Q,T^*Q)$, and so does their composite.
 \end{proof}
 
-\begin{remark}[Sampling a potential by phase dynamics]\label{rmk.hmc}
-For constant symmetric $\sharpR_0$, the closed phase step \eqref{eqn.closed_update} is the symplectic Euler step~\cite[\S VI.3]{hairer2006geometric} of the energy $H(q,\xi)=\tfrac12\xi(\sharpR_0\xi)+U(q)$, a discrete approximation to the Hamiltonian flow, which itself conserves $H$ (\cref{rmk.symplectic_perpendicular}). Two of its properties let us repurpose it as a generator of \emph{random samples}, by a standard recipe called \emph{Hamiltonian Monte Carlo}~\cite{neal2011mcmc}, which we sketch since it uses nothing beyond the objects in hand. First, the step preserves volume on the phase space $T^*Q$: it is a drift $(q,\xi)\mapsto(q+\sharpR_0(\xi),\,\xi)$ followed by a kick $(q,\xi)\mapsto(q,\,\xi-dU|_q)$, each altering one coordinate by an amount depending only on the other, hence each with unit Jacobian; in the quadratic case \cref{prop.closed_conservation} sharpens this, showing the step preserves the symplectic pairing itself. Second, like any such discrete step it does not conserve $H$ exactly (as observed above). The first property is the one the recipe relies on; the second is the error it corrects.
-
-Fix a potential $U\colon Q\to\rr$ and suppose we wish to draw points $q\in Q$ at random, with low-potential points more likely than high-potential ones---precisely, with probability density proportional to $e^{-U(q)}$. Such a distribution is a common target: it is the equilibrium distribution of a physical system whose energy is $U$, and it is proportional to the posterior of a Bayesian model whose negative log-density is $U$. When $U$ is at all complicated there is no direct formula for sampling from it, and one settles instead for generating a sequence $q_0,q_1,q_2,\dots$ whose values are, in the long run, distributed as $e^{-U}$.
-
-Take $\sharpR_0$ positive-definite---physically, that the masses are positive---so that the kinetic energy $\tfrac12\xi(\sharpR_0\xi)$ is a positive quadratic form. Because $H$ is a term in $\xi$ alone plus a term in $q$ alone, the density $e^{-H(q,\xi)}$ on $T^*Q$ then factors as a product: a Gaussian momentum distribution $e^{-\frac12\xi(\sharpR_0\xi)}$ times the target $e^{-U(q)}$. Hence if we can draw pairs $(q,\xi)$ in proportion to $e^{-H}$ and then discard $\xi$, the positions $q$ we keep are distributed as $e^{-U}$---which is the goal. To draw $(q,\xi)$ we alternate two moves from the current state:
-\begin{enumerate}
-  \item \emph{flow}: run several closed phase steps \eqref{eqn.closed_update}, then keep the resulting state with a probability depending on how much $H$ changed over the run, and otherwise retain the old state. Because the underlying flow conserves $H$ (\cref{rmk.symplectic_perpendicular}), the run reaches a distant point of phase space while $H$ drifts only slightly, so the proposal is far away yet usually kept;
-  \item \emph{refresh}: replace $\xi$ by a fresh draw from the Gaussian momentum distribution, which is what moves between energy levels.
-\end{enumerate}
-Iterating these two moves is the sampler.
-
-The keep-or-discard test in the flow move is what corrects the energy drift, and it makes $e^{-U}$ the \emph{exact} invariant distribution of the sampler---discretization error notwithstanding---as long as the proposal preserves phase-space volume (as above) and is \emph{reversible}: running the step with the momentum negated retraces the trajectory backward. Reversibility holds not for the single drift-then-kick step but for its symmetric \emph{leapfrog} refinement (the $\ell=2$ integrator of \cref{rmk.multistage}), assembled from the same drift and kick. The randomness lives entirely in the momentum refresh and the keep-or-discard test; the deterministic machine they wrap is the phase dynamics functor $\Phiphase$ of this paper.
-\end{remark}
-
 %====================================================================
 \chapter{Applications}\label{ch.applications}
 %====================================================================

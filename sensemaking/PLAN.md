@@ -91,6 +91,21 @@ LLMs tend to produce work that *passes the stated check* rather than work that i
 - `N` inner boxes each receive a *different noisy partial slice* of `l`; no single
   slice determines `s`, the pool does. (Distributed partial observability is the
   engine that makes communication necessary, not merely helpful.)
+- **Realized regime (locked in `world/standard.py` after the Task-2 audit).** The
+  world is `Phiphase(world_arrangement)` (a coupled oscillator: slow season + 48 fast
+  weather modes tethered to it). Sensing: `N=48` one-mode sensors with high
+  independent sensor noise. The **strong every-box gate** holds across 8 weather
+  seeds: even the *best* single sensor decodes `s` at R^2 <= 0.42, the typical one
+  <= 0.18, while pooling all 48 gives R^2 ~ 0.76 and beats every single sensor by
+  >= 0.34. Tradeoff (documented, not hidden): suppressing even the best sensor needs
+  enough noise that pooled sits near the noise floor (~0.76), not ~0.9.
+- **Second caveat (codex Task-2 finding): necessity is decoder-window-relative.** The
+  season is slow and periodic, so a single sensor with a *long* temporal window (e.g.
+  50) can extrapolate it (best_single climbs to ~0.75). The gate window (10) is matched
+  to the experiment's SHORT-MEMORY boxes (per-step spatial attention, no long temporal
+  accumulator), for which communication is genuinely necessary. **Task-3 constraint:**
+  keep the boxes short-memory; decoder-window-robust necessity would instead need an
+  *aperiodic (chaotic)* season (a future world variant). Tested in `test_world.py`.
 - The boxes are KQV arrangements from Task 1; the prediction task is the head's
   canonical potential `U` (`obs.erroreunit`), not a bespoke add-on. Clean
   suboperad/environment boundary.
@@ -101,7 +116,8 @@ LLMs tend to produce work that *passes the stated check* rather than work that i
 
 ## Task 3 — Stage 1 experiment (smallest falsifiable): is the channel used?
 
-- Flat (`N'=0`), `N` swept (default `N=2`), `Phiconf` workhorse.
+- Flat (`N'=0`), `N=48` sensors (the strong-gate regime; swept in robustness checks),
+  `Phiconf` workhorse.
 - **Pre-registered PASS:** with capacity bound + distributed views, the channel is
   used (rate > 0) and both `I(message; s)` and prediction beat the *no-capacity*
   and *full-observability* controls, across ≥ 8 seeds.
