@@ -523,7 +523,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \begin{abstract}
 We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is an operad $\sarr$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{smooth adaptive arrangements}, which consist of a reactive parameter space, a lens given by smooth output and input maps, and a real-valued potential.
 
-The main technical result of the paper is what we call \emph{lens internalization}, a lax monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the 2-category of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
+The main technical result of the paper is what we call \emph{lens internalization}, a lax symmetric monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the 2-category of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
 
 When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is conservative and second-order, and $\Phiconf$ gives the discrete heat equation, which is dissipative and first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
 \end{abstract}
@@ -534,7 +534,7 @@ When applied to a parameterized function, $\Phiconf$ recovers the gradient desce
 \chapter{Introduction}\label{ch.intro}
 %====================================================================
 
-There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
+There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space~\cite[\S\S 18.1--18.2]{cannasdasilva2008lectures}; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
 
 The goal of this paper is to build a compositional syntax for such smooth reactive, adaptive systems---one in which the couplings between subsystems can themselves adapt---and a functorial semantics that turns this syntax into explicit discrete update rules.
 
@@ -569,7 +569,7 @@ In previous work \cite{spivak2021learners,shapiro2022dynamic}, the author has re
 }
 whose morphisms are polynomial coalgebras, i.e.\ input-output dynamical systems. Thus a $0$-ary morphism can represent a component, such as a single dynamical particle, and a $K$-ary morphism can represent an adaptive interaction among $K$ components.
 
-The choice to have semantics land in $\pc$ is the choice to take polynomial functors seriously as input-output interfaces. Polynomial functors are built from one variable $\yon$ by coproducts and products, so a polynomial
+Having semantics land in $\pc$ amounts to using polynomial functors as input-output interfaces. Polynomial functors are built from one variable $\yon$ by coproducts and products, so a polynomial
 \[
 p=\sum_{i:I}\yon^{p[i]}
 \]
@@ -583,7 +583,7 @@ Because $\poly$ is monoidal closed, such maps are equivalently the positions of 
 \[
 w\coloneqq\ihom{p_1\otimes\cdots\otimes p_K,p'},
 \]
-so a fixed $\varphi$ is the same thing as a one-state coalgebra on the polynomial $w$. To make the wiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to p'$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\pc$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
+so a fixed $\varphi$ is precisely the same data as a one-state coalgebra on the polynomial $w$. To make the wiring dynamic, we replace that one-state coalgebra by an arbitrary coalgebra $f\colon S\to w(S)$: its state $s:S$ outputs the current wiring pattern $\varphi_s\colon p_1\otimes\cdots\otimes p_K\to p'$, and each acceptable input direction determines the next state $s'$. These internal-hom coalgebra categories are the morphisms in $\pc$. We will explain all this in detail in \cref{sec.poly_dynamic_bg}.
 
 %--------------------------------------------------------------------
 \section{From smooth data to dynamics}\label{sec.intro_smooth_to_dynamics}
@@ -615,20 +615,29 @@ The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens $
 
 To accommodate the potential---the last ingredient---we pass from lenses to the coKleisli category $\plmfd$ for the comonad on $\lmfd$ induced by the monad $\rr\times\blank$ on $\mfd$ \cite{abou2016reflections}: informally, the backward direction now handles both inputs and a real number. Thus we are now ready to define $\sarr$ to be the operad underlying the symmetric monoidal category $\para{\rvect}{\plmfd}$; we call its morphisms \emph{smooth adaptive arrangements}. Under the dynamics functor $\sarr\to\pc$, the parameters and potential let the effective coupling not only transport information but also contribute to the parameter update rules, again in a compositional way.
 
-The passage from lenses to polynomial coalgebras uses a functor we call \emph{lens internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\ihom{\inpt c,I}\otimes\outp c$, and this process constitutes a lax monoidal functor (\cref{cor.Theta}).
+The passage from lenses to polynomial coalgebras uses a functor we call \emph{lens internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\ihom{\inpt c,I}\otimes\outp c$, and this process constitutes a lax symmetric monoidal functor (\cref{cor.Theta}).
 
 Together, $\cot$ and lens internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position but also a momentum, which carries the position forward. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the arrangement corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
 We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}): the conservative, second-order regime and the dissipative, first-order one are two readings of a single syntactic object.
 
-This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime, conservative or dissipative. On the conservative side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed system with constant symmetric reaction and quadratic potential preserves the canonical symplectic pairing exactly.
+This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime, conservative or dissipative. On the conservative side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with constant symmetric reaction and quadratic potential---preserves the canonical symplectic pairing exactly.
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a monoidal monad (the writer monad of $(\rr,0,+)$ being the main instance). We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later (e.g.\ \cref{ex.syntactic_datum})---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
-The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background section reviews polynomial functors, the Para construction, and the 2-category $\pc$, while lenses and lens internalization have their own section (\cref{ch.lenses}). 
+The paper aims to be self-contained for a reader comfortable with monoidal categories and (co)monads and who has a passing familiarity with smooth manifolds; the background section reviews polynomial functors, the Para construction, and the 2-category $\pc$, while lenses and lens internalization have their own section (\cref{ch.lenses}).
 
-The next section places this work alongside the open-energy-driven framework of CLS; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
+The main contributions are the following.
+\begin{itemize}
+\item \emph{Lens internalization} (\cref{cor.Theta}): a lax symmetric monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that internalizes each lens interface as an object of $\cat C$, as well as a monad/monoid generalization $\Theta_\potalg$ (\cref{thm.Theta_T_alpha}).
+\item Two functorial semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}), each assembling a system's discrete dynamics from its smooth adaptive arrangement.
+\item $\Phiconf$ recovers gradient descent with backpropagation (\cref{sec.dl_warmup}), Newton's method (\cref{sec.newton_warmup}).
+\item One adaptive arrangement of harmonic particles yields, via $\Phiphase$, the discrete wave equation and, via $\Phiconf$, the discrete heat equation. Both are governed by the graph Laplacian (\cref{sec.graph_laplacian,rmk.graph_heat}).
+\item A proof that, for a closed harmonic arrangement, each step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
+\end{itemize}
+
+The next section places this work alongside the open-energy-driven framework of Capucci--Lynch--Spivak; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
 
 %--------------------------------------------------------------------
 \section{Relation to open energy-driven systems}\label{sec.related_cls}
@@ -1149,7 +1158,7 @@ This section reviews the category $\Lens{\cat C}$ of lenses in a symmetric monoi
 The adaptive arrangements we will build have boxes on the inside and a box on the outside, and some sort of (possibly varying) message-passing wiring between them. Each box includes two objects $(\inpt c, \outp c)$ in some other category (for us, eventually $\mfd$), their input and output side; these are the objects in the category $\Lens{\cat{C}}$.
 
 \subsection{The category of lenses}\label{sec.category_of_lenses}
-We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; see \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. Let $(\cat{C}, I,\otimes)$ be a symmetric monoidal category.
+We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmetric monoidal category $(\cat{C},I,\otimes)$; the notion of lens originates, in its asymmetric form, with \cite[Def.~3.1]{foster2007combinators}, and the bimorphic form we use is treated in \cite{hedges2017coherence} and \cite[Def.~2.9]{spivak2019generalized}. Let $(\cat{C}, I,\otimes)$ be a symmetric monoidal category.
 
 An \emph{interface} in $\cat C$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\varepsilon,\delta)$.%
 \footnote{
@@ -1253,7 +1262,7 @@ If $F\colon\cat{C}\to\cat{D}$ is colax monoidal, it preserves comonoid structure
 \begin{example}
 The functor $\blank\yon\colon(\smset,1,\times)\to(\poly,\yon,\otimes)$ sending $A\mapsto A\yon$ is strong monoidal: $A\yon\otimes B\yon\cong (A\times B)\yon$. As such it induces a strong monoidal functor
 \begin{equation}\label{eqn.lens_yon}
-\Lens{\blank\yon}\colon\Lens{\smset}\to\Lens{\poly}.
+\Lens{\blank\yon}\colon\Lens{\smset}\to\Lens{\poly}.\qedhere
 \end{equation}
 \end{example}
 
@@ -1268,11 +1277,11 @@ For any cartesian category $\cat M$ and object $M:\cat M$, the functor $M^\blank
 
 \subsection{Lenses can represent serial, parallel, and feedback}\label{sec.plenspot_ops}
 
+Recall from \cref{sec.wd_operads} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, we can think of the operad underlying $\Lens{\cat{C}}$ as giving a syntax for something like ``traced symmetric monoidal semicategories'', as we now explain. This section is meant for intuition and in particular does not define the previously quoted phrase. It will also not be used in any formal development.
+
 \begin{warning}
 The diagrams in the previous section, e.g.\ \eqref{eqn.lens_map}, are string diagrams for maps in $\cat{C}$. The wiring diagrams below as in \eqref{eqn.arb_wd} will denote maps in $\Lens{\cat{C}}$. A different way to say it: the pictures above are implicit in all the wiring diagram maps we'll choose, but are at a different level of abstraction, and we ask the reader not to confuse the two picture languages.
 \end{warning}
-
-Recall from \cref{sec.wd_operads} that operads---and hence monoidal categories---can be used to encode compositional syntax. In fact, we can think of the operad underlying $\Lens{\cat{C}}$ as giving a syntax for something like ``traced symmetric monoidal semicategories'', as we now explain. This section is meant for intuition and in particular does not define the previously quoted phrase. It will also not be used in any formal development.
 
 By a \emph{semicategory} we mean almost a category, except without the notion of identities (like a semigroup is a group without identities). So to say that $\Lens{\cat{C}}$ is a composition syntax for something like traced symmetric monoidal semicategories, we should show that it interprets diagrams that look like this. 
 \begin{equation}\label{eqn.arb_wd}
@@ -1499,12 +1508,12 @@ When $\Fun T$ is monoidal, $\Lens{\cat C}^{\Fun T}$ is symmetric monoidal by \cr
 \section{Lens internalization}\label{sec.lens_internalization}
 %----------------------------------------------------------------------------
 
-This section introduces \emph{lens internalization}---a normal lax monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that turns each interface $\lensob c$ into the $\cat C$-object $\ihom{\inpt c,I}\otimes\outp c$---which \cref{ch.framework} will use to interpret adaptive-arrangement syntax as parameterized polynomial maps (\cref{thm.poly_interpretation}). We begin with a generalization.
+This section introduces \emph{lens internalization}---a normal lax symmetric monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that turns each interface $\lensob c$ into the $\cat C$-object $\ihom{\inpt c,I}\otimes\outp c$---which \cref{ch.framework} will use to interpret adaptive-arrangement syntax as parameterized polynomial maps (\cref{thm.poly_interpretation}). We begin with a generalization.
 
 All lax monoidal functors preserve monoids, so in particular monoidal monads (\cpageref{txt.monoidal_monad}) do.
 
 \begin{definition}\label{def.T_monoid}
-Let $(\Fun{T},\eta,\mu,\tau)$ be a monoidal monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. A \emph{$\Fun{T}$-monoid in $\cat{C}$} is a $\otimes$-monoid $(z,e_z,m_z)$ in $\cat{C}$
+Let $(\Fun{T},\eta,\mu,\tau)$ be a monoidal monad on a symmetric monoidal category $(\cat{C},I,\otimes)$. A \emph{$\Fun{T}$-monoid in $\cat{C}$} is a $\otimes$-monoid $(z,e_z,m_z)$ in $\cat{C}$ together with a $\Fun{T}$-algebra structure $\alpha\colon\Fun{T}z\to z$
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 z\ar[r,"\eta_z"]\ar[dr,equal]\& \Fun{T}z\ar[d,"\alpha"]\\
@@ -1516,7 +1525,7 @@ z\ar[r,"\eta_z"]\ar[dr,equal]\& \Fun{T}z\ar[d,"\alpha"]\\
 \Fun{T}z\ar[r,"\alpha"']\& z
 \end{tikzcd}
 \]
-together with a $\Fun{T}$-algebra structure $\alpha\colon\Fun{T}z\to z$ such that $\alpha$ is a monoid homomorphism
+such that $\alpha$ is a monoid homomorphism
 \begin{equation}\label{eqn.T_monoid}
 \begin{tikzcd}[ampersand replacement=\&]
 I\ar[r,"\tau_0"]\ar[d,"e_z"']\& \Fun{T}I\ar[r,"\Fun{T}e_z"]\& \Fun{T}z\ar[d,"\alpha"]\\
@@ -1536,15 +1545,15 @@ We write $\defineTerm{potalg}\coloneqq(z,e_z,m_z,\alpha)$ for this data, with \e
 A $\Fun{T}$-monoid $\potalg$ in $\cat{C}$ is the same data as a $\otimes$-monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}_\otimes(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the monoidal structure on $\cat{C}$ lifts to one on $\cat{C}^{\Fun{T}}$ (equivalently, that $\Fun{T}$ lifts to a monad on $\Cat{Mon}_\otimes(\cat{C})$); see~\cite{kock1972strong, seal2013tensors}.
 \end{remark}
 
-Recall that in a symmetric monoidal closed category the functor $-\otimes a$ is left adjoint to the internal hom $\ihom{a,-}$ for each object $a$. We write $\ev_a\colon\ihom{a,b}\otimes a\to b$ for the counit (\emph{evaluation}) and $\coev_a\colon b\to\ihom{a,b\otimes a}$ for the unit (\emph{coevaluation}) of this adjunction; they satisfy the triangle identity, which we abbreviate $\coev_a\then\ev_a=\id$.
+Recall that in a symmetric monoidal closed category the functor $-\otimes a$ is left adjoint to the internal hom $\ihom{a,-}$ for each object $a$. We write $\ev_a\colon\ihom{a,b}\otimes a\to b$ for the counit (\emph{evaluation}) and $\coev_a\colon b\to\ihom{a,b\otimes a}$ for the unit (\emph{coevaluation}) of this adjunction; they satisfy the two triangle identities $(\coev_a\otimes a)\then\ev_a=\id_{b\otimes a}$ and $\coev_a\then[a,\ev_a]=\id_{[a,b]}$.
 
 \begin{theorem}\label{thm.Theta_T_alpha}
-Let $(\Fun{T},\tau)$ be a monoidal monad on a symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, and let $\potalg=(z,e,m,\alpha)$ be a $\Fun{T}$-monoid in $\cat{C}$ (\cref{def.T_monoid}). Then there is a lax monoidal functor that acts on objects as follows:
+Let $(\Fun{T},\tau)$ be a monoidal monad on a symmetric monoidal closed category $(\cat{C},I,\otimes, [-,-])$, and let $\potalg=(z,e,m,\alpha)$ be a $\Fun{T}$-monoid in $\cat{C}$ (\cref{def.T_monoid}). Then there is a lax symmetric monoidal functor that acts on objects as follows:
 \[
 \Theta_\potalg\colon\Lens{\cat{C}}^\Fun{T}\to\cat{C},\qquad
 \lensob{c}\mapsto\ihom{\inpt c,z}\otimes \outp c
 \]
-It is normal iff $e\colon I\to z$ is an isomorphism.
+It is normal if and only if $e\colon I\to z$ is an isomorphism.
 \end{theorem}
 \begin{proof}
 Define $H_X\coloneqq[\inpt X,z]$ for $X\in\{c,d,e\}$. 
@@ -1560,7 +1569,7 @@ H_c\otimes\outp c\To{\delta}H_c\otimes\outp c\otimes\outp c\To{\coev_d\otimes\ou
   c\otimes\inpt d]\otimes\outp d\To{\psi_f}H_d\otimes\outp d.
 \end{equation}
 
-Preservation of identities is a short diagram chase from the triangle equation $\coev\then\ev=\id$ and the $\Fun T$-algebra unit law $\alpha\circ\eta_z=\id$; we leave it to the reader.
+Preservation of identities is a short diagram chase from the triangle identity $\coev_a\then[a,\ev_a]=\id$ and the $\Fun T$-algebra unit law $\alpha\circ\eta_z=\id$; we leave it to the reader.
 %IDENTITIES
 %\[
 %\begin{tikzcd}[column sep=2.6em, row sep=1.85em, every label/.append style={font=\scriptsize}, font=\small, ampersand replacement=\&]
@@ -1710,7 +1719,7 @@ H_c\Fun T(c)
 \& z
 \end{tikzcd}
 \]
-The sixteen rectangular tiles commute by functoriality of $\otimes$, naturality of the strength $\sigma$, naturality of evaluation inside $\Fun T$, naturality of $\mu$, and the $\Fun T$-algebra axiom $\alpha\circ\mu=\alpha\circ\Fun T(\alpha)$. The lower-left pentagon is the $\mu$-coherence axiom for the strength. For the remaining region, the dotted arrows show how its commutativity follows from naturality and the triangle equation $\coev\then\ev=\id$. Thus $\Theta_\potalg$ is indeed a functor.
+The sixteen rectangular tiles commute by functoriality of $\otimes$, naturality of the strength $\sigma$, naturality of evaluation inside $\Fun T$, naturality of $\mu$, and the $\Fun T$-algebra axiom $\alpha\circ\mu=\alpha\circ\Fun T(\alpha)$. The lower-left pentagon is the $\mu$-coherence axiom for the strength. For the remaining region, the dotted arrows show how its commutativity follows from naturality and the triangle identity $(\coev_a\otimes a)\then\ev_a=\id$. Thus $\Theta_\potalg$ is indeed a functor.
 
 The unitor is $e_z\colon I\to z=\Theta_\potalg\binom{I}{I}$, and the productor is the canonical map
 \[
@@ -1727,7 +1736,7 @@ Finally, $e\colon I\to z$ is an isomorphism iff $z\cong I$ as a $\otimes$-monoid
 The following is an immediate corollary of \cref{thm.Theta_T_alpha} with $\Fun{T}=\id$ and $z\coloneqq I$.
 
 \begin{corollary}[Lens internalization]\label{cor.Theta}
-Let $(\cat{C},I,\otimes, [-,-])$ be a symmetric monoidal closed category. There is a normal lax monoidal functor
+Let $(\cat{C},I,\otimes, [-,-])$ be a symmetric monoidal closed category. There is a normal lax symmetric monoidal functor
 \[\Theta\colon\Lens{\cat{C}}\to\cat{C},\qquad
 \lensob{c}\mapsto\ihom{\inpt c,I}\otimes\outp c.\]
 \end{corollary}
@@ -1944,7 +1953,7 @@ A polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ for 
   \Phip{\interp}\colon\arr_D\longrightarrow\para{\Fun{c}\circ J}{\poly},
 \]
 where $\cat Q$ acts on $\poly$ by $Q\cdot\blank\coloneqq \Fun{c}(JQ)\otimes\blank$. On
-objects, $\Phip{\interp}\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{M}),z}$. It is normal iff $z\cong\yon$.
+objects, $\Phip{\interp}\lensob{M}=\Fun{c}(\outp{M})\otimes\ihom{\Fun{c}(\inpt{M}),z}$. It is normal if and only if $z\cong\yon$.
 \end{theorem}
 
 \begin{proof}
@@ -2075,18 +2084,19 @@ Let $\arr_D$ be the adaptive-arrangement operad of an adaptive-arrangement datum
 \begin{theorem}[Dynamics functor]\label{thm.dynamics_functor}
 Every polynomial interpretation datum $\interp=(\Fun c,\Fun R',\theta,\potalg)$ and $(\Fun{c}\circ J)$-integrator $\intg$ induce an operad functor
 \[
-\Phi_{\interp,\intg}\colon\arr_D\to\pc.
+\Phi_{\interp,\intg}\colon\arr_D\to\pc,
 \]
+which is normal (as a lax symmetric monoidal functor) when $z\cong\yon$.
 \end{theorem}
 
 \begin{proof}
-Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below (normal when $z\cong\yon$), given by \cref{thm.poly_interpretation,prop.integrator_to_org}:
+Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below, given by \cref{thm.poly_interpretation,prop.integrator_to_org}:
 \[
 \arr_D\To{\Phip{\interp}}
 \para{\Fun{c}\circ J}{\poly}\To{\Psisem{\intg}}
 \pciso\inj\pc.
-\qedhere
 \]
+When $z\cong\yon$ all three factors are normal---$\Phip{\interp}$ by \cref{thm.poly_interpretation}, $\Psisem{\intg}$ by \cref{prop.integrator_to_org}, and the inclusion strongly---so the composite is normal.
 \end{proof}
 
 Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\lensob M$ to the polynomial interface
@@ -2102,6 +2112,8 @@ and a morphism $f=(Q,\outp f,\inpt f)\colon\lensob M\to\lensob N$ to the $\pc$-m
 \ihom*{\Phi_{\interp,\intg}\lensob M,\Phi_{\interp,\intg}\lensob N}.
 \]
 Here $\dyn_Q$ is the integrator's dynamics (\cref{def.integrator}) and $\widetilde{\Phip{\interp}(f)}$ is the transpose under \eqref{eqn.dirichlet_adjunction} of the $\Fun c(JQ)$-parameterized polynomial map $\Phip{\interp}(f)$ of \cref{thm.poly_interpretation}. The integrator enters only through $\dyn_Q$, which trades the parameter $\Fun c(JQ)$ for the stored state $\Fun S_Q$, while the backward pass $\inpt f$ and the output map $\outp f$ are recorded inside $\Phip{\interp}(f)$.
+
+When $z\not\cong\yon$, the unit comparison cell for the empty interface $I=\binom{1}{1}\in\arr_D$ corresponds to a non-invertible $\pc$-morphism $\yon\to z$. It will be a single-state coalgebra on $\ihom{\yon,z}\cong z$, which picks out the unit position $e_z\in z(1)$. 
 
 \begin{remark}[Multi-stage integrators]\label{rmk.multistage}
 The integrators we build are \emph{single-stage}: at each tick the system emits a position, receives a direction, and updates once. Many numerical integrators---Runge--Kutta methods, or velocity Verlet (leapfrog)~\cite[Ch.~VI]{hairer2006geometric}---instead take several emit--receive rounds per tick, producing a coalgebra of the form $S\to p^{\circ\ell}(S)$, where $p^{\circ\ell}=p\circ\cdots\circ p$ is the $\ell$-fold composite. A correspondingly modified integrator (\cref{def.integrator}), with state space $\Fun S$ unchanged but dynamics of the form $\Store\circ\Fun S\Rightarrow(\Fun c\circ J)^{\circ\ell}$, should again yield an operad functor into the analogous $2$-category of $\ell$-round coalgebras. An LLM (Claude) has implemented the $\ell=2$ case (velocity Verlet) in companion code (\url{https://github.com/dspivak/dap}), where it integrates the wave equation stably; we have not independently audited it, and leave the general treatment to future work. See also \cite{ngotiaoco2017compositionality}.\qedhere
@@ -2314,8 +2326,9 @@ A multimorphism $\varphi\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth 
   \item[potential-free] if its potential $U=0$ vanishes;
   \item[static] if it is both stateless and potential-free;
   \item[closed] if its codomain is the monoidal unit $I=\binom{1}{1}$;
-  \item[a system] if its domain is $I$ (i.e.\ the arity is $K=0$); and 
-  \item[a closed system] if it is a morphism $I\to I$ (sometimes called a \emph{scalar}).
+  \item[a system] if its domain is $I$ (i.e.\ the arity is $K=0$); 
+  \item[a closed system] if it is a morphism $I\to I$ (sometimes called a \emph{scalar}); and
+  \item[harmonic] if $\outp M$ and $\inpt N$ are vector spaces, its sharp $\sharpR_Q$ is constant and symmetric, and its potential $U$ is a quadratic form.\footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it.}
 \qedhere
 \end{description}
 \end{definition}
@@ -2720,14 +2733,15 @@ It is a monoidal 1-form on $T^*$: naturality follows from sharp-equivariance \eq
 
 More generally, when a 1-form $\omega_{\rv Q}(q,\xi)=(a,b)$ is fed through the symplectic sharp $\sharpS_{T^*Q}$ and added to the state---as it will be under the phase integrator \eqref{eqn.phase_integrator} below---it contributes $(+b,-a)$ to the update, since $\sharpS_{T^*Q}$ swaps coordinates and negates the second \eqref{eqn.canonical_sharp}. Thus the $Q$-component of $\omega$ drives position and the $Q^*$-component drives momentum with a sign flip: the kinetic 1-form ends up adding velocity $\sharpR_q(\xi)$ to position.
 
-% \begin{example}[Dissipation 1-form]\label{ex.dissipation_one_form}
-% The \emph{dissipation 1-form} is the section
-% \begin{equation}\label{eqn.dissipation}
-% \zeta_{\rv Q}\colon T^*Q\to T^*(T^*Q),\qquad
-% (q,\xi)\mapsto(\xi,\,0),
-% \end{equation}
-% which is a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of the momentum coordinate. For a \emph{damping coefficient} $c\in[0,1]$, the scalar multiple $c\,\zeta$ is again a monoidal 1-form (\cref{prop.one_forms_vector_space}); it dissipates a fraction $c$ of the momentum at each step.
-% \end{example}
+  \begin{example}[Damping 1-form]\label{ex.damping_one_form}
+ Although it plays no further role, it is worth recording where damping enters the formalism. Define the \emph{damping 1-form} to be the section
+ \begin{equation}\label{eqn.damping}
+ \zeta_{\rv Q}\colon T^*Q\to T^*(T^*Q),\qquad
+ (q,\xi)\mapsto(\xi,\,0):
+ Q^*\oplus Q\cong T^*_{(q,\xi)}(T^*Q),
+ \end{equation}
+ which is a monoidal 1-form on $T^*$ by linearity and the $\oplus$-monoidality of the momentum coordinate. For a \emph{damping coefficient} $c\in[0,1]$, the scalar multiple $c\,\zeta$ is again a monoidal 1-form (\cref{prop.one_forms_vector_space}); it removes a fraction $c$ of the momentum at each step.
+ \end{example}
 
 \begin{lemma}\label{lem.one_form_to_poly}
 Every monoidal 1-form $\omega$ on $T^*$ induces a monoidal natural transformation
@@ -3148,13 +3162,13 @@ When moreover \textbf{the sharp is symmetric}, $\xi'(\sharpR_0(\xi))=\xi(\sharpR
 \[
 H(q,\xi)\coloneqq \tfrac12\xi(\sharpR_0(\xi))+U(q).
 \]
-This is the energy of a \emph{simple mechanical system}~\cite[\S 3.7]{abraham1978foundations}---kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ plus potential energy $U$. Indeed, the symmetry condition and linearity of $\sharpR$ give $dH|_{(q,\xi)}=(dU|_q,\sharpR_0(\xi))=\bk{\nuro}{(q,\xi)}(dU|_q)\in Q^*\oplus Q$ by the readout $\nuro$ \eqref{eqn.nu}, and \eqref{eqn.sharp_S} recovers the vector field---as advertised---as the symplectic sharp applied to the differential of $H$: 
+This is the \emph{energy function} of a classical mechanical system~\cite[\S 18.2]{cannasdasilva2008lectures}---kinetic energy $\tfrac12\xi(\sharpR_0(\xi))$ plus potential energy $U$. Indeed, the symmetry condition and linearity of $\sharpR$ give $dH|_{(q,\xi)}=(dU|_q,\sharpR_0(\xi))=\bk{\nuro}{(q,\xi)}(dU|_q)\in Q^*\oplus Q$ by the readout $\nuro$ \eqref{eqn.nu}, and \eqref{eqn.sharp_S} recovers the vector field---as advertised---as the symplectic sharp applied to the differential of $H$: 
 \[
 \sharpS_S(dH|_{(q,\xi)})=(\sharpR_0(\xi),-dU|_q)=(\dot{q},\dot{\xi}).
 \]
 In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.
 
-The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly. However, when the potential is a \textbf{quadratic form}, it does preserve the canonical symplectic pairing. Let $\sharpR_0$ be constant and symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
+The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly. However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---the sharp constant and symmetric and the potential a \textbf{quadratic form}---it does preserve the canonical symplectic pairing. With $\sharpR_0$ constant and symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
 \[U(q)\coloneqq\tfrac12(\kappa q)(q).\]
 In this case, $dU|_q=\kappa q$ is linear,%
 \footnote{This is computed  using symmetry of $\kappa$: $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$.} 
@@ -3167,7 +3181,7 @@ and we will see in \cref{prop.closed_conservation} that the step \eqref{eqn.clos
 are the standard \emph{drift} and \emph{kick} steps of the symplectic Euler method~\cite[\S VI.3]{hairer2006geometric}, the drift advancing the position and the kick applying the force.
 
 \begin{proposition}[Symplecticity of the closed phase step]\label{prop.closed_conservation}
-With $\sharpR$ constant and symmetric and $U$ quadratic, we obtain the equation
+For a harmonic arrangement (\cref{def.arrangement_terminology}), we obtain the equation
 \[\Phiphase(f)=\fun{kick}\circ\fun{drift}.\]
 In particular, the update \eqref{eqn.closed_update} is an endomorphism of the reactive vector space $T^*Q$ in $\rvect$, i.e.\ a linear isomorphism preserving the canonical symplectic pairing \eqref{eqn.canonical_form}.
 \end{proposition}
@@ -3189,6 +3203,21 @@ and the last two terms cancel by symmetry of the sharp. For the kick:
 \]
 and the last two terms cancel by symmetry of $\kappa$. Each of $\fun{drift}$ and $\fun{kick}$ therefore preserves the pairing, hence lies in $\rvect(T^*Q,T^*Q)$, and so does their composite.
 \end{proof}
+
+\begin{remark}[Sampling a potential by phase dynamics]\label{rmk.hmc}
+For constant symmetric $\sharpR_0$, the closed phase step \eqref{eqn.closed_update} is the symplectic Euler step~\cite[\S VI.3]{hairer2006geometric} of the energy $H(q,\xi)=\tfrac12\xi(\sharpR_0\xi)+U(q)$, a discrete approximation to the Hamiltonian flow, which itself conserves $H$ (\cref{rmk.symplectic_perpendicular}). Two of its properties let us repurpose it as a generator of \emph{random samples}, by a standard recipe called \emph{Hamiltonian Monte Carlo}~\cite{neal2011mcmc}, which we sketch since it uses nothing beyond the objects in hand. First, the step preserves volume on the phase space $T^*Q$: it is a drift $(q,\xi)\mapsto(q+\sharpR_0(\xi),\,\xi)$ followed by a kick $(q,\xi)\mapsto(q,\,\xi-dU|_q)$, each altering one coordinate by an amount depending only on the other, hence each with unit Jacobian; in the quadratic case \cref{prop.closed_conservation} sharpens this, showing the step preserves the symplectic pairing itself. Second, like any such discrete step it does not conserve $H$ exactly (as observed above). The first property is the one the recipe relies on; the second is the error it corrects.
+
+Fix a potential $U\colon Q\to\rr$ and suppose we wish to draw points $q\in Q$ at random, with low-potential points more likely than high-potential ones---precisely, with probability density proportional to $e^{-U(q)}$. Such a distribution is a common target: it is the equilibrium distribution of a physical system whose energy is $U$, and it is proportional to the posterior of a Bayesian model whose negative log-density is $U$. When $U$ is at all complicated there is no direct formula for sampling from it, and one settles instead for generating a sequence $q_0,q_1,q_2,\dots$ whose values are, in the long run, distributed as $e^{-U}$.
+
+Take $\sharpR_0$ positive-definite---physically, that the masses are positive---so that the kinetic energy $\tfrac12\xi(\sharpR_0\xi)$ is a positive quadratic form. Because $H$ is a term in $\xi$ alone plus a term in $q$ alone, the density $e^{-H(q,\xi)}$ on $T^*Q$ then factors as a product: a Gaussian momentum distribution $e^{-\frac12\xi(\sharpR_0\xi)}$ times the target $e^{-U(q)}$. Hence if we can draw pairs $(q,\xi)$ in proportion to $e^{-H}$ and then discard $\xi$, the positions $q$ we keep are distributed as $e^{-U}$---which is the goal. To draw $(q,\xi)$ we alternate two moves from the current state:
+\begin{enumerate}
+  \item \emph{flow}: run several closed phase steps \eqref{eqn.closed_update}, then keep the resulting state with a probability depending on how much $H$ changed over the run, and otherwise retain the old state. Because the underlying flow conserves $H$ (\cref{rmk.symplectic_perpendicular}), the run reaches a distant point of phase space while $H$ drifts only slightly, so the proposal is far away yet usually kept;
+  \item \emph{refresh}: replace $\xi$ by a fresh draw from the Gaussian momentum distribution, which is what moves between energy levels.
+\end{enumerate}
+Iterating these two moves is the sampler.
+
+The keep-or-discard test in the flow move is what corrects the energy drift, and it makes $e^{-U}$ the \emph{exact} invariant distribution of the sampler---discretization error notwithstanding---as long as the proposal preserves phase-space volume (as above) and is \emph{reversible}: running the step with the momentum negated retraces the trajectory backward. Reversibility holds not for the single drift-then-kick step but for its symmetric \emph{leapfrog} refinement (the $\ell=2$ integrator of \cref{rmk.multistage}), assembled from the same drift and kick. The randomness lives entirely in the momentum refresh and the keep-or-discard test; the deterministic machine they wrap is the phase dynamics functor $\Phiphase$ of this paper.
+\end{remark}
 
 %====================================================================
 \chapter{Applications}\label{ch.applications}
@@ -3326,7 +3355,7 @@ The parameter covector $\xi_Q$ drives the descent update \eqref{eqn.dl_gradient_
 \begin{equation}\label{eqn.learning_sharp}
 \sharpR_q=\etaLR\sharpEuc{},
 \end{equation}
-this becomes vanilla gradient descent at rate $\etaLR$:
+this becomes ordinary gradient descent at rate $\etaLR$:
 \begin{equation}\label{eqn.gradient_descent}
 q\longmapsto q-\sharpR_q(\xi_Q)=q-\etaLR\,\bigl(T_qF(\blank,x)\bigr)^\top\xi.
 \end{equation}
@@ -3800,7 +3829,7 @@ m_v\bigl(q_v(t+1)-q_v(t)\bigr)-m_v\bigl(q_v(t)-q_v(t-1)\bigr)\;=\;-(L_G\vec q(t)
 and collecting the position terms on the left, in the notation of \eqref{eqn.doubledot}, yields \eqref{eqn.graph_laplacian_dynamics}.
 \end{proof}
 
-The reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_{v\in V}$ is constant and symmetric, and the potential \eqref{eqn.graph_potential} is quadratic with $dU=L_G$ symmetric, so \cref{prop.closed_conservation} applies (with $\kappa=L_G$): $\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ is a map in $\rvect$, hence preserves the canonical symplectic pairing.
+The reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_{v\in V}$ is constant and symmetric and the potential \eqref{eqn.graph_potential} is quadratic with $dU=L_G$ symmetric---so the arrangement is harmonic (\cref{def.arrangement_terminology}) and \cref{prop.closed_conservation} applies (with $\kappa=L_G$): $\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ is a map in $\rvect$, hence preserves the canonical symplectic pairing.
 
 \begin{remark}[Heat equation from the configuration integrator]\label{rmk.graph_heat}
 Rather than $\Phiphase$, applying $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.graph_wire}---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$ from \eqref{eqn.sharp_chain}---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and the same computation \eqref{eqn.graph_gradient} applies---except that the configuration integrator presents the stored position itself, so here $\xi_Q=dU(\vec q)=L_G\vec q$. Its descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ then reads component-wise as

@@ -1,0 +1,700 @@
+\documentclass[11pt]{article}
+
+%=====================================================================
+%  Attention as a smooth arrangement, and the predictive-coding
+%  suboperad of Arr_Sm.
+%
+%  Stand-alone companion note to dynamic-algebra-potentials.tex.
+%  Self-contained: it reproduces the paper's *rendered* notation
+%  (\sarr, \lensob, \inpt/\outp, \cot, \Phiconf, \ltens, ...) with a
+%  light article preamble, rather than importing the memoir machinery.
+%=====================================================================
+
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=orange!50!black,
+            urlcolor=orange!50!black]{hyperref}
+\usepackage[capitalize]{cleveref}        % must load after hyperref
+
+\linespread{1.06}
+
+%---------------- theorem environments ----------------
+% Shared counter via aliascnt, so cleveref names each environment
+% correctly (Remark/Observation/...), not all as "Proposition".
+\usepackage{aliascnt}
+\newcommand{\sharedthm}[3]{% #1=env, #2=Singular, #3=Plural
+  \newaliascnt{#1}{proposition}%
+  \newtheorem{#1}[#1]{#2}%
+  \aliascntresetthe{#1}%
+  \crefname{#1}{#2}{#3}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[section]
+\crefname{proposition}{Proposition}{Propositions}
+\sharedthm{observation}{Observation}{Observations}
+\sharedthm{corollary}{Corollary}{Corollaries}
+
+\theoremstyle{definition}
+\sharedthm{definition}{Definition}{Definitions}
+\sharedthm{construction}{Construction}{Constructions}
+\sharedthm{example}{Example}{Examples}
+
+\theoremstyle{remark}
+\sharedthm{remark}{Remark}{Remarks}
+\sharedthm{slogan}{Slogan}{Slogans}
+
+%---------------- notation (mirrors the paper's output) ----------------
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\cat}[1]{\mathcal{#1}}
+\newcommand{\Cat}[1]{\mathbf{#1}}
+\newcommand{\fun}[1]{\mathrm{#1}}
+\newcommand{\Fun}[1]{\mathsf{#1}}        % named functor (sans-serif)
+
+\newcommand{\Sm}{\mathrm{Sm}}
+\newcommand{\arr}{\mathbb{A}\Cat{rr}}    % abstract arrangement operad
+\newcommand{\sarr}{\arr_{\Sm}}           % smooth arrangement operad
+\newcommand{\pc}{\mathbb{P}\Cat{C}}      % polynomial coalgebras (dynamics)
+
+\newcommand{\mfd}{\Cat{Mfd}}
+\newcommand{\rvect}{\Cat{RVect}}
+\newcommand{\vect}{\Cat{Vect}}
+
+\newcommand{\rv}[1]{\mathbf{#1}}         % reactive vector space \rv Q=(Q,\sharpR_Q)
+\newcommand{\sharpR}{\sharp}
+
+\newcommand{\inpt}[1]{#1^{-}}
+\newcommand{\outp}[1]{#1^{+}}
+\newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}
+\newcommand{\ltens}{\boxtimes}           % lens tensor
+
+\renewcommand{\cot}{\mathsf{cot}}        % cotangent functor Mfd -> Poly
+\newcommand{\cotof}[1]{\cot(#1)}
+\newcommand{\yon}{\mathcal{y}}
+\newcommand{\potd}{\fun{d}}
+
+\newcommand{\conf}{\mathrm{conf}}
+\newcommand{\phase}{\mathrm{phase}}
+\newcommand{\Phiconf}{\Phi_{\conf}}
+\newcommand{\Phiphase}{\Phi_{\phase}}
+\newcommand{\intg}{\mathfrak{i}}
+\newcommand{\interpsm}{\mathrm{sm}}
+
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\blank}{\mathord{\vcenter{\hbox{\scriptsize$\square$}}}}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\sgn}{sgn}
+
+\newcommand{\Wq}{W_{\mathrm q}}
+\newcommand{\Wk}{W_{\mathrm k}}
+\newcommand{\Wv}{W_{\mathrm v}}
+\newcommand{\Wo}{W_{\mathrm o}}
+
+%=====================================================================
+\title{Attention as a smooth arrangement,\\
+       and the predictive-coding suboperad of $\sarr$}
+\author{David I.\ Spivak}
+\date{June 24, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We place a self-attention head inside the smooth arrangement operad
+$\sarr$ of the companion manuscript~\cite{DAP}: its query/key/value
+weights are the reactive parameter space $\rv Q$, the softmax routing is
+the backward (input) leg $\inpt f$ of the arrangement, an attention-pooled
+read-out is the forward (output) leg $\outp f$, and a self-prediction loss
+is the canonical potential $U$. Attention heads are then \emph{generators}
+of a suboperad of $\sarr$, not a suboperad themselves; we describe the
+suboperad they generate. Its interpretation under the configuration
+integrator $\Phiconf$ is hierarchical predictive coding: the two legs of
+the lens are exactly the top-down and bottom-up channels, the Moore
+condition built into $\sarr$ is the predict-then-compare discipline, and
+the \emph{type} of the potential, $U\colon Q\times\outp M\times\inpt N\to\rr$,
+is already that of a prediction-error unit. The modern-Hopfield reading of
+attention is the flat, one-level corner; the nested, bidirectional object
+is the general one. We close with a cleaner generating set (a single
+softmax-routing primitive over the linear suboperad) and a list of
+open questions.
+\end{abstract}
+
+\tableofcontents
+
+\section{The arrangement interface}\label{sec.interface}
+
+We recall just enough of $\sarr$ to fix types. A \emph{box} is a lens
+object $\lensob M=\binom{\inpt M}{\outp M}$, a pair of smooth manifolds:
+$\inpt M$ is what the box receives, $\outp M$ is what it emits. A
+\emph{smooth arrangement}
+\[
+  f\colon\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}\longrightarrow\lensob N
+\]
+wires $K$ inner boxes into an outer box. Writing
+$\outp M\coloneqq\prod_{i=1}^{K}\outp{M_i}$ and
+$\inpt M\coloneqq\prod_{i=1}^{K}\inpt{M_i}$, the arrangement is a triple
+\begin{equation}\label{eq.arr}
+  f=\Bigl(\rv Q,\;\tbinom{\inpt f}{\outp f},\;U\Bigr),
+\end{equation}
+consisting of a reactive parameter space $\rv Q=(Q,\sharpR_Q)$ together
+with three smooth maps
+\begin{align}
+  \outp f &\colon Q\times\outp M \longrightarrow \outp N, \label{eq.outf}\\
+  \inpt f &\colon Q\times\outp M\times\inpt N \longrightarrow \inpt M, \label{eq.inf}\\
+       U  &\colon Q\times\outp M\times\inpt N \longrightarrow \rr. \label{eq.U}
+\end{align}
+Here $Q$ is a finite-dimensional real vector space and
+$\sharpR_Q\colon Q\to\vect(Q^{*},Q)$ is its reactive sharp, a smooth
+choice of metric turning covectors into vectors; the potential $U$ is
+the writer-monad decoration. Operadic substitution composes the lens
+parts in the usual way and \emph{adds} potentials. The symmetric group
+$\Sigma_K$ permutes the inner boxes.
+
+Two features of~\eqref{eq.outf}--\eqref{eq.U} carry the whole story below
+and are worth stating in isolation.
+
+\begin{remark}[Directionality, and the Moore condition]\label{rmk.moore}
+The output leg $\outp f$ does \emph{not} take an $\inpt N$ argument: the
+outer emission is a function of the inner emissions $\outp M$ and the
+parameters only. The input leg $\inpt f$ does take $\inpt N$: the outer
+input is routed down to the inner inputs. So an arrangement reads
+\emph{emissions} freely but cannot read its own \emph{incoming} message
+instantaneously --- the Moore (as opposed to Mealy) condition. This is
+exactly what makes feedback wirings well-posed once interpreted as
+dynamics.
+\end{remark}
+
+\begin{remark}[The potential sees both ends]\label{rmk.bothends}
+The potential's type~\eqref{eq.U}, $U\colon Q\times\outp M\times\inpt N\to\rr$,
+gives it access to the inner emissions $\outp M$ and to the outer input
+$\inpt N$ at once. We return to this in \cref{sec.semantics}; it is the
+single most important type in the note.
+\end{remark}
+
+\section{Attention as a smooth arrangement}\label{sec.attention}
+
+Fix an embedding dimension $E$, head dimensions $d_q=d_k=:d$ and
+$d_v$, and let each inner box emit and receive vectors:
+\[
+  \outp{M_i}=\rr^{E},\qquad \inpt{M_i}=\rr^{E}\qquad(i=1,\dots,K).
+\]
+Both legs of every box are the embedding space $\rr^{E}$ (the residual
+stream); the head space $\rr^{d_v}$ below is an internal bottleneck, never
+an interface. We write a generic inner-emission tuple as
+$h=(h_1,\dots,h_K)\in\outp M$, with $h_i\in\rr^{E}$.
+
+\begin{construction}[An attention head]\label{con.head}
+Take the reactive parameter space to have carrier
+\[
+  Q\;=\;\vect\!\bigl(\rr^{E},\,\rr^{d_q}\oplus\rr^{d_k}\oplus\rr^{d_v}\bigr)
+        \;\oplus\;\vect\!\bigl(\rr^{d_v},\,\rr^{E}\bigr),
+\]
+i.e.\ a point of $Q$ is a quadruple $W=(\Wq,\Wk,\Wv,\Wo)$ of query, key,
+value, and \emph{output} projections, and let $\sharpR_Q$ be a metric on
+this weight space (\cref{rmk.optimizer}). Define the three maps
+of~\eqref{eq.outf}--\eqref{eq.U} as follows.
+
+\emph{Backward leg (the attention).} With the outer input
+$n\coloneqq\inpt N$ adjoined to the pool as one extra key/value pair
+$(\Wk n,\Wv n)$, set
+\begin{equation}\label{eq.attn}
+  \inpt f(W,h,n)_i
+   \;=\;\Wo\!\!\!\sum_{j\in\{1,\dots,K\}\cup\{\star\}}\!\!\! A_{ij}\,\Wv h_j
+   \;\in\;\rr^{E},
+  \qquad
+  A_{i\,\cdot}=\softmax\!\Bigl(\tfrac{1}{\sqrt d}\,\langle \Wq h_i,\,\Wk h_j\rangle\Bigr)_{j},
+\end{equation}
+where the index $\star$ contributes the key/value built from $n$. Thus
+$\inpt f$ is precisely ``compute queries, keys, values; softmax the rows
+of the Gram matrix; mix the values.''
+
+\emph{Forward leg (the read-out).} Give the outer box a query $w_\star$ ---
+either a learned vector carried in $\rv Q$ or one pooled from $h$ --- and
+let it attend over the inner emissions:
+\begin{equation}\label{eq.pool}
+  \outp f(W,h)
+   \;=\;\Wo\sum_{j=1}^{K}\softmax\!\Bigl(\tfrac{1}{\sqrt d}\,\langle w_\star,\,\Wk h_j\rangle\Bigr)_j\,\Wv h_j
+   \;\in\;\outp N .
+\end{equation}
+By \cref{rmk.moore} the outer query may not depend on $n$.
+
+\emph{Potential (the prediction).} Let
+\begin{equation}\label{eq.Uattn}
+  U(W,h,n)\;=\;\tfrac12\bigl\lVert\,h-\mathrm{pred}(W,n)\,\bigr\rVert^{2},
+\end{equation}
+the squared error between the bottom-up activity $h=\outp M$ and a
+top-down prediction $\mathrm{pred}(W,n)$ assembled from the descending
+context $n=\inpt N$.\qedhere
+\end{construction}
+
+So nothing in attention is bolted onto $\sarr$: the $\mathit{QKVO}$ weights
+are the reactive space $\rv Q$, the softmax routing is the backward leg
+$\inpt f$, the pooled read-out is the forward leg $\outp f$, and the
+self-prediction loss is the potential $U$. The construction is a smooth
+(indeed real-analytic) arrangement.
+
+\begin{remark}[A notational hazard]\label{rmk.clash}
+The companion paper writes $\rv Q=(Q,\sharpR_Q)$ for the reactive
+\emph{parameter} space and $K$ for the \emph{arity} (number of inner
+boxes). Attention's traditional letters $Q,K,V$ collide with both. We
+keep the paper's $\rv Q$ and $K$ and use lowercase head dimensions
+$d_q=d_k=d$, $d_v$ and roman projections $\Wq,\Wk,\Wv,\Wo$ throughout.
+\end{remark}
+
+\begin{remark}[The optimizer lives in the sharp]\label{rmk.optimizer}
+The sharp $\sharpR_Q$ is a free choice of metric on weight space. A
+constant Euclidean sharp gives plain gradient descent; a state-dependent
+sharp gives a preconditioned / natural-gradient method. Thus the choice
+of optimizer (e.g.\ a diagonal Adam-style preconditioner) is data of
+$\rv Q$, not an addition to the dynamics.
+\end{remark}
+
+\begin{remark}[The coordinate-free data: QK and OV circuits]\label{rmk.circuits}
+The auxiliary dimensions $d_q,d_v$ never reach the interface; they are rank
+bounds. Eliminating them, a head is two low-rank maps on the embedding
+space,
+\[
+\begin{aligned}
+  \Theta&\coloneqq\Wq^{\top}\Wk\colon\rr^{E}\to\rr^{E}
+   &&\text{(QK circuit; where to read)},\\
+  \Omega&\coloneqq\Wo\Wv\colon\rr^{E}\to\rr^{E}
+   &&\text{(OV circuit; what to write)},
+\end{aligned}
+\]
+since $\langle\Wq h_i,\Wk h_j\rangle=h_i^{\top}\Theta h_j$ and the written
+message is $\sum_j A_{ij}\,\Omega h_j$. A coordinate-free head is the pair
+$(\Theta,\Omega)$ together with the softmax. In the predictive-coding
+reading (\cref{sec.semantics}) $\Omega$ is the generative weight
+(cause~$\mapsto$~predicted effect) and $\Theta$ its addressing. Tying
+$\Wo=\Wv^{\top}$ and $\Wq=\Wk$ makes both symmetric --- the regime in which
+the attention update is the exact gradient of an energy (\cref{rmk.corners}).
+\end{remark}
+
+\section{The outer box is a full participant}\label{sec.outer}
+
+It is tempting to read $\outp f$ as a passive read-out. It is not: the
+outer box participates in the attention on \emph{both} legs of the lens,
+and the apparent inner/outer asymmetry is the operadic boundary, not a
+privileging of the inner boxes.
+
+\begin{itemize}
+\item \emph{Up-leg} $\outp f\colon Q\times\outp M\to\outp N$ of
+\eqref{eq.pool}: the outer box carries a \emph{query} and reads the inner
+boxes' keys/values. This is attention pooling --- the outer box ``receives
+through a learned query,'' exactly as an inner box does.
+\item \emph{Down-leg} $\inpt f\colon Q\times\outp M\times\inpt N\to\inpt M$
+of \eqref{eq.attn}: the outer input $\inpt N$ is projected to a
+\emph{key/value} and dropped into the pool the inner boxes query over.
+This is the route by which the outer box's content reaches the inner
+boxes: cross-attention to descending context.
+\end{itemize}
+
+Thus inner boxes do self-attention to one another \emph{plus}
+cross-attention to the outer input, while the outer box pools the inner
+boxes. The only constraint is the one already noted.
+
+\begin{observation}[No instantaneous self-read]\label{obs.feedthrough}
+By \cref{rmk.moore} the up-leg $\outp f$ has no $\inpt N$ argument, so the
+outer box's read cannot see its own descending message inside a single
+arrangement. Any dependence of the outer read-out on the outer input is
+mediated by a box's state across one interpretation step, i.e.\ across
+depth/time. This is the well-posedness condition, and it is the
+residual-stream-as-state mechanism.
+\end{observation}
+
+\begin{remark}[The split dissolves under nesting]\label{rmk.supertoken}
+The outer box's query rides the up-wire ($\outp N$) while its key/value
+ride the down-wire ($\inpt N$): what a box presents \emph{up} to its
+parent (a pooled summary) differs from what it broadcasts \emph{down} to
+its children (the context it received). In one arrangement this looks
+asymmetric, but it dissolves under operadic substitution: when this box
+becomes an inner box one level up, its up-read-out $\outp N$ \emph{is} the
+single emission from which the parent computes its own $\mathit{QKV}$.
+Every box carries unified $\mathit{QKV}$ at its own level. Nesting the
+construction therefore yields \emph{hierarchical} attention, each
+arrangement a ``super-token'' that pools its children into a summary
+presented upward and broadcasts the context it receives downward
+(cf.\ inducing-point set attention~\cite{SetTransformer} and the Perceiver
+latent~\cite{Perceiver}).
+\end{remark}
+
+\section{The generated suboperad}\label{sec.suboperad}
+
+\begin{observation}[Heads generate, they do not close]\label{obs.generate}
+Composing two attention heads yields a two-layer attention network: still
+a smooth arrangement (lens parts compose, potentials add), but not a
+single head. Hence the attention heads are \emph{generators}; the
+suboperad they generate is the class of finite attention networks.
+Operadic composition is depth and the lens tensor $\ltens$ is width
+(multi-head / parallel heads).
+\end{observation}
+
+Two standard architectural facts are forced by the operad structure
+rather than assumed.
+
+\begin{observation}[Composability supplies the output projection]\label{obs.residual}
+To substitute one arrangement into a box of another, a received message
+must be re-emittable at the next level: the message delivered to box $i$
+must land in its emission space $\outp{M_i}=\rr^{E}$. The value lives in a
+head space $\rr^{d_v}$, so composability requires a re-embedding
+$\rr^{d_v}\to\rr^{E}$ --- which is exactly the output projection $\Wo$ of
+\cref{con.head}. The residual stream therefore keeps constant width $E$
+while $d_v$ remains a free internal rank; the operad demands that $\Wo$
+\emph{exist}, not that $d_v=E$.
+\end{observation}
+
+\begin{observation}[Equivariance forces positional encoding]\label{obs.equivariance}
+Operad morphisms respect the $\Sigma_K$-action permuting inner boxes, and
+the softmax routing~\eqref{eq.attn} is $\Sigma_K$-equivariant. Order
+information is thus invisible to a pure arrangement; recovering it requires
+breaking the symmetry by hand, i.e.\ positional encoding.
+\end{observation}
+
+\begin{example}[The $0$-ary box learns the prior]\label{ex.zeroary}
+At arity $K=0$ the attention sum in~\eqref{eq.attn}--\eqref{eq.pool} is
+empty: attention contributes nothing. The output leg
+$\outp f\colon Q\times 1\to\outp N$ is a parameterized constant, and the
+potential~\eqref{eq.Uattn} drives that constant toward the data marginal.
+A $0$-ary box still predicts --- but its predictive power is the
+potential-driven learned prior, not attention.
+\end{example}
+
+\section{What the suboperad computes}\label{sec.semantics}
+
+Interpreting a decorated arrangement is the functor
+$\Phiconf\colon\sarr\to\pc$ of the companion paper (and its phase variant
+$\Phiphase$): the potential is lifted to a force by the cotangent functor
+$\cot$ and the sharp, and the resulting vector field is a dynamical
+system. We read off what attention-with-prediction computes.
+
+The two legs of \cref{sec.outer} are precisely the two channels of
+predictive coding: the down-leg $\inpt f$ broadcasts a top-down prediction
+to the children; the up-leg $\outp f$ returns a bottom-up summary; and the
+Moore condition (\cref{obs.feedthrough}) is the predict-then-compare
+discipline. The clincher is \cref{rmk.bothends}.
+
+\begin{observation}[The potential is an error unit]\label{obs.erroreunit}
+The type $U\colon Q\times\outp M\times\inpt N\to\rr$ is exactly that of a
+predictive-coding error unit: $U$ compares the bottom-up activity $\outp M$
+against the top-down context $\inpt N$, as in~\eqref{eq.Uattn}. The
+framework supplies the error unit for free; ``predict the input'' is not an
+add-on but the canonical decoration of this interface.
+\end{observation}
+
+\begin{slogan}\label{slo.pc}
+Arrangements alone (no $U$, no $\Phi$) are a feedforward function class:
+hierarchical attention, each arrangement a super-token
+(\cref{rmk.supertoken}). Adding the potential $U$ and interpreting under
+$\Phiconf$ makes the dynamics \emph{hierarchical predictive coding}:
+predictions flow down the lens, errors flow up, and the state relaxes to
+minimize $\textstyle\sum U$.
+\end{slogan}
+
+\begin{remark}[The integrator chooses the order]\label{rmk.order}
+Predicting the input alone is served by $\Phiconf$, giving first-order,
+relaxational predictive coding. Predicting the input \emph{and its
+state-update} targets the momentum coordinate, which $\Phiconf$ discards;
+the phase integrator $\Phiphase$ retains it, giving second-order,
+oscillatory predictive coding. The choice of what to predict selects the
+integrator.
+\end{remark}
+
+\begin{remark}[The flat corners]\label{rmk.corners}
+The single-level instance recovers known objects. A flat pool with the
+softmax routing~\eqref{eq.attn} and a quadratic energy is a modern
+Hopfield network, whose energy-descent fixed-point update is
+attention~\cite{HopfieldAllYou}. That identification of attention with
+$-\nabla(\text{energy})$ is exact only for the symmetric, tied head
+($\Wo=\Wv^{\top}$, $\Wq=\Wk$; \cref{rmk.circuits}); the untied transformer
+is the non-gradient generalization, in which attention is the wiring
+$\inpt f$ and the force a separate $-\nabla U$. A flat pool with a linear generative
+model is classical Rao--Ballard predictive coding~\cite{RaoBallard}. The
+nested, attention-routed object of \cref{slo.pc} is the general case;
+these are its corners.
+\end{remark}
+
+\begin{remark}[Toward active inference]\label{rmk.active}
+If the down-leg $\inpt f$ is closed back onto the environment --- so the
+broadcast can \emph{act}, not merely predict --- the same potential-descent
+dynamics become active inference / free-energy minimization in the sense
+of~\cite{Friston}. The construction here is the perceptual-inference half.
+\end{remark}
+
+\section{A cleaner generating set}\label{sec.generators}
+
+\Cref{con.head} bundles two very different things into one generator: three
+\emph{linear} projections and one genuinely nonlinear routing step. It is
+cleaner to separate them.
+
+\begin{construction}[Linear part plus one routing primitive]\label{con.factor}
+The projections $\Wq,\Wk,\Wv$ are linear arrangements, already living in
+the linear suboperad of $\sarr$ (where the paper's symplectic-/linear
+machinery applies). The one nonlinear primitive is row-softmax of the Gram
+matrix,
+\[
+  \mathrm{route}\colon (\rr^{d})^{K}\longrightarrow (\Delta^{K-1})^{K},
+  \qquad
+  \mathrm{route}(u)_{i}=\softmax\bigl(\langle u_i,u_j\rangle\bigr)_{j},
+\]
+landing in a product of probability simplices. Then an attention head is
+$\mathrm{linear}\circ\mathrm{route}\circ\mathrm{linear}$, and the only
+object that needs separate characterization is $\mathrm{route}$.
+\end{construction}
+
+\begin{remark}[Routing as data-dependent stochastic wiring]\label{rmk.stoch}
+Row-softmax makes the attention matrix $A$ row-stochastic, so
+$\mathrm{route}$ is a smooth section into stochastic matrices: a
+data-dependent Markov kernel on the box set. The natural ambient operad is
+that of \emph{data-dependent stochastic wiring diagrams}, with the
+classical $0/1$ wiring diagrams as the deterministic corner. This is the
+cleanest reading of ``the boxes learn a communication graph''; softmax
+attention is one smooth generator of it.
+\end{remark}
+
+\begin{remark}[Parameters as state, learned by the same flow]\label{rmk.params}
+Because the weights $W$ are the reactive space $\rv Q$ and the
+configuration integrator's state space is $Q$ itself, $\Phiconf$ flows the
+weights down $-\,\mathrm dU$ pulled through $\sharpR_Q$ --- the very same
+gradient flow that relaxes the box values. Inference (relaxing $h$) and
+learning (relaxing $W$) are one cotangent flow of one potential. Nothing
+special needs to be said about ``training.''
+\end{remark}
+
+\section{Caveats and open questions}\label{sec.open}
+
+\begin{enumerate}
+\item \emph{Predictive-coding-shaped, not literally Rao--Ballard.} The name
+in \cref{slo.pc} is earned by the potential and the relaxation dynamics,
+the parts a bare transformer drops. But the routing is attention --- richer
+than the linear generative model of classical predictive coding. The flat
+linear corner is classical PC, the flat softmax corner is Hopfield, and the
+nested attention version is the object actually defined here.
+
+\item \emph{Self-attention is a feedback wiring.} The diagonal $A_{ii}>0$
+is a self-loop; an acyclic wiring operad would forbid it. It is well-posed
+here only through the dynamical reading (relax to a fixed point), which is
+again \cref{rmk.corners}.
+
+\item \emph{What is $\outp N$?} We took the pooled, super-token read-out
+of~\eqref{eq.pool} (a learned-query pool), which makes nesting hierarchical
+(\cref{rmk.supertoken}). Passing the whole length-$K$ sequence upward
+instead gives a different composability regime (segment/hierarchical
+attention); the interface for substitution differs accordingly.
+
+\item \emph{Characterize the generated suboperad.} \Cref{obs.generate}
+asserts closure abstractly. Give an explicit normal form for finite
+attention networks inside $\sarr$, and decide whether $\mathrm{route}$
+(\cref{con.factor}) is the unique nonlinear generator needed --- i.e.\
+whether the linear suboperad together with $\mathrm{route}$ generates
+exactly the transformer-with-residual class once the output projection
+$\Wo$ closes the residual stream (\cref{obs.residual}).
+
+\item \emph{Is attention wiring or force?} In \cref{con.head} attention is
+the routing $\inpt f$ and prediction is a separate potential $U$, so the
+dynamics is a gradient flow of $U$ for any (untied) $\Wo$. In the energy
+reading (\cref{rmk.corners}) attention \emph{is} $-\nabla U$, which forces
+the symmetric, tied circuits of \cref{rmk.circuits}. Decide whether the
+tied/symmetric head --- where routing and force coincide --- is the
+canonical object and the untied transformer a deliberate weakening.
+
+\item \emph{A Hopfield proposition.} State and prove that $\Phiconf$ of the
+decorated head of \cref{con.head} is the energy-descent update of a modern
+Hopfield network, making \cref{rmk.corners} a theorem rather than a
+correspondence.
+
+\item \emph{Close the loop.} Make \cref{rmk.active} precise: which
+arrangement closes the down-leg onto the environment, and what
+conservation/dissipation statement distinguishes the active-inference
+dynamics from the perceptual one.
+\end{enumerate}
+
+\section{A talking operad, to be checked}\label{sec.talk}
+
+Here is a provisional way to make precise the slogan that boxes can
+learn to talk to one another. The point is to put a typed message
+manifold between raw emissions and attention routing. Attention is then
+communication factored through messages.
+
+Fix a smooth language signature
+\[
+  \Lambda=(A,P),
+\]
+where $A$ is an address manifold and $P$ is a payload manifold. Define
+the message manifold
+\[
+  \mathrm{Msg}_{\Lambda}
+    \coloneqq A_{\mathrm{to}}\times P\times A_{\mathrm{return}} .
+\]
+A point of $\mathrm{Msg}_{\Lambda}$ says: send payload $p$ to address
+$a_{\mathrm{to}}$, and replies should go to address
+$a_{\mathrm{return}}$.
+
+Define a colored operad $\mathsf{Talk}_{\Lambda}$ as follows. Its colors
+are the same lens objects $\lensob X=\binom{\inpt X}{\outp X}$ as in
+$\sarr$. A one-round talking generator
+\[
+  \tau\colon \lensob{X_1},\ldots,\lensob{X_K}\longrightarrow\lensob Y
+\]
+consists of the following smooth data.
+
+\begin{enumerate}
+\item A reactive parameter space $\rv Q=(Q,\sharpR_Q)$.
+
+\item Speaker maps, one for each internal box,
+\[
+  \mu_j\colon Q\times\outp{X_j}\longrightarrow \mathrm{Msg}_{\Lambda}
+  \qquad(1\leq j\leq K),
+\]
+and a descending speaker map for the outer input,
+\[
+  \mu_\star\colon Q\times\inpt Y\longrightarrow\mathrm{Msg}_{\Lambda}.
+\]
+
+\item Listener-address maps
+\[
+  \lambda_i\colon Q\times\outp{X_i}\longrightarrow A
+  \qquad(1\leq i\leq K),
+\]
+and an outer listener-address map
+\[
+  \lambda_\star\colon Q\times\outp{X_1}\times\cdots\times\outp{X_K}
+    \longrightarrow A .
+\]
+The latter has no $\inpt Y$-argument, preserving the Moore condition.
+
+\item A learned compatibility score
+\[
+  \kappa\colon Q\times A\times A\longrightarrow\rr .
+\]
+
+\item Decoder maps
+\[
+  D_i\colon
+  Q\times\outp{X_i}\times\Delta^K_{\circ}
+  \times\mathrm{Msg}_{\Lambda}^{K+1}
+  \longrightarrow\inpt{X_i}
+  \qquad(1\leq i\leq K),
+\]
+and
+\[
+  D_\star\colon
+  Q\times\Delta^{K-1}_{\circ}\times\mathrm{Msg}_{\Lambda}^{K}
+  \longrightarrow\outp Y .
+\]
+Here $\Delta^K_{\circ}$ denotes the open $K$-simplex, so the routing
+weights remain smooth manifold-valued.
+
+\item A language potential
+\[
+  V\colon Q\times\mathrm{Msg}_{\Lambda}^{K}\times\mathrm{Msg}_{\Lambda}
+    \longrightarrow\rr .
+\]
+\end{enumerate}
+
+Given internal emissions $h=(h_1,\ldots,h_K)$ and an outer input
+$n\in\inpt Y$, put
+\[
+  m_j\coloneqq\mu_j(q,h_j),
+  \qquad
+  m_\star\coloneqq\mu_\star(q,n),
+\]
+and write $a_j^{\mathrm{to}}$ and $a_\star^{\mathrm{to}}$ for their
+destination-address components. The internal routing weights are
+\[
+  \alpha_{ij}
+  =
+  \softmax_{j\in\{1,\ldots,K,\star\}}
+  \kappa\bigl(q,\lambda_i(q,h_i),a_j^{\mathrm{to}}\bigr),
+\]
+and the outer routing weights are
+\[
+  \alpha_{\star j}
+  =
+  \softmax_{j\in\{1,\ldots,K\}}
+  \kappa\bigl(q,\lambda_\star(q,h),a_j^{\mathrm{to}}\bigr).
+\]
+
+There is then an evident assignment on generators
+\[
+  F_\Lambda\colon\mathsf{Talk}_{\Lambda}\longrightarrow\sarr
+\]
+sending $\tau$ to the smooth adaptive arrangement
+\[
+  F_\Lambda(\tau)=(\rv Q,\outp f,\inpt f,U)
+\]
+defined by
+\[
+  \outp f(q,h)
+  =
+  D_\star\bigl(q,(\alpha_{\star j})_j,(m_j)_j\bigr),
+\]
+\[
+  \inpt f(q,h,n)_i
+  =
+  D_i\bigl(q,h_i,(\alpha_{ij})_{j\in\{1,\ldots,K,\star\}},
+    (m_1,\ldots,m_K,m_\star)\bigr),
+\]
+and
+\[
+  U(q,h,n)=V(q,m_1,\ldots,m_K,m_\star).
+\]
+The operad $\mathsf{Talk}_{\Lambda}$ should be defined as the colored
+operad freely generated by these one-round talking arrangements, with the
+usual symmetric actions on internal boxes. The assignment above then
+extends uniquely to an operad functor
+\[
+  F_\Lambda\colon\mathsf{Talk}_{\Lambda}\to\sarr,
+\]
+using operadic substitution in $\sarr$.
+
+\begin{slogan}
+A learned language is attention routing factored through a message
+manifold:
+\[
+  \outp X
+  \longrightarrow
+  \mathrm{Msg}_{\Lambda}
+  \longrightarrow
+  \Delta\times\text{payloads}.
+\]
+\end{slogan}
+
+In this reading, the return-address component is not extra syntax beyond
+the message type. A box answers a question by later emitting a message
+whose destination address is the return address it received. The maps
+$\mu,\lambda,\kappa,D$ and the potential $V$ all live in the reactive
+parameter space, so under $\Phiconf$ the language itself is learned by the
+same flow as the rest of the arrangement.
+
+%=====================================================================
+\begin{thebibliography}{9}
+
+\bibitem{DAP} (Companion manuscript.) \emph{Dynamic algebra of potentials},
+\texttt{dynamic-algebra-potentials.tex}. Definitions of the smooth
+arrangement operad $\sarr$, the cotangent interpretation $\cot$, and the
+integrators $\Phiconf,\Phiphase$ are taken from there.
+
+\bibitem{HopfieldAllYou} H.~Ramsauer et al.,
+\emph{Hopfield Networks is All You Need}, ICLR 2021.
+
+\bibitem{RaoBallard} R.~P.~N.~Rao and D.~H.~Ballard,
+\emph{Predictive coding in the visual cortex}, Nature Neuroscience 2(1), 1999.
+
+\bibitem{Friston} K.~Friston,
+\emph{The free-energy principle: a unified brain theory?},
+Nature Reviews Neuroscience 11, 2010.
+
+\bibitem{Attention} A.~Vaswani et al.,
+\emph{Attention Is All You Need}, NeurIPS 2017.
+
+\bibitem{SetTransformer} J.~Lee et al.,
+\emph{Set Transformer}, ICML 2019.
+
+\bibitem{Perceiver} A.~Jaegle et al.,
+\emph{Perceiver: General Perception with Iterative Attention}, ICML 2021.
+
+\end{thebibliography}
+
+\end{document}
