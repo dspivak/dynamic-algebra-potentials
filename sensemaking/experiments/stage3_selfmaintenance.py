@@ -5,9 +5,10 @@ HONEST FRAMING -- the result, stated plainly so the caveats can't be missed:
   This demonstrates beta-mediated SELF-MAINTENANCE and BISTABILITY of a KQV-STYLE attention
   circuit under a soft fetch reward. A bound state maintains itself while it keeps being
   right; a perturbation above the basin threshold self-repairs; prolonged impossible-world
-  dynamics drive beta into the dead basin. **IRREVERSIBILITY IS NOT INTRINSIC** -- it appears
-  ONLY when the reward is rectified by a no-credit-below-null margin (the world revives at
-  margin 0, 0.05, 0.1; death sticks only at margin >= ~0.2). See `margin_sweep`.
+  dynamics drive beta into the dead basin. **IRREVERSIBILITY IS NOT INTRINSIC** -- restoring
+  the world revives beta at margin 0, 0.05, 0.1 (and, for some seeds, even at the null+eps
+  maintenance margin). Death sticks reliably only under a STRICTER reward cutoff (~0.2). See
+  `margin_sweep`.
 
   PROVENANCE -- **Stage 3 is an EXTENSION of the audited KQV circuit, NOT an element of the
   original KQV suboperad.** `fetch_beta` hand-codes the QK-match + OV-copy with an explicit
@@ -21,18 +22,26 @@ HONEST FRAMING -- the result, stated plainly so the caveats can't be missed:
   (beta does not reorder logits), so `routing_acc` is kept ONLY as an interpretability
   diagnostic -- never as reward or as evidence of aliveness.
 
-  MARGIN -- reward is paid only for performance ABOVE the flat-attention null baseline. Flat
-  (beta=0) attention scores fetch R^2 ~ 0.16-0.17 (`null_r2`); the margin defaults to
-  `null_r2 + epsilon` PER TRAINED MODEL, so chance-level performance earns nothing -> a
-  genuine dead attractor at beta=0. The margin is LOAD-BEARING for irreversibility; it is
-  reported, swept, and justified from the null baseline, not buried.
+  TWO MARGINS -- reward is paid only for performance ABOVE a margin, and the two roles need
+  DIFFERENT margins. Do not conflate them:
+    * MAINTENANCE margin = null+eps (`maintenance_margin`). Flat (beta=0) attention scores
+      fetch R^2 ~ 0.16-0.17 (`null_r2`); null+eps zeroes chance-level credit PER TRAINED MODEL,
+      giving a genuine dead attractor at beta=0. This is LOAD-BEARING for SELF-MAINTENANCE and
+      BISTABILITY (R2) and holds across seeds 0,1,2.
+    * IRREVERSIBILITY margin = ~0.2 (`IRREVERSIBILITY_MARGIN`). MARGIN-CONDITIONED
+      irreversibility (R3) needs a STRICTER cutoff. The per-seed irreversibility knee sits in
+      [0.18, 0.20], and null+eps (~0.19) STRADDLES it: seeds 0,1 revive under null+eps, seed 2
+      dies. So **null+eps does NOT reliably earn irreversibility** -- only margin >= ~0.2 kills
+      all seeds. The maintenance margin is not an irreversibility margin.
 
 REVISED CRITERIA (after the audit; the original commit overstated irreversibility as intrinsic):
   R1  sharpness load-bearing: fetch R^2 ~ null at beta=0, > 0.85 by beta>=1, rises then plateaus.
-  R2  self-maintenance (margin = null+epsilon), seeds 0,1,2: MAINTAIN / DISSOLVE / SELF-REPAIR /
-      CONTROL (no-reward-coupling dies).
-  R3  irreversibility is MARGIN-CONDITIONED, not intrinsic: margin=0 revives (intrinsic FAIL);
-      margin>=~0.2 stays dead (conditioned PASS, justified by the null baseline).
+  R2  self-maintenance (MAINTENANCE margin = null+eps), seeds 0,1,2: MAINTAIN / DISSOLVE /
+      SELF-REPAIR / CONTROL (no-reward-coupling dies).
+  R3  irreversibility is MARGIN-CONDITIONED, not intrinsic: margin=0 revives (intrinsic FAIL),
+      seeds 0,1,2; margin >= ~0.2 stays dead (conditioned PASS), seeds 0,1,2. The null+eps
+      maintenance margin is NOT sufficient across seeds -- it straddles the knee (seeds 0,1
+      revive, seed 2 dies), so it is not claimed as an irreversibility margin.
   Numbers reported raw; nothing retuned to force a result.
 """
 
@@ -48,6 +57,11 @@ from sensemaking.experiments.stage2_routing import D, DV, D_ID, E, E_VAL, N, VAL
 from sensemaking.kqv import param_dim, unpack
 
 _CHANCE = 1.0 / N
+
+# Stricter reward cutoff that margin-conditioned irreversibility (R3) needs. The per-seed
+# irreversibility knee sits in [0.18, 0.20]; the null+eps maintenance margin (~0.19) straddles
+# it, so it is NOT a reliable irreversibility margin. margin >= ~0.2 kills all seeds.
+IRREVERSIBILITY_MARGIN = 0.2
 
 
 def fetch_beta(W, h, beta):
@@ -90,6 +104,16 @@ def null_r2(W, *, seed=0, n=200):
     """Flat-attention (beta=0) fetch R^2 -- the null baseline; reward is paid only above this."""
     h, tgt, _ = gen_episodes(n, np.random.default_rng(9000 + seed))
     return _r2(W, h, tgt, 0.0)
+
+
+def maintenance_margin(W, *, seed=0, epsilon=0.03):
+    """null+eps: the per-model no-credit-below-chance margin.
+
+    LOAD-BEARING for the dead attractor / self-maintenance / bistability (R2); holds across
+    seeds. It is NOT a reliable irreversibility margin (R3) -- it straddles the per-seed knee
+    in [0.18, 0.20] (seeds 0,1 revive, seed 2 dies). Use `IRREVERSIBILITY_MARGIN` for R3.
+    """
+    return null_r2(W, seed=seed) + epsilon
 
 
 def train(seed, *, lr=3e-3, steps=2500):
@@ -136,12 +160,13 @@ def run_dynamics(W, beta0, *, steps=160, world="predict", decay=0.1, gain=0.3,
                  margin=None, epsilon=0.03, knock=None, seed=0):
     """beta_{t+1} = (1-decay) beta + gain * reward, reward = max(0, soft fetch R^2 - margin).
 
-    margin=None -> null_r2(W) + epsilon (no-credit below the flat-attention baseline, per model).
+    margin=None -> the MAINTENANCE margin null+eps (`maintenance_margin`); for R3
+    irreversibility pass an explicit stricter margin (`IRREVERSIBILITY_MARGIN`).
     world: 'predict' / 'scramble' / 'switch' (predict then scramble @half) / 'revive' (scramble
     then world restored in the last third). knock=(step, value) externally sets beta once.
     """
     if margin is None:
-        margin = null_r2(W, seed=seed) + epsilon
+        margin = maintenance_margin(W, seed=seed, epsilon=epsilon)
     rng = np.random.default_rng(7000 + seed)
     beta, traj = beta0, []
     for s in range(steps):
@@ -162,14 +187,24 @@ def run_dynamics(W, beta0, *, steps=160, world="predict", decay=0.1, gain=0.3,
 
 
 def margin_sweep(W, *, margins=(0.0, 0.05, 0.1, 0.2, 0.4), seed=0, steps=240):
-    """Is irreversibility intrinsic or margin-induced? revive-world final beta per margin."""
-    return [(m, run_dynamics(W, 2.8, world="revive", steps=steps, margin=m, seed=seed)[-1][0]) for m in margins]
+    """Is irreversibility intrinsic or margin-induced? revive-world final beta per margin.
+
+    Returns (label, margin, final_beta) rows for the fixed margins, then one extra row for the
+    null+eps MAINTENANCE margin -- shown explicitly so it is visible that it straddles the knee
+    (NOT a reliable irreversibility margin). margin=0/0.05/0.1 revive; margin>=~0.2 dies.
+    """
+    rows = [(f"{m:.2f}", m, run_dynamics(W, 2.8, world="revive", steps=steps, margin=m, seed=seed)[-1][0])
+            for m in margins]
+    nem = maintenance_margin(W, seed=seed)
+    rows.append((f"null+eps={nem:.2f}", nem,
+                 run_dynamics(W, 2.8, world="revive", steps=steps, margin=nem, seed=seed)[-1][0]))
+    return rows
 
 
 def initial_beta_sweep(W, *, beta0s=(0.0, 0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 2.8), margin=None, seed=0, steps=150):
     """Basin map: from each initial beta in a predictable world, climb alive or decay dead?"""
     if margin is None:
-        margin = null_r2(W, seed=seed) + 0.03
+        margin = maintenance_margin(W, seed=seed)
     return [(b0, run_dynamics(W, b0, world="predict", steps=steps, margin=margin, seed=seed)[-1][0]) for b0 in beta0s]
 
 
@@ -186,28 +221,37 @@ if __name__ == "__main__":
         print(f"  {b:4.2f}   {r2:+.3f}     {acc:.3f}   " + "#" * int(max(0, r2) * 30))
 
     null = null_r2(W, seed=0)
-    margin = null + 0.03
-    print(f"\nnull baseline (flat-attention fetch R^2) = {null:.3f}  ->  margin = null + 0.03 = {margin:.3f}")
+    margin = maintenance_margin(W, seed=0)
+    print(f"\nnull baseline (flat-attention fetch R^2) = {null:.3f}  ->  maintenance margin = null+eps = {margin:.3f}")
+    print(f"irreversibility margin (R3, stricter)    = {IRREVERSIBILITY_MARGIN:.3f}  (null+eps straddles the knee -- not reliable for R3)")
 
-    print(f"\n=== R2: self-maintenance (margin={margin:.2f} = null+eps; alive ~2.x, dead 0) ===")
+    print(f"\n=== R2: self-maintenance (MAINTENANCE margin={margin:.2f} = null+eps; alive ~2.x, dead 0) ===")
     _show("(i)  MAINTAIN  predictable", run_dynamics(W, 2.8, world="predict"))
     _show("(ii) SELF-REPAIR knock 0.5 @80", run_dynamics(W, 2.8, world="predict", knock=(80, 0.5)))
     _show("(iii)DISSOLVE  scramble @half", run_dynamics(W, 2.8, world="switch"))
     _show("(iv) CONTROL   no reward (gain=0)", run_dynamics(W, 2.8, world="predict", gain=0.0))
 
-    print("\n=== R3: irreversibility is MARGIN-INDUCED, not intrinsic (revive-world final beta) ===")
-    for m, fb in margin_sweep(W):
+    print("\n=== R3: irreversibility is MARGIN-CONDITIONED, not intrinsic (revive-world final beta, seed 0) ===")
+    for label, m, fb in margin_sweep(W):
         verdict = "DEAD (irreversible)" if fb < 0.2 else "REVIVED (reversible -> NOT intrinsic)"
-        print(f"  margin={m:.2f}   final beta={fb:.2f}   {verdict}")
+        print(f"  margin={label:14s} final beta={fb:.2f}   {verdict}")
 
-    print("\n=== basin: initial beta in predictable world (margin=null+eps) ===")
+    print("\n  null+eps is NOT a reliable irreversibility margin -- per seed (revive-world final beta):")
+    for sd in range(3):
+        Ws = train(sd)
+        nem = maintenance_margin(Ws, seed=sd)
+        fb = run_dynamics(Ws, 2.8, world="revive", steps=240, margin=nem, seed=sd)[-1][0]
+        print(f"    seed {sd}: null+eps={nem:.2f}  final beta={fb:.2f}   {'REVIVED' if fb >= 0.2 else 'DEAD'}")
+    print(f"  => margin>=~{IRREVERSIBILITY_MARGIN:.1f} kills all 3 seeds; null+eps straddles the knee (seed 2 dies, seeds 0,1 revive).")
+
+    print("\n=== basin: initial beta in predictable world (maintenance margin=null+eps) ===")
     for b0, fb in initial_beta_sweep(W):
         print(f"  beta0={b0:.2f}  ->  final {fb:.2f}   ({'alive' if fb > 1.0 else 'dead'})")
 
-    print("\n=== robustness across 3 seeds (maintain alive; scramble dead; margin=null+eps) ===")
+    print("\n=== robustness across 3 seeds (maintain alive; scramble dead; maintenance margin=null+eps) ===")
     for sd in range(3):
         Ws = train(sd)
-        m_ = null_r2(Ws, seed=sd) + 0.03
+        m_ = maintenance_margin(Ws, seed=sd)
         mt = run_dynamics(Ws, 2.8, world="predict", margin=m_, seed=sd)[-1][0]
         dd = run_dynamics(Ws, 2.8, world="scramble", margin=m_, seed=sd)[-1][0]
         print(f"  seed {sd}: margin={m_:.2f}  maintain beta={mt:.2f}   scramble beta={dd:.2f}")

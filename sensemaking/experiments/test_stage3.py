@@ -1,10 +1,13 @@
 """Regression test of Stage 3 (revised after audit): beta-mediated self-maintenance.
 
 Honest claims (see stage3_selfmaintenance.py docstring): self-maintenance and bistability
-PASS; INTRINSIC irreversibility FAILS (margin=0 revives); MARGIN-CONDITIONED irreversibility
-PASSES (margin>=~0.2, justified by the null baseline). Trains seeds 0,1,2 (cached).
+PASS (MAINTENANCE margin = null+eps, seeds 0,1,2); INTRINSIC irreversibility FAILS (margin=0
+revives, seeds 0,1,2); MARGIN-CONDITIONED irreversibility PASSES only under a STRICTER cutoff
+(IRREVERSIBILITY_MARGIN ~ 0.2, seeds 0,1,2). The null+eps maintenance margin is NOT a reliable
+irreversibility margin -- it straddles the per-seed knee (seeds 0,1 revive, seed 2 dies), and
+that caveat is pinned by its own test below. Trains seeds 0,1,2 (cached).
 
-Run: PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/experiments/test_stage3.py -q
+Run: PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/experiments/test_stage3.py -q
 """
 
 import functools
@@ -12,7 +15,13 @@ import functools
 import numpy as np
 
 from sensemaking.experiments.stage2_routing import gen_episodes
-from sensemaking.experiments.stage3_selfmaintenance import _r2, null_r2, run_dynamics, train
+from sensemaking.experiments.stage3_selfmaintenance import (
+    IRREVERSIBILITY_MARGIN,
+    _r2,
+    maintenance_margin,
+    run_dynamics,
+    train,
+)
 
 
 @functools.lru_cache(maxsize=4)
@@ -21,7 +30,7 @@ def _W(seed):
 
 
 def _margin(W, seed):
-    return null_r2(W, seed=seed) + 0.03  # no-credit-below-null baseline
+    return maintenance_margin(W, seed=seed)  # null+eps: the maintenance margin (R2/bistability)
 
 
 def test_r1_sharpness_load_bearing():
@@ -47,11 +56,29 @@ def test_r2_self_maintenance():
 
 
 def test_r3_irreversibility_is_margin_conditioned_not_intrinsic():
-    W = _W(0)
-    # INTRINSIC irreversibility FAILS: with no margin, restoring the world revives the structure
-    assert run_dynamics(W, 2.8, world="revive", steps=240, margin=0.0)[-1][0] > 1.0
-    # MARGIN-CONDITIONED irreversibility PASSES: with margin >= ~0.2 the dead state is absorbing
-    assert run_dynamics(W, 2.8, world="revive", steps=240, margin=0.2)[-1][0] < 0.2
+    # seeds 0,1,2. INTRINSIC irreversibility FAILS and MARGIN-CONDITIONED irreversibility PASSES.
+    for seed in (0, 1, 2):
+        W = _W(seed)
+        # INTRINSIC FAIL: with no margin, restoring the world revives the structure
+        assert run_dynamics(W, 2.8, world="revive", steps=240, margin=0.0, seed=seed)[-1][0] > 1.0, seed
+        # CONDITIONED PASS: with the stricter margin >= ~0.2 the dead state is absorbing
+        assert run_dynamics(W, 2.8, world="revive", steps=240, margin=IRREVERSIBILITY_MARGIN, seed=seed)[-1][0] < 0.2, seed
+
+
+def test_r3_null_eps_is_not_a_reliable_irreversibility_margin():
+    # HONESTY LOCK: the null+eps MAINTENANCE margin does NOT imply irreversibility. It straddles
+    # the per-seed knee in [0.18, 0.20]: seeds 0,1 REVIVE under null+eps, seed 2 dies. This pins
+    # the caveat so no future edit can quietly upgrade null+eps into an irreversibility margin.
+    finals = {}
+    for seed in (0, 1, 2):
+        W = _W(seed)
+        m = maintenance_margin(W, seed=seed)
+        finals[seed] = run_dynamics(W, 2.8, world="revive", steps=240, margin=m, seed=seed)[-1][0]
+    assert finals[0] > 1.0, finals  # seed 0 revives under null+eps
+    assert finals[1] > 1.0, finals  # seed 1 revives under null+eps
+    assert finals[2] < 0.2, finals  # seed 2 dies under null+eps
+    # NOT all seeds die under null+eps -> null+eps does not earn irreversibility (only ~0.2 does)
+    assert not all(v < 0.2 for v in finals.values()), finals
 
 
 def test_bistability_two_attractors_thin_dead_basin():

@@ -67,11 +67,36 @@ sensemaking/
   follow-ups (`KQVSystem` validates its term at construction; module docstring
   includes `Par`) also addressed.
 - Task 2 (the partial-observability world: `world/`) — **complete; in-house audited**.
-  The world is `Phiphase(world_arrangement)` (a coupled oscillator, slow season + 48
-  fast weather modes), proven genuinely phase-flow (matched to 2e-14 vs an independent
-  symplectic integrator), outside the suboperad. The **strong** necessary-communication
-  gate holds across 8 weather seeds: no single sensor decodes the season (best R^2 <=
-  0.42), the pool does (>= 0.71). The audit caught an earlier gate relaxation; fixed by
-  retuning the world to pass the strong every-box bar (not by loosening the threshold).
-- 30 tests pass (`PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/ -q`).
-- Task 3 (Stage-1 experiment: is the channel used) — next.
+  The locked world is the *periodic* oscillator `Phiphase(world_arrangement)` (slow season
+  + 48 fast weather modes), proven genuinely phase-flow (matched to 2e-14 vs an independent
+  symplectic integrator), outside the suboperad. The **strong** necessary-communication gate
+  holds across 8 weather seeds: no single sensor decodes the season (best R^2 <= 0.42), the
+  pool does (>= 0.71). The audit caught an earlier gate relaxation; fixed by retuning the
+  world to pass the strong every-box bar (not by loosening the threshold). This is the world
+  the experiments below run on.
+- Task 2, decoder-window-robust variant (`world/chaotic.py`, a *standalone probe* — imported
+  by no experiment) — **explored; does NOT pass its strong gate. Kept as a finding, not routed
+  around.** The intent was an aperiodic (chaotic phi^4-chain) season so even a *long-window*
+  single decoder cannot extrapolate it. As committed it fails (best single R^2 ~ 0.79, and
+  *climbing* with window). Diagnosis: (i) the tether `c*s` (c=2) is ~2.6x the confounder, (ii)
+  the ring coupling that makes the season chaotic also leaks it into the confounder coordinates
+  (nearest-neighbour corr 0.88), and (iii) what suppression remains is sensor-noise-driven,
+  hence window-*fragile*. A decoupled per-mode confounder restores window-robustness for the
+  *typical* (median) sensor, but the *strong every-box* bar (best of 48 < 0.45) is an
+  extreme-value statistic the centred-confounder mechanism can meet only fragilely (it needs a
+  3x+ confounder, which over-confounds the median and erodes pool recovery). Open decision:
+  reclassify this variant's gate to the median sensor (an honestly weaker claim) or record it
+  as a negative result. The periodic Task-2 world above is unaffected.
+- Task 3 (the sense-making climb, `experiments/`) — **Stages 1–3 implemented; in-house
+  audited.** Stage 1 (`stage1.py`): under a capacity bound the channel is *used* — it learns to
+  **pool** (structureless averaging) when the task is "estimate one shared latent." Stage 2
+  (`stage2_routing.py`): when the task *requires* routing (content-addressed fetch), the
+  emergent communication is correspondingly **addressed** — the KQV QK-circuit recovers the
+  hidden matching and averaging fails. Stage 3 (`stage3_selfmaintenance.py`): a beta-mediated
+  attention circuit **self-maintains and is bistable** under a soft fetch reward (maintains /
+  self-repairs / dissolves); irreversibility is **margin-conditioned, not intrinsic** (the
+  original intrinsic claim was walked back after audit). All three channels carry the audited
+  `realize(KQVTerm)` provenance.
+- 40 tests pass, 2 fail; the 2 failures are exactly the chaotic strong-gate finding above
+  (`world/test_chaotic.py`). Run: `PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest
+  sensemaking/ -q`.
