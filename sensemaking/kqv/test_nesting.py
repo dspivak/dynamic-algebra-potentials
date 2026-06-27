@@ -4,7 +4,7 @@ The point of Task 1 is *structural generalization*: arbitrary and unseen tree sh
 (any ``N, N', N'', ...``, ragged, plus the lens tensor) compile and run with no
 enumeration and no special-casing.  Run from the repo root:
 
-    PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest \
+    PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest \
         sensemaking/kqv/test_nesting.py -q
 """
 

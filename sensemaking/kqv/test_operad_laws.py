@@ -2,7 +2,7 @@
 
 Each test cites the law it pins down.  Run from the repo root:
 
-    PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest \
+    PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest \
         sensemaking/kqv/test_operad_laws.py -q
 """
 

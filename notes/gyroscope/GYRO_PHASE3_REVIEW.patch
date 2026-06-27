@@ -1,0 +1,1235 @@
+diff --git a/dap/__init__.py b/dap/__init__.py
+index a43663a..ea708d7 100644
+--- a/dap/__init__.py
++++ b/dap/__init__.py
+@@ -21,11 +21,13 @@ from .integrator import (
+     phase_integrator,
+ )
+ from .interpretation import smooth_interpretation
+-from .functors import Phi, Phiconf, Phidamped, Phigyro, Phiphase, Phirk4, cot_object, cot_map
++from .functors import (
++    Phi, Phiconf, Phidamped, Phigyro, Phiphase, Phirk4, Phirk4gyro, cot_object, cot_map,
++)
+ from .org2 import OrgMorphism2, org2_from_integrator
+ from .orgK import OrgMorphismK, orgK_from_integrator
+ from .leapfrog import Phileap, leapfrog_integrator
+-from .rk4 import rk4_integrator
++from .rk4 import rk4_gyro_integrator, rk4_integrator
+ from . import functors
+ from . import wiring
+ from . import learning
+@@ -36,6 +38,7 @@ from . import learning
+ from . import system_id
+ from . import pinn
+ from . import gyroscope
++from . import gyroscope_faithful
+ 
+ __all__ = [
+     "ReactiveVectorSpace",
+@@ -59,9 +62,11 @@ __all__ = [
+     "Phigyro",
+     "Phiphase",
+     "Phirk4",
++    "Phirk4gyro",
+     "Phileap",
+     "leapfrog_integrator",
+     "rk4_integrator",
++    "rk4_gyro_integrator",
+     "OrgMorphism2",
+     "org2_from_integrator",
+     "OrgMorphismK",
+@@ -75,4 +80,5 @@ __all__ = [
+     "system_id",
+     "pinn",
+     "gyroscope",
++    "gyroscope_faithful",
+ ]
+diff --git a/dap/functors.py b/dap/functors.py
+index dd5032e..88618c0 100644
+--- a/dap/functors.py
++++ b/dap/functors.py
+@@ -32,7 +32,7 @@ from .interpretation import smooth_interpretation
+ from .org import OrgMorphism
+ from .orgK import OrgMorphismK, orgK_from_integrator
+ from .polynomial import Cot, DirichletProduct, PolyMap, Poly
+-from .rk4 import rk4_integrator
++from .rk4 import rk4_gyro_integrator, rk4_integrator
+ from .rvect import SmoothMap
+ 
+ 
+@@ -165,17 +165,18 @@ def Phidamped(arr: SmoothArrangement, damping: float = 0.1) -> OrgMorphism:
+     return Phi(arr, damped_phase_integrator(damping))
+ 
+ 
+-def Phigyro(arr: SmoothArrangement, damping: float = 0.0, gamma: float = 0.0, J=None) -> OrgMorphism:
+-    """Gyroscopic phase dynamics: phase + damping + a skew (gyroscopic) 1-form.
++def Phigyro(arr: SmoothArrangement, damping: float = 0.0, gamma: float = 0.0, J=None,
++            drag: float = 0.0, gyro_block=None) -> OrgMorphism:
++    """Gyroscopic phase dynamics: phase + damping + skew + optional quadratic drag.
+ 
+     EXTENSION (beyond the paper) -- see ``gyro_phase_integrator``. The same
+     arrangement read by a phase integrator carrying, besides the kinetic 1-form,
+-    a damping term ``c`` and a velocity-perpendicular gyroscopic term
+-    ``gamma * J``. This is the integrator behind the harmonic gyro surrogate
+-    (gravity + springs in ``U``, mass in the sharp, damping and precession in the
+-    1-form); see ``dap/gyroscope.py``.
++    a damping term ``c``, a velocity-perpendicular gyroscopic term ``gamma * J``, and
++    (with ``gyro_block`` set) a per-gyro quadratic-drag 1-form ``drag * |v| v``. This is
++    the integrator behind the gyro surrogate (gravity + springs in ``U``, mass in the
++    sharp, damping/precession/drag in the 1-form); see ``dap/gyroscope.py``.
+     """
+-    return Phi(arr, gyro_phase_integrator(damping, gamma, J))
++    return Phi(arr, gyro_phase_integrator(damping, gamma, J, drag, gyro_block))
+ 
+ 
+ def Phirk4(arr: SmoothArrangement, h: float = 0.1) -> OrgMorphismK:
+@@ -188,3 +189,16 @@ def Phirk4(arr: SmoothArrangement, h: float = 0.1) -> OrgMorphismK:
+     a *functor* (rmk.multistage) is left open; this is the datatype plus an instance.
+     """
+     return orgK_from_integrator(arr, rk4_integrator(h))
++
++
++def Phirk4gyro(arr: SmoothArrangement, h: float = 0.1, drag: float = 0.0,
++               gamma: float = 0.0, J=None, gyro_block=None) -> OrgMorphismK:
++    """RK4 gyro phase dynamics: the faithful machine's integrator, as an ``org^(4)`` morphism.
++
++    The ``K = 4`` analog of ``Phigyro`` -- the same forces (springs and rod gravity in
++    ``U``, quadratic drag and per-gyro precession in the 1-form) but stepped with classical
++    RK4 (``rk4.rk4_gyro_integrator``) on the phase state, matching the blog's integrator
++    rather than symplectic Euler. Non-symplectic; ``sarr → org^(4)`` functoriality is left
++    open, as for every ``org^(K)``.
++    """
++    return orgK_from_integrator(arr, rk4_gyro_integrator(h, drag, gamma, J, gyro_block))
+diff --git a/dap/gyroscope.py b/dap/gyroscope.py
+index e47e55b..8424f4c 100644
+--- a/dap/gyroscope.py
++++ b/dap/gyroscope.py
+@@ -76,6 +76,33 @@ def grid_graph(rows: int, cols: int) -> Tuple[List[Tuple[int, int]], List[int],
+     return edges, in_gyros, out_gyros
+ 
+ 
++def hex_graph(rows: int, cols: int) -> Tuple[List[Tuple[int, int]], List[int], List[int]]:
++    """A ``rows x cols`` triangular/hex lattice of gyros (up to 6 neighbours interior).
++
++    Axial offset: each ``(i, j)`` bonds east ``(i, j+1)``, south ``(i+1, j)``, and the
++    hex diagonal south-west ``(i+1, j-1)`` (directed, so each undirected bond appears
++    once). As in ``grid_graph`` the input gyros are the left column and the output
++    gyros the right column, so information must cross the lattice -- the coupling the
++    blog found essential. The blog's network is this shape; here at small scale (the
++    goal is the factorization + the springs ablation, not their accuracy number).
++    """
++    def idx(i, j):
++        return i * cols + j
++
++    edges: List[Tuple[int, int]] = []
++    for i in range(rows):
++        for j in range(cols):
++            if j + 1 < cols:
++                edges.append((idx(i, j), idx(i, j + 1)))           # east
++            if i + 1 < rows:
++                edges.append((idx(i, j), idx(i + 1, j)))           # south
++            if i + 1 < rows and j - 1 >= 0:
++                edges.append((idx(i, j), idx(i + 1, j - 1)))       # south-west (hex diagonal)
++    in_gyros = [idx(i, 0) for i in range(rows)]
++    out_gyros = [idx(i, cols - 1) for i in range(rows)]
++    return edges, in_gyros, out_gyros
++
++
+ def complex_structure(V: int) -> Array:
+     """Block-diagonal 90-degree rotation ``J``, one ``[[0,-1],[1,0]]`` per 2-D gyro
+     (the complex structure the gyroscopic 1-form needs; see ``gyro_phase_integrator``)."""
+@@ -126,6 +153,28 @@ def make_config(rows: int = 3, cols: int = 4, **kw) -> GyroConfig:
+ # ---------------------------------------------------------------------------
+ 
+ 
++def rod_gravity(g: float, L: float):
++    """Nonlinear rod-gravity on-site potential for a 2-D gyro (the blog's rod geometry).
++
++    A gyro tip displaced by ``q`` (horizontal, ``r = |q|``) on a rod of length ``L`` sits
++    at height ``sqrt(L^2 - r^2)``; gravity gives the on-site potential
++
++        U_grav(q) = -g * sqrt(L^2 - |q|^2),
++
++    a restoring well with its minimum upright (``r = 0``). It is genuinely *nonlinear*:
++    the restoring force ``-dU = -g q / sqrt(L^2 - r^2)`` stiffens as the rod nears
++    horizontal (``r -> L``), and its small-tilt limit is ``(g/L) q`` -- exactly the
++    harmonic well the surrogate used (spring constant ``g/L``). Plug into
++    ``wiring.compose_graph(..., onsite=rod_gravity(g, L))`` so each gyro carries it.
++    Valid for ``|q| < L`` (a rod cannot tilt past horizontal); run with tilts in range.
++    """
++
++    def U(q: Array) -> Array:
++        return -g * jnp.sqrt(L ** 2 - jnp.sum(q ** 2))
++
++    return U
++
++
+ def gyro_arrangement(
+     cfg: GyroConfig, inv_mass: Array, kappa: Array, grav_k: Array
+ ) -> SmoothArrangement:
+diff --git a/dap/gyroscope_faithful.py b/dap/gyroscope_faithful.py
+new file mode 100644
+index 0000000..50d1495
+--- /dev/null
++++ b/dap/gyroscope_faithful.py
+@@ -0,0 +1,230 @@
++"""The faithful gyroscope machine (EXTENSION, Phase 3) -- equation-faithful, in-framework.
++
++A *supplement* to the harmonic surrogate in ``gyroscope.py``: the Bull & Achour
++gyroscope-and-springs classifier built entirely from the paper's constructions, so a
++reader can read the ODEs and check the factorization. Every force is one framework slot,
++assembled categorically:
++
++    spring coupling    -> the prism graph-wiring (``compose_graph``) on a hex lattice,
++                          R^2 per gyro: the graph-Laplacian potential EMERGES from
++                          composition (it is not a hand-written U)
++    rod gravity        -> a nonlinear on-site potential (``rod_gravity``), the ``onsite``
++                          of ``compose_graph``
++    inertia / mass     -> the reactive sharp (1/m)
++    quadratic air drag -> a nonlinear 1-form (rmk.adam: monoidal over (+), natural over
++                          per-gyro O(2))
++    gyroscopic torque  -> the per-gyro skew 1-form (a ``gamma`` vector)
++    RK4 time-stepping  -> ``Phirk4gyro`` = org^(4) on the phase state
++    external nudge     -> the open input port (encoder force on the input gyros)
++
++GOAL (see GYRO_BUILD_HANDOFF.md): the **factorization** + the **springs->0 ablation**,
++NOT accuracy. No external accuracy claim; synthetic generator-as-spec data
++(``make_strokes``). Built small -- the factorization and the ablation do not need the
++blog's ~100-gyro scale.
++"""
++
++from __future__ import annotations
++
++from typing import Dict, Sequence
++
++import jax
++import jax.numpy as jnp
++import numpy as np
++from jax import Array
++
++from .arrangement import SmoothArrangement
++from .functors import Phirk4gyro
++from .gyroscope import (
++    GyroConfig,
++    adam_init,
++    adam_step,
++    complex_structure,
++    cross_entropy,
++    hex_graph,
++    rod_gravity,
++)
++from .interpretation import trivial_omega
++from .wiring import compose_graph
++
++_IN_POS = (jnp.zeros(0), trivial_omega(0))
++ROD_LENGTH = 3.0  # rod length L; tilts |q| < L (a rod cannot pass horizontal)
++
++
++# ---------------------------------------------------------------------------
++# Topology + the open-port arrangement (springs and gravity from the wiring).
++# ---------------------------------------------------------------------------
++
++
++def make_hex_config(
++    rows: int = 3, cols: int = 3, n_classes: int = 4, settle: int = 10, force_scale: float = 0.3
++) -> GyroConfig:
++    """A hex-lattice gyro config: input gyros = left column, output = right column."""
++    edges, in_g, out_g = hex_graph(rows, cols)
++    in_idx = tuple(2 * v + c for v in in_g for c in (0, 1))
++    out_idx = tuple(2 * v + c for v in out_g for c in (0, 1))
++    return GyroConfig(
++        rows=rows, cols=cols, edges=tuple(edges), in_idx=in_idx, out_idx=out_idx,
++        J=complex_structure(rows * cols), n_classes=n_classes, settle=settle,
++        force_scale=force_scale,
++    )
++
++
++def faithful_arrangement(cfg: GyroConfig, m, kappa, g_grav, L: float = ROD_LENGTH) -> SmoothArrangement:
++    """The open-port gyro classifier built ON ``compose_graph``.
++
++    The closed physics -- springs (graph Laplacian) + rod gravity -- *emerges from the
++    prism wiring* (``compose_graph(..., vdim=2, onsite=rod_gravity)``); we then add an
++    open input port (a drive ``-<n_in, q_in>`` whose gradient nudges the input gyros) and
++    an output readout (the output gyros' positions). The spring coupling is therefore the
++    wired Laplacian, so freezing it (``kappa -> 0``) severs the input->output path -- the
++    springs ablation is literally a wiring fact.
++    """
++    closed = compose_graph(cfg.V, list(cfg.edges), m, kappa, vdim=2, onsite=rod_gravity(g_grav, L))
++    in_i = jnp.asarray(cfg.in_idx)
++    out_i = jnp.asarray(cfg.out_idx)
++    z0 = jnp.zeros(0)
++
++    def out_f(q: Array, m_out: Array) -> Array:
++        return q[out_i]  # read the output gyros' positions
++
++    def in_f(q: Array, m_out: Array, n_in: Array) -> Array:
++        return jnp.zeros(0)  # closed source side (bang)
++
++    def U(q: Array, m_out: Array, n_in: Array) -> Array:
++        return closed.U(q, z0, z0) - jnp.dot(n_in, q[in_i])  # wired physics minus the drive
++
++    return SmoothArrangement(
++        Q=closed.Q, out_dim_M=0, in_dim_M=0,
++        out_dim_N=len(cfg.out_idx), in_dim_N=len(cfg.in_idx),
++        out_f=out_f, in_f=in_f, U=U, label="faithful_gyro_net",
++    )
++
++
++def faithful_coalgebra(cfg: GyroConfig, p: Dict[str, Array], h: float = 0.1, L: float = ROD_LENGTH):
++    """``Phirk4gyro`` (RK4 phase, drag + per-gyro precession) of the faithful arrangement."""
++    arr = faithful_arrangement(
++        cfg, jnp.exp(p["log_m"]), jnp.exp(p["log_kappa"]), jnp.exp(p["log_grav"]), L
++    )
++    return Phirk4gyro(arr, h, drag=p["drag"], gamma=jnp.repeat(p["gamma"], 2), J=cfg.J, gyro_block=2)
++
++
++# ---------------------------------------------------------------------------
++# Encoder / decoder (standard ML on top) + the rollout.
++# ---------------------------------------------------------------------------
++
++
++def init_params(cfg: GyroConfig, seed: int = 0, kappa0: float = 0.5, grav0: float = 0.2,
++                drag0: float = 0.1) -> Dict[str, Array]:
++    """Trainable physics (uniform log-mass / log-stiffness / log-gravity, drag, per-gyro
++    gamma) + a linear encoder/decoder. Logs keep mass/stiffness/gravity positive."""
++    rng = np.random.default_rng(seed)
++    return {
++        "log_m": jnp.array(0.0),
++        "log_kappa": jnp.array(float(np.log(kappa0))),
++        "log_grav": jnp.array(float(np.log(grav0))),
++        "drag": jnp.array(float(drag0)),
++        "gamma": jnp.zeros(cfg.V),
++        "W_enc": jnp.asarray(0.3 * rng.standard_normal((cfg.n_in, 2))),
++        "b_enc": jnp.zeros(cfg.n_in),
++        "W_dec": jnp.asarray(0.1 * rng.standard_normal((cfg.n_classes, 2 * cfg.n_out))),
++        "b_dec": jnp.zeros(cfg.n_classes),
++    }
++
++
++def _rollout_readout(O, drive_forces: Array, cfg: GyroConfig, inv_m) -> Array:
++    """Run the coalgebra ``O`` forced by ``drive_forces`` (T_total, n_in); return the output
++    gyros' final (positions, velocities). Only arrays cross the scan carry (no omega callables)."""
++    out_idx = jnp.asarray(cfg.out_idx)
++    zeros_out = jnp.zeros(cfg.n_out)
++
++    def step(state, force):
++        _outs, new_state = O.with_state(state).run_one(_IN_POS, lambda op: (zeros_out, force))
++        return new_state, None
++
++    state0 = (jnp.zeros(2 * cfg.V), jnp.zeros(2 * cfg.V))
++    (q, xi), _ = jax.lax.scan(step, state0, drive_forces)
++    return jnp.concatenate([q[out_idx], (inv_m * xi)[out_idx]])
++
++
++def classify(p: Dict[str, Array], x_seq: Array, cfg: GyroConfig, h: float = 0.1,
++             L: float = ROD_LENGTH) -> Array:
++    """Logits for one stroke ``x_seq`` (T, 2): encode to input-gyro forces, run ``Phirk4gyro``
++    forced for T steps then free for ``cfg.settle`` steps, decode the output gyros' readout."""
++    O = faithful_coalgebra(cfg, p, h, L)
++    forces = cfg.force_scale * (x_seq @ p["W_enc"].T + p["b_enc"])  # (T, n_in)
++    forces = jnp.concatenate([forces, jnp.zeros((cfg.settle, cfg.n_in))], axis=0)
++    readout = _rollout_readout(O, forces, cfg, jnp.exp(-p["log_m"]))
++    return p["W_dec"] @ readout + p["b_dec"]
++
++
++def output_readout(p: Dict[str, Array], drive_seq: Array, cfg: GyroConfig, h: float = 0.1,
++                   L: float = ROD_LENGTH) -> Array:
++    """The output gyros' (pos, vel) after being driven by ``drive_seq`` (T, n_in) -- the raw
++    quantity the springs->0 ablation acts on (no encoder/decoder)."""
++    O = faithful_coalgebra(cfg, p, h, L)
++    forces = jnp.concatenate([drive_seq, jnp.zeros((cfg.settle, cfg.n_in))], axis=0)
++    return _rollout_readout(O, forces, cfg, jnp.exp(-p["log_m"]))
++
++
++def make_strokes(n: int, T: int = 16, n_classes: int = 4, seed: int = 0):
++    """Synthetic 2-channel stroke series (generator-as-spec, reproducible from ``seed``).
++
++    Class ``c`` is the documented signature: a ``(sin, cos)`` curve of frequency ``1 + c``
++    and phase ``c*pi/n_classes`` over ``T`` steps, plus smooth Gaussian noise. No download,
++    no provenance question -- an auditor regenerates the exact dataset from ``(seed, spec)``.
++    """
++    rng = np.random.default_rng(seed)
++    y = rng.integers(0, n_classes, n)
++    t = np.linspace(0.0, 1.0, T)
++    X = np.zeros((n, T, 2))
++    for i in range(n):
++        c = int(y[i])
++        freq, phase = 1.0 + c, c * np.pi / n_classes
++        X[i, :, 0] = np.sin(2 * np.pi * freq * t + phase) + 0.1 * rng.standard_normal(T)
++        X[i, :, 1] = np.cos(2 * np.pi * freq * t + phase) + 0.1 * rng.standard_normal(T)
++    return jnp.asarray(X), jnp.asarray(y)
++
++
++# ---------------------------------------------------------------------------
++# Training (standard minibatch Adam, reusing gyroscope.py's helpers).
++# ---------------------------------------------------------------------------
++
++
++def batch_loss(p, xs, ys, cfg, h: float = 0.1, weight_decay: float = 1e-4):
++    logits = jax.vmap(lambda x: classify(p, x, cfg, h))(xs)
++    ce = jnp.mean(jax.vmap(cross_entropy)(logits, ys))
++    l2 = sum(jnp.sum(p[k] ** 2) for k in ("W_enc", "W_dec"))
++    return ce + weight_decay * l2
++
++
++def accuracy(p, xs, ys, cfg, h: float = 0.1) -> float:
++    logits = jax.vmap(lambda x: classify(p, x, cfg, h))(xs)
++    return float(jnp.mean(jnp.argmax(logits, axis=1) == ys))
++
++
++def train(cfg, Xtr, Ytr, *, epochs: int = 10, batch: int = 64, lr: float = 3e-3, h: float = 0.1,
++          seed: int = 0, freeze: Sequence[str] = (), verbose: bool = False):
++    """Minibatch Adam; ``freeze`` zeroes the gradient of the named params (for ablations,
++    e.g. ``freeze=("log_kappa",)`` with tiny initial stiffness keeps the springs off)."""
++    p = init_params(cfg, seed=seed)
++    freeze = set(freeze)
++    m, v = adam_init(p)
++    rng = np.random.default_rng(seed)
++    n = Xtr.shape[0]
++    loss_and_grad = jax.jit(jax.value_and_grad(lambda pp, xb, yb: batch_loss(pp, xb, yb, cfg, h)))
++    hist, t = [], 0
++    for ep in range(epochs):
++        perm = rng.permutation(n)
++        losses = []
++        for i in range(0, n - batch + 1, batch):
++            idx = perm[i : i + batch]
++            t += 1
++            loss, grads = loss_and_grad(p, Xtr[idx], Ytr[idx])
++            if freeze:
++                grads = {k: (jnp.zeros_like(g) if k in freeze else g) for k, g in grads.items()}
++            p, m, v = adam_step(p, grads, m, v, t, lr=lr)
++            losses.append(float(loss))
++        hist.append(float(np.mean(losses)))
++        if verbose:
++            print(f"  epoch {ep:2d}  loss {hist[-1]:.4f}")
++    return p, hist
+diff --git a/dap/integrator.py b/dap/integrator.py
+index 2d63f58..e2c49cf 100644
+--- a/dap/integrator.py
++++ b/dap/integrator.py
+@@ -119,8 +119,42 @@ def damped_phase_integrator(damping: float = 0.0) -> Integrator:
+     )
+ 
+ 
++def quadratic_drag_kick(v, gyro_block: int):
++    """Per-gyro quadratic-drag force ``F(v)_i = |v_i| v_i`` (block Euclidean norm).
++
++    The blog's air drag is a force ``~ -|v| v`` (opposes velocity, magnitude growing
++    with speed squared). As a 1-form ``omega_drag(q, xi) = (|v| v, 0)`` with
++    ``v = sharpR_q(xi)`` and ``|v|`` taken *per gyro* (the Euclidean norm of each
++    ``gyro_block``-dimensional block); fed through the symplectic sharp it adds
++    ``-|v| v`` to the momentum.
++
++    Naturality grounding (rmk.adam -- the monoidality is non-negotiable, the
++    naturality may be restricted):
++
++    * MONOIDAL over ``(+)``: each gyro drags only on its own velocity, so
++      ``omega_drag`` is block-diagonal, ``omega_{Q(+)W} = omega_Q (+) omega_W``.
++      rmk.adam: "The monoidal requirement of integrators cannot be negotiated ...
++      each box can compute its own update." Quadratic drag passes this.
++    * NATURAL only over a *subcategory*: ``|v_i|`` is invariant under per-gyro
++      orthogonal maps (``O(2)`` per 2-D gyro), not under a general sharp-equivariant
++      ``rvect``-isomorphism. rmk.adam explicitly allows this -- such a section "is not
++      outside the framework; it just lives over a smaller ``Q``" -- here the
++      subcategory of Euclidean gyro-spaces with block-orthogonal isomorphisms, the
++      *top* of the paper's chain ``orthogonal > signed perms > coord perms`` (drag is
++      thus *more* natural than Adam, which the paper places over signed permutations).
++      Restricting ``Q`` keeps thm.dynamics_functor, so this remains a genuine integrator.
++    """
++    vg = v.reshape(-1, gyro_block)
++    sq = jnp.sum(vg * vg, axis=1, keepdims=True)  # |v_i|^2 per gyro
++    # Double-``where`` so the gradient of ``|v_i|`` is finite (its true value 0) at rest
++    # ``v_i = 0``, without perturbing the exact value ``|v_i| v_i`` anywhere else: a
++    # quadratic drag IS differentiable at zero velocity, but a naive ``sqrt`` gives 0/0.
++    speed = jnp.where(sq > 0.0, jnp.sqrt(jnp.where(sq > 0.0, sq, 1.0)), 0.0)
++    return (speed * vg).reshape(v.shape)
++
++
+ def gyro_phase_integrator(
+-    damping: float = 0.0, gamma: float = 0.0, J=None
++    damping: float = 0.0, gamma: float = 0.0, J=None, drag: float = 0.0, gyro_block=None
+ ) -> Integrator:
+     """The phase integrator with a *damping* and a *gyroscopic* 1-form added.
+ 
+@@ -151,12 +185,24 @@ def gyro_phase_integrator(
+     rotor picks out an orientation, breaking the full reactive symmetry the paper's
+     1-forms (``beta``, ``zeta``) enjoy. It is exactly the minimal example that lives
+     in ``rvect`` but outside the *harmonic* (symmetric-sharp) regime of
+-    def.arrangement_terminology.
++    def.arrangement_terminology. (The same rmk.adam principle that justifies the
++    quadratic-drag term below applies: ``omega_gyro`` "lives over a smaller ``Q``".)
++
++    With ``gyro_block`` set, a fourth, *quadratic-drag* 1-form is added (the blog's
++    air drag): ``omega_drag(q, xi) = (|v| v, 0)``, ``v = sharpR_q(xi)``, with ``|v|``
++    the per-gyro Euclidean norm (see ``quadratic_drag_kick``). It is monoidal over
++    ``(+)`` but natural only over per-gyro orthogonal maps -- a "smaller ``Q``" in the
++    precise sense rmk.adam sanctions (the chain ``orthogonal > signed perms > coord
++    perms``; drag sits at the top, Adam at signed perms). ``drag`` may be trained;
++    ``gyro_block`` (its presence and the gyro dimension) is the Python-time choice.
+     """
+ 
+-    # damping ``c`` and gyroscopic ``gamma`` may be traced (they are trainable in
+-    # the gyroscope emulation), so we do not coerce them to ``float`` here; only
+-    # the *presence* of ``J`` is a static (Python-time) choice.
++    # damping ``c``, gyroscopic ``gamma`` and ``drag`` may be traced (they are
++    # trainable in the gyroscope emulation), so we do not coerce them to ``float``
++    # here; only the *presence* of ``J`` and of ``gyro_block`` are static
++    # (Python-time) choices. ``gamma`` may be a scalar or a per-component vector
++    # (length ``Q.dim``, e.g. ``repeat(gamma_per_gyro, 2)``) -- the latter, broadcast
++    # against ``Jm @ v``, gives each gyro its own precession rate.
+     c = damping
+     g = gamma
+     Jm = None if J is None else jnp.asarray(J, float)
+@@ -165,6 +211,8 @@ def gyro_phase_integrator(
+         q, xi = s
+         v = Q.apply_sharp(q, xi)  # velocity sharpR_q(xi)
+         new_xi = (1.0 - c) * xi - xi_Q
++        if gyro_block is not None:
++            new_xi = new_xi - drag * quadratic_drag_kick(v, gyro_block)  # quadratic air drag
+         if Jm is not None:
+             new_xi = new_xi - g * (Jm @ v)  # gyroscopic precession (skew, no work)
+         return (q + v, new_xi)
+diff --git a/dap/rk4.py b/dap/rk4.py
+index e8f5c62..413fe1f 100644
+--- a/dap/rk4.py
++++ b/dap/rk4.py
+@@ -32,7 +32,7 @@ from __future__ import annotations
+ 
+ import jax.numpy as jnp
+ 
+-from .integrator import IntegratorK
++from .integrator import IntegratorK, quadratic_drag_kick
+ 
+ 
+ def rk4_integrator(h: float = 0.1) -> IntegratorK:
+@@ -89,3 +89,91 @@ def rk4_integrator(h: float = 0.1) -> IntegratorK:
+         advances=(advance1, advance2, advance3, finish),
+         label=f"rk4(h={h:g})",
+     )
++
++
++def rk4_gyro_integrator(
++    h: float = 0.1, drag: float = 0.0, gamma: float = 0.0, J=None, gyro_block=None
++) -> IntegratorK:
++    """Classical RK4 on the gyro *phase* system, an ``org^(4)`` integrator (rmk.multistage).
++
++    The faithful-machine integrator: it carries the *same* forces as
++    ``gyro_phase_integrator`` (springs and rod gravity in the potential ``U``, quadratic
++    drag and gyroscopic precession in the 1-form) but steps them with the blog's
++    classical four-stage Runge--Kutta instead of symplectic Euler. The phase vector
++    field on the state ``(q, xi)`` is
++
++        qdot  = sharpR_q(xi) =: v
++        xidot = -dU(q) - drag * F(v) - gamma (.) (J v),
++
++    with ``dU`` the framework covector ``xi_Q`` evaluated by the interpretation at each
++    stage's position (so it includes any open-port forcing), ``F`` the per-gyro quadratic
++    drag (``quadratic_drag_kick``), and ``gamma`` a scalar or per-component vector. The
++    four ``org^(4)`` rounds are the four force evaluations ``k1..k4``; ``finish`` does
++    ``(q,xi) + (h/6)(k1 + 2k2 + 2k3 + k4)``.
++
++    Non-symplectic (RK4 is); ``drag``/``gamma`` may be traced, ``J``/``gyro_block`` are
++    Python-time structural choices. State and forces mirror ``gyro_phase_integrator``;
++    only the time-stepping differs.
++    """
++    half = 0.5 * h
++    Jm = None if J is None else jnp.asarray(J, float)
++
++    def deriv(Q, q_s, xi_s, xi_Q):
++        """The phase derivative ``(qdot, xidot)`` at a stage state, given ``xi_Q = dU``."""
++        v = Q.apply_sharp(q_s, xi_s)
++        k_xi = -xi_Q
++        if gyro_block is not None:
++            k_xi = k_xi - drag * quadratic_drag_kick(v, gyro_block)
++        if Jm is not None:
++            k_xi = k_xi - gamma * (Jm @ v)
++        return (v, k_xi)
++
++    def axpy(base, a, k):
++        (q, xi), (kq, kxi) = base, k
++        return (q + a * kq, xi + a * kxi)
++
++    def read1(Q, base):
++        return base[0]
++
++    def read2(Q, mid):
++        base, ks = mid
++        return axpy(base, half, ks[0])[0]
++
++    def read3(Q, mid):
++        base, ks = mid
++        return axpy(base, half, ks[1])[0]
++
++    def read4(Q, mid):
++        base, ks = mid
++        return axpy(base, h, ks[2])[0]
++
++    def advance1(Q, base, xi_Q):
++        k1 = deriv(Q, base[0], base[1], xi_Q)
++        return (base, (k1,))
++
++    def advance2(Q, mid, xi_Q):
++        base, ks = mid
++        s = axpy(base, half, ks[0])
++        return (base, ks + (deriv(Q, s[0], s[1], xi_Q),))
++
++    def advance3(Q, mid, xi_Q):
++        base, ks = mid
++        s = axpy(base, half, ks[1])
++        return (base, ks + (deriv(Q, s[0], s[1], xi_Q),))
++
++    def finish(Q, mid, xi_Q):
++        base, ks = mid
++        s = axpy(base, h, ks[2])
++        k4 = deriv(Q, s[0], s[1], xi_Q)
++        k1, k2, k3 = ks
++        q0, xi0 = base
++        new_q = q0 + (h / 6.0) * (k1[0] + 2.0 * k2[0] + 2.0 * k3[0] + k4[0])
++        new_xi = xi0 + (h / 6.0) * (k1[1] + 2.0 * k2[1] + 2.0 * k3[1] + k4[1])
++        return (new_q, new_xi)
++
++    return IntegratorK(
++        init=lambda Q: (jnp.zeros(Q.dim), jnp.zeros(Q.dim)),
++        reads=(read1, read2, read3, read4),
++        advances=(advance1, advance2, advance3, finish),
++        label=f"rk4_gyro(h={h:g})",
++    )
+diff --git a/dap/tests/test_drag_one_form.py b/dap/tests/test_drag_one_form.py
+new file mode 100644
+index 0000000..6d061be
+--- /dev/null
++++ b/dap/tests/test_drag_one_form.py
+@@ -0,0 +1,102 @@
++"""Quadratic-drag 1-form (EXTENSION; integrator.quadratic_drag_kick / gyro_phase_integrator).
++
++The blog's air drag -- force ``~ -|v| v`` -- as a 1-form ``omega_drag(q,xi)=(|v| v, 0)``
++taken *per gyro*. We verify the rmk.adam split that makes it a legitimate integrator:
++
++* MONOIDAL over ``(+)`` -- each gyro drags on its own velocity (the non-negotiable
++  compositionality of rmk.adam);
++* NATURAL only over per-gyro orthogonal maps -- a "smaller Q", which rmk.adam
++  explicitly sanctions; the third test shows the restriction is *real* (a non-orthogonal
++  per-gyro map breaks naturality), so it is not a vacuous claim;
++* and the drag dissipates energy in a free rollout.
++"""
++
++import jax
++jax.config.update("jax_enable_x64", True)
++
++import jax.numpy as jnp
++import numpy as np
++
++from dap.functors import Phigyro
++from dap.gyroscope import gyro_arrangement, make_config
++from dap.integrator import quadratic_drag_kick
++from dap.interpretation import trivial_omega
++
++_IN_POS = (jnp.zeros(0), trivial_omega(0))
++
++
++def _rot(theta):
++    c, s = np.cos(theta), np.sin(theta)
++    return np.array([[c, -s], [s, c]])
++
++
++def _block_diag(mats):
++    return np.asarray(jax.scipy.linalg.block_diag(*[jnp.asarray(m) for m in mats]))
++
++
++def test_drag_is_monoidal_over_oplus():
++    """Each gyro drags on its own velocity: F is block-diagonal, so F on the whole
++    space is the concatenation of F on each 2-D gyro block -- monoidality over (+)."""
++    rng = np.random.default_rng(0)
++    V = 4
++    v = jnp.asarray(rng.standard_normal(2 * V))
++    whole = np.asarray(quadratic_drag_kick(v, 2))
++    per_block = np.concatenate(
++        [np.asarray(quadratic_drag_kick(v[2 * i : 2 * i + 2], 2)) for i in range(V)]
++    )
++    np.testing.assert_allclose(whole, per_block, atol=1e-12)
++
++
++def test_drag_is_natural_over_block_orthogonal():
++    """F(O v) = O F(v) for per-gyro orthogonal O (block O(2)): natural over the
++    orthogonal subcategory -- exactly the restriction rmk.adam permits."""
++    rng = np.random.default_rng(1)
++    V = 4
++    v = jnp.asarray(rng.standard_normal(2 * V))
++    O = jnp.asarray(_block_diag([_rot(t) for t in rng.uniform(0, 2 * np.pi, V)]))
++    lhs = np.asarray(quadratic_drag_kick(O @ v, 2))
++    rhs = np.asarray(O @ quadratic_drag_kick(v, 2))
++    np.testing.assert_allclose(lhs, rhs, atol=1e-12)
++
++
++def test_drag_is_NOT_natural_over_nonorthogonal():
++    """A non-orthogonal per-gyro map (here area-preserving but not an isometry) breaks
++    naturality -- the subcategory restriction is real, not vacuous, because |v_i| is
++    not scale-invariant. This is why drag lives over the *orthogonal* subcategory."""
++    rng = np.random.default_rng(2)
++    V = 3
++    v = jnp.asarray(rng.standard_normal(2 * V))
++    D = jnp.asarray(_block_diag([np.diag([2.0, 0.5]) for _ in range(V)]))  # det 1, not orthogonal
++    lhs = np.asarray(quadratic_drag_kick(D @ v, 2))
++    rhs = np.asarray(D @ quadratic_drag_kick(v, 2))
++    assert not np.allclose(lhs, rhs, atol=1e-6)
++
++
++def test_drag_dissipates_energy():
++    """A free (unforced) gyro network with drag > 0 bleeds out kinetic + potential
++    energy -- the dissipative content of the 1-form, run through Phigyro."""
++    cfg = make_config(rows=2, cols=3)  # 6 gyros
++    V = cfg.V
++    kappa = jnp.full(len(cfg.edges), 0.2)
++    grav = jnp.array(0.1)
++    arr = gyro_arrangement(cfg, inv_mass=jnp.ones(V), kappa=kappa, grav_k=grav)
++    O = Phigyro(arr, damping=0.0, gamma=0.0, J=None, drag=0.3, gyro_block=2)
++
++    rng = np.random.default_rng(0)
++    q0 = jnp.asarray(0.5 * rng.standard_normal(2 * V))
++    xi0 = jnp.asarray(0.8 * rng.standard_normal(2 * V))
++    E = jnp.asarray(cfg.edges)
++
++    def energy(q, xi):
++        qv = q.reshape(V, 2)
++        springs = 0.5 * jnp.sum(kappa * jnp.sum((qv[E[:, 0]] - qv[E[:, 1]]) ** 2, axis=1))
++        return float(0.5 * jnp.sum(xi ** 2) + springs + 0.5 * grav * jnp.sum(qv ** 2))
++
++    state = (q0, xi0)
++    H0 = energy(*state)
++    zero_force = jnp.zeros(cfg.n_in)
++    for _ in range(60):
++        _, _, state = O.with_state(state).run_one(
++            _IN_POS, lambda op: (jnp.zeros(cfg.n_out), zero_force)
++        )
++    assert energy(*state) < 0.7 * H0  # drag bled energy out
+diff --git a/dap/tests/test_faithful_machine.py b/dap/tests/test_faithful_machine.py
+new file mode 100644
+index 0000000..041350f
+--- /dev/null
++++ b/dap/tests/test_faithful_machine.py
+@@ -0,0 +1,105 @@
++"""The faithful gyroscope machine (EXTENSION, Phase 3; gyroscope_faithful.py).
++
++The Bull & Achour classifier assembled entirely from the paper's constructions. The
++point (GYRO_BUILD_HANDOFF goal) is the *factorization* and the *springs ablation*, not
++accuracy. We check:
++
++* **factorization** -- the classifier's potential is the *wired* R^2 graph Laplacian
++  plus rod gravity minus the open-port drive, matching an independent oracle (the spring
++  coupling EMERGES from ``compose_graph``, it is not a hand-written U);
++* **the springs->0 ablation (the headline)** -- with springs the input signal reaches the
++  output gyros and depends on the input; freeze the stiffness to ~0 and *nothing* reaches
++  the output (it stays at rest regardless of the input). The blog's "Take 1 failed",
++  here a one-line categorical wiring fact;
++* the classifier **runs end-to-end and is differentiable** (backprop through the full
++  ``Phirk4gyro`` rollout gives finite gradients).
++"""
++
++import jax
++jax.config.update("jax_enable_x64", True)
++
++import jax.numpy as jnp
++import numpy as np
++
++from dap.gyroscope_faithful import (
++    batch_loss,
++    classify,
++    faithful_arrangement,
++    init_params,
++    make_hex_config,
++    make_strokes,
++    output_readout,
++    train,
++)
++
++
++def test_faithful_potential_is_wired_laplacian_plus_gravity_minus_drive():
++    """The classifier's U = (wired R^2 spring Laplacian) + (rod gravity) - (drive)."""
++    cfg = make_hex_config(3, 3, n_classes=4)
++    m, kappa, g, L = 1.2, 0.6, 0.3, 3.0
++    arr = faithful_arrangement(cfg, m, kappa, g, L)
++    assert (arr.out_dim_M, arr.in_dim_M) == (0, 0)
++    assert (arr.out_dim_N, arr.in_dim_N) == (cfg.n_out, cfg.n_in)  # open readout + drive ports
++    assert arr.Q.dim == 2 * cfg.V
++
++    rng = np.random.default_rng(0)
++    in_idx = list(cfg.in_idx)
++    for _ in range(4):
++        q = jnp.asarray(0.3 * rng.standard_normal(2 * cfg.V))  # small tilts (|q| < L)
++        force = jnp.asarray(rng.standard_normal(cfg.n_in))
++        got = float(arr.U(q, jnp.zeros(0), force))
++        qv = np.asarray(q).reshape(cfg.V, 2)
++        springs = sum(0.5 * kappa * float(np.sum((qv[t] - qv[s]) ** 2)) for (s, t) in cfg.edges)
++        gravity = sum(-g * float(np.sqrt(L ** 2 - np.sum(qv[v] ** 2))) for v in range(cfg.V))
++        drive = float(np.dot(np.asarray(force), np.asarray(q)[in_idx]))
++        np.testing.assert_allclose(got, springs + gravity - drive, atol=1e-9)
++
++
++def test_springs_zero_collapses_information_flow():
++    """Headline: springs carry the input signal to the output; freeze them and nothing
++    reaches the output. Input gyros = left column, output = right column (disjoint), so
++    with no spring path the output gyros stay at rest regardless of the input drive."""
++    cfg = make_hex_config(3, 3, n_classes=4, settle=10)
++    p = init_params(cfg, seed=0)
++    rng = np.random.default_rng(1)
++    T = 8
++    driveA = jnp.asarray(0.2 * rng.standard_normal((T, cfg.n_in)))
++    driveB = jnp.asarray(0.2 * rng.standard_normal((T, cfg.n_in)))
++
++    outA = np.asarray(output_readout(p, driveA, cfg))
++    outB = np.asarray(output_readout(p, driveB, cfg))
++    assert np.linalg.norm(outA) > 1e-3                       # with springs: signal reaches the output
++    assert not np.allclose(outA, outB, atol=1e-5)            # ...and it is input-dependent
++
++    p0 = {**p, "log_kappa": jnp.array(-100.0)}               # freeze stiffness to ~0
++    outA0 = np.asarray(output_readout(p0, driveA, cfg))
++    outB0 = np.asarray(output_readout(p0, driveB, cfg))
++    np.testing.assert_allclose(outA0, 0.0, atol=1e-9)        # springs off: nothing reaches the output
++    np.testing.assert_allclose(outB0, 0.0, atol=1e-9)        # ...independent of the input
++
++
++def test_classifier_runs_and_is_differentiable():
++    """One stroke -> (n_classes,) logits; backprop through the full Phirk4gyro rollout
++    gives finite gradients (the classifier is trainable end-to-end)."""
++    cfg = make_hex_config(2, 3, n_classes=3, settle=6)
++    p = init_params(cfg, seed=0)
++    X, Y = make_strokes(8, T=10, n_classes=3, seed=0)
++
++    logits = classify(p, X[0], cfg)
++    assert logits.shape == (3,)
++
++    loss, grads = jax.value_and_grad(lambda pp: batch_loss(pp, X, Y, cfg))(p)
++    assert np.isfinite(float(loss))
++    assert all(bool(np.all(np.isfinite(np.asarray(g)))) for g in grads.values())
++
++
++def test_faithful_machine_trains_loss_decreases():
++    """It trains end-to-end: minibatch Adam through the full Phirk4gyro rollout reduces the
++    loss. Per the goal this is only a trainability sanity -- NO accuracy claim (the machine
++    exists for the factorization + the springs ablation, not to hit a benchmark number)."""
++    cfg = make_hex_config(3, 3, n_classes=3, settle=8)
++    Xtr, Ytr = make_strokes(300, T=12, n_classes=3, seed=0)
++    _p, hist = train(cfg, Xtr, Ytr, epochs=10, batch=60, lr=5e-3, seed=0)
++    assert np.isfinite(hist[-1])
++    assert hist[-1] < hist[0]  # the loss genuinely decreases under training
++
+diff --git a/dap/tests/test_faithful_physics.py b/dap/tests/test_faithful_physics.py
+new file mode 100644
+index 0000000..30ebc82
+--- /dev/null
++++ b/dap/tests/test_faithful_physics.py
+@@ -0,0 +1,77 @@
++"""Faithful-machine physics pieces (Phase 3): nonlinear rod gravity + per-gyro gamma.
++
++Two small in-framework closures of blog deviations:
++
++* ``rod_gravity(g, L)`` -- the nonlinear rod-geometry on-site potential
++  ``-g sqrt(L^2 - |q|^2)``: a restoring well, *nonlinear* (stiffens toward horizontal),
++  whose small-tilt limit is the harmonic well the surrogate used. Plugs into the
++  ``onsite`` hook of ``compose_graph``.
++* per-gyro ``gamma``: a per-component vector gamma makes ``Phigyro`` precess each gyro
++  at its own rate (the integrator just broadcasts it against ``J @ v``).
++"""
++
++import jax
++jax.config.update("jax_enable_x64", True)
++
++import jax.numpy as jnp
++import numpy as np
++
++from dap.arrangement import SmoothArrangement
++from dap.functors import Phigyro
++from dap.gyroscope import complex_structure, rod_gravity
++from dap.interpretation import trivial_omega
++from dap.rvect import constant
++
++_IN_POS = (jnp.zeros(0), trivial_omega(0))
++_TRIV = lambda op: (jnp.zeros(0), jnp.zeros(0))
++
++
++def test_rod_gravity_is_a_restoring_well_with_harmonic_limit():
++    """Minimum upright (r=0), and the small-tilt force is the harmonic ``(g/L) q``."""
++    g, L = 2.0, 3.0
++    U = rod_gravity(g, L)
++    assert abs(float(U(jnp.zeros(2))) - (-g * L)) < 1e-12          # minimum value -gL
++    assert float(U(jnp.array([0.5, 0.3]))) > float(U(jnp.zeros(2)))  # a well
++    q_small = jnp.array([1e-3, -2e-3])
++    grad = jax.grad(U)(q_small)
++    np.testing.assert_allclose(np.asarray(grad), np.asarray((g / L) * q_small), rtol=1e-3)
++
++
++def test_rod_gravity_stiffens_nonlinearly():
++    """The restoring force per unit displacement grows toward the rod's horizontal limit
++    -- genuinely nonlinear, unlike the constant-stiffness harmonic surrogate."""
++    g, L = 1.0, 1.0
++    U = rod_gravity(g, L)
++    near = float(jnp.linalg.norm(jax.grad(U)(jnp.array([0.1, 0.0])))) / 0.1   # ~ g/L
++    far = float(jnp.linalg.norm(jax.grad(U)(jnp.array([0.9, 0.0])))) / 0.9    # >> g/L
++    assert far > 1.5 * near
++
++
++def _free_gyros(V, m=1.0):
++    """A closed V-gyro free system (Q = R^{2V}, sharp = (1/m) I, U = 0)."""
++    return SmoothArrangement(
++        constant(jnp.eye(2 * V) / m), 0, 0, 0, 0,
++        out_f=lambda q, m_out: jnp.zeros(0),
++        in_f=lambda q, m_out, n_in: jnp.zeros(0),
++        U=lambda q, m_out, n_in: jnp.array(0.0),
++        label="free_gyros",
++    )
++
++
++def test_per_gyro_gamma_precesses_independently():
++    """A per-gyro gamma vector precesses each gyro at its own rate: with gamma=(g0,0),
++    gyro 0 gets the skew kick -g0 J v_0 and gyro 1 (gamma=0) is untouched."""
++    V, m, g0 = 2, 1.0, 0.5
++    arr = _free_gyros(V, m)
++    J = complex_structure(V)
++    gamma = jnp.array([g0, g0, 0.0, 0.0])  # per-gyro: gyro 0 -> g0, gyro 1 -> 0
++    O = Phigyro(arr, gamma=gamma, J=J)
++
++    xi = jnp.array([0.0, 1.0, 0.0, 1.0])  # both gyros start with the same momentum
++    _, _, (q1, xi1) = O.with_state((jnp.zeros(2 * V), xi)).run_one(_IN_POS, _TRIV)
++
++    Jb = np.array([[0.0, -1.0], [1.0, 0.0]])
++    v = np.asarray(xi) / m
++    exp0 = np.asarray(xi[0:2]) - g0 * (Jb @ v[0:2])  # gyro 0 precesses
++    np.testing.assert_allclose(np.asarray(xi1[0:2]), exp0, atol=1e-10)
++    np.testing.assert_allclose(np.asarray(xi1[2:4]), np.asarray(xi[2:4]), atol=1e-10)  # gyro 1 fixed
+diff --git a/dap/tests/test_rk4_gyro.py b/dap/tests/test_rk4_gyro.py
+new file mode 100644
+index 0000000..6a9b212
+--- /dev/null
++++ b/dap/tests/test_rk4_gyro.py
+@@ -0,0 +1,102 @@
++"""RK4 on the gyro phase system as org^(4) (rk4.rk4_gyro_integrator / Phirk4gyro; Phase 3).
++
++The faithful machine's integrator: classical RK4 stepping the phase ODE
++``qdot = sharp(xi), xidot = -dU - drag*F(v) - gamma*(J v)`` -- the same forces as
++``Phigyro`` but the blog's RK4 time-stepping instead of symplectic Euler. We verify:
++
++* 4th-order accuracy: on a harmonic oscillator (closed form via matrix exp) the global
++  error falls like h^4 (ratios -> 16) -- the falsifiable proof it is genuine RK4 run
++  through the four org^(4) rounds on the PHASE state;
++* one macro-tick equals a hand-rolled RK4 step of the full phase ODE *including* the
++  quadratic-drag and per-gyro precession 1-forms.
++"""
++
++import jax
++jax.config.update("jax_enable_x64", True)
++
++import jax.numpy as jnp
++import numpy as np
++
++from dap.arrangement import SmoothArrangement
++from dap.functors import Phirk4gyro
++from dap.gyroscope import complex_structure
++from dap.interpretation import trivial_omega
++from dap.rvect import constant
++
++_IN_POS = (jnp.zeros(0), trivial_omega(0))
++_TRIV = lambda op: (jnp.zeros(0), jnp.zeros(0))
++
++
++def _oscillator(d, m, k):
++    """Closed harmonic oscillator on R^d: U = (k/2)|q|^2, sharp = (1/m) I (dU = k q)."""
++    return SmoothArrangement(
++        constant(jnp.eye(d) / m), 0, 0, 0, 0,
++        out_f=lambda q, mo: jnp.zeros(0),
++        in_f=lambda q, mo, ni: jnp.zeros(0),
++        U=lambda q, mo, ni: 0.5 * k * jnp.sum(q ** 2),
++        label="osc",
++    )
++
++
++def test_rk4_gyro_is_fourth_order_on_oscillator():
++    """Global error vs the exact phase flow e^{AT} falls like h^4 (ratios -> 16)."""
++    d, m, k, T = 2, 1.3, 2.0, 1.0
++    arr = _oscillator(d, m, k)
++    q0 = np.array([1.0, -0.5])
++    xi0 = np.array([0.2, 0.7])
++    # phase generator A on (q, xi): qdot = xi/m, xidot = -k q
++    A = np.block([[np.zeros((d, d)), np.eye(d) / m], [-k * np.eye(d), np.zeros((d, d))]])
++    z0 = np.concatenate([q0, xi0])
++    exact = np.asarray(jax.scipy.linalg.expm(jnp.asarray(A * T))) @ z0
++
++    def err(N):
++        O = Phirk4gyro(arr, T / N)
++        s = (jnp.asarray(q0), jnp.asarray(xi0))
++        for _ in range(N):
++            _, s = O.with_state(s).run_one(_IN_POS, _TRIV)
++        got = np.concatenate([np.asarray(s[0]), np.asarray(s[1])])
++        return float(np.linalg.norm(got - exact))
++
++    e8, e16, e32 = err(8), err(16), err(32)
++    assert e32 < 1e-5
++    assert e8 / e16 > 12.0
++    assert e16 / e32 > 12.0
++
++
++def test_rk4_gyro_one_step_matches_hand_written_with_drag_and_precession():
++    """One Phirk4gyro tick = a hand-rolled RK4 step of the full phase ODE, drag + gamma in."""
++    V, m, k, h = 2, 1.0, 0.5, 0.1
++    dim = 2 * V
++    arr = _oscillator(dim, m, k)  # dU = k q
++    J = complex_structure(V)
++    drag = 0.3
++    gamma = jnp.array([0.4, 0.4, 0.0, 0.0])  # per-gyro
++    O = Phirk4gyro(arr, h, drag=drag, gamma=gamma, J=J, gyro_block=2)
++
++    q0 = jnp.array([0.3, -0.2, 0.1, 0.5])
++    xi0 = jnp.array([0.2, 0.1, -0.3, 0.4])
++    _, (q1, xi1) = O.with_state((q0, xi0)).run_one(_IN_POS, _TRIV)
++
++    Jm = np.asarray(J)
++    gam = np.asarray(gamma)
++
++    def Fdrag(v):
++        vg = v.reshape(V, 2)
++        sp = np.sqrt((vg ** 2).sum(axis=1, keepdims=True))
++        return (sp * vg).reshape(-1)
++
++    def f(z):  # full phase vector field
++        q, xi = z[:dim], z[dim:]
++        v = xi / m
++        dU = k * q
++        return np.concatenate([v, -dU - drag * Fdrag(v) - gam * (Jm @ v)])
++
++    z = np.concatenate([np.asarray(q0), np.asarray(xi0)])
++    k1 = f(z)
++    k2 = f(z + h / 2 * k1)
++    k3 = f(z + h / 2 * k2)
++    k4 = f(z + h * k3)
++    z_new = z + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
++
++    got = np.concatenate([np.asarray(q1), np.asarray(xi1)])
++    np.testing.assert_allclose(got, z_new, atol=1e-10)
+diff --git a/dap/tests/test_vector_graph.py b/dap/tests/test_vector_graph.py
+new file mode 100644
+index 0000000..1d86c40
+--- /dev/null
++++ b/dap/tests/test_vector_graph.py
+@@ -0,0 +1,76 @@
++"""R^d generalization of the prism graph-wiring (sec.graph_laplacian; Phase 3).
++
++The paper's prism wiring (``compose_graph``) couples scalar (R^1) vertices; this is
++its generalization to R^vdim vertices plus an optional on-site potential, so a network
++of 2-D gyros is built BY COMPOSITION -- closing the audit's "U written directly, not
++built by the graph-wiring construction" gap. We check that:
++
++* the R^2 graph-Laplacian potential ``sum_e (kappa/2)|q_tgt - q_src|^2`` EMERGES from
++  the prism wiring on a hex topology, matching an independent hand-written oracle (it
++  is *not* the U we write -- it comes out of ``compose_seq``);
++* an on-site potential per vertex is added on top;
++* the scalar case (vdim=1) is unchanged (backward compatibility).
++"""
++
++import jax
++jax.config.update("jax_enable_x64", True)
++
++import jax.numpy as jnp
++import numpy as np
++
++from dap.gyroscope import hex_graph
++from dap.wiring import compose_graph
++
++
++def _spring_oracle(q, edges, kappa, vdim):
++    """Independent oracle: sum_e (kappa/2)|q_tgt - q_src|^2 (Euclidean per edge)."""
++    qv = np.asarray(q).reshape(-1, vdim)
++    return sum(0.5 * kappa * float(np.sum((qv[t] - qv[s]) ** 2)) for (s, t) in edges)
++
++
++def test_r2_graph_laplacian_emerges_on_hex():
++    """The 2-D spring coupling is produced by compose_graph (vdim=2), not hand-written."""
++    edges, in_g, out_g = hex_graph(3, 3)
++    V = 9
++    m, kappa = 1.3, 0.7
++    arr = compose_graph(V, edges, m, kappa, vdim=2)
++    # closed system, parameter R^{2V}, mass-sharp -- everything from composition:
++    assert (arr.out_dim_M, arr.in_dim_M, arr.out_dim_N, arr.in_dim_N) == (0, 0, 0, 0)
++    assert arr.Q.dim == 2 * V
++    rng = np.random.default_rng(0)
++    for _ in range(5):
++        q = jnp.asarray(rng.standard_normal(2 * V))
++        got = float(arr.U(q, jnp.zeros(0), jnp.zeros(0)))
++        np.testing.assert_allclose(got, _spring_oracle(q, edges, kappa, 2), atol=1e-10)
++
++
++def test_onsite_potential_is_added():
++    """An on-site term (a per-gyro well) adds to the emergent spring potential."""
++    edges, _, _ = hex_graph(2, 3)
++    V = 6
++    m, kappa, g = 1.0, 0.5, 0.3
++    onsite = lambda qv: 0.5 * g * jnp.sum(qv ** 2)
++    arr = compose_graph(V, edges, m, kappa, vdim=2, onsite=onsite)
++    rng = np.random.default_rng(1)
++    for _ in range(5):
++        q = jnp.asarray(rng.standard_normal(2 * V))
++        got = float(arr.U(q, jnp.zeros(0), jnp.zeros(0)))
++        qv = np.asarray(q).reshape(V, 2)
++        want = _spring_oracle(q, edges, kappa, 2) + sum(
++            0.5 * g * float(np.sum(qv[v] ** 2)) for v in range(V)
++        )
++        np.testing.assert_allclose(got, want, atol=1e-10)
++
++
++def test_scalar_graph_unchanged():
++    """vdim=1 (the default) still gives the paper's scalar graph Laplacian."""
++    edges = [(0, 1), (1, 2), (2, 0), (0, 2)]
++    V = 3
++    m, kappa = 1.3, 2.1
++    arr = compose_graph(V, edges, m, kappa)  # default vdim=1, onsite=None
++    rng = np.random.default_rng(2)
++    for _ in range(5):
++        q = jnp.asarray(rng.standard_normal(V))
++        got = float(arr.U(q, jnp.zeros(0), jnp.zeros(0)))
++        want = sum(0.5 * kappa * float(q[t] - q[s]) ** 2 for (s, t) in edges)
++        np.testing.assert_allclose(got, want, atol=1e-10)
+diff --git a/dap/wiring.py b/dap/wiring.py
+index e4f447e..db75958 100644
+--- a/dap/wiring.py
++++ b/dap/wiring.py
+@@ -270,67 +270,80 @@ def _graph_ports(
+     return out_lists, in_lists, perm
+ 
+ 
+-def graph_wire(num_vertices: int, edges: Sequence[Tuple[int, int]]) -> SmoothArrangement:
++def graph_wire(
++    num_vertices: int, edges: Sequence[Tuple[int, int]], vdim: int = 1
++) -> SmoothArrangement:
+     """The prism wiring ``R^{varphi_G}`` of sec.graph_laplacian as a static arrangement.
+ 
+     Image under ``R^-`` (lem.lens_pow) of the prism ``varphi_G : (x)_v <in(v)/out(v)>
+-    -> <0/0>`` (eqn.prism_f). Source ``(x)_v <R^{in(v)}|R^{out(v)}> = <R^E|R^E>``,
+-    target the unit ``<R^0|R^0>``, trivial parameter ``R^0``, ``U' = 0``. The input
+-    map ``prod_v R^{out(v)} -> prod_v R^{in(v)}`` is the identity on ``R^E`` shuttled
+-    through ``src``/``tgt``, i.e. ``in_f(m_out) = m_out[perm]`` (see ``_graph_ports``).
++    -> <0/0>`` (eqn.prism_f). Each edge port carries ``vdim`` components (``vdim = 1``
++    is the paper's scalar case; ``vdim = 2`` wires 2-D gyros). Source
++    ``(x)_v <R^{vdim*in(v)}|R^{vdim*out(v)}> = <R^{vdim*E}|R^{vdim*E}>``, target the
++    unit ``<R^0|R^0>``, trivial parameter ``R^0``, ``U' = 0``. The input map routes
++    each in-edge's ``vdim``-block from its source's out-edge block: ``in_f(m_out) =
++    m_out[comp_perm]`` where ``comp_perm`` is the edge permutation ``perm``
++    (``_graph_ports``) expanded over the ``vdim`` components.
+     """
+     E = len(edges)
+     _, _, perm = _graph_ports(num_vertices, edges)
+     perm = jnp.asarray(perm, dtype=int)
++    # expand the edge permutation to act block-wise on vdim components per edge:
++    comp_perm = (perm[:, None] * vdim + jnp.arange(vdim)).reshape(-1)
+ 
+     def out_f(q_wire: Array, m_out: Array) -> Array:
+         return jnp.zeros(0)  # bang : 0 -> sum_v out(v)
+ 
+     def in_f(q_wire: Array, m_out: Array, n_in: Array) -> Array:
+-        return m_out[perm]  # route each in-edge from its source's out-edge
++        return m_out[comp_perm]  # route each in-edge block from its source's out-edge block
+ 
+     def U(q_wire: Array, m_out: Array, n_in: Array) -> Array:
+         return jnp.array(0.0)
+ 
+     return SmoothArrangement(
+         Q=trivial(),
+-        out_dim_M=E,
+-        in_dim_M=E,
++        out_dim_M=E * vdim,
++        in_dim_M=E * vdim,
+         out_dim_N=0,
+         in_dim_N=0,
+         out_f=out_f,
+         in_f=in_f,
+         U=U,
+-        label=f"graph_wire(V={num_vertices}, E={E})",
++        label=f"graph_wire(V={num_vertices}, E={E}, vdim={vdim})",
+     )
+ 
+ 
+-def harmonic_vertex(d_in: int, d_out: int, m: float, kappas: Sequence[float]) -> SmoothArrangement:
+-    """The harmonic particle ``Part_v : <1/1> -> <R^{in(v)}|R^{out(v)}>`` at a vertex.
+-
+-    Parameter ``Q_v = R`` with constant ``sharp(xi) = xi/m``; output map the diagonal
+-    ``q |-> (q)_{e in out(v)}`` broadcasting position to the ``d_out`` out-edges; input
+-    map vacuous; potential ``U_v(q, (q'_e)) = sum_e (kappa_e/2)(q - q'_e)^2`` over the
+-    ``d_in`` in-edges (sec.graph_laplacian). The chain particle of sec.spring_first_pass
+-    is the case ``d_in = d_out = 1``.
++def harmonic_vertex(
++    d_in: int, d_out: int, m: float, kappas: Sequence[float], vdim: int = 1, onsite=None
++) -> SmoothArrangement:
++    """The harmonic particle ``Part_v : <1/1> -> <R^{vdim*in(v)}|R^{vdim*out(v)}>`` at a vertex.
++
++    Parameter ``Q_v = R^{vdim}`` with constant ``sharp(xi) = xi/m`` (per component);
++    output map the diagonal ``q |-> (q)_{e in out(v)}`` broadcasting the ``vdim``-vector
++    position to the ``d_out`` out-edges; input map vacuous; potential
++    ``U_v(q, (q'_e)) = sum_e (kappa_e/2)|q - q'_e|^2`` (Euclidean per edge) over the
++    ``d_in`` in-edges (sec.graph_laplacian), plus an optional on-site term
++    ``onsite(q)`` (e.g.\\ a vertex's rod-gravity well). The paper's scalar chain/graph
++    particle is the case ``vdim = 1`` (and ``onsite = None``); ``vdim = 2`` is a 2-D gyro.
+     """
+     kappas = jnp.asarray(kappas, float)
+ 
+     def out_f(q: Array, m_out: Array) -> Array:
+-        return jnp.full((d_out,), q[0])  # diagonal: broadcast position to out-edges
++        return jnp.tile(q, d_out)  # diagonal: broadcast the vdim-vector to each out-edge
+ 
+     def in_f(q: Array, m_out: Array, n_in: Array) -> Array:
+         return jnp.zeros(0)  # bang
+ 
+     def U(q: Array, m_out: Array, n_in: Array) -> Array:
+-        return 0.5 * jnp.sum(kappas * (q[0] - n_in) ** 2)
++        nbr = n_in.reshape(d_in, vdim)  # in-edge neighbor positions
++        springs = 0.5 * jnp.sum(kappas * jnp.sum((q[None, :] - nbr) ** 2, axis=1))
++        return springs + (onsite(q) if onsite is not None else 0.0)
+ 
+     return SmoothArrangement(
+-        Q=diagonal(jnp.array([1.0 / m])),
++        Q=diagonal(jnp.full(vdim, 1.0 / m)),
+         out_dim_M=0,
+         in_dim_M=0,
+-        out_dim_N=d_out,
+-        in_dim_N=d_in,
++        out_dim_N=d_out * vdim,
++        in_dim_N=d_in * vdim,
+         out_f=out_f,
+         in_f=in_f,
+         U=U,
+@@ -339,21 +352,31 @@ def harmonic_vertex(d_in: int, d_out: int, m: float, kappas: Sequence[float]) ->
+ 
+ 
+ def compose_graph(
+-    num_vertices: int, edges: Sequence[Tuple[int, int]], m: float, kappa: float
++    num_vertices: int,
++    edges: Sequence[Tuple[int, int]],
++    m: float,
++    kappa: float,
++    vdim: int = 1,
++    onsite=None,
+ ) -> SmoothArrangement:
+     """``wire_G = R^{varphi_G}((Part_v)_v)`` of eqn.graph_wire, by genuine composition.
+ 
+         wire_G = compose_seq( tensor(Part_v for v), graph_wire(G) ) : <1/1> -> <1/1>.
+ 
+-    A closed 0-ary arrangement with parameter ``R^V``, ``sharp = (xi_v/m)_v``, and
+-    composite potential ``sum_e (kappa/2)(q_tgt(e) - q_src(e))^2`` (eqn.graph_potential)
+-    that *emerges* from the prism wiring composed with the vertex particles -- it is
+-    not written by hand. Uniform mass ``m`` and spring constant ``kappa``.
++    A closed 0-ary arrangement with parameter ``R^{vdim*V}``, ``sharp = (xi_v/m)_v``,
++    and composite potential ``sum_e (kappa/2)|q_tgt(e) - q_src(e)|^2`` (eqn.graph_potential,
++    Euclidean per edge) plus the optional on-site term ``sum_v onsite(q_v)`` -- the whole
++    potential *emerges* from the prism wiring composed with the vertex particles, it is
++    not written by hand. Uniform mass ``m`` and spring constant ``kappa``; ``vdim = 2``
++    gives the 2-D gyro network, ``onsite`` carries (e.g.) the per-gyro rod gravity.
+     """
+     out_lists, in_lists, _ = _graph_ports(num_vertices, edges)
+     vertices = [
+-        harmonic_vertex(len(in_lists[v]), len(out_lists[v]), m, [kappa] * len(in_lists[v]))
++        harmonic_vertex(
++            len(in_lists[v]), len(out_lists[v]), m, [kappa] * len(in_lists[v]),
++            vdim=vdim, onsite=onsite,
++        )
+         for v in range(num_vertices)
+     ]
+-    wired = compose_seq(tensor_arrangements(vertices), graph_wire(num_vertices, edges))
+-    return replace(wired, label=f"graph(V={num_vertices}, E={len(edges)})")
++    wired = compose_seq(tensor_arrangements(vertices), graph_wire(num_vertices, edges, vdim=vdim))
++    return replace(wired, label=f"graph(V={num_vertices}, E={len(edges)}, vdim={vdim})")

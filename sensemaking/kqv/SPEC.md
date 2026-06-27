@@ -1,6 +1,6 @@
 # The KQV attention suboperad — specification
 
-Faithful to `../../attention-suboperad.tex`; the `sec.`/`eq.`/`rmk.`/`obs.`/`ex.`
+Faithful to `../attention-suboperad/attention-suboperad.tex`; the `sec.`/`eq.`/`rmk.`/`obs.`/`ex.`
 labels below refer to it. This is the object every experiment must factor through
 (`../PLAN.md`); the laws asserted here are tested in `test_operad_laws.py`.
 

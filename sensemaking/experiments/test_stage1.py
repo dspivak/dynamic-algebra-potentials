@@ -5,7 +5,7 @@ consensus ~ as well as the full-observability ceiling, while the no-channel abla
 (diagonal attention, no cross-box mixing) cannot.  2 seeds for test speed; the
 reported result is over 5 (run `python -m sensemaking.experiments.stage1`).
 
-Run: PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/experiments/test_stage1.py -q
+Run: PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/experiments/test_stage1.py -q
 """
 
 from sensemaking.experiments.stage1 import run

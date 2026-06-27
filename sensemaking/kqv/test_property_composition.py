@@ -13,7 +13,7 @@ audited atom; it does NOT use ``compose_seq`` -- the tree traversal is hand-writ
 so it is genuinely independent of the composition path under test.
 
 Run from the repo root:
-    PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest \
+    PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest \
         sensemaking/kqv/test_property_composition.py -q
 """
 

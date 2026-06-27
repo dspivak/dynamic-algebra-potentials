@@ -1,7 +1,7 @@
 """Tests for the Task 2 world: Phiphase oscillator + necessary-communication gate.
 
 Run from the repo root:
-    PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/world/test_world.py -q
+    PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/world/test_world.py -q
 """
 
 import jax

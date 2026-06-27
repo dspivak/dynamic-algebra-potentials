@@ -7,12 +7,12 @@ predictive arrangements under a capacity bound, entirely inside the DAP formalis
 
 Everything here factors through the **KQV attention suboperad of `sarr`**
 ([`kqv/SPEC.md`](kqv/SPEC.md)), which is faithful to
-[`../attention-suboperad.tex`](../attention-suboperad.tex).
+[`attention-suboperad/attention-suboperad.tex`](attention-suboperad/attention-suboperad.tex).
 
 ## Relationship to `dap`
 
 This package depends on the executable DAP core, vendored as a git submodule at
-[`../misc/dap`](../misc/dap) — the public repository
+[`../dap-core`](../dap-core) — the public repository
 **<https://github.com/dspivak/dap>**. This `sensemaking/` code is deliberately kept
 *outside* that submodule: it is exploratory and should not couple the public `dap`
 repo to speculative work.
@@ -30,19 +30,20 @@ The `dap` submodule ships a virtualenv with `jax`, `numpy`, `pytest`, and `dap`
 installed editable. Run from the **repo root** with this package on `PYTHONPATH`:
 
 ```sh
-PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/kqv/test_operad_laws.py -q
+PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/kqv/test_operad_laws.py -q
 ```
 
 (Equivalently, make your own venv with `jax>=0.4 numpy pytest` and
-`pip install -e misc/dap`, then `PYTHONPATH=$(pwd) python -m pytest sensemaking`.)
+`pip install -e dap-core`, then `PYTHONPATH=$(pwd) python -m pytest sensemaking`.)
 
 ## Layout
 
 ```
 sensemaking/
   PLAN.md, AUDIT.md           governance
+  attention-suboperad/        the standalone companion note (the spec this code realizes)
   kqv/                        the KQV attention suboperad (Tasks 0-1)
-    SPEC.md                   the math spec, faithful to attention-suboperad.tex
+    SPEC.md                   the math spec, faithful to attention-suboperad/attention-suboperad.tex
     head.py                   the head + prior-box generators (con.head, ex.zeroary)
     operad.py                 KQVTerm algebra (Head/Sub/Par) + F = realize + KQVSystem
     builders.py               Builder(E,d,d_v).nest([N,N',...]) and ragged/width builders
@@ -72,5 +73,5 @@ sensemaking/
   gate holds across 8 weather seeds: no single sensor decodes the season (best R^2 <=
   0.42), the pool does (>= 0.71). The audit caught an earlier gate relaxation; fixed by
   retuning the world to pass the strong every-box bar (not by loosening the threshold).
-- 30 tests pass (`PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/ -q`).
+- 30 tests pass (`PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/ -q`).
 - Task 3 (Stage-1 experiment: is the channel used) — next.

@@ -153,7 +153,7 @@ LLMs tend to produce work that *passes the stated check* rather than work that i
 
 ## Open decisions (for the user)
 
-- Code location: proposed `sensemaking/` at repo root, importing `misc/dap`
+- Code location: proposed `sensemaking/` at repo root, importing `dap-core`
   (keeps speculative code out of the public dap submodule). Confirm or redirect.
 - Will you run codex at the Task 0 gate, or should I also prepare a codex-specific
   brief (a frozen spec + check-list it can run without my context)?

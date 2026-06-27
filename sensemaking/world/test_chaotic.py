@@ -1,7 +1,7 @@
 """Tests for the CHAOTIC-season world: Phiphase chaos + decoder-window-ROBUST gate.
 
 Run from the repo root:
-    PYTHONPATH=$(pwd) misc/dap/.venv/bin/python -m pytest sensemaking/world/test_chaotic.py -q
+    PYTHONPATH=$(pwd) dap-core/.venv/bin/python -m pytest sensemaking/world/test_chaotic.py -q
 
 Three things are checked, all genuine (no weakened assertions):
 
