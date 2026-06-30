@@ -141,6 +141,136 @@ LLMs tend to produce work that *passes the stated check* rather than work that i
   generators compose into *unseen* trees and still work = substitution-invariance
   = compositionality).
 
+## Phase R (LIVE, 2026-06-29) — the abstraction tower and the top-latent fix
+
+**Reframe.** Sense-making realized as an operadic KQV tower of abstraction levels.
+*This supersedes the necessity-gate framing of Tasks 2–3, diagnosed dead (it rewards
+averaging, and a sense is not an average; commit 1b851d6).* Data clamped at the
+BOTTOM (open source), sense read at the TOP, relaxed under `Phiconf` = hierarchical
+predictive coding (`slo.pc`). Currently single-datum *weight* relaxation (not yet
+multi-datum/temporal). Demo: `experiments/sense_demo.py` (commit 7285d57); every
+arrangement a `KQVTerm` via `KQVSystem` (provenance per C0).
+
+**Empirical state (depth sweep, this session).** Open tower, 16 bottom slots fixed
+(data dim 64 in every row), `Phiconf`, η=0.05, seed 0, 150 steps:
+
+| arities | depth | heads | %relax ΣU | ‖sense‖ | cos(senseA,senseB) |
+|---|---|---|---|---|---|
+| `[16]` | 1 | 1 | 0% | 0.058 | +0.895 |
+| `[4,4]` | 2 | 5 | 23% | 0.916 | +0.424 |
+| `[2,2,4]` | 3 | 7 | 10% | 0.195 | +0.828 |
+| `[2,2,2,2]` | 4 | 15 | 17% | 0.007 | +0.844 |
+
+Depth 1 collapses (silent); depth 2 forms a non-silent, datum-dependent sense; depth
+3–4 regress, and depth 4 *re-collapses* (‖sense‖→0) even as ΣU keeps falling. Runtime
+≈ ×2.5 per added depth (≈ O(#heads); per-head cost ~const), so log-runtime is ~linear
+in depth. **Caveat:** single seed, 150 steps; depth-3/4 are likely under-converged.
+
+**Diagnosis (primary, morphism-level).** `relax_bottom` feeds the root a zero apex
+(`apex=0`; `boundary` returns `(0, apex_ctx)`). The root's potential (`eq.Uattn`) is
+then `U = ½‖h − Ω·0‖² = ½‖h‖²` (Ω = Wo Wv, `rmk.circuits`) — an instruction to *be
+silent*. The sense is read off those same children, so it is pulled to 0. **Conjecture:**
+depth amplifies the zero-pull (each level inherits it) → the depth-4 re-collapse. The
+single-level mechanism is certain; the depth-amplification is to be verified.
+
+**Revised design (the target).** A *single* bidirectional predictive-coding tower
+(untied = Rao–Ballard), not an encoder plus a bolted-on decoder. The same tower read two
+ways: **forward / bottom-up** = inference (infer the causes that explain the clamped
+data); **backward / top-down** = generation — the top-down prediction pass *is* the
+"program" that re-emits the bottom inputs. "Makes sense of its world" = a short top code
+regenerates the world. Five coupled choices:
+
+1. **Relax activations, not just weights.** Make the per-level activations (causes)
+   `z_ℓ` *inferred state* the dynamics moves, with `z_0` clamped to data. Sense = the
+   inferred **top activation** `z_top`, not a one-shot `out_f` read. This is the genuine
+   "inferred, not provided" sense.
+2. **Two timescales, one flow (no explicit alternation).** Relax `Q = weights ⊕
+   activations` under one conf-update; activations fast (large η), weights slow (small η).
+   The large η-gap makes activations equilibrate inside each weight step (= inference)
+   while the slow drift is learning — the per-level η-gradient, now across the
+   weight/activation split. Adiabatic — keep the gap genuinely large.
+3. **Untied predictor.** Fill `eq.Uattn`'s *schematic* `pred(W,n)` with its **own**
+   generative weight, separate from the read-out OV `Ω = Wo Wv`. (The shared Ω was the
+   *code's* concrete choice, not paper-enforced — `eq.Uattn` leaves `pred` schematic.)
+   Untied = classical Rao–Ballard (`rmk.corners`).
+4. **Momentum on weights, not activations.** Φdamped / Nesterov on the slow weights
+   (accelerates; helps escape the all-zero stationary point); plain or critically-damped
+   conf-update on the fast activations (oscillation would break the "settled" assumption
+   the weight step relies on).
+5. **Bottleneck at `z_top`** (low-dim) — else reconstruction is a trivial copy, not a
+   sense (the capacity-bound theme).
+
+**Anti-collapse status (vetted, still binding).** Clamped data makes the all-zero config
+non-optimal, but that does NOT prove descent escapes it: (i) if `Ω → 0` the gradient on
+`z_top` vanishes and all-zero is a *stationary point* (momentum on weights, choice 4, is
+the lever); (ii) explanation can hide in weights / lower messages — nothing pins `z_top`
+to the datum without (iii) a `z_top` prior `½‖z_top − μ‖²` (the deferred `prior_box`
+potential) to break the gauge freedom (`Ω z` rescaling) and pin the sense.
+
+**Faithfulness.** The *regime* is named in the paper: untied = Rao–Ballard PC
+(`rmk.corners`); `Φconf` = predictions-down/errors-up; `pred` schematic so untying is
+allowed (`eq.Uattn`); parameters-as-state-by-one-flow (`rmk.params`); the lens is
+`eq.arr`. **The one extension:** activations as *relaxed state* — a fast carrier in `Q`
+beyond `con.head`'s QKVO. Same block as before (the vetter's candidate (b) needs a spec
+revision); **route (2)** — a formal activation/prior generator proven to factor through
+`sarr` — is preferred. So: faithful in regime, blocked on exactly one formalization (the
+activation carrier).
+
+**Tests (pre-registered).**
+- **Baseline (cheap first check):** a bolted-on autoencoder — KQV encoder tower → low-dim
+  bottleneck → KQV generator tower — trained to reconstruct the clamped data. Question:
+  can a bottleneck code regenerate the world *at all*? (Two systems; sanity check only.)
+- **Target:** the *single* bidirectional tower above; its top-down pass regenerates the
+  clamped data; sense = inferred `z_top`.
+- **Stationary-point test (vetter; run FIRST).** Does the silent state persist under
+  random AND near-zero inits? Near-zero is adversarial. Monitor `‖Ω‖` and the generative
+  weight — if collapse tracks norm→0, that is mechanism (i); a `z_top`/activation prior is
+  the lever.
+- **Metrics:** reconstruction error; compression (bottleneck dim vs data dim);
+  datum-dependence (cos of `z_top` across two data); timescale separation actually
+  achieved.
+- **PASS:** non-trivial reconstruction at a real bottleneck; `z_top` datum-dependent (cos
+  well below 1); no silent stationary point at near-zero init.
+- **FAIL (informative):** only trivial-copy reconstruction (no compression), or `z_top`
+  collapses ⇒ the untied / activation-inference design isn't the cure; look to
+  over-squashing in `eq.pool` or the carrier.
+- **Gate.** Pick the activation-carrier route (1/2/3) before the target counts as
+  faithful; until then it tests mechanism only.
+
+**Provenance/faithfulness (must hold).** Everything a `KQVTerm` via `KQVSystem`; no raw
+`SmoothArrangement` interpreted in the experiment layer (C0). the activation carrier resolved
+against a faithfulness route (1/2/3) before it counts as "inside the suboperad."
+η-gradient only as data of the sharp (A5); no optimizer/penalty outside `U`/`sharp_Q`.
+
+## Phase R — results & reframe (2026-06-29)
+
+Generator 3 BUILT and faithful (`kqv/cell.py`; G1–G5 + operad laws pass). The tower ran
+(`experiments/activation_tower.py`). Outcome, honestly:
+
+- **Near-zero init is retired as the bar (user's call).** The dead zone is pervasive and
+  depth-amplified; near-zero freezes the whole tower; that is a cold-start artifact of
+  bilinear/PC systems, not a property of the suboperad. Use **random init**, where the tower
+  escapes.
+- **The result that matters is structural, not a pass/fail.** From random init `z_top` is
+  datum-dependent but tiny, and only ~⅓ of the data is reconstructed — because the head's
+  prediction `Ω·n` is one broadcast `R^E` vector, so a head can only explain what its `N`
+  inputs *share* (~`1/N`; for i.i.d. data the mean). **i.i.d. data has nothing to compress**;
+  the test data, not the head, was the bug. (Full write-up: `kqv/SPEC.md` **Findings**.)
+- **Reframe of the architecture:** heads *summarize shared structure*, cells *reconstruct*;
+  compress only at `z_top`, not at every interface. The forward path forward: **Generator 4 —
+  the residual head** (`kqv/SPEC.md`): each box predicts its children from its own state and
+  emits a *compressed residual* (`out_f`), so higher levels work on the unexplained part and
+  find longer-range causes. Moore-legal because the subtracted prediction is the box's own
+  state, not the top-down `n`.
+
+**Next pre-registered test (Phase R′).** Hierarchically-structured data (long-range
+correlations carried by low-dim multi-scale causes); residual cells between levels; measure
+whether a distant correlated pair (box 3 in medium A, box 6 in medium B, same grandparent) is
+predicted **better because** its residual structure climbed the tree (vs. a flat / no-hierarchy
+control). PASS = the cross-group coupling appears only with the hierarchy. This, and the
+faithfulness of Generator 4's design, are what **codex** audits and **bets** on
+(`AUDIT.md` **Bet**, `CODEX_BRIEF.md`).
+
 ## Audit cadence
 
 - **In-house auditor (`AUDIT.md`): I run it automatically at the end of every Task,

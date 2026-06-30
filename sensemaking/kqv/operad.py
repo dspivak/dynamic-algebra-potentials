@@ -22,6 +22,8 @@ from typing import Tuple
 from dap.arrangement import SmoothArrangement
 from dap.wiring import compose_seq, tensor_arrangements
 
+from .cell import activation_cell
+from .coincidence import coincidence_head
 from .head import attention_head
 
 
@@ -55,19 +57,83 @@ class Head(KQVTerm):
 
 
 @dataclass(frozen=True)
+class Act(KQVTerm):
+    """The activation-cell generator (Generator 3, ``SPEC.md``; route 2).
+
+    An **arity-1** generator: a relaxable state box ``(R^E|R^E) -> (R^E|R^E)`` with
+    carrier ``Q = R^k (+) R^{E x k}`` (fast ``z``, slow ``D``) and a block sharp.  It is
+    a sibling of ``Head`` in the generating set, so the suboperad is now *enlarged*
+    (heads + priors + cells).  ``k`` is the bottleneck rank; ``sharp`` is the reactive
+    space / optimizer (default the block sharp); ``top_down`` adds the optional
+    symmetric Rao--Ballard term to ``U``.  Its arity is fixed at 1 (``N`` below), so a
+    cell is a legal ``Sub.parent`` (one child) and a legal ``Sub`` child (one box).
+    """
+
+    E: int
+    k: int
+    sharp: object = None
+    top_down: bool = False
+    prior_mu: object = None
+    prior_lambda: float = 0.0
+    label: object = None
+
+    def __post_init__(self):
+        if self.E < 1:
+            raise ValueError(f"Act residual width E must be >= 1, got {self.E}")
+        if self.k < 1:
+            raise ValueError(f"Act code rank k must be >= 1, got {self.k}")
+
+    @property
+    def N(self) -> int:
+        """Arity: a cell is arity-1 (one inner box on its wire)."""
+        return 1
+
+
+@dataclass(frozen=True)
+class Coinc(KQVTerm):
+    """The coincidence-head generator (SECOND order; ``kqv/coincidence.py``).
+
+    Arity-``N`` like a head, but its upward read-out is a *second moment* of its children
+    (``vech(P Pᵀ)``, ``P = Σ_j V h_j``), so it exposes co-activations a first-order pool is
+    blind to. ``r`` is the feature rank; the carrier is ``(V, Wo, G)``. A sibling of ``Head``
+    and ``Act`` in the generating set -- the first degree-2 generator (the moment hierarchy).
+    """
+
+    N: int
+    E: int
+    r: int = 1
+    sharp: object = None
+    label: object = None
+
+    def __post_init__(self):
+        if self.N < 1:
+            raise ValueError(f"Coinc arity N must be >= 1, got {self.N}")
+        if self.E < 1 or self.r < 1:
+            raise ValueError("Coinc residual width E and feature rank r must be >= 1")
+
+
+# The generating set of the suboperad: arity-N heads (incl. 0-ary priors), arity-1 cells,
+# and arity-N coincidence heads (``obs.generate`` enlarged, ``SPEC.md`` "Term grammar").
+# ``Sub.parent`` may be any of these with arity >= 1 -- a more general grammar, NOT a new op.
+_GENERATORS = (Head, Act, Coinc)
+
+
+@dataclass(frozen=True)
 class Sub(KQVTerm):
     """Operadic substitution of ``children`` into the inner boxes of ``parent``.
 
+    ``parent`` is any arity-``>= 1`` generator (a ``Head`` or, now, an ``Act`` cell --
+    ``SPEC.md`` "Term grammar", a grammar change, not a new operation).
     ``len(children)`` must equal ``parent.N`` (one subtree per inner box) and every
     child must share the residual width ``parent.E`` (``obs.residual``).
     """
 
-    parent: Head
+    parent: KQVTerm
     children: Tuple[KQVTerm, ...]
 
     def __post_init__(self):
-        if not isinstance(self.parent, Head) or self.parent.N < 1:
-            raise ValueError("Sub.parent must be a Head of arity >= 1")
+        if not isinstance(self.parent, _GENERATORS) or self.parent.N < 1:
+            raise ValueError("Sub.parent must be a generator (Head or Act) of arity >= 1")
         if len(self.children) != self.parent.N:
             raise ValueError(
                 f"Sub: expected {self.parent.N} children, got {len(self.children)}"
@@ -102,7 +168,7 @@ class Par(KQVTerm):
 
 def width(term: KQVTerm) -> int:
     """The residual width ``E`` shared by a term's target box(es)."""
-    if isinstance(term, Head):
+    if isinstance(term, (Head, Act, Coinc)):
         return term.E
     if isinstance(term, Sub):
         return term.parent.E
@@ -112,8 +178,8 @@ def width(term: KQVTerm) -> int:
 
 
 def target_boxes(term: KQVTerm) -> int:
-    """Number of target boxes: 1 for a head/substitution; a lens tensor multiplies."""
-    if isinstance(term, (Head, Sub)):
+    """Number of target boxes: 1 for a head/cell/substitution; a lens tensor multiplies."""
+    if isinstance(term, (Head, Act, Coinc, Sub)):
         return 1
     if isinstance(term, Par):
         return sum(target_boxes(p) for p in term.parts)
@@ -122,8 +188,10 @@ def target_boxes(term: KQVTerm) -> int:
 
 def open_boxes(term: KQVTerm) -> int:
     """Number of open inner boxes at the bottom of a term (its source arity)."""
-    if isinstance(term, Head):
+    if isinstance(term, (Head, Coinc)):
         return term.N
+    if isinstance(term, Act):
+        return 1  # arity-1: a single inner box on the cell's wire
     if isinstance(term, Sub):
         return sum(open_boxes(c) for c in term.children)
     if isinstance(term, Par):
@@ -141,6 +209,13 @@ def realize(term: KQVTerm) -> SmoothArrangement:
         return attention_head(
             term.N, term.E, term.d, term.d_v, sharp=term.sharp, label=term.label
         )
+    if isinstance(term, Act):
+        return activation_cell(
+            term.E, term.k, sharp=term.sharp, top_down=term.top_down,
+            prior_mu=term.prior_mu, prior_lambda=term.prior_lambda, label=term.label,
+        )
+    if isinstance(term, Coinc):
+        return coincidence_head(term.N, term.E, term.r, sharp=term.sharp, label=term.label)
     if isinstance(term, Sub):
         parent = realize(term.parent)
         kids = [realize(c) for c in term.children]
@@ -179,8 +254,16 @@ def trace(term: KQVTerm, indent: int = 0) -> str:
     if isinstance(term, Head):
         kind = "leaf" if term.N == 0 else "head"
         return f"{pad}{kind}(N={term.N}, E={term.E})"
+    if isinstance(term, Act):
+        return f"{pad}act(k={term.k}, E={term.E})"
+    if isinstance(term, Coinc):
+        return f"{pad}coinc(N={term.N}, r={term.r}, E={term.E})"
     if isinstance(term, Sub):
-        lines = [f"{pad}sub(parent=head(N={term.parent.N}, E={term.parent.E}))"]
+        p = term.parent
+        kind = (f"cell(k={p.k})" if isinstance(p, Act)
+                else f"coinc(N={p.N},r={p.r})" if isinstance(p, Coinc)
+                else f"head(N={p.N})")
+        lines = [f"{pad}sub(parent={kind}, E={p.E})"]
         lines += [trace(c, indent + 1) for c in term.children]
         return "\n".join(lines)
     if isinstance(term, Par):

@@ -23,7 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from .operad import Head, KQVSystem, KQVTerm, Par, Sub, leaf
+from .operad import Act, Head, KQVSystem, KQVTerm, Par, Sub, leaf
 
 
 @dataclass(frozen=True)
@@ -41,6 +41,10 @@ class Builder:
     def head(self, N: int) -> Head:
         """A bare arity-``N`` head generator (open at the bottom)."""
         return Head(N, self.E, self.d, self.d_v)
+
+    def cell(self, k: int, *, sharp=None, top_down: bool = False) -> Act:
+        """An arity-1 activation cell of bottleneck rank ``k`` (Generator 3)."""
+        return Act(self.E, k, sharp=sharp, top_down=top_down)
 
     def node(self, *children: KQVTerm) -> Sub:
         """A head substituted over the given child terms (ragged nesting)."""

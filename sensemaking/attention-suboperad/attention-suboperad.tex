@@ -478,6 +478,67 @@ learning (relaxing $W$) are one cotangent flow of one potential. Nothing
 special needs to be said about ``training.''
 \end{remark}
 
+\section{Catalog of the generators we use}\label{sec.catalog}
+
+For reference, the generators of the suboperad in one place, each presented as
+the triple~\eqref{eq.arr}: the carrier $Q$ and its sharp $\sharpR_Q$, then the
+three maps $\outp f,\inpt f,U$ of \eqref{eq.outf}--\eqref{eq.U}. Both legs of
+every box are the residual stream $\rr^E$; $h\in\outp M$ is the inner-emission
+tuple and $n\coloneqq\inpt N\in\rr^E$ the descending context. (The first two are
+the paper's head and prior; the last two are route-2 extensions developed in the
+companion notes --- a relaxable state carrier and a second-order read-out.)
+
+\subsection*{Attention head (\cref{con.head}), arity $K\ge1$}
+\[
+\begin{aligned}
+  Q          &= \vect\bigl(\rr^E,\rr^{d}\oplus\rr^{d}\oplus\rr^{d_v}\bigr)
+                \oplus\vect\bigl(\rr^{d_v},\rr^E\bigr)\ni W=(\Wq,\Wk,\Wv,\Wo;w_\star),\\
+  \sharpR_Q  &= \text{a metric on weight space (Euclidean by default, \cref{rmk.optimizer})},\\
+  \outp f(W,h)     &= \Wo\sum_{j=1}^{K}\softmax\bigl(\tfrac1{\sqrt d}\langle w_\star,\Wk h_j\rangle\bigr)_j\,\Wv h_j,\\
+  \inpt f(W,h,n)_i &= \Wo\!\!\sum_{j\in\{1,\dots,K\}\cup\{\star\}}\!\!A_{ij}\,\Wv h_j,
+                     \qquad A_{i\cdot}=\softmax\bigl(\tfrac1{\sqrt d}\langle\Wq h_i,\Wk h_j\rangle\bigr),\\
+  U(W,h,n)         &= \tfrac12\bigl\lVert\,h-\Wo\Wv n\,\bigr\rVert^{2}.
+\end{aligned}
+\]
+
+\subsection*{Prior box (\cref{ex.zeroary}), arity $K=0$}
+\[
+\begin{aligned}
+  Q              &= \rr^{E}\ni q,\\
+  \sharpR_Q      &= \text{the Euclidean metric on }\rr^{E},\\
+  \outp f(q,h)   &= q,\\
+  \inpt f(q,h,n) &= \langle\rangle\quad(\text{the unique map to }\rr^{0}),\\
+  U(q,h,n)       &= 0.
+\end{aligned}
+\]
+Here $\outp M=\inpt M=\rr^{0}$, so $h$ is the empty tuple.
+
+\subsection*{Activation cell (route 2), arity $K=1$}
+\[
+\begin{aligned}
+  Q                    &= \rr^{k}\oplus\Hom\bigl(\rr^{k},\rr^E\bigr)\ni(z,D),\\
+  \sharpR_Q            &= \text{a block sharp: }\eta_z\,\mathrm I\text{ on }z\text{ (fast)},\ \eta_D\,\mathrm I\text{ on }D\text{ (slow)},\\
+  \outp f\bigl((z,D),h\bigr)     &= D\,z,\\
+  \inpt f\bigl((z,D),h,n\bigr)   &= n,\\
+  U\bigl((z,D),h,n\bigr)         &= \tfrac12\bigl\lVert\,h-D\,z\,\bigr\rVert^{2}.
+\end{aligned}
+\]
+
+\subsection*{Coincidence head (route 2, second order), arity $K\ge1$}
+\[
+\begin{aligned}
+  Q                    &= \vect\bigl(\rr^E,\rr^{r}\bigr)\oplus\vect\bigl(\operatorname{Sym}^2\rr^{r},\rr^E\bigr)
+                          \oplus\vect\bigl(\rr^E,\operatorname{Sym}^2\rr^{r}\bigr)\ni(V,\Wo,G),\\
+  \sharpR_Q            &= \text{a metric on }(V,\Wo,G)\text{ (Euclidean by default)},\\
+  \outp f\bigl((V,\Wo,G),h\bigr)   &= \Wo\,\operatorname{vech}\bigl(P P^{\top}\bigr),\qquad P=\sum_{j=1}^{K}V h_j\in\rr^{r},\\
+  \inpt f\bigl((V,\Wo,G),h,n\bigr)_i &= n,\\
+  U\bigl((V,\Wo,G),h,n\bigr)       &= \tfrac12\bigl\lVert\,\operatorname{vech}\bigl(P P^{\top}\bigr)-G\,n\,\bigr\rVert^{2}.
+\end{aligned}
+\]
+The pooled feature $P$ is first order; $P P^{\top}$ makes the cross terms
+$(V h_i)(V h_j)^{\top}$ --- the coincidences between children --- explicit, so
+$\outp f$ is a degree-two read-out and $U$ predicts the second moment from $n$.
+
 \section{Caveats and open questions}\label{sec.open}
 
 \begin{enumerate}

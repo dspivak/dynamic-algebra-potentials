@@ -11,10 +11,14 @@ Public API:
 """
 
 from .builders import Builder
+from .cell import act_block_sharp, act_param_dim, act_unpack, activation_cell
+from .coincidence import coinc_param_dim, coinc_unpack, coincidence_head
 from .head import attention_head, param_dim, prior_box, unpack
 from .operad import (
     KQVSystem,
     KQVTerm,
+    Act,
+    Coinc,
     Head,
     Par,
     Sub,
@@ -32,8 +36,17 @@ __all__ = [
     "prior_box",
     "param_dim",
     "unpack",
+    "activation_cell",
+    "act_param_dim",
+    "act_unpack",
+    "act_block_sharp",
+    "coincidence_head",
+    "coinc_param_dim",
+    "coinc_unpack",
     "KQVTerm",
     "Head",
+    "Act",
+    "Coinc",
     "Sub",
     "Par",
     "realize",

@@ -39,6 +39,91 @@ Compare `sensemaking/kqv/head.py` line-by-line to `attention-suboperad.tex`.
   exists as the `R^{d_v}→R^E` re-embedding (`obs.residual`). `d_q,d_v` never appear
   at an interface.
 
+## A′. Generator 3 — the activation cell (`kqv/SPEC.md` Generator 3; checks for when coded)
+
+A *different* carrier from the head — audit on its own terms, not against A1–A6.
+
+- G1. **Carrier in `Q`.** `Q = Z ⊕ Hom(R^k,R^E)` (fast `z`, slow `D`), both in the reactive
+  space. A learned `D` living outside `Q`/`sharp_Q` is a FAIL.
+- G2. **Maps + types.** `out_f(z,h)=Dz` (Moore, no `n`); `in_f`, `U=½‖h−Dz‖²` of the
+  `eq.arr` types (A2/A3 shapes). A wrong type is a FAIL.
+- G3. **Vector-space carrier.** `Z` and `Hom(R^k,R^E)` are R-vect. A discrete carrier
+  (z≠R-vect) is out of scope and a FAIL for this generator.
+- G4. **Block sharp, not an external optimizer.** Fast-`z`/slow-`D` is a block on
+  `sharp_Q` (`rmk.optimizer`); a separate optimizer object is a FAIL (as A5).
+- G5. **No new operation.** Only substitution + lens tensor; `Sub.parent` merely
+  generalized to arity-≥1 generators. A feedback/closure op is a FAIL of suboperad-hood.
+
+**A′ is now LIVE — Generator 3 is coded.** `kqv/cell.py` (`activation_cell`, `act_block_sharp`,
+the optional `z`-prior), `kqv/operad.py` (`Act`, generalized `Sub`). Audit G1–G5 against the
+code and re-run `kqv/test_activation_cell.py` and `kqv/test_operad_laws.py` yourself.
+
+## F. Verify the FINDINGS (don't trust the prose — reproduce)
+
+The implementer claims the Generator-3 tower's ~⅓ reconstruction ceiling is *structural* (the
+head's broadcast prediction), not bad tuning. Refute or confirm from the code:
+
+- F1. **Broadcast ceiling.** In `kqv/head.py`, `U`'s prediction is `pred = Wo @ (Wv @ n)` — one
+  `R^E` vector compared against all `N` inner emissions. Confirm this is the structural reason a
+  head can only explain the shared/mean component (~`1/N` for independent inputs). A
+  token-specific or `N·E`-wide `pred` in the code would refute the claim.
+- F2. **The ⅓ ≈ the mean baseline.** Run `experiments/activation_tower.py`. Confirm random-init
+  reconstruction is ~⅓ on i.i.d. data and that it ≈ a "predict every token by the tokens' mean"
+  baseline (the broadcast ceiling). If they diverge materially, the diagnosis is wrong.
+- F3. **Near-zero collapse is a cold-start artifact.** Confirm near-zero init gives ~0%
+  relaxation with `‖D‖,‖Ω‖` frozen at init, while random init escapes; and that the `z_top`
+  prior pins `z_top→μ0` (cos ≈ +1.0 across data = datum-independent). If random init also froze,
+  the suboperad itself would be implicated.
+
+## A″. Generator 4 — the residual head (PROPOSED, NOT built): audit the DESIGN for faithfulness
+
+`kqv/SPEC.md` "Generator 4". There is no code yet — audit whether the *design* could be a
+faithful generator, and flag anything that would force it out of `sarr`.
+
+- H1. **Still a suboperad member.** R-vect carrier, block sharp, substitution + lens tensor only.
+  A feedback/closure wire (closing an output back to an input) is a FAIL of suboperad-hood.
+- H2. **Moore is respected.** `out_f` is a function of `(q, h)` only — NOT `n`. The subtracted
+  prediction must be the box's own state `D·z`, never the top-down `Ω·n`. Any `out_f` that needs
+  `n` is an immediate FAIL (and the whole residual-up idea would collapse back to the covector).
+- H3. **Bounded, in-`Q` compressor.** The residual is compressed (the upward message does not
+  grow with depth), and the compressor is learned data of `Q` (R-vect), not an outside module.
+- H4. **`U` stays an error-unit** (`½‖h − D·z‖²`, `obs.erroreunit`, `rmk.bothends`).
+
+## A‴. Generator 5 — the coincidence head (BUILT & VALIDATED): audit the code
+
+`kqv/coincidence.py` (`coincidence_head`), `Coinc` in `kqv/operad.py`. Re-run
+`kqv/test_coincidence.py` and `experiments/coincidence_tower.py` yourself.
+
+- J1. **Faithful generator.** `out_f(V,Wo,G;h) = Wo·vech(P Pᵀ)`, `P=Σ_j V h_j`, is Moore
+  (no `n`), permutation-invariant (the pool is a sum), arity-independent (`V,Wo,G` do not
+  depend on `K`), R-vect carrier, Euclidean/block sharp; `U=½‖vech(PPᵀ)−Gn‖²` an error-unit;
+  no new operad operation. A read-out that sees `n`, or weights that grow with `K`, is a FAIL.
+- J2. **It is genuinely second order.** `out_f(c·h)=c²·out_f(h)` (degree 2). A degree-1 read-out
+  mislabeled "coincidence" is a FAIL.
+- J3. **The result is real, not rigged.** Reproduce `coincidence_tower.py`: the event `e=(sa==sb)`
+  has uninformative marginals (each box's sign is 50/50), so only the product reveals it; confirm
+  the first-order top stays low while the second-order top clears the bar, and that the *only*
+  change between the two arms is `Head` vs `Coinc` at the top (same frozen mean-pool groups, same
+  data, same training). The frozen groups must be a *valid head config* (`w_star=0`, identity OV),
+  not a bespoke non-KQV pool. Check the encoder is `KQVSystem.arrangement` (provenance, C0).
+
+## Bet (codex) — pre-register a probability BEFORE any build
+
+Answer with a number in [0,1] and your reasoning:
+
+> **"On hierarchically-structured data (long-range correlations carried by low-dim, multi-scale
+> shared causes), the proposed Generator-4 residual hierarchy under `Phiconf` will DISCOVER
+> multi-scale residual-compressors — such that a distant correlated pair (box 3 in medium A, box
+> 6 in medium B, same grandparent) is predicted measurably better *because* its residual
+> structure climbed the tree — while staying a faithful suboperad of `sarr`."**
+
+Name the single most likely failure mode (candidates: `Phiconf` settles for the shared-mean
+code and never builds a cross-group residual code; the learned compressor discards the very
+feature that couples 3↔6; the dynamics don't converge / overshoot per "well-posedness is
+conditional on the sharp"; Moore forces something that quietly re-sums the per-box structure).
+Calibration note: the *prior* in-house bet — that near-zero-init activation inference would work
+(~40%) — **LOST**; weight accordingly.
+
 ## B. Operadic integrity — is it really an operad, closed under substitution?
 
 - B1. **Only generators + operad ops.** In the suboperad layer
