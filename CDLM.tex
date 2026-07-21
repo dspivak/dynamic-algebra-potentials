@@ -604,15 +604,70 @@ i.e.\ a choice of parameter, input, and output manifolds, together with a model 
 
 Aside from making the reactive structure explicit, smooth adaptive arrangements---the morphisms in $\sarr$---generalize the above familiar situation in three ways. First, an ordinary manifold $M$, i.e.\ in the role of $\rr^m$ and $\rr^n$ above---a pure output, \boxpicout{$M$}---becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; that is, we add a new input side $\inpt M$, which is an ordinary smooth port for information supplied by the surrounding system, so that $M$ becomes a box \boxpic{$\inpt M$}{$\outp M$}.
 Second, an ordinary map $f\colon Q\times M\to N$ becomes only one component of a pair of maps
-\[
+\begin{equation}\label{eqn.first_lens}
 \outp f\colon Q\times\outp M\to\outp N
 \qqand
 \inpt f\colon Q\times\outp M\times\inpt N\to\inpt M.
-\]
+\end{equation}
 That is, we add a new input map $\inpt f\colon Q\times\outp M\times\inpt N\to\inpt M$, which routes the new external inputs back to the new input sides of the internal interfaces.
 And third, we add a potential
-\[U\colon Q\times\outp{M}\times\inpt{N}\to\rr,\] 
+\begin{equation}\label{eqn.potential}
+U\colon Q\times\outp{M}\times\inpt{N}\to\rr,
+\end{equation}
 whose differential contributes to the dynamics.
+Seen from the box's perspective, \eqref{eqn.potential} provides some intuition regarding the distinction between inputs and outputs of a box. As a slogan,
+\begin{center}
+\emph{	
+Your inputs are what your interior can have preferences over, and\\
+your outputs are what your exterior can have preferences over.
+}
+\end{center}
+Indeed, the potential lives interior to the outer box $N$ and exterior to the inner box $M$,
+so it reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$.
+
+All the data from \eqref{eqn.first_lens} and \eqref{eqn.potential} is depicted in \eqref{eqn.arrangement}: %
+\begin{equation}\label{eqn.arrangement} %
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.5cm, bbx=.7cm, bby=.7ex, %
+    ar/.style={postaction={decorate, decoration={markings, reset marks, %
+      mark=at position \stringdecpos with \stringdec}}}, %
+    ann ar/.style={postaction={decorate, decoration={markings, reset marks, %
+      mark=at position .6 with {\arrow{Stealth[length=3.5pt]}}}}}, baseline=(M)] %
+  \node[bb={1}{1}] (M) {$M$}; %
+  \node[circle, draw, thin, inner sep=.5pt, left=.9 of M_in1] (fin) {\scriptsize$\inpt f$}; %
+  \node[circle, draw, thin, inner sep=.5pt, right=.9 of M_out1] (fout) {\scriptsize$\outp f$}; %
+  \node[dot] at ($(M_out1)!.5!(fout.west)$) (split) {}; %
+  \node[cloud, draw=gray, thin, cloud puffs=10, aspect=2.2, inner xsep=1pt, inner ysep=0pt, %
+        anchor=south] at ($(M.north)+(0,6pt)$) (Q) {\scriptsize$Q$}; %
+  \coordinate (fblow) at ($(M.south)+(0,-12pt)$); %
+  \coordinate (pot) at ($(fin.center)+(-16pt,-27pt)$); %
+  \coordinate (potSW) at ($(pot)+(-15pt,-1pt)$); %
+  \coordinate (potNE) at ($(pot)+(15pt,7pt)$); %
+  \node[bb={0}{0}, fit=(M) (Q) (fin) (fout) (fblow) (potSW) (potNE), %
+        inner xsep=.55cm, inner ysep=8pt] (N) {}; %
+  \node[coordinate] at (N.west|-M_in1) (N_in1) {}; %
+  \node[coordinate] at (N.east|-M_out1) (N_out1) {}; %
+  \coordinate (Nin) at ($(N_in1)+(-5pt,0)$); %
+  \coordinate (Nout) at ($(N_out1)+(5pt,0)$); %
+  \draw[thin, gray!55, ann ar] (Q) to[out=180, in=90] (fin); %
+  \draw[thin, gray!55, ann ar] (Q) to[out=0, in=90] (fout); %
+  \draw[ar] (Nin) to (fin); %
+  \draw[ar] (fin) to (M_in1); %
+  \draw (M_out1) to (split); %
+  \draw[ar] (split) to (fout); %
+  \draw[ar] (fout) to (Nout); %
+  \coordinate (fbmid) at ($(fin.-45|-fblow)!.5!(split|-fblow)$); %
+  \draw[ar] (split) to[out=-90, in=0] (fbmid) to[out=180, in=-45] (fin.-45); %
+  \draw[thin, black!60, -{Stealth[length=3.5pt]}] (fin.-135) to[out=-135, in=45] node[left=1pt, font=\scriptsize] {$U$} ($(pot)+(-2pt,8pt)$); %
+  \begin{scope}[shift={(pot)}] %
+    \draw[thin, black!60] plot[domain=-1.45:1.45, samples=41] ({\x*10pt},{(\x*\x-1)^2*5pt}); %
+    \fill[black!60] (-10pt,1.8pt) circle (1.7pt); %
+  \end{scope} %
+  \node[above=.3pt] at ($(M_in1)+(-9pt,0)$) {\scriptsize$\inpt M$}; %
+  \node[above=.3pt] at ($(M_out1)!.5!(split.west)$) {\scriptsize$\outp M$}; %
+  \node[left=1pt] at (Nin) {\scriptsize$\inpt N$}; %
+  \node[right=1pt] at (Nout) {\scriptsize$\outp N$}; %
+\end{tikzpicture} %
+\end{equation} %
 
 The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens $\binom{\inpt f}{\outp f}$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming, compositional game theory, and categorical accounts of backpropagation~\cite{foster2007combinators,hedges2017coherence,fong2019backprop,cruttwell2021categorical}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way.
 
@@ -2324,6 +2379,15 @@ A morphism $f\colon\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}\to\lensob{N}$ is a
 U\colon Q\times\outp M\times\inpt N\to\rr.
 \end{gathered}
 \end{equation}
+\eqref{eqn.arrangement} depicts this data in the case $K=1$. %
+
+\begin{remark}\label{rmk.preference_slogan} %
+The asymmetry in the domains of \eqref{eqn.srw_morphism} is worth naming as a slogan: %
+\emph{inputs $\inpt \blank$ are what the interior has preferences over, and %
+outputs $\outp \blank$ are what the exterior has preferences over}. %
+Since the arrangement $f$ lives interior to $\lensob N$ and exterior to each $\lensob{M_i}$, %
+its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$. %
+\end{remark} %
 
 \begin{definition}[Vocabulary for smooth adaptive arrangements]\label{def.arrangement_terminology}
 A multimorphism $\varphi\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth adaptive arrangement}, carrying a reactive parameter $Q$ and a potential $U\colon Q\to\rr$ (\cref{def.potlens}). We say that $\varphi$ is:
@@ -2332,7 +2396,7 @@ A multimorphism $\varphi\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth 
   \item[potential-free] if its potential $U=0$ vanishes;
   \item[static] if it is both stateless and potential-free;
   \item[closed] if its codomain is the monoidal unit $I=\binom{1}{1}$;
-  \item[a system] if its domain is $I$ (i.e.\ the arity is $K=0$); 
+  \item[a system] if its domain is $I=\binom{1}{1}$ (i.e.\ the arity is $K=0$); 
   \item[a closed system] if it is a morphism $I\to I$ (sometimes called a \emph{scalar}); and
   \item[harmonic] if $\outp M$ and $\inpt N$ are vector spaces, its sharp $\sharpR_Q$ is constant and symmetric, and its potential $U$ is a quadratic form.\footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it.}
 \qedhere
@@ -2902,7 +2966,8 @@ A position in $\Phiconf\lensob M$ is a pair $(\outp m,\omega)$ where $\outp m\in
 
 So at every time step, a box of the form
 \boxpic{$\inpt{M}$}{$\outp{M}$}
-outputs both a point $\outp m$ of $\outp M$ and a covector field $\omega$ on $\inpt M$. It then waits for input consisting of a covector at $\outp m$ and a point of $\inpt M$.
+outputs both a point $\outp m$ of $\outp M$ and a covector field $\omega$ on $\inpt M$.
+It then waits for input consisting of a covector at $\outp m$ and a point of $\inpt M$.
 
 \paragraph{The action of $\termraw{Phiconf}$ on morphisms.}
 Describing the action of $\Phiconf$ on morphisms will extend to the end of this section, \cref{sec.configuration_dynamics}. Let $(Q,\sharpR_Q):\rvect$ and let
