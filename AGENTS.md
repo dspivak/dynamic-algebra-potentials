@@ -23,5 +23,5 @@ This repository contains a mathematics paper in LaTeX. Treat the user as the aut
 - Keep edits minimal and local unless a broader rewrite is requested.
 - When changing a displayed formula or lemma statement, check the proof for any required parallel updates.
 - To compile, use TeX Live from `/Library/TeX/texbin`:
-  `env PATH=/Library/TeX/texbin:$PATH /Library/TeX/texbin/latexmk -pdf -interaction=nonstopmode dynamic-algebra-potentials.tex`
+  `env PATH=/Library/TeX/texbin:$PATH /Library/TeX/texbin/latexmk -pdf -interaction=nonstopmode CDLM.tex`
   Bare `latexmk` may fail because `/Library/TeX/texbin` is not always on `PATH`.
