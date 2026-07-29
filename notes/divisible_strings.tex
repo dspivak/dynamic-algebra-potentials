@@ -46,6 +46,7 @@
 \newcommand{\R}{\mathbb R}
 \newcommand{\N}{\mathbb N}
 \newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
 \newcommand{\id}{\mathrm{id}}
 \newcommand{\blank}{\mathord{-}}
 \newcommand{\To}[1]{\xrightarrow{#1}}
@@ -1479,6 +1480,135 @@ edges contribute $(q_1-0)^2$ and $(q_K-0)^2$.
 \subsection{The harmonic system of a unitary representation}
 \label{sec.unitary_harmonic}
 
+The difference operator is one element of the algebra of \emph{all}
+natural operators on bounded representations, which we now identify.
+
+\begin{theorem}[Natural operators]\label{thm.natural-operators}
+Let $\iota^*\colon\Dyn_\Z\to\Hilb$ be the time change along
+$\iota\colon0\to\Z$ (\cref{sec.background_hilbert}), and let
+\[
+\mathcal O_\R(\C^\times)
+\coloneqq
+\Bigl\{a\colon\Z\to\R
+\ \Bigm|\
+\textstyle\sum_{n\in\Z}\lvert a_n\rvert\,r^{\lvert n\rvert}<\infty
+\text{ for every }r>0\Bigr\},
+\]
+an $\R$-algebra under convolution: by the Cauchy estimates, its
+elements $f=\sum_{n\in\Z}a_nz^n$ are exactly the Laurent series of
+functions holomorphic on $\C\smallsetminus\{0\}$.  Then
+\[
+f\longmapsto\eta^f,
+\qquad
+\eta^f_{(X,u)}\coloneqq\sum_{n\in\Z}a_nu^n\colon X\to X,
+\]
+is an isomorphism of $\R$-algebras
+$\mathcal O_\R(\C^\times)\To{\cong}\mathrm{Nat}(\iota^*,\iota^*)$.
+\end{theorem}
+
+\begin{proof}
+\emph{Well-defined.}  For $(X,u):\Dyn_\Z$ put
+$r_u\coloneqq\max(\lVert u\rVert,\lVert u^{-1}\rVert)$.  Then
+$\lVert a_nu^n\rVert\leq\lvert a_n\rvert\,r_u^{\lvert n\rvert}$, so the
+series $\eta^f_{(X,u)}$ converges absolutely in operator norm and is
+bounded.  A morphism $\alpha\colon(X,u)\to(Y,v)$ satisfies
+$\alpha u^n=v^n\alpha$ for every $n\in\Z$---for negative $n$ because
+$\alpha u=v\alpha$ implies $\alpha u^{-1}=v^{-1}\alpha$---and the
+relation passes to the norm limit, so $\eta^f$ is natural.
+
+\emph{Surjective.}  For $R>1$ define the weighted regular object
+$(W_R,\sigma^{\leftarrow}):\Dyn_\Z$,
+\[
+W_R\coloneqq
+\Bigl\{a\colon\Z\to\R\ \Bigm|\
+\textstyle\sum_{n\in\Z}R^{2\lvert n\rvert}a_n^2<\infty\Bigr\},
+\qquad
+\langle a,b\rangle\coloneqq
+\textstyle\sum_{n\in\Z}R^{2\lvert n\rvert}a_nb_n;
+\]
+since $\bigl\lvert\,\lvert n\pm1\rvert-\lvert n\rvert\,\bigr\rvert\leq1$,
+the shifts satisfy
+$\lVert\sigma^{\leftarrow}\rVert,\lVert\sigma^{\rightarrow}\rVert\leq R$
+on $W_R$.  Let $\eta\in\mathrm{Nat}(\iota^*,\iota^*)$.  For
+$1<R'\leq R$ the inclusion $W_R\hookrightarrow W_{R'}$ is a bounded
+intertwiner fixing $e_0$, so by naturality the sequence
+$c\coloneqq\eta_{(W_R,\sigma^{\leftarrow})}(e_0)$ is independent of $R$
+and lies in every $W_R$; in particular
+$\lvert c_n\rvert\leq\lVert c\rVert_{W_R}\,R^{-\lvert n\rvert}$ for
+every $R>1$.  Now fix $(X,u):\Dyn_\Z$ and $x\in X$, choose
+$R>\max(r_u,1)$, and define the orbit map
+\[
+\alpha_x\colon W_R\to X,
+\qquad
+\alpha_x(a)\coloneqq\sum_{n\in\Z}a_n\,u^{-n}x,
+\]
+bounded by the Cauchy--Schwarz inequality against the weights,
+\[
+\sum_{n\in\Z}\lvert a_n\rvert\,r_u^{\lvert n\rvert}
+\leq
+\lVert a\rVert_{W_R}
+\Bigl(\textstyle\sum_{n\in\Z}(r_u/R)^{2\lvert n\rvert}\Bigr)^{1/2},
+\]
+and satisfying
+$\alpha_x(\sigma^{\leftarrow}a)
+=\sum_na_{n+1}u^{-n}x=u\,\alpha_x(a)$
+and $\alpha_x(e_0)=x$.  Naturality at $\alpha_x$ gives
+\[
+\eta_{(X,u)}(x)
+=\eta_{(X,u)}\bigl(\alpha_x(e_0)\bigr)
+=\alpha_x(c)
+=\sum_{n\in\Z}c_n\,u^{-n}x,
+\]
+so $\eta=\eta^f$ for $f$ with $a_n\coloneqq c_{-n}$, and $f\in\mathcal
+O_\R(\C^\times)$ by the displayed decay of $c$.
+
+\emph{Injective.}  At the shift representation,
+$(\sigma^{\leftarrow})^ne_0=e_{-n}$, so
+$\eta^f_{(\ell^2(\Z),\sigma^{\leftarrow})}(e_0)
+=\sum_{n\in\Z}a_ne_{-n}$ recovers the coefficients of $f$.
+
+\emph{Algebra map.}  $\eta^1=\id$, and for $f,g\in\mathcal
+O_\R(\C^\times)$ absolute convergence justifies the rearrangement
+$\eta^f_{(X,u)}\circ\eta^g_{(X,u)}
+=\sum_{n}\bigl(\sum_ka_kb_{n-k}\bigr)u^n
+=\eta^{fg}_{(X,u)}$.
+\end{proof}
+
+\begin{corollary}[Evaluation at the shift]\label{cor.shift-evaluation}
+Evaluation at $(\ell^2(\Z),\sigma^{\leftarrow})$ is an injection
+$\mathrm{Nat}(\iota^*,\iota^*)\hookrightarrow
+\Hilb\bigl(\ell^2(\Z),\ell^2(\Z)\bigr)$: an identity of natural
+operators holds in every bounded representation if and only if it
+holds at the shift.  Moreover, for the involution
+$f^*\coloneqq\sum_na_nz^{-n}$, every unitary representation satisfies
+$\eta^{f^*}_{(X,u)}=\bigl(\eta^f_{(X,u)}\bigr)^\dagger$.  In
+particular, with $d\coloneqq1-z^{-1}$, the identities
+\[
+d^*d=2-z-z^{-1}
+\qquad\text{and}\qquad
+d-d^*d=z-1
+\]
+in $\R[z,z^{-1}]\subseteq\mathcal O_\R(\C^\times)$ carry, in every
+unitary representation, to the identities for $D_u$ and $D_u^\dagger$
+that drive \cref{thm.characteristic-factorization}.
+\end{corollary}
+
+\begin{proof}
+Injectivity of evaluation is the third step of the proof of
+\cref{thm.natural-operators}; applied to the difference of two sides
+of an identity, it gives the displayed equivalence.  For the
+involution: $u$ unitary gives
+$(\eta^f_{(X,u)})^\dagger
+=\sum_na_n(u^\dagger)^n=\sum_na_nu^{-n}
+=\eta^{f^*}_{(X,u)}$.  Finally, in $\R[z,z^{-1}]$,
+$d^*d=(1-z)(1-z^{-1})=2-z-z^{-1}$ and hence $d-d^*d=z-1$; the
+assignment $f\mapsto\eta^f_{(X,u)}$ is an algebra map carrying $d$ to
+$D_u$ and, for unitary $u$, the involution to the dagger, so it
+carries these identities to
+$D_u^\dagger D_u=2\,\id_X-u-u^{-1}$ and
+$D_u-D_u^\dagger D_u=u-\id_X$.
+\end{proof}
+
 \begin{definition}[Harmonic system of a representation]\label{def.lat-rep}
 Let $(X,u)$ be a unitary representation of $\Z$
 (\cref{sec.background_hilbert}).  Define the closed system
@@ -1531,36 +1661,13 @@ U_{\Lat}(q)
 \bigr).
 \end{equation}
 
-\begin{remark}[Finite arity]\label{rmk.finite-arity}
-Operations of an operad have finite arity, so there is no countably-ary
-wiring in $\harr$ placing one mass at every $i\in\Z$, and the lattice is
-\emph{not} an operadic composite of masses and bonds.  It is a single
-closed arrangement, defined directly by its parameter and potential.
-
-Nor is finite arity a restriction one could simply relax.  A
-countably-ary operad of arrangements would need countable tensors of
-interfaces, and the candidate tensor---the $\ell^2$-direct sum
-$\widehat{\bigoplus}_{i\in\Z}B_i$, whose elements are the tuples with
-$\sum_i\lVert b_i\rVert^2<\infty$---is not cartesian: pairing countably
-many bounded maps requires square-summability of their values, and there
-is no diagonal $B\to\widehat{\bigoplus}_{\N}B$, so $\Hilb$ has no
-countable products.  Moreover the underlying set of
-$\widehat{\bigoplus}_iB_i$ is a proper subset of the product
-$\prod_i\lvert B_i\rvert$, so the semantics of a countable tensor could
-not be the countable parallel product of the semantics---the state-space
-functor $\lvert T^*\blank\rvert$ would fail its monoidality exactly at
-arity $\omega$.  The discrepancy between the $\ell^2$-sum and the product
-is the finite-energy condition itself: the lattice's states form a proper
-subspace of $\R^\Z$ precisely because their energies are summable.
-
-The sense in which the lattice is assembled from masses and bonds is
-therefore a colimit rather than a composite:
+Operations of an operad have finite arity, so the lattice is not an
+operadic composite of masses and bonds.  It is a colimit of them:
 \cref{thm.lattice-colimit} exhibits $\Lat_{Z,h}$ as the colimit, in the
 category $\Harm$ of closed harmonic systems, of the clamped
-chains---which \emph{are} operadic composites
+chains---which are operadic composites
 (\cref{prop.clamped-chain})---and \cref{prop.chain-limit} shows that
 the phase semantics converges along with the syntax.
-\end{remark}
 
 Not every instance of \cref{def.lat-rep} lies beyond the operad's reach:
 the cyclic representations are realized by operadic composites.
@@ -1587,22 +1694,6 @@ parameter is $(\ell^2(\Z/K),\riesz/(Zh))$ and whose potential is
 and for a closed system the parameter and the potential are the whole
 datum (\cref{sec.datum_operad}).
 \end{proof}
-
-\begin{remark}[Incidence and difference]\label{rmk.incidence-difference}
-The incidence operator generalizes the difference operator.  For the
-cycle $C_K$, the endpoint map $\partial_0\colon E\To{\cong}V$ is a
-bijection, and the induced unitary $\ell^2(V)\To{\cong}\ell^2(E)$
-carries $D_{\sigma^{\leftarrow}}$ to $d_{C_K}$; likewise---though
-outside the operad---the lattice potential \cref{eq.lattice-potential}
-is $\frac{Z}{2h}\lVert Dq\rVert^2$ with $D$ the incidence operator of
-the biinfinite path.  For a general graph no such identification
-exists: $d_\Gamma\colon\ell^2(V)\to\ell^2(E)$ has genuinely different
-domain and codomain, and the identity
-$D_u-D_u^\dagger D_u=u-\id$ behind the characteristic factorization
-(\cref{thm.characteristic-factorization}) is unavailable.  The
-factorization into characteristics is exactly the presence of this
-identification---the one-dimensionality of the medium.
-\end{remark}
 
 \subsection{Discrete linear dynamics}
 \label{sec.dyn}
@@ -1992,10 +2083,6 @@ being a tail of the $\ell^2$-vector $\widetilde q$.  Hence the free
 compressions have the same strong limit.
 \end{proof}
 
-The convergence is strong but not uniform: for unit states concentrated
-at the sites $\pm n$, the boundary terms in the proof have norm
-independent of $n$.
-
 \subsection{The characteristic morphism}
 \label{sec.characteristic}
 
@@ -2066,20 +2153,29 @@ This proves \cref{eq.characteristic-propagation}, hence
 \cref{eq.characteristic-morphism-type}.
 \end{proof}
 
-\begin{remark}[Zero modes]\label{rmk.zero-modes}
-$\Wc_u(q,\xi)=0$ says $\riesz_X(\xi)/Z=-D_uq=-D_u^\dagger q$;
-subtracting the two right-hand sides and using
-$D_u-D_u^\dagger=u-u^{-1}$, the assignment
-$q\mapsto\bigl(q,\ -Z\riesz_X^{-1}(D_uq)\bigr)$ is an isomorphism
+\begin{proposition}[Zero modes]\label{prop.zero-modes}
+The assignment $q\mapsto\bigl(q,\ -Z\riesz_X^{-1}(D_uq)\bigr)$ is an
+isomorphism
 \[
 \ker(u^2-\id_X)\To{\cong}\ker\Wc_u.
 \]
-For the shift representation this kernel is $0$: no nonzero $2$-periodic
-sequence is square-summable.  For a cyclic chain
-(\cref{prop.cyclic-chain}) it contains the constant displacements---and,
-at even $K$, the alternating mode; because these modes exist, $\Wc_u$
-is a morphism and not in general an isomorphism.
-\end{remark}
+For the shift representation this kernel is $0$; for a cyclic chain
+(\cref{prop.cyclic-chain}) it contains the constant displacements and,
+at even $K$, the alternating mode.
+\end{proposition}
+
+\begin{proof}
+$\Wc_u(q,\xi)=0$ says $\riesz_X(\xi)/Z=-D_uq=-D_u^\dagger q$.  Given
+the first equation, the second holds if and only if
+$(D_u-D_u^\dagger)q=(u-u^{-1})q=0$, i.e.\ $u^2q=q$; and then
+$\xi=-Z\riesz_X^{-1}(D_uq)$ is determined by $q$.  So the stated
+bounded linear assignment is a bijection onto $\ker\Wc_u$, with
+inverse the position projection.  For the shift representation,
+$u^2q=q$ says $q$ is $2$-periodic, and no nonzero $2$-periodic
+sequence is square-summable.  For the cyclic chain, the constants
+satisfy $uq=q$, and at even $K$ the alternating sequence
+$q_i=(-1)^i$ satisfies $u^2q=q$.
+\end{proof}
 
 \begin{proposition}[Naturality of the characteristic factorization]
 \label{prop.characteristic-natural}
