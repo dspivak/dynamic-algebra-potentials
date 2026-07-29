@@ -487,15 +487,18 @@ object of $\Dyn_G$ whose action is by unitaries.  A unitary
 representation of $\Z$ is thus a pair $(X,u)$ of a Hilbert space and a
 unitary $u\colon X\to X$; a morphism of unitary representations is a
 morphism of the underlying objects of $\Dyn_G$.  The \emph{difference
-operator} of a unitary $u$ is
+operator} of a unitary representation $(X,u)$ of $\Z$ is
 \[
-D_u\coloneqq\id_X-u^{-1},
+D_u\coloneqq\id_X-u^{-1}\colon X\to X,
 \]
 bounded with $\lVert D_u\rVert\leq2$ and with adjoint
 $D_u^\dagger=\id_X-u$.  The shift $\sigma^{\leftarrow}$ makes
 $\ell^2(\Z,B)$ a unitary representation of $\Z$, for which we abbreviate
-$D\coloneqq D_{\sigma^{\leftarrow}}=\id-\sigma^{\rightarrow}$, so that
-$(Da)_i=a_i-a_{i-1}$ and $(D^\dagger a)_i=a_i-a_{i+1}$.
+\[
+D\coloneqq D_{\sigma^{\leftarrow}}=\id-\sigma^{\rightarrow}
+\colon\ell^2(\Z,B)\to\ell^2(\Z,B),
+\]
+so that $(Da)_i=a_i-a_{i-1}$ and $(D^\dagger a)_i=a_i-a_{i+1}$.
 
 \paragraph{Smooth maps.}
 Let $V,W$ be Hilbert spaces and $f\colon V\to W$ a function.  The
@@ -1186,7 +1189,8 @@ $\Ufun(\Phih(f))=\Phiphase(f)$.
 For the last claim, let $f'$ be closed harmonic with parameter
 $\rv Q'=(Q',\sharpR_{Q'})$ and potential $U'$.  The tensor $f\ltens f'$
 is the closed system with parameter $\rv Q\oplus\rv Q'$ and potential
-$U''(q,q')=U(q)+U'(q')$ (\cref{sec.datum_operad}).  It is harmonic:
+$U''\colon Q\oplus Q'\to\R$, $U''(q,q')=U(q)+U'(q')$
+(\cref{sec.datum_operad}).  It is harmonic:
 its sharp is the symmetric $\sharpR_Q\oplus\sharpR_{Q'}$
 (\cref{prop.rhilb-monoidal}), and $U''$ is the continuous quadratic
 form of the bounded symmetric bilinear map
@@ -1387,7 +1391,8 @@ in the Hilbert instance.
 \begin{definition}[Anchor and clamped wiring]\label{def.anchor}
 The \emph{anchor} is the stateless system
 $\defineTerm{anchor}_{Z,h}\colon I\to\binom{\R}{1}$ with potential
-$a\mapsto\frac{Z}{2h}a^2$---a bond one of whose ends is held at $0$.
+$\R\to\R$, $a\mapsto\frac{Z}{2h}a^2$---a bond one of whose ends is held
+at $0$.
 For $K\geq2$, the \emph{clamped wiring}
 \[
 \Wire^{\mathrm{cl}}_K\colon
@@ -1397,6 +1402,8 @@ For $K\geq2$, the \emph{clamped wiring}
 \]
 is the static arrangement with input map
 \[
+\R^K\longrightarrow(\R^2)^{K-1}\oplus\R\oplus\R,
+\qquad
 (q_1,\ldots,q_K)\longmapsto
 \bigl((q_1,q_2),\ldots,(q_{K-1},q_K),\ q_1,\ q_K\bigr).
 \]
@@ -1454,7 +1461,8 @@ $(q,q')\mapsto\frac Zh\langle D_uq,D_uq'\rangle$, with operator
 (\cref{sec.background_hilbert})
 \begin{equation}\label{eq.rep-operator}
 A_u=\frac Zh\,D_u^\dagger D_u
-=\frac Zh\,\bigl(2\,\id_X-u-u^{-1}\bigr).
+=\frac Zh\,\bigl(2\,\id_X-u-u^{-1}\bigr)
+\colon X\to X.
 \end{equation}
 So $\Lat_{Z,h}(X,u)$ is a closed harmonic system, and the harmonic lift
 (\cref{prop.harmonic-lift}) applies to it.
@@ -1776,9 +1784,10 @@ Then $E_n\circ F_{f_n}\circ R_n\to F_f$ strongly.
 \end{theorem}
 
 \begin{proof}
-Write $S\coloneqq\sharpR_Q\circ\riesz_Q^{-1}$ and
-$A\coloneqq\riesz_Q\circ dU$ for the operators of the sharp and the
-potential of $f$, and $S_n,A_n$ for those of $f_n$.  The two conditions
+Write $S\coloneqq\sharpR_Q\circ\riesz_Q^{-1}\colon Q\to Q$ and
+$A\coloneqq\riesz_Q\circ dU\colon Q\to Q$ for the operators of the sharp
+and the potential of $f$, and $S_n,A_n\colon Q_n\to Q_n$ for those of
+$f_n$.  The two conditions
 of \cref{eq.harm-morphism} say exactly that $S_n$ and $A_n$ are the
 compressions of $S$ and $A$:
 \[
@@ -1798,6 +1807,8 @@ $S_n=\iota_n^\dagger S\iota_n$.
 
 Conjugate everything by the unitaries
 $\id\oplus\riesz\colon T^*V\to V\oplus V$: the lift transitions become
+$\hat F_f\colon Q\oplus Q\to Q\oplus Q$ and
+$\hat F_{f_n}\colon Q_n\oplus Q_n\to Q_n\oplus Q_n$,
 \[
 \hat F_f(q,p)=\bigl(q+Sp,\ p-A(q+Sp)\bigr),
 \qquad
@@ -1856,10 +1867,10 @@ the differential of $\frac Z2(q_{-n}^2+q_n^2)$ at the presented
 position:
 \[
 \bigl(F^{(n)}-F^{\mathrm{cl},n}\bigr)(x,\zeta)
-=\Bigl(0,\ Z\,\riesz^{-1}\bigl(\widetilde x_{-n}e_{-n}
-+\widetilde x_ne_n\bigr)\Bigr),
+=\Bigl(0,\ Z\,\riesz_{\ell^2(\Lambda_n)}^{-1}
+\bigl(\widetilde x_{-n}e_{-n}+\widetilde x_ne_n\bigr)\Bigr),
 \qquad
-\widetilde x=x+\riesz(\zeta)/Z.
+\widetilde x=x+\riesz_{\ell^2(\Lambda_n)}(\zeta)/Z.
 \]
 At $(x,\zeta)=R_n(q,\xi)$ the presented positions agree,
 $\widetilde x_{\pm n}=\widetilde q_{\pm n}$, and the momentum leg of
@@ -1976,7 +1987,8 @@ $(\sigma^{\leftarrow})^{-1}=\sigma^{\rightarrow}$, put
 \qquad
 \Sigma_{Z,h}
 \coloneqq
-\sigma^{\leftarrow}\oplus\sigma^{\rightarrow},
+\sigma^{\leftarrow}\oplus\sigma^{\rightarrow}
+\colon\mathcal C_{Z,h}\to\mathcal C_{Z,h},
 \]
 \begin{equation}\label{eq.shift-system}
 \defineTerm{shift}_{Z,h}\coloneqq(\mathcal C_{Z,h},\Sigma_{Z,h})\in\Dyn.
@@ -2017,7 +2029,18 @@ Fix a real Hilbert space $B\in\Hilb$ and an integer $N\geq1$.  Define
 \[
 Q_N(B)\coloneqq B^{\oplus N}.
 \]
-For every $x=(b_0,\ldots,b_{N-1})\in Q_N(B)$ and every $b\in B$, define
+Define bounded linear maps
+\[
+\begin{gathered}
+S_N\colon Q_N(B)\to Q_N(B),
+\qquad
+J_N\colon B\to Q_N(B),\\
+P_N\colon Q_N(B)\to B,
+\qquad
+U_N\colon Q_N(B)\oplus B\to Q_N(B)
+\end{gathered}
+\]
+by, for every $x=(b_0,\ldots,b_{N-1})\in Q_N(B)$ and every $b\in B$,
 \begin{equation}\label{eq.queue-structure}
 \begin{aligned}
 S_Nx&\coloneqq(b_1,\ldots,b_{N-1},0),\\
@@ -2762,7 +2785,8 @@ up to an additive constant \cite{schwartz1966distributions}.
 
 \paragraph{The translation representation.}
 For $Z\in\R_{>0}$ and $a\in\R$, the translation
-$(\lambda_af)(x)\coloneqq f(x+a)$ is unitary on $L^2(\R,Z\,dx)$, and
+$\lambda_a\colon L^2(\R,Z\,dx)\to L^2(\R,Z\,dx)$,
+$(\lambda_af)(x)\coloneqq f(x+a)$, is unitary, and
 $\lambda\colon a\mapsto\lambda_a$ makes $L^2(\R,Z\,dx)$ a unitary
 representation of $\R$ (\cref{sec.background_hilbert}).  For
 $h\in\R_{>0}$, write $e_h\colon\Z\to\R$ for the group homomorphism
