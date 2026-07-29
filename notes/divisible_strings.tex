@@ -121,6 +121,7 @@
 \trackTerm{\Ufun}{Ufun}{\mathsf{U}}% forgetful Lin -> PC, restricting to Dyn -> PC(y,y)
 \trackTerm{\Lin}{lin}{\mathbb{L}\Cat{in}}% 2-category of bounded linear machines
 \trackTerm{\pmon}{pmon}{\mathrm{p}}% monomial interface p(B)
+\trackTerm{\Philin}{Philin}{\Phi^{\mathrm{lin}}}% linear phase semantics
 \trackTerm{\Wc}{Wchar}{\mathcal{W}}% characteristic morphism
 \trackTerm{\riesz}{riesz}{r}% Riesz map
 \trackTerm{\sharpR}{sharpR}{\sharp}% reaction sharp
@@ -144,7 +145,10 @@ $\Hb$---spaces are real Hilbert spaces with smooth maps, parameters are
 reactive Hilbert spaces, potentials accumulate in $\R$---and, following the
 framework, obtain the operad $\harr$ of Hilbert arrangements, its polynomial
 interpretation, and a phase integrator, hence an operad functor
-$\Phiphase\colon\harr\to\pc$.
+$\Phiphase\colon\harr\to\pc$.  On the output-only linear arrangements
+the semantics refines, through Riesz identifications of the
+interfaces, to an operad functor into a 2-category of bounded linear
+machines, where the rest of the paper works.
 
 The homogeneous harmonic chain lives in $\harr$: masses and bonds are
 arrangements, and finite chains are their operadic composites.  Finite
@@ -774,8 +778,11 @@ and an integrator \cite[Def.~4.3.4]{cdlm},%def.integrator
 which turns the resulting effects into dynamics.  We build the Hilbert
 instances of both and obtain the phase dynamics functor
 $\Phiphase\colon\harr\to\pc$ (\cref{thm.phase-functor}), together with
-its lift $\Phih$ to linear dynamics on the closed harmonic systems
-(\cref{prop.harmonic-lift}).
+its linear refinements: the 2-category $\Lin$ of bounded linear
+machines (\cref{thm.lin-refinement}), the lift $\Phih$ on closed
+harmonic systems (\cref{prop.harmonic-lift}), and the linear phase
+semantics $\Philin$ on the output-only linear fragment
+(\cref{thm.linear-phase}).
 
 \subsection{The cotangent functor}
 \label{sec.cot_hilbert}
@@ -1471,6 +1478,138 @@ potential enter the step as rates, and elapsed time multiplies rates;
 that is why $\scale_{\Delta\tau}$ scales both by the same factor.
 \end{remark}
 
+\subsection{Linear phase semantics}
+\label{sec.linear_phase}
+
+\begin{definition}[Linear arrangements]\label{def.harr-lin}
+The operad $\harr^{\mathrm{lin}}$ has as colors the output-only
+interfaces $\binom1B$ with $B:\Hilb$, and as operations
+$f=(\rv Q,\outp f,\inpt f,U)
+\in\harr\bigl(\binom1{B_1},\ldots,\binom1{B_K};\binom1B\bigr)$
+those arrangements that are harmonic (\cref{def.vocabulary}) and whose
+output map $\outp f\colon Q\oplus B_1\oplus\cdots\oplus B_K\to B$ is
+bounded linear; the input data are trivial.
+\end{definition}
+
+\begin{proposition}\label{prop.harr-lin}
+$\harr^{\mathrm{lin}}$ is a suboperad of $\harr$, and its closed
+systems are exactly the closed harmonic systems.
+\end{proposition}
+
+\begin{proof}
+Substitution of arrangements composes output maps by substituting
+bounded linear maps into bounded linear maps, tensors the
+sharps---a direct sum of symmetric sharps is symmetric---and adds the
+potentials after substituting forward data (\cref{sec.datum_operad});
+a sum of continuous quadratic forms precomposed with bounded linear
+maps is a continuous quadratic form.  Identity arrangements are static
+with identity output maps.  So the operations contain the identities
+and are closed under substitution.  A closed system has no output
+data, so membership reduces to harmonicity.
+\end{proof}
+
+\begin{lemma}[Riesz interfaces]\label{lem.riesz-interface}
+For $B:\Hilb$, the polynomial map
+$\rho_B\colon\pmon(B)\to\cotof B$ that is the identity on positions
+and $\riesz_B\colon B^*\to\lvert B\rvert$ on directions is an
+isomorphism, with $\rho_0=\id_\yon$ and
+$\rho_{B\oplus C}=\rho_B\otimes\rho_C$.
+\end{lemma}
+
+\begin{proof}
+The direction maps are bijections, so $\rho_B$ is an isomorphism of
+polynomials.  Under $\pmon(B\oplus C)=\pmon(B)\otimes\pmon(C)$
+(\cref{def.monomial-interface}) and
+$\cotof{B\oplus C}\cong\cotof B\otimes\cotof C$
+(\cref{prop.cot-monoidal-hilbert}), the direction maps agree because
+$\riesz_{B\oplus C}=\riesz_B\oplus\riesz_C$ under the identification
+$(B\oplus C)^*\cong B^*\oplus C^*$ (\cref{sec.background_hilbert}).
+\end{proof}
+
+\begin{theorem}[Linear phase semantics]\label{thm.linear-phase}
+There is an operad functor
+\[
+\defineTerm{Philin}\colon\harr^{\mathrm{lin}}\longrightarrow\Lin,
+\qquad
+\binom1B\longmapsto B,
+\]
+whose value on
+$f=(\rv Q,\outp f,U)\colon
+\bigl(\binom1{B_1},\ldots,\binom1{B_K}\bigr)\to\binom1B$
+is the bounded linear machine with state space $T^*Q$,
+\begin{equation}\label{eq.linear-phase-machine}
+f^+\bigl((q,\xi),\vec b\bigr)=\outp f(\tilde q,\vec b),
+\qquad
+f^-\bigl((q,\xi),\vec b,c\bigr)
+=\Bigl(\bigl(\riesz_{B_i}(\omega_i)\bigr)_{i},\
+\bigl(\tilde q,\ \xi-\omega_Q\bigr)\Bigr),
+\end{equation}
+where $\tilde q=q+\sharpR_Q(\xi)$ is the presented position
+\cref{eq.presented-position-abstract} and
+\begin{equation}\label{eq.linear-phase-covector}
+(\omega_Q,\omega_1,\ldots,\omega_K)
+\coloneqq
+(\outp f)^*\bigl(\riesz_B^{-1}c\bigr)
++dU|_{(\tilde q,\vec b)}
+\ \in\
+Q^*\oplus B_1^*\oplus\cdots\oplus B_K^*;
+\end{equation}
+and such that, under the identifications
+$\Phiphase\binom1B\cong\cotof B$ (\cref{thm.phase-functor}) and the
+Riesz interfaces $\rho_B$ (\cref{lem.riesz-interface}),
+\[
+\Ufun\circ\Philin\cong\Phiphase\big|_{\harr^{\mathrm{lin}}}.
+\]
+On closed systems, $\Philin=\Phih$ (\cref{prop.harmonic-lift}).
+\end{theorem}
+
+\begin{proof}
+Write $p_i\coloneqq\pmon(B_i)$ and $p\coloneqq\pmon(B)$.  Conjugating
+the $1$-cell $\Phiphase(f)$ by the stateless isomorphisms
+(\cref{lem.stateless}) $\rho_{B_1}\otimes\cdots\otimes\rho_{B_K}$ and
+$\rho_B^{-1}$ gives a $1$-cell in
+$\pc\bigl(p_1\otimes\cdots\otimes p_K,\ p\bigr)
+=\pc\bigl(\pmon(B_1\oplus\cdots\oplus B_K),\ \pmon(B)\bigr)$, i.e.\ a
+machine (\cref{lem.monomial-homs}); and since the $\rho$'s are
+monoidal (\cref{lem.riesz-interface}) and stateless $1$-cells compose
+as polynomial maps (\cref{lem.stateless}), the assignment
+$f\mapsto\rho_B^{-1}\circ\Phiphase(f)\circ
+(\rho_{B_1}\otimes\cdots\otimes\rho_{B_K})$
+preserves substitution and identities, and its $\Ufun$-image is
+isomorphic to $\Phiphase$ as claimed.  It remains to compute the
+conjugate machine and check that it is bounded linear.
+
+By the unwinding of the phase coalgebra
+\cite[\S6.6.1]{cdlm},%sec.phase_coalgebra
+whose component formulas
+\cite[Eqs.~(53), (56), (62)]{cdlm}%eqn.outpn, eqn.covector_triple, eqn.state_update
+depend only on the data $\chiE$, $\nuro$, $\potd$ shared verbatim by
+the Hilbert instance
+(\cref{prop.euler-step-hilbert,prop.nu-hilbert,eq.potential-differential}),
+the $1$-cell $\Phiphase(f)$ has state set $\lvert T^*Q\rvert$ and, at
+a state $(q,\xi)$ and inner positions $\vec b$: readout position
+$\outp f(\tilde q,\vec b)$; and, for an incoming covector
+$\eta\in B^*$, returned directions the $B_i^*$-components, and state
+update $(\tilde q,\ \xi-\omega_Q)$ for the $Q^*$-component, of the
+total covector $(\outp f)^*\eta+dU|_{(\tilde q,\vec b)}$---the
+pullback sum of \cite[Eq.~(56)]{cdlm}%eqn.covector_triple
+with trivial input spaces, where $(D\outp f)^*=(\outp f)^*$ because
+$\outp f$ is linear.  Conjugation by the $\rho$'s substitutes
+$\eta=\riesz_B^{-1}c$ and applies $\riesz_{B_i}$ to the returned
+directions, giving exactly
+\cref{eq.linear-phase-machine,eq.linear-phase-covector}.  Every
+component is a composite of the bounded linear maps $\outp f$,
+$(\outp f)^*$, $\sharpR_Q$, the Riesz maps, and
+$dU|_{\blank}$---bounded linear in its basepoint because $U$ is a
+continuous quadratic form (\cref{sec.background_hilbert})---so the
+machine is bounded linear.
+
+For a closed system, $K=0$ and $B=1$: the machine lies in
+$\Lin(0;0)=\Dyn$, and \cref{eq.linear-phase-machine} reduces to
+$(q,\xi)\mapsto(\tilde q,\ \xi-dU|_{\tilde q})$, which is $F_f$
+(\cref{prop.harmonic-lift}).
+\end{proof}
+
 \section{Harmonic chains and characteristic factorization}
 \label{sec.harmonic}
 
@@ -1591,6 +1730,26 @@ form of the bounded symmetric bilinear map
 $(q,q')\mapsto\frac Zh\langle d_\Gamma q,d_\Gamma q'\rangle$, with
 operator $\frac Zh\,d_\Gamma^\dagger d_\Gamma$
 (\cref{sec.background_hilbert}); so the system is harmonic.
+\end{proof}
+
+\begin{corollary}[Graph chains are linear composites]\label{cor.graph-lin}
+The mass lies in $\harr^{\mathrm{lin}}$ (\cref{def.harr-lin}), as
+does, for every finite graph $\Gamma$, the output-only arrangement
+$w_\Gamma\colon\binom1\R^{\ltens V}\to I$ with trivial parameter and
+potential $U_\Gamma$ \cref{eq.graph-potential}; and
+\[
+w_\Gamma\bigl(\Mass_{Z,h},\ldots,\Mass_{Z,h}\bigr)=\Chain_\Gamma.
+\]
+\end{corollary}
+
+\begin{proof}
+The mass has bounded linear output map $q\mapsto q$, symmetric sharp,
+and zero potential; $w_\Gamma$ is stateless with the continuous
+quadratic potential $U_\Gamma$.  Their composite is closed, with
+parameter $(\ell^2(V),\riesz/(Zh))$ and potential $U_\Gamma$ evaluated
+at the mass outputs; and for a closed system the parameter and the
+potential are the whole datum (\cref{sec.datum_operad}), so the
+composite is $\Chain_\Gamma$ (\cref{prop.graph-chain}).
 \end{proof}
 
 \begin{corollary}[Finite chains]\label{prop.chain}
@@ -3577,16 +3736,15 @@ queues obtained from the harmonic phase system by
 $\Wc_{Z,h}$.
 \end{corollary}
 
-Under $\Phiphase$, a box receives its inputs as covectors: the directions
-of $\Phiphase\binom{A}{B}$ at a position include the cotangent directions
-of $\cotof B$ (\cref{thm.phase-functor}).  If a string is to be attached to
-such an interface, the Riesz isomorphism
-$\EZ(h)\To{\cong}\EZ(h)^*$
-converts each incoming packet to the required variance.  This conversion
-belongs to the interface.  The mechanics remains entirely in the
-$\harr$-operation $\Lat_{Z,h}$ and its phase semantics; the completed
-string uses the characteristic state selected by the 2-cell
-\cref{eq.characteristic-two-cell}.
+Under $\Phiphase$, a box receives its inputs as covectors: the
+directions of $\Phiphase\binom1B\cong\cotof B$ are cotangent
+(\cref{thm.phase-functor}).  \Cref{thm.linear-phase} makes the
+conversion precise: the Riesz interfaces $\rho_B$
+(\cref{lem.riesz-interface}) conjugate the phase semantics of the
+linear fragment into $\Lin$, where the strings of this section live.
+The mechanics remains entirely in the $\harr$-operation $\Lat_{Z,h}$
+and its phase semantics; the completed string uses the characteristic
+state selected by \cref{cor.queue-in-lattice}.
 
 \begin{thebibliography}{9}
 
