@@ -1285,7 +1285,7 @@ that is why $\scale_{\Delta\tau}$ scales both by the same factor.
 \section{Harmonic chains and characteristic factorization}
 \label{sec.harmonic}
 
-\subsection{Masses, bonds, chains, and the lattice}
+\subsection{Masses, bonds, and chains}
 \label{sec.mass_bond}
 
 Fix an impedance $Z\in\R_{>0}$ and a cell duration $h\in\R_{>0}$.
@@ -1373,25 +1373,51 @@ computation of \cite[\S7.3]{cdlm}%sec.wave_equation
 in the Hilbert instance.
 \end{proof}
 
-\begin{definition}[The harmonic lattice]\label{def.lattice}
-Put $Q\coloneqq\ell^2(\Z)$.  The \emph{harmonic lattice} is the closed
-system $\defineTerm{lat}_{Z,h}\in\harr(I;I)$ with parameter
-$\bigl(Q,\ \riesz_Q/(Zh)\bigr)$---so that
-$(\sharpR\xi)_i=\xi_i/(Zh)$ in components---and potential
-\begin{equation}\label{eq.lattice-potential}
-U_{\Lat}\colon Q\to\R,
+\subsection{The harmonic system of a unitary representation}
+\label{sec.unitary_harmonic}
+
+\begin{definition}[Harmonic system of a representation]\label{def.lat-rep}
+Let $(X,u)$ be a unitary representation of $\Z$
+(\cref{sec.background_hilbert}).  Define the closed system
+\[
+\defineTerm{lat}_{Z,h}(X,u)\in\harr(I;I)
+\]
+with parameter $\bigl(X,\ \riesz_X/(Zh)\bigr)$ and potential
+\begin{equation}\label{eq.rep-potential}
+U_u\colon X\to\R,
 \qquad
-U_{\Lat}(q)
-\coloneqq
-\frac{Z}{2h}\sum_{i\in\Z}(q_i-q_{i-1})^2.
+U_u(q)\coloneqq\frac{Z}{2h}\,\lVert D_uq\rVert^2.
 \end{equation}
 \end{definition}
 
-The potential is the continuous quadratic form
-$U_{\Lat}(q)=\frac{Z}{2h}\lVert Dq\rVert^2$ for the bounded difference
-operator $D$ of \cref{sec.background_hilbert}, hence smooth, with
-differential $dU_{\Lat}|_q=\frac{Z}{h}\,\langle D^\dagger Dq,\blank\rangle$; in
-components,
+The reaction $\riesz_X/(Zh)$ is symmetric, and $U_u$ is the continuous
+quadratic form of the bounded symmetric bilinear map
+$(q,q')\mapsto\frac Zh\langle D_uq,D_uq'\rangle$, with operator
+(\cref{sec.background_hilbert})
+\begin{equation}\label{eq.rep-operator}
+A_u=\frac Zh\,D_u^\dagger D_u
+=\frac Zh\,\bigl(2\,\id_X-u-u^{-1}\bigr).
+\end{equation}
+So $\Lat_{Z,h}(X,u)$ is a closed harmonic system, and the harmonic lift
+(\cref{prop.harmonic-lift}) applies to it.
+
+\begin{definition}[The harmonic lattice]\label{def.lattice}
+The \emph{harmonic lattice} is the shift instance
+\[
+\Lat_{Z,h}\coloneqq\Lat_{Z,h}\bigl(\ell^2(\Z),\ \sigma^{\leftarrow}\bigr).
+\]
+\end{definition}
+
+Writing $Q\coloneqq\ell^2(\Z)$: the parameter of $\Lat_{Z,h}$ is
+$\bigl(Q,\ \riesz_Q/(Zh)\bigr)$---in components
+$(\sharpR\xi)_i=\xi_i/(Zh)$---and, since $(Dq)_i=q_i-q_{i-1}$, the
+potential $U_{\Lat}\coloneqq U_{\sigma^{\leftarrow}}$ and its
+differential are
+\begin{equation}\label{eq.lattice-potential}
+U_{\Lat}(q)
+=
+\frac{Z}{2h}\sum_{i\in\Z}(q_i-q_{i-1})^2,
+\end{equation}
 \begin{equation}\label{eq.lattice-covector}
 \bigl(dU_{\Lat}|_q\bigr)_i
 =
@@ -1400,7 +1426,6 @@ components,
 2q_i-q_{i-1}-q_{i+1}
 \bigr).
 \end{equation}
-The reaction is symmetric, so the lattice is a closed harmonic system.
 
 \begin{remark}[Finite arity]\label{rmk.finite-arity}
 Operations of an operad have finite arity, so there is no countably-ary
@@ -1431,6 +1456,53 @@ operadic finite chains (\cref{prop.chain}) converge strongly to the
 transition of the lattice.
 \end{remark}
 
+Not every instance of \cref{def.lat-rep} lies beyond the operad's reach:
+the cyclic representations are realized by operadic composites.
+
+\begin{definition}[Cyclic wiring]\label{def.cyclic-wire}
+For an integer $K\geq1$, the \emph{cyclic wiring} is the static
+arrangement
+\[
+\Wire^{\circ}_K\colon
+\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens K}
+\longrightarrow I
+\]
+whose input map is
+\[
+\R^K\longrightarrow(\R^2)^{K},
+\qquad
+(q_1,\ldots,q_K)\longmapsto
+\bigl((q_1,q_2),(q_2,q_3),\ldots,(q_K,q_1)\bigr).
+\]
+\end{definition}
+
+\begin{proposition}[Cyclic chains]\label{prop.cyclic-chain}
+For $K\geq1$, write $\ell^2(\Z/K)\coloneqq\R^{\Z/K}$ with cyclic shift
+$(\sigma^{\leftarrow}a)_i=a_{i+1}$.  Then
+\[
+\Wire^{\circ}_K\bigl(
+\underbrace{\Mass_{Z,h},\ldots,\Mass_{Z,h}}_{K},
+\underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K}
+\bigr)
+=
+\Lat_{Z,h}\bigl(\ell^2(\Z/K),\ \sigma^{\leftarrow}\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+As in \cref{prop.chain}, the composite is the closed system with
+parameter
+$(\R^{\Z/K},\sharpR_{Z,h}^{\oplus K})
+=\bigl(\ell^2(\Z/K),\ \riesz/(Zh)\bigr)$
+and potential the sum of the bond potentials at the delivered pairs,
+here $\sum_{i\in\Z/K}\frac{Z}{2h}(q_i-q_{i+1})^2$.  Reindexing by
+$i\mapsto i-1$, this is
+$\frac{Z}{2h}\sum_{i\in\Z/K}(q_i-q_{i-1})^2
+=\frac{Z}{2h}\lVert D_{\sigma^{\leftarrow}}q\rVert^2
+=U_{\sigma^{\leftarrow}}(q)$, and for a closed system the parameter and
+the potential are the whole datum (\cref{sec.datum_operad}).
+\end{proof}
+
 \subsection{Discrete linear dynamics}
 \label{sec.dyn}
 
@@ -1446,73 +1518,92 @@ following \cite[\S7.3]{cdlm},%eqn.doubledot
 for the discrete velocity and the discrete acceleration; note
 $\ddot x(t)=\dot x(t)-\dot x(t-1)$.
 
-\begin{proposition}[Phase semantics of the lattice]\label{prop.phase-semantics}
-Fix $Z,h\in\R_{>0}$, put $Q\coloneqq\ell^2(\Z)$, and define
-\begin{equation}\label{eq.phase-transition}
-F_{Z,h}\colon T^*Q\to T^*Q,
-\qquad
-F_{Z,h}(q,\xi)
-\coloneqq
-\bigl(\widetilde q,\ \xi-Z\,\riesz_Q^{-1}(D^\dagger D\widetilde q)\bigr),
-\qquad
-\widetilde q\coloneqq q+\riesz_Q(\xi)/Z.
+\begin{proposition}[Characteristic recurrence]\label{prop.recurrence}
+Let $(X,u)$ be a unitary representation of $\Z$ and $Z,h\in\R_{>0}$, and
+put
+\begin{equation}\label{eq.rep-transition}
+(T^*X,\ F_u)\coloneqq\Phih\bigl(\scale_h\,\Lat_{Z,h}(X,u)\bigr),
 \end{equation}
-Then $(T^*Q,F_{Z,h})\in\Dyn$,
-\[
-\Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)=\Ufun(T^*Q,F_{Z,h}),
-\]
-and every trajectory of $F_{Z,h}$ satisfies the discrete wave equation
+suppressing $Z,h$ from the notation $F_u$.  Then
+\begin{equation}\label{eq.rep-transition-formula}
+F_u(q,\xi)
+=\bigl(\widetilde q,\ \xi-Z\,\riesz_X^{-1}(D_u^\dagger D_u\widetilde q)\bigr),
+\qquad
+\widetilde q=q+\riesz_X(\xi)/Z,
+\end{equation}
+and every trajectory of $F_u$ satisfies
+\begin{equation}\label{eq.momentum-position}
+\riesz_X\bigl(\xi(t)\bigr)=Z\,\dot q(t)
+\end{equation}
+and the discrete wave equation
 \begin{equation}\label{eq.discrete-wave}
-\ddot q(t)=-D^\dagger Dq(t),
-\qquad\text{i.e.}\qquad
-\ddot q_i(t)=q_{i-1}(t)-2q_i(t)+q_{i+1}(t).
+\ddot q(t)=-D_u^\dagger D_u\,q(t)
+\qquad(t\geq1).
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-The arrangement $\scale_h\,\Lat_{Z,h}$ is the closed system with reaction
-$h\cdot\riesz_Q/(Zh)=\riesz_Q/Z$ and potential $h\,U_{\Lat}$
-(\cref{def.scale,def.lattice,eq.lattice-potential}), whose differential
-is $h\,dU_{\Lat}|_{\widetilde q}
-=Z\,\riesz_Q^{-1}(D^\dagger D\widetilde q)$ by \cref{eq.lattice-covector}.  So
-\cref{prop.closed-step} identifies
-$\Phiphase(\scale_h\,\Lat_{Z,h})$ with the discrete dynamical system
-$(\lvert T^*Q\rvert,F_{Z,h})$.  Both components of $F_{Z,h}$ are bounded
-linear, so $(T^*Q,F_{Z,h})\in\Dyn$ and the identification is
-$\Ufun(T^*Q,F_{Z,h})$.  In components, using
-$(D^\dagger Da)_i=(Da)_i-(Da)_{i+1}=2a_i-a_{i-1}-a_{i+1}$
-(\cref{sec.background_hilbert}),
-\[
+The arrangement $\scale_h\,\Lat_{Z,h}(X,u)$ is the closed system with
+reaction $h\cdot\riesz_X/(Zh)=\riesz_X/Z$ and potential $h\,U_u$
+(\cref{def.scale,def.lat-rep}), whose operator is
+$h\,A_u=Z\,D_u^\dagger D_u$ \cref{eq.rep-operator}.  Substituting this
+reaction and this operator into the harmonic lift
+(\cref{prop.harmonic-lift}) gives \cref{eq.rep-transition-formula}, in
+which $\widetilde q$ is the presented position.
+
+Let $(q(t),\xi(t))_{t\in\N}$ be a trajectory.  The position component of
+\cref{eq.rep-transition-formula} gives
+$q(t+1)=\widetilde q(t)=q(t)+\riesz_X(\xi(t))/Z$, which is
+\cref{eq.momentum-position}.  The momentum component of
+\cref{eq.rep-transition-formula} at time $t-1$, together with
+$\widetilde q(t-1)=q(t)$, gives
+$\riesz_X(\xi(t))-\riesz_X(\xi(t-1))=-Z\,D_u^\dagger D_u\,q(t)$.
+Substituting \cref{eq.momentum-position} at times $t$ and $t-1$ on the
+left and dividing by $Z$ gives
+$\dot q(t)-\dot q(t-1)=-D_u^\dagger D_u\,q(t)$, which is
+\cref{eq.discrete-wave}.
+\end{proof}
+
+\begin{corollary}[Phase semantics of the lattice]\label{prop.phase-semantics}
+Put $Q\coloneqq\ell^2(\Z)$ and
+$(T^*Q,\ F_{Z,h})\coloneqq\Phih\bigl(\scale_h\,\Lat_{Z,h}\bigr)$.  Then
+$\Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)=\Ufun(T^*Q,F_{Z,h})$; in
+components,
+\begin{equation}\label{eq.phase-transition}
 F_{Z,h}(q,\xi)
 =
 \Bigl(
 \bigl(q_i+\tfrac{\xi_i}{Z}\bigr)_{i\in\Z},\
 \bigl(\xi_i+Z(\widetilde q_{i-1}-2\widetilde q_i+\widetilde q_{i+1})
 \bigr)_{i\in\Z}
-\Bigr).
-\]
-
-Let $(q(t),\xi(t))_{t\in\N}$ be a trajectory.  The position component of
-\cref{eq.phase-transition} gives $q(t+1)=\widetilde q(t)$, i.e.
-\begin{equation}\label{eq.momentum-position}
-\riesz_Q\bigl(\xi(t)\bigr)=Z\,\dot q(t).
+\Bigr),
+\qquad
+\widetilde q=q+\riesz_Q(\xi)/Z,
 \end{equation}
-The momentum component of \cref{eq.phase-transition} at time $t-1$,
-together with $\widetilde q(t-1)=q(t)$, gives
-$\riesz_Q(\xi(t))-\riesz_Q(\xi(t-1))=-Z\,D^\dagger Dq(t)$.  Substituting
-\cref{eq.momentum-position} at times $t$ and $t-1$ on the left and
-dividing by $Z$ gives $\dot q(t)-\dot q(t-1)=-D^\dagger Dq(t)$, which is
-\cref{eq.discrete-wave}.
+and every trajectory satisfies
+$\ddot q_i(t)=q_{i-1}(t)-2q_i(t)+q_{i+1}(t)$.
+\end{corollary}
+
+\begin{proof}
+This is \cref{prop.recurrence} at the shift representation
+$(\ell^2(\Z),\sigma^{\leftarrow})$ of \cref{def.lattice}, together with
+$\Ufun\circ\Phih=\Phiphase$ on closed harmonic systems
+(\cref{prop.harmonic-lift}).  For the components, use
+$(D^\dagger Da)_i=(Da)_i-(Da)_{i+1}=2a_i-a_{i-1}-a_{i+1}$: the momentum
+update of \cref{eq.rep-transition-formula} has $i$th component
+$\xi_i-Z(2\widetilde q_i-\widetilde q_{i-1}-\widetilde q_{i+1})$, and
+\cref{eq.discrete-wave} reads componentwise as stated.
 \end{proof}
 
 \begin{remark}[Characteristic tuning]\label{rmk.characteristic-tuning}
-For a general step $\Delta\tau\in\R_{>0}$, the same computation applied
-to $\scale_{\Delta\tau}\Lat_{Z,h}$ gives
-$\riesz_Q(\xi(t))=\tfrac{Zh}{\Delta\tau}\,\dot q(t)$ and hence
+For a general step $\Delta\tau\in\R_{>0}$, the computation of
+\cref{prop.recurrence} applied to
+$\scale_{\Delta\tau}\Lat_{Z,h}(X,u)$ gives
+$\riesz_X(\xi(t))=\tfrac{Zh}{\Delta\tau}\,\dot q(t)$ and hence
 \[
 \ddot q(t)
 =
--\Bigl(\frac{\Delta\tau}{h}\Bigr)^{2}D^\dagger Dq(t):
+-\Bigl(\frac{\Delta\tau}{h}\Bigr)^{2}D_u^\dagger D_u\,q(t):
 \]
 the coefficient $(\Delta\tau/h)^2$ multiplies the spatial second
 difference.  The \emph{characteristic tuning} is $\Delta\tau=h$, at which
@@ -1526,9 +1617,7 @@ $\Chain_{2n+1}^{Z,h}$ with its sites relabelled by $\Lambda_n$, and let
 \[
 \bigl(T^*\ell^2(\Lambda_n),\ F^{(n)}\bigr)
 \coloneqq
-\text{the system representing }
-\Phiphase\bigl(\scale_h\,\Chain^{(n)}\bigr)
-\text{ as in \cref{prop.phase-semantics}}.
+\Phih\bigl(\scale_h\,\Chain^{(n)}\bigr).
 \]
 Let $\iota_n\colon\ell^2(\Lambda_n)\to Q$ be extension by zero, let
 $\pi_n\coloneqq\iota_n^*$ under Riesz be restriction, and define
@@ -1545,7 +1634,7 @@ F_{Z,h}(q,\xi)=\lim_{n\to\infty}E_n\bigl(F^{(n)}(R_n(q,\xi))\bigr).
 \end{proposition}
 
 \begin{proof}
-By \cref{prop.chain,prop.closed-step}, the system
+By \cref{prop.chain,prop.harmonic-lift}, the system
 $\scale_h\,\Chain^{(n)}$ has reaction $\eta\mapsto\eta/Z$ per site and
 potential $\frac Z2\sum_{i=-n}^{n-1}(q_i-q_{i+1})^2$, so $F^{(n)}$ sends
 $(x,\zeta)\in T^*\ell^2(\Lambda_n)$ to $(\widetilde x,\ \zeta-d^{(n)})$, where
@@ -1602,13 +1691,92 @@ independent of $n$.
 \subsection{The characteristic morphism}
 \label{sec.characteristic}
 
-For $Z,h\in\R_{>0}$, define the \emph{cell packet} $\defineTerm{CZ}(h)\in\Hilb$ to have
-underlying vector space $\R$ and inner product
+For $Z,h\in\R_{>0}$, define the \emph{cell packet}
 \[
-\langle a,b\rangle_{\CZ(h)}\coloneqq Zh\,ab
-\qquad(a,b\in\R).
+\defineTerm{CZ}(h)\coloneqq\R[Zh]
 \]
-Define the bidirectional characteristic state and its transition
+(\cref{sec.background_hilbert}): the real line with inner product
+$\langle a,b\rangle_{\CZ(h)}=Zh\,ab$.
+
+\begin{theorem}[Characteristic factorization]
+\label{thm.characteristic-factorization}
+Let $(X,u)$ be a unitary representation of $\Z$ and $Z,h\in\R_{>0}$.
+The bounded map
+\begin{equation}\label{eq.characteristic-coordinates}
+\defineTerm{Wchar}_u\colon T^*X\to X[Zh]\oplus X[Zh],
+\qquad
+\Wc_u(q,\xi)
+\coloneqq
+\frac1{2h}
+\bigl(\riesz_X(\xi)/Z+D_uq,\ \ \riesz_X(\xi)/Z+D_u^\dagger q\bigr),
+\end{equation}
+is a morphism
+\begin{equation}\label{eq.characteristic-morphism-type}
+\Wc_u\colon\bigl(T^*X,\ F_u\bigr)
+\longrightarrow
+\bigl(X[Zh]\oplus X[Zh],\ u\oplus u^{-1}\bigr)
+\quad\text{in }\Dyn.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The identity function $X\to X[Zh]$ is bounded, and $\riesz_X$, $D_u$,
+and $D_u^\dagger$ are bounded, so $\Wc_u$ is bounded.  For
+\cref{eq.characteristic-morphism-type} we must show
+$\Wc_u\circ F_u=(u\oplus u^{-1})\circ\Wc_u$; since every state
+begins a trajectory, it suffices to check this along trajectories.  Let
+$(q(t),\xi(t))_{t\in\N}$ be a trajectory of $F_u$ and put
+\begin{equation}\label{eq.characteristic-trajectory}
+\bigl(w^{\leftarrow}(t),\,w^{\rightarrow}(t)\bigr)
+\coloneqq\Wc_u\bigl(q(t),\xi(t)\bigr);
+\end{equation}
+the claim is the propagation law
+\begin{equation}\label{eq.characteristic-propagation}
+w^{\leftarrow}(t+1)=u\,w^{\leftarrow}(t),
+\qquad
+w^{\rightarrow}(t+1)=u^{-1}w^{\rightarrow}(t).
+\end{equation}
+By \cref{eq.characteristic-coordinates,eq.momentum-position} and
+$D_u=\id-u^{-1}$,
+\[
+2h\,w^{\leftarrow}(t)=\dot q(t)+D_uq(t)=q(t+1)-u^{-1}q(t).
+\]
+Since $D_u^\dagger D_u=(\id-u)(\id-u^{-1})=2\,\id-u-u^{-1}$, we have
+$D_u-D_u^\dagger D_u=u-\id$; and \cref{eq.discrete-wave} at time
+$t+1$ reads $\dot q(t+1)=\dot q(t)-D_u^\dagger D_u\,q(t+1)$.  Therefore
+\[
+2h\,w^{\leftarrow}(t+1)
+=\dot q(t+1)+D_uq(t+1)
+=\dot q(t)+(D_u-D_u^\dagger D_u)\,q(t+1)
+=u\,q(t+1)-q(t)
+=u\bigl(q(t+1)-u^{-1}q(t)\bigr),
+\]
+which is $2h\,u\,w^{\leftarrow}(t)$.  The right-travelling
+case is the same computation with $D_u^\dagger$, $u^{-1}$ in place
+of $D_u$, $u$, using $D_u^\dagger-D_u^\dagger D_u=u^{-1}-\id$.
+This proves \cref{eq.characteristic-propagation}, hence
+\cref{eq.characteristic-morphism-type}.
+\end{proof}
+
+\begin{remark}[Zero modes]\label{rmk.zero-modes}
+$\Wc_u(q,\xi)=0$ says $\riesz_X(\xi)/Z=-D_uq=-D_u^\dagger q$;
+subtracting the two right-hand sides and using
+$D_u-D_u^\dagger=u-u^{-1}$, the assignment
+$q\mapsto\bigl(q,\ -Z\riesz_X^{-1}(D_uq)\bigr)$ is an isomorphism
+\[
+\ker(u^2-\id_X)\To{\cong}\ker\Wc_u.
+\]
+For the shift representation this kernel is $0$: no nonzero $2$-periodic
+sequence is square-summable.  For a cyclic chain
+(\cref{prop.cyclic-chain}) it contains the constant displacements---and,
+at even $K$, the alternating mode; because these modes exist, $\Wc_u$
+is a morphism and not in general an isomorphism.
+\end{remark}
+
+For the shift representation, the target of
+\cref{eq.characteristic-morphism-type} is the \emph{shift system}:
+since $\ell^2(\Z)[Zh]=\ell^2\bigl(\Z,\CZ(h)\bigr)$ and
+$(\sigma^{\leftarrow})^{-1}=\sigma^{\rightarrow}$, put
 \[
 \mathcal C_{Z,h}
 \coloneqq
@@ -1620,28 +1788,20 @@ Define the bidirectional characteristic state and its transition
 \coloneqq
 \sigma^{\leftarrow}\oplus\sigma^{\rightarrow},
 \]
-with the shifts $\sigma^{\leftarrow},\sigma^{\rightarrow}$ of
-\cref{sec.background_hilbert}.  Write
 \begin{equation}\label{eq.shift-system}
 \defineTerm{shift}_{Z,h}\coloneqq(\mathcal C_{Z,h},\Sigma_{Z,h})\in\Dyn.
 \end{equation}
 
-\begin{theorem}[Characteristic factorization]
-\label{thm.characteristic-factorization}
-Fix $Z,h\in\R_{>0}$ and put $Q\coloneqq\ell^2(\Z)$.  The bounded map
-\begin{equation}\label{eq.characteristic-coordinates}
-\defineTerm{Wchar}_{Z,h}\colon T^*Q\to\mathcal C_{Z,h},
-\qquad
-\Wc_{Z,h}(q,\xi)
-\coloneqq
-\frac1{2h}
-\bigl(\riesz_Q(\xi)/Z+Dq,\ \ \riesz_Q(\xi)/Z+D^\dagger q\bigr),
-\end{equation}
-is a morphism in $\Dyn$ and, under $\Ufun$, a 2-cell:
-\begin{equation}\label{eq.characteristic-morphism-type}
+\begin{corollary}[The lattice characteristics]
+\label{cor.lattice-characteristic}
+Put $Q\coloneqq\ell^2(\Z)$ and
+$\Wc_{Z,h}\coloneqq\Wc_{\sigma^{\leftarrow}}$.  Then
+\[
 \Wc_{Z,h}\colon\bigl(T^*Q,F_{Z,h}\bigr)\longrightarrow\Shift_{Z,h}
 \quad\text{in }\Dyn,
-\end{equation}
+\]
+and applying $\Ufun$ \cref{eq.dyn-forgetful} and
+\cref{prop.phase-semantics} gives a 2-cell
 \begin{equation}\label{eq.characteristic-two-cell}
 \Ufun(\Wc_{Z,h})\colon
 \Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)
@@ -1649,51 +1809,7 @@ is a morphism in $\Dyn$ and, under $\Ufun$, a 2-cell:
 \Ufun(\Shift_{Z,h})
 \quad\text{in }\pc.
 \end{equation}
-\end{theorem}
-
-\begin{proof}
-Boundedness holds because $\riesz_Q$, $D$, and $D^\dagger$ are bounded
-(\cref{sec.background_hilbert}).  For
-\cref{eq.characteristic-morphism-type} we must show
-$\Wc_{Z,h}\circ F_{Z,h}=\Sigma_{Z,h}\circ\Wc_{Z,h}$; since every state
-begins a trajectory, it suffices to check this along trajectories.  Let
-$(q(t),\xi(t))_{t\in\N}$ be a trajectory of $F_{Z,h}$ and put
-\begin{equation}\label{eq.characteristic-trajectory}
-\bigl(w^{\leftarrow}(t),\,w^{\rightarrow}(t)\bigr)
-\coloneqq\Wc_{Z,h}\bigl(q(t),\xi(t)\bigr);
-\end{equation}
-the claim is the propagation law
-\begin{equation}\label{eq.characteristic-propagation}
-w^{\leftarrow}(t+1)=\sigma^{\leftarrow}w^{\leftarrow}(t),
-\qquad
-w^{\rightarrow}(t+1)=\sigma^{\rightarrow}w^{\rightarrow}(t).
-\end{equation}
-By \cref{eq.characteristic-coordinates,eq.momentum-position} and
-$D=\id-\sigma^{\rightarrow}$,
-\[
-2h\,w^{\leftarrow}(t)=\dot q(t)+Dq(t)=q(t+1)-\sigma^{\rightarrow}q(t).
-\]
-Since the two shifts are inverse to each other,
-$D^\dagger D=(\id-\sigma^{\leftarrow})(\id-\sigma^{\rightarrow})
-=2\,\id-\sigma^{\leftarrow}-\sigma^{\rightarrow}$, so
-$D-D^\dagger D=\sigma^{\leftarrow}-\id$; and \cref{eq.discrete-wave} at time
-$t+1$ reads $\dot q(t+1)=\dot q(t)-D^\dagger Dq(t+1)$.  Therefore
-\[
-2h\,w^{\leftarrow}(t+1)
-=\dot q(t+1)+Dq(t+1)
-=\dot q(t)+(D-D^\dagger D)\,q(t+1)
-=\sigma^{\leftarrow}q(t+1)-q(t)
-=\sigma^{\leftarrow}\bigl(q(t+1)-\sigma^{\rightarrow}q(t)\bigr),
-\]
-which is $2h\,\sigma^{\leftarrow}w^{\leftarrow}(t)$.  The right-travelling
-case is the same computation with $D^\dagger$, $\sigma^{\rightarrow}$ in place
-of $D$, $\sigma^{\leftarrow}$, using $D^\dagger-D^\dagger D=\sigma^{\rightarrow}-\id$.
-This proves \cref{eq.characteristic-propagation}, hence
-\cref{eq.characteristic-morphism-type}; applying $\Ufun$
-\cref{eq.dyn-forgetful} and the identification of
-\cref{prop.phase-semantics} gives
-\cref{eq.characteristic-two-cell}.
-\end{proof}
+\end{corollary}
 
 The two categorical steps have different types.  The operad functor
 $\Phiphase$ sends the operation
