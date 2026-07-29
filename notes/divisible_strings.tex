@@ -99,7 +99,6 @@
 \trackTerm{\Store}{Store}{\Fn{Store}}
 \trackTerm{\Mass}{mass}{\fun{mass}}
 \trackTerm{\Bond}{bond}{\fun{bond}}
-\trackTerm{\Anchor}{anchor}{\fun{anchor}}
 \trackTerm{\Harm}{harmcat}{\Cat{Harm}}% category of closed harmonic systems
 \trackTerm{\Wire}{wire}{\fun{wire}}
 \trackTerm{\Chain}{chain}{\fun{chain}}
@@ -431,9 +430,8 @@ a\colon\Z\to B
 in which the sum defining $\langle a,b\rangle$ converges absolutely by the
 Cauchy--Schwarz inequality.  This inner product space is complete, hence a
 Hilbert space \cite{conway1990functional}.  We write
-$\ell^2(\Z)\coloneqq\ell^2(\Z,\R)$; for a finite set of sites
-$\Lambda\subseteq\Z$ we write $\ell^2(\Lambda)\coloneqq\R^\Lambda$ with the
-standard inner product.  We write
+$\ell^2(\Z)\coloneqq\ell^2(\Z,\R)$; for a finite set $\Lambda$ we write
+$\ell^2(\Lambda)\coloneqq\R^\Lambda$ with the standard inner product.  We write
 $e_i\in\ell^2(\Z)$ for the $i$th standard basis vector and
 $\xi_i\coloneqq\xi(e_i)$ for the components of a functional
 $\xi\in\ell^2(\Z)^*$, so that $\riesz_{\ell^2(\Z)}(\xi)=(\xi_i)_{i\in\Z}$.  The
@@ -1329,98 +1327,118 @@ outputs its state and reacts to incoming covectors; the bond is pure
 potential, reading the pair delivered to its input port.  Both are
 harmonic (\cref{def.vocabulary}).
 
-\begin{definition}[Chain wiring]\label{def.wire}
-For an integer $K\geq2$, the \emph{chain wiring} is the static arrangement
+\begin{definition}[Graph wiring]\label{def.wire}
+A \emph{finite graph} $\Gamma$ is a pair of finite sets $V$ of
+\emph{vertices} and $E$ of \emph{edges} with endpoint maps
+$\partial_0,\partial_1\colon E\to V\sqcup\{\star\}$, where $\star$ is the
+\emph{wall}.  The \emph{graph wiring} of $\Gamma$ is the static
+arrangement
 \[
-\defineTerm{wire}_K\colon
-\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens(K-1)}
+\defineTerm{wire}_\Gamma\colon
+\binom{1}{\R}^{\ltens V}\ltens\binom{\R^2}{1}^{\ltens E}
 \longrightarrow I
 \]
 whose output map is the unique map to $1$, whose potential is zero, and
 whose input map
 \[
-\R^K\longrightarrow(\R^2)^{K-1},
+\R^V\longrightarrow(\R^2)^{E},
 \qquad
-(q_1,\ldots,q_K)\longmapsto
-\bigl((q_1,q_2),(q_2,q_3),\ldots,(q_{K-1},q_K)\bigr)
+q\longmapsto
+\bigl(q_{\partial_0e},\,q_{\partial_1e}\bigr)_{e\in E},
+\qquad
+q_\star\coloneqq0,
 \]
-feeds each bond the outputs of its two adjacent masses.  (The mass inputs
-and bond outputs are trivial, and the input map is bounded linear, hence
-smooth.)
+feeds each bond the outputs of the masses at its endpoints, the wall
+outputting $0$.  (The mass inputs and bond outputs are trivial, and the
+input map is bounded linear, hence smooth.)
 \end{definition}
 
-\begin{proposition}[Finite chains]\label{prop.chain}
-For $K\geq2$, the composite
+\begin{definition}[Incidence operator]\label{def.incidence}
+The \emph{incidence operator} of a finite graph $\Gamma$ is
 \[
-\defineTerm{chain}_K^{Z,h}
-\coloneqq
-\Wire_K\bigl(
-\underbrace{\Mass_{Z,h},\ldots,\Mass_{Z,h}}_{K},
-\underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K-1}
-\bigr)
-\in\harr(I;I)
+d_\Gamma\colon\ell^2(V)\to\ell^2(E),
+\qquad
+(d_\Gamma q)_e\coloneqq q_{\partial_0e}-q_{\partial_1e},
+\qquad
+q_\star\coloneqq0.
 \]
-is a closed harmonic system with parameter
-$\bigl(\R^K,\sharpR_{Z,h}^{\oplus K}\bigr)$ and potential
-\begin{equation}\label{eq.chain-potential}
-U(q_1,\ldots,q_K)=\sum_{i=1}^{K-1}\frac{Z}{2h}(q_i-q_{i+1})^2.
+Reversing an edge's endpoints changes the sign of the corresponding
+component, so $\lVert d_\Gamma q\rVert$ is independent of orientation.
+\end{definition}
+
+\begin{proposition}[Graph chains]\label{prop.graph-chain}
+For every finite graph $\Gamma$, the composite
+\[
+\defineTerm{chain}_\Gamma
+\coloneqq
+\Wire_\Gamma\bigl(
+\Mass_{Z,h},\ldots,\Mass_{Z,h},\
+\Bond_{Z,h},\ldots,\Bond_{Z,h}
+\bigr)
+\in\harr(I;I),
+\]
+one mass per vertex and one bond per edge, is the closed harmonic system
+with parameter $\bigl(\ell^2(V),\ \riesz/(Zh)\bigr)$ and potential
+\begin{equation}\label{eq.graph-potential}
+U_\Gamma(q)=\frac{Z}{2h}\,\lVert d_\Gamma q\rVert^2,
 \end{equation}
+whose operator is
+$\frac Zh\,d_\Gamma^\dagger d_\Gamma\colon\ell^2(V)\to\ell^2(V)$---the
+graph Laplacian of $\Gamma$, scaled by $\frac Zh$.  The wiring diagram
+is the graph.
 \end{proposition}
 
 \begin{proof}
-We unwind the composition described in \cref{sec.datum_operad}.  The tensor
-of the $K$ masses and $K-1$ bonds is a system
-$I\to\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens(K-1)}$ with
+We unwind the composition described in \cref{sec.datum_operad}.  The
+tensor of the masses and bonds is a system
+$I\to\binom{1}{\R}^{\ltens V}\ltens\binom{\R^2}{1}^{\ltens E}$ with
 parameter the direct sum of the constituents' parameters, which is
-$(\R^K,\sharpR_{Z,h}^{\oplus K})$ by
-\cref{prop.rhilb-monoidal,eq.mass-reaction} since the
-bonds are stateless, and with potential the sum of the constituents'
-potentials: the masses contribute zero and the $i$th bond contributes
-$U_{Z,h}(a_i,b_i)$ \cref{eq.bond-potential} as a function of the pair
-$(a_i,b_i)$ arriving at its input port.  Composing with $\Wire_K$ tensors on the trivial parameter,
-adds the zero potential of the wiring, and substitutes the wiring's input
-map into the backward data: by \cref{def.wire} the $i$th bond receives
-$(a_i,b_i)=(q_i,q_{i+1})$, where $(q_1,\ldots,q_K)$ are the mass outputs,
-i.e.\ the parameter states of the masses.  The total potential is
-therefore \cref{eq.chain-potential}.  The reaction is symmetric and the
-potential is a quadratic form, so the system is harmonic.  This is the
-computation of \cite[\S7.3]{cdlm}%sec.wave_equation
+$(\R^V,\sharpR_{Z,h}^{\oplus V})=(\ell^2(V),\riesz/(Zh))$ by
+\cref{prop.rhilb-monoidal,eq.mass-reaction} since the bonds are
+stateless, and with potential the sum of the constituents' potentials:
+the masses contribute zero and the bond at $e$ contributes
+$U_{Z,h}(a_e,b_e)$ \cref{eq.bond-potential} as a function of the pair
+$(a_e,b_e)$ arriving at its input port.  Composing with $\Wire_\Gamma$
+tensors on the trivial parameter, adds the zero potential of the wiring,
+and substitutes the wiring's input map into the backward data: by
+\cref{def.wire} the bond at $e$ receives
+$(a_e,b_e)=(q_{\partial_0e},q_{\partial_1e})$, where $q\in\R^V$ is the
+tuple of mass outputs, i.e.\ the parameter states of the masses, and
+$q_\star=0$.  The total potential is therefore
+\[
+U_\Gamma(q)
+=\sum_{e\in E}\frac{Z}{2h}\bigl(q_{\partial_0e}-q_{\partial_1e}\bigr)^2
+=\frac{Z}{2h}\lVert d_\Gamma q\rVert^2.
+\]
+The reaction is symmetric, and $U_\Gamma$ is the continuous quadratic
+form of the bounded symmetric bilinear map
+$(q,q')\mapsto\frac Zh\langle d_\Gamma q,d_\Gamma q'\rangle$, with
+operator $\frac Zh\,d_\Gamma^\dagger d_\Gamma$
+(\cref{sec.background_hilbert}); so the system is harmonic.
+\end{proof}
+
+\begin{corollary}[Finite chains]\label{prop.chain}
+Let $P_K$ ($K\geq2$) be the path graph: vertices $\{1,\ldots,K\}$ and
+edges $\{1,\ldots,K-1\}$ with $\partial_0i=i$ and $\partial_1i=i+1$.
+Then $\Chain_K^{Z,h}\coloneqq\Chain_{P_K}$ is the closed harmonic system
+with parameter $\bigl(\R^K,\sharpR_{Z,h}^{\oplus K}\bigr)$ and potential
+\begin{equation}\label{eq.chain-potential}
+U(q_1,\ldots,q_K)=\sum_{i=1}^{K-1}\frac{Z}{2h}(q_i-q_{i+1})^2.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+This is \cref{prop.graph-chain} at $\Gamma=P_K$; it is the computation
+of \cite[\S7.3]{cdlm}%sec.wave_equation
 in the Hilbert instance.
 \end{proof}
 
-\begin{definition}[Anchor and clamped wiring]\label{def.anchor}
-The \emph{anchor} is the stateless system
-$\defineTerm{anchor}_{Z,h}\colon I\to\binom{\R}{1}$ with potential
-$\R\to\R$, $a\mapsto\frac{Z}{2h}a^2$---a bond one of whose ends is held
-at $0$.
-For $K\geq2$, the \emph{clamped wiring}
-\[
-\Wire^{\mathrm{cl}}_K\colon
-\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens(K-1)}
-\ltens\binom{\R}{1}^{\ltens2}
-\longrightarrow I
-\]
-is the static arrangement with input map
-\[
-\R^K\longrightarrow(\R^2)^{K-1}\oplus\R\oplus\R,
-\qquad
-(q_1,\ldots,q_K)\longmapsto
-\bigl((q_1,q_2),\ldots,(q_{K-1},q_K),\ q_1,\ q_K\bigr).
-\]
-\end{definition}
-
-\begin{proposition}[Clamped chains]\label{prop.clamped-chain}
-For $K\geq2$, the composite
-\[
-\Chain^{\mathrm{cl}}_K
-\coloneqq
-\Wire^{\mathrm{cl}}_K\bigl(
-\underbrace{\Mass_{Z,h},\ldots,\Mass_{Z,h}}_{K},
-\underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K-1},
-\Anchor_{Z,h},\Anchor_{Z,h}
-\bigr)
-\]
-is a closed harmonic system in $\harr(I;I)$ with parameter
+\begin{corollary}[Clamped chains]\label{prop.clamped-chain}
+Let $P^{\mathrm{cl}}_K$ ($K\geq2$) be the path graph with wall ends:
+$P_K$ with two further edges $e_0,e_K$, where $\partial_0e_0=1$,
+$\partial_0e_K=K$, and $\partial_1e_0=\partial_1e_K=\star$.  Then
+$\Chain^{\mathrm{cl}}_K\coloneqq\Chain_{P^{\mathrm{cl}}_K}$ is the
+closed harmonic system with parameter
 $\bigl(\R^K,\sharpR_{Z,h}^{\oplus K}\bigr)$ and potential
 \begin{equation}\label{eq.clamped-potential}
 U^{\mathrm{cl}}(q_1,\ldots,q_K)
@@ -1430,12 +1448,11 @@ U^{\mathrm{cl}}(q_1,\ldots,q_K)
 q_1^2+\sum_{i=1}^{K-1}(q_i-q_{i+1})^2+q_K^2
 \Bigr).
 \end{equation}
-\end{proposition}
+\end{corollary}
 
 \begin{proof}
-As in \cref{prop.chain}, with the two anchors receiving $q_1$ and $q_K$
-from the clamped wiring and contributing $\frac{Z}{2h}q_1^2$ and
-$\frac{Z}{2h}q_K^2$ to the total potential.
+This is \cref{prop.graph-chain} at $\Gamma=P^{\mathrm{cl}}_K$: the wall
+edges contribute $(q_1-0)^2$ and $(q_K-0)^2$.
 \end{proof}
 
 \subsection{The harmonic system of a unitary representation}
@@ -1527,49 +1544,44 @@ the phase semantics converges along with the syntax.
 Not every instance of \cref{def.lat-rep} lies beyond the operad's reach:
 the cyclic representations are realized by operadic composites.
 
-\begin{definition}[Cyclic wiring]\label{def.cyclic-wire}
-For an integer $K\geq1$, the \emph{cyclic wiring} is the static
-arrangement
+\begin{corollary}[Cyclic chains]\label{prop.cyclic-chain}
+Let $C_K$ ($K\geq1$) be the cycle graph: vertices $\Z/K$ and edges
+$\Z/K$ with $\partial_0i=i$ and $\partial_1i=i-1$.  Then, with cyclic
+shift $(\sigma^{\leftarrow}a)_i=a_{i+1}$ on $\ell^2(\Z/K)$,
 \[
-\Wire^{\circ}_K\colon
-\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens K}
-\longrightarrow I
-\]
-whose input map is
-\[
-\R^K\longrightarrow(\R^2)^{K},
-\qquad
-(q_1,\ldots,q_K)\longmapsto
-\bigl((q_1,q_2),(q_2,q_3),\ldots,(q_K,q_1)\bigr).
-\]
-\end{definition}
-
-\begin{proposition}[Cyclic chains]\label{prop.cyclic-chain}
-For $K\geq1$, write $\ell^2(\Z/K)\coloneqq\R^{\Z/K}$ with cyclic shift
-$(\sigma^{\leftarrow}a)_i=a_{i+1}$.  Then
-\[
-\Wire^{\circ}_K\bigl(
-\underbrace{\Mass_{Z,h},\ldots,\Mass_{Z,h}}_{K},
-\underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K}
-\bigr)
+\Chain_{C_K}
 =
 \Lat_{Z,h}\bigl(\ell^2(\Z/K),\ \sigma^{\leftarrow}\bigr).
 \]
-\end{proposition}
+\end{corollary}
 
 \begin{proof}
-As in \cref{prop.chain}, the composite is the closed system with
-parameter
-$(\R^{\Z/K},\sharpR_{Z,h}^{\oplus K})
-=\bigl(\ell^2(\Z/K),\ \riesz/(Zh)\bigr)$
-and potential the sum of the bond potentials at the delivered pairs,
-here $\sum_{i\in\Z/K}\frac{Z}{2h}(q_i-q_{i+1})^2$.  Reindexing by
-$i\mapsto i-1$, this is
-$\frac{Z}{2h}\sum_{i\in\Z/K}(q_i-q_{i-1})^2
+By \cref{prop.graph-chain}, both sides are the closed system whose
+parameter is $(\ell^2(\Z/K),\riesz/(Zh))$ and whose potential is
+\[
+\frac{Z}{2h}\sum_{i\in\Z/K}(q_i-q_{i-1})^2
 =\frac{Z}{2h}\lVert D_{\sigma^{\leftarrow}}q\rVert^2
-=U_{\sigma^{\leftarrow}}(q)$, and for a closed system the parameter and
-the potential are the whole datum (\cref{sec.datum_operad}).
+=U_{\sigma^{\leftarrow}}(q),
+\]
+and for a closed system the parameter and the potential are the whole
+datum (\cref{sec.datum_operad}).
 \end{proof}
+
+\begin{remark}[Incidence and difference]\label{rmk.incidence-difference}
+The incidence operator generalizes the difference operator.  For the
+cycle $C_K$, the endpoint map $\partial_0\colon E\To{\cong}V$ is a
+bijection, and the induced unitary $\ell^2(V)\To{\cong}\ell^2(E)$
+carries $D_{\sigma^{\leftarrow}}$ to $d_{C_K}$; likewise---though
+outside the operad---the lattice potential \cref{eq.lattice-potential}
+is $\frac{Z}{2h}\lVert Dq\rVert^2$ with $D$ the incidence operator of
+the biinfinite path.  For a general graph no such identification
+exists: $d_\Gamma\colon\ell^2(V)\to\ell^2(E)$ has genuinely different
+domain and codomain, and the identity
+$D_u-D_u^\dagger D_u=u-\id$ behind the characteristic factorization
+(\cref{thm.characteristic-factorization}) is unavailable.  The
+factorization into characteristics is exactly the presence of this
+identification---the one-dimensionality of the medium.
+\end{remark}
 
 \subsection{Discrete linear dynamics}
 \label{sec.dyn}
@@ -1741,8 +1753,8 @@ All sharps in sight are multiples of Riesz maps, so the sharp condition
 of \cref{eq.harm-morphism} holds for every isometry among these systems,
 and only the potential conditions need checking.  For $\rho_n$:
 evaluating $U^{\mathrm{cl}}_{n+1}$ \cref{eq.clamped-potential} at an
-extension by zero, the anchor terms at $\pm(n+1)$ vanish, the bonds from
-$\pm n$ to $\pm(n+1)$ contribute $\frac{Z}{2h}q_{\pm n}^2$---the anchor
+extension by zero, the wall terms at $\pm(n+1)$ vanish, the bonds from
+$\pm n$ to $\pm(n+1)$ contribute $\frac{Z}{2h}q_{\pm n}^2$---the wall
 terms of $U^{\mathrm{cl}}_n$---and the interior bonds match; the total
 is $U^{\mathrm{cl}}_n(q)$.  For $\iota_n$: evaluating $U_{\Lat}$
 \cref{eq.lattice-potential} at an extension by zero, all summands with
