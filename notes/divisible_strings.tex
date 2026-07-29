@@ -387,6 +387,14 @@ involution, i.e.
 \qquad
 f^{\dagger\dagger}=f.
 \]
+Rearranging the definition of the adjoint gives the \emph{Riesz
+identities}: for bounded $f\colon V\to W$,
+\begin{equation}\label{eq.riesz-identities}
+\riesz_V\circ f^*=f^\dagger\circ\riesz_W
+\qquad\text{and}\qquad
+\riesz_W\circ(f^\dagger)^*=f\circ\riesz_V,
+\end{equation}
+the second by applying the first to $f^\dagger$ in place of $f$.
 In dagger terms the isometries and unitaries of the previous paragraph are
 the standard notions: $f$ is an isometry if and only if
 $f^\dagger\circ f=\id$ (by polarization), and unitary if and only if it is
@@ -497,6 +505,19 @@ D\coloneqq D_{\sigma^{\leftarrow}}=\id-\sigma^{\rightarrow}
 \colon\ell^2(\Z,B)\to\ell^2(\Z,B),
 \]
 so that $(Da)_i=a_i-a_{i-1}$ and $(D^\dagger a)_i=a_i-a_{i+1}$.
+
+Every morphism $\alpha\colon(X,u)\to(Y,v)$ of $\Dyn_\Z$ satisfies
+$\alpha\circ D_u=D_v\circ\alpha$, since $\alpha u=v\alpha$ implies
+$\alpha u^{-1}=v^{-1}\alpha$: the difference operator is a natural
+transformation
+\[
+D\colon\iota^*\Longrightarrow\iota^*,
+\qquad
+\iota^*\colon\Dyn_\Z\to\Dyn_0=\Hilb,
+\]
+of the time change along the unique homomorphism $\iota\colon0\to\Z$.
+We write $\mathrm U(G)$ for the groupoid of unitary representations of
+$G$ and unitary intertwiners, a subcategory of $\Dyn_G$.
 
 \paragraph{Smooth maps.}
 Let $V,W$ be Hilbert spaces and $f\colon V\to W$ a function.  The
@@ -1708,16 +1729,90 @@ with composition that of $\Hilb$.
 Composites of such isometries again satisfy \cref{eq.harm-morphism}, so
 the definition is valid.  For unitary $\iota$ the sharp condition is
 sharp-equivariance \cref{eq.sharp-equivariance}, so the isomorphisms of
-$\Harm$ are the potential-preserving isomorphisms of $\rhilb$.  When both
-sharps are multiples $c\,\riesz$ of the Riesz maps---as for every closed
-system in this paper---the sharp condition holds for \emph{every}
-isometry: by the definition of the adjoint,
-$\riesz_{Q'}\circ(\iota^\dagger)^*=\iota\circ\riesz_Q$, so
+$\Harm$ are the potential-preserving unitary isomorphisms of $\rhilb$.
+When both sharps are multiples $c\,\riesz$ of the Riesz maps---as for
+every closed system in this paper---the sharp condition holds for
+\emph{every} isometry: by the Riesz identities
+\cref{eq.riesz-identities},
 $\iota^\dagger\circ(c\,\riesz_{Q'})\circ(\iota^\dagger)^*
 =c\,\iota^\dagger\iota\riesz_Q=c\,\riesz_Q$.  Finally,
 $\scale_{\Delta\tau}$ (\cref{def.scale}) scales the potentials and the
 sharps on both sides of \cref{eq.harm-morphism} by $\Delta\tau$, so it
 lifts to an endofunctor of $\Harm$ that is the identity on morphisms.
+
+\begin{lemma}[The lift on isomorphisms]\label{lem.lift-iso}
+An isomorphism $\phi\colon f\To{\cong}f'$ in $\Harm$ is unitary, and
+\[
+T^*\phi=\phi\oplus(\phi^*)^{-1}
+\colon\Phih(f)\To{\cong}\Phih(f')
+\]
+is an isomorphism in $\Dyn$; the assignment $\phi\mapsto T^*\phi$ makes
+$\Phih$ a functor on the groupoid of $\Harm$-isomorphisms.
+\end{lemma}
+
+\begin{proof}
+An invertible isometry is unitary.  Write $f=(\rv Q,U)$ and
+$f'=(\rv Q',U')$, with operators $A,A'$ of the potentials.  Since
+$\phi$ is unitary, the sharp condition of \cref{eq.harm-morphism} is
+sharp-equivariance: $\sharpR_{Q'}=\phi\circ\sharpR_Q\circ\phi^*$.
+Differentiating $U'\circ\phi=U$ at $q\in Q$ gives
+$dU'|_{\phi q}\circ\phi=dU|_q$, i.e.\
+$dU'|_{\phi q}=dU|_q\circ\phi^\dagger=(\phi^\dagger)^*(dU|_q)$, so by
+the second Riesz identity \cref{eq.riesz-identities}
+\[
+A'(\phi q)
+=\riesz_{Q'}\bigl((\phi^\dagger)^*(dU|_q)\bigr)
+=\phi\bigl(\riesz_Q(dU|_q)\bigr)
+=\phi(Aq).
+\]
+Now compare $T^*\phi\circ F_f$ with $F_{f'}\circ T^*\phi$ at
+$(q,\xi)\in T^*Q$, writing $\tilde q=q+\sharpR_Q(\xi)$.  On positions,
+\[
+\phi q+\sharpR_{Q'}\bigl((\phi^*)^{-1}\xi\bigr)
+=\phi q+\phi\,\sharpR_Q\,\phi^*(\phi^*)^{-1}\xi
+=\phi(\tilde q).
+\]
+On momenta, note that for unitary $\phi$ one has
+$(\phi^\dagger)^*=(\phi^*)^{-1}$, so inverting the second Riesz
+identity gives
+$\riesz_{Q'}^{-1}\circ\phi=(\phi^*)^{-1}\circ\riesz_Q^{-1}$; hence
+\[
+(\phi^*)^{-1}\xi-\riesz_{Q'}^{-1}\bigl(A'\phi\tilde q\bigr)
+=(\phi^*)^{-1}\xi-\riesz_{Q'}^{-1}\bigl(\phi A\tilde q\bigr)
+=(\phi^*)^{-1}\bigl(\xi-\riesz_Q^{-1}(A\tilde q)\bigr).
+\]
+So $T^*\phi$ intertwines the transitions.  It is invertible with
+inverse $T^*(\phi^{-1})$, and functoriality is that of the endofunctor
+$T^*$ (\cref{prop.TT-hilbert}).
+\end{proof}
+
+\begin{proposition}[Functoriality in the representation]
+\label{prop.lat-functor}
+The assignment $(X,u)\mapsto\Lat_{Z,h}(X,u)$, $\phi\mapsto\phi$, is a
+functor
+\[
+\Lat_{Z,h}(\blank)\colon\mathrm U(\Z)\longrightarrow\Harm
+\]
+sending every morphism to an isomorphism.
+\end{proposition}
+
+\begin{proof}
+Let $\phi\colon(X,u)\to(Y,v)$ be a unitary intertwiner.  It is an
+isometry; the sharp condition of \cref{eq.harm-morphism} holds because
+both sharps are the multiple $\riesz/(Zh)$ of the Riesz maps; and the
+potentials \cref{eq.rep-potential} agree because $D$ is natural
+(\cref{sec.background_hilbert}) and $\phi$ isometric:
+\[
+U_v(\phi q)
+=\frac{Z}{2h}\lVert D_v\phi q\rVert^2
+=\frac{Z}{2h}\lVert\phi D_uq\rVert^2
+=\frac{Z}{2h}\lVert D_uq\rVert^2
+=U_u(q).
+\]
+Composition and identities are those of $\Hilb$, and every $\phi$ is
+invertible with inverse again a unitary intertwiner, so its image is an
+isomorphism.
+\end{proof}
 
 \begin{theorem}[The lattice is a colimit of clamped chains]
 \label{thm.lattice-colimit}
@@ -1810,8 +1905,8 @@ A_n=\iota_n^\dagger A\iota_n.
 For $A_n$: evaluating $U\circ\iota_n=U_n$ at $q\in Q_n$ gives
 $U_n(q)=\tfrac12\langle A\iota_nq,\iota_nq\rangle
 =\tfrac12\langle\iota_n^\dagger A\iota_nq,q\rangle$, and
-$\iota_n^\dagger A\iota_n$ is self-adjoint.  For $S_n$: by the
-definition of the adjoint,
+$\iota_n^\dagger A\iota_n$ is self-adjoint.  For $S_n$: by the Riesz
+identities \cref{eq.riesz-identities},
 $\riesz_Q\circ(\iota_n^\dagger)^*=\iota_n\circ\riesz_{Q_n}$ and
 $\riesz_{Q_n}\circ\iota_n^*=\iota_n^\dagger\circ\riesz_Q$, so
 conjugating the sharp condition by the Riesz maps gives
@@ -1826,7 +1921,7 @@ $\hat F_{f_n}\colon Q_n\oplus Q_n\to Q_n\oplus Q_n$,
 \qquad
 \hat F_{f_n}(x,z)=\bigl(x+S_nz,\ z-A_n(x+S_nz)\bigr),
 \]
-and, by the two Riesz identities above, $E_n$ and $R_n$ become
+and, by the Riesz identities, $E_n$ and $R_n$ become
 $\iota_n\oplus\iota_n$ and $\iota_n^\dagger\oplus\iota_n^\dagger$.
 Put $P_n\coloneqq\iota_n\iota_n^\dagger\colon Q\to Q$, the orthogonal
 projection onto the image of $\iota_n$.  Substituting the compressions,
@@ -1985,6 +2080,50 @@ sequence is square-summable.  For a cyclic chain
 at even $K$, the alternating mode; because these modes exist, $\Wc_u$
 is a morphism and not in general an isomorphism.
 \end{remark}
+
+\begin{proposition}[Naturality of the characteristic factorization]
+\label{prop.characteristic-natural}
+The assignments
+\[
+\begin{gathered}
+(X,u)\longmapsto\bigl(T^*X,\ F_u\bigr),
+\qquad
+\phi\longmapsto T^*\phi,\\
+(X,u)\longmapsto\bigl(X[Zh]^{\oplus2},\ u\oplus u^{-1}\bigr),
+\qquad
+\phi\longmapsto\phi\oplus\phi
+\end{gathered}
+\]
+are functors $\mathrm U(\Z)\to\Dyn$, and
+$\Wc\colon(T^*\blank,\ F_{\blank})\Longrightarrow
+(\blank[Zh]^{\oplus2},\ \blank\oplus\blank^{-1})$
+is a natural transformation: for every
+$\phi\colon(X,u)\to(Y,v)$ in $\mathrm U(\Z)$,
+\[
+(\phi\oplus\phi)\circ\Wc_u=\Wc_v\circ T^*\phi.
+\]
+\end{proposition}
+
+\begin{proof}
+The first assignment is the composite of
+$\Lat_{Z,h}(\blank)\colon\mathrm U(\Z)\to\Harm$
+(\cref{prop.lat-functor}), the endofunctor $\scale_h$ of $\Harm$
+(companion to \cref{def.harm}), and $\Phih$ on isomorphisms
+(\cref{lem.lift-iso}).  For the second: $\phi$ is unitary
+$X[Zh]\to Y[Zh]$, and $\phi u=v\phi$ together with
+$\phi u^{-1}=v^{-1}\phi$ makes $\phi\oplus\phi$ a morphism of $\Dyn$;
+composition and identities are those of $\Hilb$.  For naturality,
+compare components at $(q,\xi)\in T^*X$.  The first component of
+$(\phi\oplus\phi)\circ\Wc_u$ is
+$\frac1{2h}\bigl(\phi\riesz_X(\xi)/Z+\phi D_uq\bigr)$, and that of
+$\Wc_v\circ T^*\phi$ is
+$\frac1{2h}\bigl(\riesz_Y\bigl((\phi^*)^{-1}\xi\bigr)/Z+D_v\phi q\bigr)$;
+these agree by the Riesz identities \cref{eq.riesz-identities}, which
+give $\riesz_Y\circ(\phi^*)^{-1}=\phi\circ\riesz_X$ for unitary $\phi$,
+and by the naturality of $D$ (\cref{sec.background_hilbert}).  The
+second component is the same computation with $D^\dagger$, using
+$\phi D_u^\dagger=D_v^\dagger\phi$, again from $\phi u=v\phi$.
+\end{proof}
 
 For the shift representation, the target of
 \cref{eq.characteristic-morphism-type} is the \emph{shift system}:
