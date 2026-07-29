@@ -145,19 +145,25 @@ interpretation, and a phase integrator, hence an operad functor
 $\Phiphase\colon\harr\to\pc$.
 
 The homogeneous harmonic chain lives in $\harr$: masses and bonds are
-arrangements, finite chains are their operadic composites, and the biinfinite
-lattice is a single closed arrangement, the strong limit of the finite
-chains.  At the characteristic tuning of step scaling to cell duration, a
-morphism of discrete dynamical systems extracts two oppositely shifting
+arrangements, and finite chains are their operadic composites.  Finite
+arity forbids an infinite composite, but the biinfinite lattice is the
+colimit of the clamped chains in the category of closed harmonic
+systems, and the semantics sends this colimit to a strong limit.  On
+closed harmonic systems the phase semantics lifts to linear dynamics,
+and the harmonic system of any unitary $\Z$-representation $(X,u)$
+carries a characteristic morphism to the shift pair $u\oplus u^{-1}$;
+at the shift representation and the characteristic tuning of step
+scaling to cell duration, this extracts two oppositely shifting
 characteristic fields.  The shift system so obtained factors, in the
 hom-categories of the semantics, as a standard queue composed with its
 environment; a finite segment thus carries two standard queues.
 
 The standard queue is terminal among bounded linear realizations of exact
-delay.  Its subdivision is governed by restriction along the time-dilation
-map on the monoid of discrete times.  This identifies the categorical reason
-that one coarse update equals two refined updates.  Hilbert completion of the
-resulting dyadic system is the weighted space $L^2([0,d),Z\,dx)$.
+delay.  Its subdivision is governed by time change along multiplication
+by $r$ on the monoid of discrete times.  This identifies the categorical
+reason that one coarse update equals two refined updates.  Hilbert
+completion of the resulting dyadic system is the weighted space
+$L^2([0,d),Z\,dx)$.
 
 Weighted interval spaces form a strong algebra for ordered interval
 concatenation.  Any such algebra canonically determines lossless delay lines;
@@ -564,11 +570,10 @@ $\lVert x-x'\rVert<\varepsilon$.  For every $n$,
 \bigl(s+\lVert F\rVert\bigr)\varepsilon+\lVert F_nx'-Fx'\rVert,
 \]
 and the last term tends to $0$ by hypothesis.
-\cref{item.composed-limit}: for every $x\in X$,
+\cref{item.composed-limit}: for every $x\in X$, writing
+$G_nF_nx-GFx=G_n(F_nx-Fx)+\bigl(G_n(Fx)-G(Fx)\bigr)$,
 \[
 \lVert G_nF_nx-GFx\rVert
-\leq
-\lVert G_n(F_nx-Fx)\rVert+\lVert G_n(Fx)-G(Fx)\rVert
 \leq
 \sup_n\lVert G_n\rVert\cdot\lVert F_nx-Fx\rVert
 +\lVert G_n(Fx)-G(Fx)\rVert,
@@ -743,7 +748,9 @@ which casts spaces as polynomial interfaces and fixes what potentials do,
 and an integrator \cite[Def.~4.3.4]{cdlm},%def.integrator
 which turns the resulting effects into dynamics.  We build the Hilbert
 instances of both and obtain the phase dynamics functor
-$\Phiphase\colon\harr\to\pc$ (\cref{thm.phase-functor}).
+$\Phiphase\colon\harr\to\pc$ (\cref{thm.phase-functor}), together with
+its lift $\Phih$ to linear dynamics on the closed harmonic systems
+(\cref{prop.harmonic-lift}).
 
 \subsection{The cotangent functor}
 \label{sec.cot_hilbert}
@@ -1272,8 +1279,10 @@ q+\Delta\tau\,\sharpR_Q\bigl(\tfrac{\xi}{\Delta\tau}\bigr),\
 \Lambda\bigl(\Phiphase(f)(q,\xi)\bigr),
 \]
 so $\Lambda$ is an isomorphism
-$\Phiphase(f)\cong\Phiphase(g)$ in $\pc(\yon,\yon)$---and in $\Dyn$ when
-$f$ is harmonic.  Reciprocal scaling merely rescales the unit of momentum.
+$\Phiphase(f)\cong\Phiphase(g)$ in $\pc(\yon,\yon)$---and an isomorphism
+$\Phih(f)\cong\Phih(g)$ in $\Dyn$ when $f$ is harmonic
+(\cref{prop.harmonic-lift}).  Reciprocal scaling merely rescales the
+unit of momentum.
 The two combinations separate cleanly in the harmonic chain of
 \cref{sec.harmonic}: the product of the reaction coefficient
 $\tfrac1{Zh}$ and the stiffness coefficient $\tfrac Zh$ is $1/h^2$, the
@@ -1403,9 +1412,8 @@ For $K\geq2$, the composite
 \underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K-1},
 \Anchor_{Z,h},\Anchor_{Z,h}
 \bigr)
-\in\harr(I;I)
 \]
-is a closed harmonic system with parameter
+is a closed harmonic system in $\harr(I;I)$ with parameter
 $\bigl(\R^K,\sharpR_{Z,h}^{\oplus K}\bigr)$ and potential
 \begin{equation}\label{eq.clamped-potential}
 U^{\mathrm{cl}}(q_1,\ldots,q_K)
@@ -1926,13 +1934,13 @@ $D_u=\id-u^{-1}$,
 Since $D_u^\dagger D_u=(\id-u)(\id-u^{-1})=2\,\id-u-u^{-1}$, we have
 $D_u-D_u^\dagger D_u=u-\id$; and \cref{eq.discrete-wave} at time
 $t+1$ reads $\dot q(t+1)=\dot q(t)-D_u^\dagger D_u\,q(t+1)$.  Therefore
-\[
+\begin{align*}
 2h\,w^{\leftarrow}(t+1)
-=\dot q(t+1)+D_uq(t+1)
-=\dot q(t)+(D_u-D_u^\dagger D_u)\,q(t+1)
-=u\,q(t+1)-q(t)
+&=\dot q(t+1)+D_uq(t+1)
+=\dot q(t)+(D_u-D_u^\dagger D_u)\,q(t+1)\\
+&=u\,q(t+1)-q(t)
 =u\bigl(q(t+1)-u^{-1}q(t)\bigr),
-\]
+\end{align*}
 which is $2h\,u\,w^{\leftarrow}(t)$.  The right-travelling
 case is the same computation with $D_u^\dagger$, $u^{-1}$ in place
 of $D_u$, $u$, using $D_u^\dagger-D_u^\dagger D_u=u^{-1}-\id$.
