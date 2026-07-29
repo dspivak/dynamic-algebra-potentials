@@ -2492,16 +2492,23 @@ R_X=R_Yf.
 Write $\defineTerm{delay}_N(B)$ for the resulting category.
 \end{definition}
 
-\begin{remark}[Delay realizations are linear Moore machines]
+\begin{lemma}[Delay realizations are linear machines]
 \label{rmk.delay-moore}
-By linearity, a realization $(X,T_X,G_X,R_X)$ is the same data as a
-bounded linear \emph{Moore machine} $(X,U_X,R_X)$ with update
-$U_X\colon X\oplus B\to X$ and readout $R_X\colon X\to B$: set
-$U_X(x,b)\coloneqq T_Xx+G_Xb$ and recover $T_X=U_X(\blank,0)$ and
-$G_X=U_X(0,\blank)$; the morphism conditions match likewise.
-\Cref{sec.harmonic_segments} will regard such machines, at the level of
-underlying sets, as $1$-cells in $\pc$.
-\end{remark}
+A realization $(X,T_X,G_X,R_X)$ is the same data as an object
+$(X,R_X,U_X)$ of $\Lin(0;B)$ (\cref{def.lin}) whose update
+$U_X\colon X\oplus B\to X$ satisfies the delay laws
+\cref{eq.delay-laws} for $T_X\coloneqq U_X(\blank,0)$ and
+$G_X\coloneqq U_X(0,\blank)$; morphisms match, so
+$\DelayCat_N(B)$ is a full subcategory of $\Lin(0;B)$.
+\end{lemma}
+
+\begin{proof}
+By linearity, $U_X(x,b)\coloneqq T_Xx+G_Xb$ and
+$T_X=U_X(\blank,0)$, $G_X=U_X(0,\blank)$ are mutually inverse
+translations of the data, and the morphism conditions
+$fT_X=T_Yf$, $fG_X=G_Y$, $R_X=R_Yf$ unwind to the machine
+commutations of \cref{lem.monomial-homs}.
+\end{proof}
 
 \begin{theorem}[Queue representation]\label{thm.queue-representation}
 Fix $B\in\Hilb$ and an integer $N\geq1$.
@@ -2588,20 +2595,21 @@ the rest of the line is its environment.
 Fix $B\in\Hilb$ and an integer $K\geq1$, and put
 $\Lambda'_K\coloneqq\Z\setminus\{1,\ldots,K\}$.
 \begin{enumerate}
-\item We write again
-$\mathbb Q_K(B)\colon\yon\to\lvert B\rvert\,\yon^{\lvert B\rvert}$
-for the Moore machine (\cref{lem.monomial-homs}) underlying the
-terminal realization (\cref{thm.queue-representation,rmk.delay-moore}):
-states $\lvert Q_K(B)\rvert$, readout $P_K$, update $U_K$.
+\item We write again $\mathbb Q_K(B)\colon\Lin(0;B)$ for the terminal
+realization regarded as a bounded linear machine
+(\cref{thm.queue-representation,rmk.delay-moore}): state space
+$Q_K(B)$, readout $P_K$, update $U_K$.
 \item The \emph{left environment}
-$\fun{env}^{\leftarrow}_K\colon
-\lvert B\rvert\,\yon^{\lvert B\rvert}\to\yon$
-has states $\lvert\ell^2(\Lambda'_K,B)\rvert$, reply
+$\fun{env}^{\leftarrow}_K\colon\Lin(B;0)$
+has state space $\ell^2(\Lambda'_K,B)$, reply
 $e(s,b)\coloneqq s_{K+1}$, and update $u'(s,b)$ given by
 $u'(s,b)_0\coloneqq b$ and $u'(s,b)_i\coloneqq s_{i+1}$ at all other
-$i\in\Lambda'_K$.
-\item The \emph{right environment} $\fun{env}^{\rightarrow}_K$ has the
-same states, reply $e(s,b)\coloneqq s_0$, and update given by
+$i\in\Lambda'_K$; both are bounded linear, the reply being a
+coordinate evaluation and the update a coordinate permutation with an
+insertion.
+\item The \emph{right environment}
+$\fun{env}^{\rightarrow}_K\colon\Lin(B;0)$ has the
+same state space, reply $e(s,b)\coloneqq s_0$, and update given by
 $u'(s,b)_{K+1}\coloneqq b$ and $u'(s,b)_i\coloneqq s_{i-1}$ at all
 other $i\in\Lambda'_K$.
 \end{enumerate}
@@ -2609,15 +2617,15 @@ other $i\in\Lambda'_K$.
 
 \begin{theorem}[Segment factorization]\label{thm.segment-factorization}
 Fix $Z,h\in\R_{>0}$ and $K\geq1$, and put $B\coloneqq\CZ(h)$.  In
-$\pc(\yon,\yon)$,
+$\Dyn=\Lin(0;0)$, with composition and tensor those of $\Lin$,
 \begin{equation}\label{eq.segment-factorization}
-\Ufun(\Shift_{Z,h})
+\Shift_{Z,h}
 \;\cong\;
 \bigl(\fun{env}^{\leftarrow}_K\circ\mathbb Q_K(B)\bigr)
 \otimes
 \bigl(\fun{env}^{\rightarrow}_K\circ\mathbb Q_K(B)\bigr),
 \end{equation}
-the isomorphism given on the left factor by
+a unitary isomorphism given on the left factor by
 $a\mapsto\bigl((a_1,\ldots,a_K),\,a|_{\Lambda'_K}\bigr)$ and on the
 right factor by
 $a\mapsto\bigl((a_K,\ldots,a_1),\,a|_{\Lambda'_K}\bigr)$, for
@@ -2638,19 +2646,21 @@ the composite transition is $\sigma^{\leftarrow}$.  Symmetrically, on
 the right factor the queue stores the window in the order
 $(a_K,\ldots,a_1)$, emits $a_K$, receives the reply $a_0$, and the
 composite transition is $\sigma^{\rightarrow}$.  Finally, $\otimes$ in
-$\pc(\yon,\yon)$ is the parallel product of dynamical systems and
+$\Dyn$ is the direct sum of transitions and
 $\Sigma_{Z,h}=\sigma^{\leftarrow}\oplus\sigma^{\rightarrow}$
-\cref{eq.shift-system}, so the two bijections together form an
-invertible 2-cell as claimed.
+\cref{eq.shift-system}; each coordinate map regroups $\ell^2(\Z,B)$ as
+$Q_K(B)\oplus\ell^2(\Lambda'_K,B)$ by an orthogonal splitting of
+coordinates, hence is unitary, so the two together form a unitary
+isomorphism in $\Dyn$.
 \end{proof}
 
 \begin{corollary}[The queue inside the lattice]
 \label{cor.queue-in-lattice}
-Composing \cref{eq.characteristic-two-cell} with
-\cref{eq.segment-factorization} gives a 2-cell in $\pc(\yon,\yon)$:
+Composing $\Wc_{Z,h}$ (\cref{cor.lattice-characteristic}) with
+\cref{eq.segment-factorization} gives a morphism in $\Dyn$:
 \[
-\Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)
-\Longrightarrow
+\Phih\bigl(\scale_h\,\Lat_{Z,h}\bigr)
+\longrightarrow
 \bigl(\fun{env}^{\leftarrow}_K\circ\mathbb Q_K(B)\bigr)
 \otimes
 \bigl(\fun{env}^{\rightarrow}_K\circ\mathbb Q_K(B)\bigr),
@@ -2695,7 +2705,7 @@ energy balance obtained from the unitarity of $\step_K$.
 
 \begin{proof}
 By \cref{eq.characteristic-propagation}, the characteristic trajectory
-is a trajectory of $\Ufun(\Shift_{Z,h})$; transport it through the
+is a trajectory of $\Shift_{Z,h}$; transport it through the
 isomorphism of \cref{thm.segment-factorization}.  On the left factor its
 queue leg at time $t$ is $\mathbf w_K^{\leftarrow}(t)$, and by
 \cref{eq.loop-transition} one tick emits $w_1^{\leftarrow}(t)$,
@@ -3379,16 +3389,14 @@ $[\varphi]\in H^1(J)/\R$ with $\partial_x\varphi=e$, proving surjectivity.
 \subsection{Transparent serial composition}
 
 \begin{definition}[Two-ended Moore systems]\label{def.moore-systems}
-Fix a real Hilbert space $B\in\Hilb$.  A \emph{two-ended linear Moore
-system on $B$} is a quadruple
-$M=(X,L_M,R_M,U_M)$ consisting of a state space $X\in\Hilb$, bounded
-readouts
-$L_M,R_M\colon X\to B$,
-and a bounded update
-$U_M\colon X\oplus B\oplus B\to X$.
-A morphism is a bounded linear map of state spaces commuting with the two
-readouts and the update.  Write $\defineTerm{moore}_2(B)$ for the resulting
-category.
+Fix $B:\Hilb$ and define
+\[
+\defineTerm{moore}_2(B)\coloneqq\Lin(0;B\oplus B):
+\]
+a \emph{two-ended linear Moore system on $B$} is a state space
+$X:\Hilb$ with a bounded linear readout pair
+$(L_M,R_M)\colon X\to B\oplus B$ and update
+$U_M\colon X\oplus B\oplus B\to X$, and morphisms are those of $\Lin$.
 \end{definition}
 
 For $M_i=(X_i,L_i,R_i,U_i)\in\MooreCat_2(B)$,
@@ -3411,36 +3419,26 @@ U_2(x_2,R_1(x_1),b^{\mathrm R})
 for every $x_i\in X_i$ and $b^{\mathrm L},b^{\mathrm R}\in B$.  On
 morphisms, put $f_1\diamond f_2\coloneqq f_1\oplus f_2$.
 
-\begin{proposition}[Serial composition is hom-composition in $\pc$]
+\begin{proposition}[Serial composition is composition in $\Lin$]
 \label{prop.seam}
-Fix $B\in\Hilb$ and put
-$p\coloneqq\lvert B\rvert\,\yon^{\lvert B\rvert}$.  Forgetting
-Hilbert structure, a two-ended system $M\in\MooreCat_2(B)$ is a
-$1$-cell $\mathsf M\colon\yon\to p\otimes p$ in $\pc$: the
-coalgebra with states $\lvert X\rvert$, positions $(L_M,R_M)$, and
-update $U_M$.  Let
-$\fun{seam}\colon p\otimes p\to\yon$ be the polynomial map that is
-unique on positions and returns, on directions at $(b_1,b_2)$, the pair
-$(b_2,b_1)$, regarded as a stateless $1$-cell (\cref{lem.stateless}).
-Then for all
-$M_1,M_2\in\MooreCat_2(B)$,
+Fix $B:\Hilb$ and let $\fun{seam}\colon\Lin(B\oplus B;0)$ be the
+stateless machine whose backward map is the swap
+$(b_1,b_2)\mapsto(b_2,b_1)$.  Then for all
+$M_1,M_2\colon\MooreCat_2(B)$,
 \[
-\mathsf M_{1\diamond2}
+M_1\diamond M_2
 =
-\bigl(\id_p\otimes\fun{seam}\otimes\id_p\bigr)
+\bigl(\id_B\otimes\fun{seam}\otimes\id_B\bigr)
 \circ
-\bigl(\mathsf M_1\otimes\mathsf M_2\bigr)
-\colon\yon\to p\otimes p,
+\bigl(M_1\otimes M_2\bigr)
+\quad\text{in }\Lin(0;B\oplus B).
 \]
-where $\mathsf M_{1\diamond2}$ denotes the $1$-cell of
-$M_1\diamond M_2$ and $\id_p$ is stateless (\cref{lem.stateless}).
 \end{proposition}
 
 \begin{proof}
-Both sides have state set
-$\lvert X_1\rvert\times\lvert X_2\rvert$, the seam and the
-identities being stateless.  At a state $(x_1,x_2)$, the $1$-cell
-$\mathsf M_1\otimes\mathsf M_2$ presents the four positions
+Both sides have state space $X_1\oplus X_2$, the seam and the
+identities being stateless.  At a state $(x_1,x_2)$, the machine
+$M_1\otimes M_2$ presents the four outputs
 $(L_1(x_1),R_1(x_1),L_2(x_2),R_2(x_2))$, of which the right-hand
 composite presents the outer pair $(L_1(x_1),R_2(x_2))$---the readouts
 of $M_1\diamond M_2$.  Given outer directions
@@ -3451,13 +3449,6 @@ $\bigl(U_1(x_1,b^{\mathrm L},L_2(x_2)),\
 U_2(x_2,R_1(x_1),b^{\mathrm R})\bigr)$, the update of
 $M_1\diamond M_2$.
 \end{proof}
-
-\begin{remark}\label{rmk.seam-native}
-The serial product is therefore not a new composition: it is
-hom-composition in $\pc$ against a stateless seam, and the two-ended
-strings below live in the same $2$-category as the phase semantics of
-\cref{sec.hilbert_semantics}.
-\end{remark}
 
 \begin{proposition}[Associativity]\label{prop.serial-associativity}
 Fix $B\in\Hilb$.  The product $\diamond$ makes
