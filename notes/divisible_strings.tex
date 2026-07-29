@@ -1,0 +1,2827 @@
+% !TEX program = pdflatex
+% Standalone categorical development of harmonic strings, companion to ../CDLM.tex.
+% CDLM results are cited by the numbering of the 2026-07 draft; each such cite
+% carries a comment recording the CDLM label, so numbers can be refreshed from
+% CDLM.aux if the draft renumbers.
+\documentclass[11pt,oneside,article]{memoir}
+
+\linespread{1.12}\selectfont
+\settrims{0pt}{0pt}
+\settypeblocksize{*}{35.4pc}{*}
+\setlrmargins{*}{*}{1}
+\setulmarginsandblock{0.85in}{0.85in}{*}
+\setheadfoot{\onelineskip}{2.66\onelineskip}
+\setheaderspaces{*}{1.5\onelineskip}{*}
+\checkandfixthelayout[lines]
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,mathtools,amsthm}
+\usepackage{lmodern}
+\usepackage{amscd}
+\usepackage{tikz-cd}
+\usepackage{xcolor}
+\usepackage[inline]{enumitem}
+\usepackage[bookmarks=true,colorlinks=true,linkcolor=blue!50!black,
+  citecolor=orange!50!black,urlcolor=orange!50!black]{hyperref}
+\usepackage[capitalize]{cleveref}
+
+\setlist{nosep}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}[definition]{Example}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+
+% ---------- basic macros ----------
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\blank}{\mathord{-}}
+\newcommand{\To}[1]{\xrightarrow{#1}}
+\newcommand{\inpt}[1]{#1^{-}}% input part (as in CDLM)
+\newcommand{\outp}[1]{#1^{+}}% output part (as in CDLM)
+\newcommand{\Cat}[1]{\mathbf{#1}}
+\newcommand{\cat}[1]{\mathcal{#1}}
+\newcommand{\Fn}[1]{\textnormal{\textsf{#1}}}% a named functor
+\newcommand{\fun}[1]{\mathrm{#1}}% a named function or operation
+\newcommand{\inc}{\fun{inc}}
+\newcommand{\rv}[1]{\mathbf{#1}}% a reactive Hilbert space (V,\sharpR_V)
+\newcommand{\ltens}{\boxtimes}% lens/interface tensor
+\newcommand{\phase}{\mathrm{phase}}
+\newcommand{\ParaCat}{\mathbb{P}\Cat{ara}}
+\newcommand{\para}[2]{\ParaCat_{#1}(#2)}
+\newcommand{\cotof}[1]{\cot(#1)}
+
+% ---------- term tracking (from CDLM) ----------
+% \defineTerm{name} marks the definition site of a tracked term; every later
+% use of the associated macro hyperlinks (in black) back to that site.
+\makeatletter
+\NewDocumentCommand{\trackTermSymbol}{m m}{%
+  \expandafter\newcommand\csname termraw@#1\endcsname{{#2}}%
+}
+\NewDocumentCommand{\termraw}{m}{%
+  \@ifundefined{termraw@#1}%
+    {\PackageError{termraw}{Term '#1' not registered}{Use \string\trackTermSymbol{#1}{...} first.}}%
+    {\@nameuse{termraw@#1}}%
+}
+\DeclareRobustCommand{\termref}[2]{{\hypersetup{linkcolor=black}\hyperlink{term.#1}{#2}}}
+\NewDocumentCommand{\trackTerm}{m m m}{%
+  \trackTermSymbol{#2}{#3}%
+  \newcommand{#1}{\termref{#2}{\termraw{#2}}}%
+}
+\NewDocumentCommand{\defineTerm}{m}{\hypertarget{term.#1}{\termraw{#1}}}
+\makeatother
+
+\trackTerm{\PreHilb}{prehilb}{\Cat{PreHilb}}
+\trackTerm{\Hilb}{hilb}{\Cat{Hilb}}
+\trackTerm{\hsm}{hsm}{\Cat{Hilb}_{\mathrm{sm}}}
+\trackTerm{\rhilb}{rhilb}{\Cat{RHilb}}
+\trackTerm{\smsetiso}{smsetiso}{\Cat{Set}_{\cong}}
+\trackTerm{\poly}{poly}{\Cat{Poly}}
+\trackTerm{\yon}{yon}{\mathsf{y}}
+\trackTerm{\pc}{pc}{\mathbb{P}\Cat{C}}
+\trackTerm{\harr}{harr}{\mathbb{A}\Cat{rr}_{\mathrm{Hb}}}
+\trackTerm{\Dyn}{dynh}{\Cat{Dyn}}
+\trackTerm{\Int}{intop}{\Cat{Int}}
+\trackTerm{\DelayCat}{delay}{\Cat{Delay}}
+\trackTerm{\MooreCat}{moore}{\Cat{Moore}}
+\trackTerm{\Store}{Store}{\Fn{Store}}
+\trackTerm{\Mass}{mass}{\fun{mass}}
+\trackTerm{\Bond}{bond}{\fun{bond}}
+\trackTerm{\Wire}{wire}{\fun{wire}}
+\trackTerm{\Chain}{chain}{\fun{chain}}
+\trackTerm{\Lat}{lat}{\fun{lat}}
+\trackTerm{\Shift}{shift}{\fun{shift}}
+\trackTerm{\scale}{scale}{\Fn{scale}}
+\trackTerm{\Phiphase}{Phiphase}{\Phi_{\phase}}
+\trackTerm{\Hb}{Hb}{\mathrm{Hb}}% the Hilbert adaptive-arrangement datum
+\trackTerm{\interph}{interph}{\mathrm{hb}}% the Hilbert polynomial interpretation datum
+\trackTerm{\thetacomp}{theta}{\theta}% effect comparison of the interpretation datum
+\trackTerm{\potd}{potd}{\fun{d}}% potential algebra map cot(R) -> y
+\trackTerm{\chiE}{chi}{\chi}% Euler step
+\trackTerm{\nuro}{nu}{\nu}% phase readout
+\trackTerm{\dynphase}{dynphase}{\fun{dyn}_{\phase}}% phase dynamics
+\trackTerm{\step}{step}{\operatorname{step}}% queue / delay-line step
+\trackTerm{\EZ}{EZ}{E_Z}% completed characteristic state
+\trackTerm{\CZ}{CZ}{C_Z}% cell packet
+\trackTerm{\Ufun}{Ufun}{\mathsf{U}}% forgetful Dyn -> PC(y,y)
+\trackTerm{\Wc}{Wchar}{\mathcal{W}}% characteristic morphism
+\trackTerm{\riesz}{riesz}{r}% Riesz map
+\trackTerm{\sharpR}{sharpR}{\sharp}% reaction sharp
+\trackTerm{\sharpS}{sharpS}{\sharp^{\mathrm{s}}}% canonical symplectic sharp
+\trackTermSymbol{Phip}{\Phi'}% polynomial interpretation functor
+\newcommand{\Phip}[1]{\termref{Phip}{\termraw{Phip}}_{#1}}
+\trackTermSymbol{cot}{\Fn{cot}}
+\renewcommand{\cot}{\termref{cot}{\termraw{cot}}}
+
+\title{Harmonic Chains, Characteristic Queues, and Associative Strings}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The CDLM framework of adaptive arrangements is parametric in an
+adaptive-arrangement datum.  We assemble a \emph{Hilbert arrangement datum}
+$\Hb$---spaces are real Hilbert spaces with smooth maps, parameters are
+reactive Hilbert spaces, potentials accumulate in $\R$---and, following the
+framework, obtain the operad $\harr$ of Hilbert arrangements, its polynomial
+interpretation, and a phase integrator, hence an operad functor
+$\Phiphase\colon\harr\to\pc$.
+
+The homogeneous harmonic chain lives in $\harr$: masses and bonds are
+arrangements, finite chains are their operadic composites, and the biinfinite
+lattice is a single closed arrangement, the strong limit of the finite
+chains.  At the characteristic tuning of step scaling to cell duration, a
+morphism of discrete dynamical systems extracts two oppositely shifting
+characteristic fields.  The shift system so obtained factors, in the
+hom-categories of the semantics, as a standard queue composed with its
+environment; a finite segment thus carries two standard queues.
+
+The standard queue is terminal among bounded linear realizations of exact
+delay.  Its subdivision is governed by restriction along the time-dilation
+map on the monoid of discrete times.  This identifies the categorical reason
+that one coarse update equals two refined updates.  Hilbert completion of the
+resulting dyadic system is the weighted space $L^2([0,d),Z\,dx)$.
+
+Weighted interval spaces form a strong algebra for ordered interval
+concatenation.  Any such algebra canonically determines lossless delay lines;
+the finite queues embed into this construction and determine it densely.
+Translation of the two completed characteristic fields is equivalent to the
+weak wave equation, modulo constant displacement---so every lattice
+trajectory samples a weak solution of the wave equation.  Finally, the same
+interval algebra determines an associative serial composition of two-ended
+strings.
+\end{abstract}
+
+\tableofcontents*
+
+\section{Assumed background}
+\label{sec.background}
+
+This paper is a companion to \cite{cdlm}, whose framework it instantiates;
+we cite its results by number.  This section records everything else we
+assume.  \Cref{sec.background_categories} fixes the categorical background
+and recalls polynomial functors and their coalgebras;
+\cref{sec.background_hilbert} fixes the Hilbert-space background.  Terms
+introduced in the body of the paper are marked at their definition sites,
+and every later use of the corresponding symbol hyperlinks back to that
+site.
+
+\subsection{Categorical background}
+\label{sec.background_categories}
+
+We assume familiarity with symmetric monoidal categories; with monoids and
+comonoids in them; with lax, strong, and normal (unit-preserving) monoidal
+functors and monoidal natural transformations; with monads, monoidal monads,
+and adjunctions; and with the writer monad $R\otimes\blank$ of a commutative
+monoid object $(R,0,+)$ \cite[Lem.~3.2.1]{cdlm}.%lem.monoid_to_monad
+We write $\defineTerm{smsetiso}$ for the category of sets and bijections.
+
+\paragraph{Operads.}
+By an \emph{operad} we mean a symmetric colored operad, i.e.\ a symmetric
+multicategory \cite{leinster2004higher}: a class of \emph{colors}; for every
+finite list of colors $c_1,\ldots,c_K$ and every color $c$ a set of
+\emph{operations} $\cat O(c_1,\ldots,c_K;c)$; identities; substitution; and
+symmetric-group actions, subject to associativity, unit, and equivariance
+laws.  Every symmetric monoidal category $(\cat C,I,\otimes)$ has an
+underlying operad with
+$\cat O(c_1,\ldots,c_K;c)\coloneqq\cat C(c_1\otimes\cdots\otimes c_K,c)$,
+and every lax symmetric monoidal functor induces an \emph{operad functor}
+between the underlying operads.  A \emph{full suboperad} is spanned by a
+subclass of colors.
+
+For a nonsymmetric colored operad $\cat O$ and a symmetric monoidal category
+$(\cat C,I,\otimes)$, an \emph{$\cat O$-algebra in $\cat C$} assigns an
+object $A(c):\cat C$ to each color and a map
+$A(\varphi)\colon A(c_1)\otimes\cdots\otimes A(c_K)\to A(c)$ to each
+operation $\varphi\in\cat O(c_1,\ldots,c_K;c)$, respecting identities and
+substitution.  We denote such an algebra as a map $A\colon\cat O\to\cat C$.
+We call the maps $A(\varphi)$ the \emph{structure maps} of $A$, and we call
+$A$ \emph{strong} if every structure map is an isomorphism.
+
+\paragraph{Semigroupal categories.}
+A \emph{semigroupal category} is a category with a tensor product and an
+associator satisfying the pentagon, with no unit assumed---the nonunital
+version of a monoidal category.  A \emph{strong semigroupal functor} is a
+functor equipped with natural isomorphisms
+$F(c)\otimes F(c')\cong F(c\otimes c')$ satisfying the associativity
+coherence.  A commutative semigroup, such as $(\R_{\geq h},+)$, is a
+discrete semigroupal category; a \emph{strong semigroupal representation}
+of it in a semigroupal category $\cat D$ is a strong semigroupal functor
+into $\cat D$.
+
+\paragraph{Polynomial functors.}
+We use the category $\defineTerm{poly}$ of polynomial functors; see
+\cite{niu2025polynomial} for a full treatment and \cite[\S2]{cdlm} for the
+fragment used here.  A polynomial is a formal coproduct of representables
+\[
+p=\sum_{i\in p(1)}\yon^{p[i]},
+\]
+where the elements of the set $p(1)$ are the \emph{positions} of $p$ and the
+elements of each set $p[i]$ are the \emph{directions} at $i$.  A morphism
+$p\to p'$ is a function forward on positions together with, at each
+$i\in p(1)$, a function backward on directions
+$p'[i']\to p[i]$.  We write $\defineTerm{yon}$ for the identity polynomial
+(one position, one direction), so $\yon$ is the monoidal unit for the
+Dirichlet product $\otimes$, which multiplies position sets and direction
+sets.  The Dirichlet product is closed; we write $[p,p']$ for the internal
+hom.  For a set $S$, we write $\defineTerm{Store}(S)\coloneqq S\yon^S$.  A
+\emph{$p$-coalgebra} is a set $S$ with a function $f\colon S\to p(S)$;
+equivalently \cite[Prop.~2.2.3]{cdlm},%prop.coalg_as_poly_map
+a polynomial map $\Store(S)\to p$.
+
+\paragraph{Polynomial coalgebras.}
+We use the $2$-category $\defineTerm{pc}$ of \cite[\S2.2.4]{cdlm}:%sec.org
+its objects are polynomials; its hom-category $\pc(p,p')$ is the category of
+$[p,p']$-coalgebras and coalgebra morphisms; composition and the monoidal
+structure (with unit $\yon$) are by Dirichlet product of coalgebras.  We
+refer to objects of $\pc(p,p')$ as \emph{$1$-cells} and to their morphisms
+as \emph{$2$-cells}.  Since $[\yon,\yon]\cong\yon$, a $1$-cell
+$\yon\to\yon$ is a $\yon$-coalgebra, i.e.\ a set $S$ with a function
+$S\to S$---a discrete dynamical system---and a $2$-cell between two such is
+a function commuting with the two endofunctions.
+
+\paragraph{The CDLM framework.}
+The framework of \cite[Ch.~4]{cdlm} is parametric in an
+\emph{adaptive-arrangement datum} $D=(\cat M,\cat Q,J,\Fn R)$: a cartesian
+monoidal category $\cat M$ of \emph{spaces}, a symmetric monoidal category
+$\cat Q$ of \emph{parameters}, a strong monoidal functor
+$J\colon\cat Q\to\cat M$, and a monoidal monad $\Fn R$ on $\cat M$, the
+\emph{potentials monad} \cite[Def.~4.1.1]{cdlm}.%def.rewiring_datum
+Out of $D$ the framework builds an operad $\mathbb{A}\Cat{rr}_D$ of
+\emph{adaptive arrangements}; a \emph{polynomial interpretation datum} for
+$D$ \cite[Def.~4.2.1]{cdlm}%def.polynomial_interpretation
+then yields a lax symmetric monoidal functor into parameterized polynomials
+\cite[Thm.~4.2.2]{cdlm},%thm.poly_interpretation
+and an \emph{integrator} \cite[Def.~4.3.4]{cdlm}%def.integrator
+turns the result into an operad functor
+$\mathbb{A}\Cat{rr}_D\to\pc$ \cite[Thm.~4.3.6]{cdlm}.%thm.dynamics_functor
+We recall the relevant definitions at their points of use in
+\cref{sec.hilbert_datum,sec.hilbert_semantics}, where we instantiate each of
+them in Hilbert spaces.
+
+\subsection{Hilbert-space background}
+\label{sec.background_hilbert}
+
+All vector spaces are real.  Standard references for this material are
+\cite{conway1990functional} for Hilbert-space theory,
+\cite{cartan1971differential} for differential calculus on Banach spaces,
+and \cite{brezis2011functional} for Sobolev spaces and distributions.
+
+\paragraph{Pre-Hilbert and Hilbert spaces.}
+A \emph{pre-Hilbert space} is a vector space with an inner product
+$\langle\blank,\blank\rangle$; a \emph{Hilbert space} is a pre-Hilbert space
+that is complete for the induced norm.  A linear map $f\colon V\to W$ is
+\emph{bounded} if $\lVert f\rVert\coloneqq\sup_{\lVert v\rVert\leq1}\lVert
+f(v)\rVert_W<\infty$; we call $\lVert f\rVert$ the \emph{operator norm} of
+$f$.  We write $\defineTerm{prehilb}$ for the category of
+pre-Hilbert spaces and bounded linear maps, and $\defineTerm{hilb}$ for its
+full subcategory of Hilbert spaces.  A bounded linear map is an
+\emph{isometry} if it preserves norms, and \emph{unitary} if it is a
+surjective isometry.  In any category, a morphism is a \emph{split
+epimorphism} if it admits a section.
+
+\paragraph{Completion.}
+The inclusion $\Hilb\hookrightarrow\PreHilb$ has a left adjoint, the
+\emph{Hilbert completion} $V\mapsto\widehat V$: the unit $V\to\widehat V$ is
+an isometry with dense image, and every bounded linear map $f\colon V\to Y$
+with $Y$ complete extends uniquely to $\widehat f\colon\widehat V\to Y$ with
+$\lVert\widehat f\rVert=\lVert f\rVert$.
+
+\paragraph{Increasing unions.}
+Given pre-Hilbert spaces $H_n$ and isometric embeddings
+$\rho_n\colon H_n\hookrightarrow H_{n+1}$ for $n\in\N$, the \emph{increasing
+union} $\bigcup_n H_n$ is the union of the images in the colimit of the
+underlying vector spaces, a pre-Hilbert space in which each $H_n$ embeds
+isometrically and every element lies in some $H_n$.  (We avoid calling the
+union a colimit in $\PreHilb$: a compatible family of bounded maps out of
+the $H_n$ induces a bounded map out of the union only when its operator
+norms are uniformly bounded; \cref{thm.dyadic-completion} states the
+resulting universal property in exactly that form.)
+
+\paragraph{Duals, Riesz representation, adjoints.}
+The \emph{dual} $V^*$ of a pre-Hilbert space $V$ is the space of bounded
+linear functionals with the operator norm.  For $V$ a Hilbert space, $V^*$
+is a Hilbert space, and the map $V\to V^*$,
+$v\mapsto\langle v,\blank\rangle$, is a unitary isomorphism---this is the
+Riesz representation theorem \cite{conway1990functional}.  We define the
+\emph{Riesz map} $\defineTerm{riesz}_V\colon V^*\To{\cong}V$ to be its inverse.
+Consequently every Hilbert space is \emph{reflexive}: the evaluation map
+$\iota_V\colon V\to V^{**}$, $\iota_V(v)(\xi)\coloneqq\xi(v)$, is a unitary
+isomorphism, and we use it silently to identify $V^{**}$ with $V$.  A
+bounded linear map $f\colon V\to W$ has a \emph{transpose}
+$f^*\colon W^*\to V^*$, $f^*(\eta)\coloneqq\eta\circ f$, with
+$\lVert f^*\rVert=\lVert f\rVert$, $(g\circ f)^*=f^*\circ g^*$, and
+$(f^{-1})^*=(f^*)^{-1}$ when $f$ is invertible.  Under reflexivity,
+$f^{**}=f$.
+
+For Hilbert spaces, conjugating the transpose by the Riesz maps gives the
+\emph{adjoint}
+\[
+f^\dagger\coloneqq \riesz_V\circ f^*\circ\riesz_W^{-1}\colon W\to V,
+\qquad
+\langle f(v),w\rangle_W=\langle v,f^\dagger(w)\rangle_V,
+\]
+and $(\blank)^\dagger$ is a \emph{dagger structure} on $\Hilb$
+\cite{heunen2019categories}: an identity-on-objects contravariant
+involution, i.e.
+\[
+\id_V^\dagger=\id_V,
+\qquad
+(g\circ f)^\dagger=f^\dagger\circ g^\dagger,
+\qquad
+f^{\dagger\dagger}=f.
+\]
+In dagger terms the isometries and unitaries of the previous paragraph are
+the standard notions: $f$ is an isometry if and only if
+$f^\dagger\circ f=\id$ (by polarization), and unitary if and only if it is
+a \emph{dagger isomorphism}, $f^\dagger\circ f=\id$ and
+$f\circ f^\dagger=\id$.
+
+\paragraph{Direct sums.}
+The direct sum $V\oplus W$ of pre-Hilbert spaces carries the inner product
+$\langle(v,w),(v',w')\rangle\coloneqq\langle v,v'\rangle+\langle
+w,w'\rangle$.  It is the categorical product (and coproduct) in $\PreHilb$
+and in $\Hilb$---a biproduct---and the zero space $0$ is a zero object.
+On $\Hilb$ it is moreover a \emph{dagger biproduct}: each projection is
+the dagger of the corresponding injection
+\cite{heunen2019categories}.  The
+canonical map $V^*\oplus W^*\to(V\oplus W)^*$, sending $(\xi,\eta)$ to
+$(v,w)\mapsto\xi(v)+\eta(w)$, is a unitary isomorphism, and we use it
+silently.  For a Hilbert space $V$, we write
+\[
+T^*V\coloneqq V\oplus V^*,
+\]
+call it the \emph{phase space} of $V$, and call $V^*$ the \emph{cotangent
+space} $T^*_vV\coloneqq V^*$ at any point $v\in V$.  Combining the two
+identifications above with reflexivity gives
+$(T^*V)^*=(V\oplus V^*)^*\cong V^*\oplus V$, which we also use silently.
+
+\paragraph{Sequence and function spaces.}
+For a Hilbert space $B$, define
+\[
+\ell^2(\Z,B)
+\coloneqq
+\left\{
+a\colon\Z\to B
+\ \middle|\
+\sum_{i\in\Z}\lVert a_i\rVert_B^2<\infty
+\right\},
+\qquad
+\langle a,b\rangle
+\coloneqq
+\sum_{i\in\Z}\langle a_i,b_i\rangle_B,
+\]
+in which the sum defining $\langle a,b\rangle$ converges absolutely by the
+Cauchy--Schwarz inequality.  This inner product space is complete, hence a
+Hilbert space \cite{conway1990functional}.  We write
+$\ell^2(\Z)\coloneqq\ell^2(\Z,\R)$; for a finite set of sites
+$\Lambda\subseteq\Z$ we write $\ell^2(\Lambda)\coloneqq\R^\Lambda$ with the
+standard inner product.  We write
+$e_i\in\ell^2(\Z)$ for the $i$th standard basis vector and
+$\xi_i\coloneqq\xi(e_i)$ for the components of a functional
+$\xi\in\ell^2(\Z)^*$, so that $\riesz_{\ell^2(\Z)}(\xi)=(\xi_i)_{i\in\Z}$.  The
+two \emph{shift} operators $(\sigma^{\leftarrow}a)_i\coloneqq a_{i+1}$ and
+$(\sigma^{\rightarrow}a)_i\coloneqq a_{i-1}$ are unitary on $\ell^2(\Z,B)$;
+in particular the \emph{difference operator} $D\coloneqq\id-\sigma^{\rightarrow}$,
+$(Da)_i=a_i-a_{i-1}$, is bounded, with transpose given under Riesz by
+$(D^*a)_i=a_i-a_{i+1}$.
+
+For a measure space $(X,\mu)$ we write $L^2(X,\mu)$ for the Hilbert space
+of \emph{square-integrable functions}: measurable functions
+$f\colon X\to\R$ with $\int_X|f|^2\,d\mu<\infty$, taken modulo equality
+$\mu$-almost everywhere, with inner product
+$\langle f,g\rangle\coloneqq\int_Xfg\,d\mu$; completeness is the
+Riesz--Fischer theorem \cite{brezis2011functional}.  These spaces
+illustrate the Riesz representation theorem concretely: every bounded
+functional on $L^2([0,1],dx)$ is $f\mapsto\int_0^1fg\,dx$ for a unique
+$g\in L^2([0,1],dx)$---for instance $g=1$ gives the mean of $f$, and
+$g=\mathbf1_{[0,1/2]}$ the mass on the left half---whereas point
+evaluation $f\mapsto f(\tfrac12)$ is not a bounded functional, being
+undefined on almost-everywhere classes.  For $Z\in\R_{>0}$ and an interval $J\subseteq\R$, we write $Z\,dx$ for $Z$
+times Lebesgue measure on $J$; thus the \emph{weighted space}
+$L^2(J,Z\,dx)$ consists of the square-integrable functions on $J$ with
+inner product $\langle f,g\rangle=Z\int_Jfg\,dx$.  The case
+$J=[0,d)$ appears throughout.
+
+\paragraph{Smooth maps.}
+Let $V,W$ be Hilbert spaces and $f\colon V\to W$ a function.  The
+\emph{Fr\'echet derivative} of $f$ at $v\in V$, when it exists, is the
+bounded linear map $D_vf\colon V\to W$ satisfying
+\[
+\lim_{v'\to0}
+\frac{\lVert f(v+v')-f(v)-D_vf(v')\rVert_W}{\lVert v'\rVert_V}=0.
+\]
+At most one linear map satisfies this: the difference $L$ of two
+satisfying maps has $\lVert L(v')\rVert/\lVert v'\rVert\to0$ as $v'\to0$,
+and by linearity this ratio is invariant under $v'\mapsto tv'$ for
+$t>0$, so it vanishes for every $v'\neq0$, i.e.\ $L=0$.  The map $f$ is
+\emph{smooth} if it has Fr\'echet derivatives of all orders, each depending
+continuously on the basepoint \cite{cartan1971differential}.  Smooth maps
+compose, and the chain rule $D_v(g\circ f)=D_{f(v)}g\circ D_vf$ holds.
+Every bounded linear map $f$ is smooth with $D_vf=f$, as is every constant
+map and every bounded affine map.  The pairing of smooth maps into a direct
+sum is smooth.  For a smooth $U\colon V\to\R$ we write
+$dU|_v\coloneqq D_vU\in V^*$, the derivative regarded as a bounded
+functional, and call it the \emph{differential} of $U$ at $v$.
+
+A \emph{continuous quadratic form} on a Hilbert space $V$ is a function
+$U(v)\coloneqq\tfrac12 B(v,v)$ for a bounded symmetric bilinear
+$B\colon V\times V\to\R$.  Every continuous quadratic form is smooth, with
+differential the bounded linear map
+\[
+dU|_v=B(v,\blank)\in V^*.
+\]
+Equivalently, by Riesz, $U(v)=\tfrac12\langle A(v),v\rangle$ for the
+bounded operator $A\coloneqq \riesz_V\circ dU\colon V\to V$, and symmetry of
+$B$ says exactly that $A$ is \emph{self-adjoint}: $A^\dagger=A$.  We
+define quadratic forms through bounded bilinear maps rather than---as one
+may in finite dimensions \cite[Def.~5.3.3]{cdlm}%def.arrangement_terminology
+---as linear functionals on a tensor square: on an infinite-dimensional
+$V$, functionals on the Hilbert-space tensor square represent only the
+\emph{Hilbert--Schmidt} forms, those with
+$\sum_{i,j}\langle A(e_i),e_j\rangle^2<\infty$ for an orthonormal basis
+$(e_i)$ \cite{conway1990functional}, and already
+$U(v)=\tfrac12\lVert v\rVert^2$, whose operator is $A=\id$, is excluded.
+The lattice potential \cref{eq.lattice-potential} is likewise not
+Hilbert--Schmidt: its operator has the diagonal entry $\tfrac{2Z}h$ at
+every site.
+
+\paragraph{Strong convergence.}
+A sequence of functions $g_n\colon X\to W$ into a Hilbert space
+\emph{converges strongly} to $g$ if $g_n(x)\to g(x)$ in norm for every
+$x\in X$.  Strong convergence does not require---and below will not
+have---convergence in operator norm.
+
+\section{The Hilbert arrangement datum}
+\label{sec.hilbert_datum}
+
+We now instantiate the framework.  Recall from
+\cite[Def.~4.1.1]{cdlm}%def.rewiring_datum
+that an adaptive-arrangement datum consists of a cartesian monoidal category
+of spaces, a symmetric monoidal category of parameters, a strong monoidal
+functor from parameters to spaces, and a monoidal potentials monad on
+spaces.  The smooth datum of \cite[Def.~5.3.1]{cdlm}%def.potlens
+takes finite-dimensional manifolds as spaces; here we take Hilbert spaces.
+
+\subsection{Spaces}
+\label{sec.hilbert_spaces}
+
+\begin{definition}[Hilbert spaces with smooth maps]\label{def.hsm}
+We define the category $\defineTerm{hsm}$ to have real Hilbert spaces as
+objects and smooth maps (\cref{sec.background_hilbert}) as morphisms.
+\end{definition}
+
+\begin{proposition}\label{prop.hsm-cartesian}
+$(\hsm,1,\oplus)$ is cartesian monoidal, where $1\coloneqq\R^0$.
+\end{proposition}
+
+\begin{proof}
+The zero space $1=\R^0$ is terminal: the unique map $V\to1$ is constant,
+hence smooth.  For Hilbert spaces $W_1,W_2$, the projections
+$\pi_i\colon W_1\oplus W_2\to W_i$ are bounded linear, hence smooth.  Given
+smooth $f_i\colon V\to W_i$, the pairing
+$\langle f_1,f_2\rangle\colon V\to W_1\oplus W_2$ is smooth
+(\cref{sec.background_hilbert}) and is the unique map whose composites with
+the projections are the $f_i$.  Thus $\oplus$ is the categorical product,
+and the monoidal structure it induces is cartesian.
+\end{proof}
+
+The pair $(\R,0,+)$ is a commutative monoid object in $\hsm$: addition
+$\R\oplus\R\to\R$ is bounded linear and the unit $1\to\R$ is constant, so
+both are smooth.  By \cite[Lem.~3.2.1]{cdlm},%lem.monoid_to_monad
+it induces the monoidal \emph{writer monad} $\R\oplus\blank$ on $\hsm$,
+which we abbreviate by its carrier $\R$.  This is our potentials monad: a
+backward pass valued in $\R\oplus X$ is an ordinary backward pass valued in
+$X$ together with a scalar potential.
+
+\subsection{Parameters}
+\label{sec.reactive_hilbert}
+
+\begin{definition}[Reactive Hilbert space]\label{def.rhilb}
+A \emph{reactive Hilbert space} is a pair $\rv V\coloneqq(V,\sharpR_V)$ of a
+real Hilbert space $V$ and a bounded linear map
+$\defineTerm{sharpR}_V\colon V^*\to V$, its \emph{reaction} or \emph{sharp}.  We call
+$\rv V$ \emph{nondegenerate} if $\sharpR_V$ is an isomorphism, and
+\emph{symmetric} if $\xi'(\sharpR_V\xi)=\xi(\sharpR_V\xi')$ for all
+$\xi,\xi'\in V^*$.
+
+We define the category $\defineTerm{rhilb}$ to have reactive Hilbert spaces
+as objects and, as morphisms $\rv V\to\rv W$, the bounded linear
+isomorphisms $\phi\colon V\To{\cong}W$ that are \emph{sharp-equivariant}:
+\begin{equation}\label{eq.sharp-equivariance}
+\phi\circ\sharpR_V\circ\phi^*=\sharpR_W
+\end{equation}
+as maps $W^*\to W$.
+\end{definition}
+
+The reactive vector spaces of \cite[Def.~5.2.1]{cdlm}%def.rvect
+allow the reaction to vary smoothly with a basepoint $v\in V$; the harmonic
+systems of this paper need only basepoint-independent reactions, so we
+develop the constant case.  \Cref{eq.sharp-equivariance} is the constant
+instance of the sharp-equivariance condition there.
+
+\begin{proposition}\label{prop.rhilb-monoidal}
+Direct sum makes $\rhilb$ symmetric monoidal, with unit $\rv 0\coloneqq(0,0)$
+and
+\[
+\sharpR_{V\oplus W}\coloneqq\sharpR_V\oplus\sharpR_W
+\colon V^*\oplus W^*\to V\oplus W
+\]
+under the identification $(V\oplus W)^*\cong V^*\oplus W^*$ of
+\cref{sec.background_hilbert}.
+\end{proposition}
+
+\begin{proof}
+A direct sum of bounded maps is bounded, so $\sharpR_{V\oplus W}$ is a
+reaction.  If $\phi\colon\rv V\to\rv W$ and $\phi'\colon\rv V'\to\rv W'$ are
+sharp-equivariant, then so is $\phi\oplus\phi'$, because transposes,
+composites, and \cref{eq.sharp-equivariance} are all computed summandwise.
+The coherence isomorphisms of $(\Hilb,0,\oplus)$ are sharp-equivariant for
+the direct-sum reactions, again summandwise, so they lift to $\rhilb$.
+\end{proof}
+
+\begin{proposition}\label{prop.rhilb-forgetful}
+The forgetful functor $\inc\colon\rhilb\to\hsm$, $(V,\sharpR_V)\mapsto V$, is
+strong symmetric monoidal.
+\end{proposition}
+
+\begin{proof}
+On both sides the tensor is $\oplus$ with unit the zero space
+(\cref{prop.hsm-cartesian,prop.rhilb-monoidal}), and $\inc$ preserves both
+on the nose; morphisms of $\rhilb$ are bounded linear, hence smooth.
+\end{proof}
+
+\subsection{The datum and its operad}
+\label{sec.datum_operad}
+
+\begin{definition}[Hilbert arrangement datum]\label{def.hilbert-datum}
+The \emph{Hilbert arrangement datum} is
+\[
+\defineTerm{Hb}\coloneqq(\hsm,\rhilb,\inc,\R),
+\]
+an adaptive-arrangement datum in the sense of
+\cite[Def.~4.1.1]{cdlm}:%def.rewiring_datum
+$\hsm$ is cartesian monoidal (\cref{prop.hsm-cartesian}), $\rhilb$ is
+symmetric monoidal (\cref{prop.rhilb-monoidal}), $\inc$ is strong symmetric
+monoidal (\cref{prop.rhilb-forgetful}), and $\R$ abbreviates the writer
+potentials monad $\R\oplus\blank$ (\cref{sec.hilbert_spaces}).  We write
+$\defineTerm{harr}$ for its adaptive-arrangement operad.
+\end{definition}
+
+We unwind what \cite[Def.~4.1.1]{cdlm}%def.rewiring_datum
+provides.  An object of $\harr$ is an \emph{interface} $\binom{A}{B}$ with
+\emph{input space} $A:\hsm$ and \emph{output space} $B:\hsm$; the monoidal
+unit is $I\coloneqq\binom{1}{1}$, and the tensor $\ltens$ direct-sums inputs
+and outputs.  A morphism
+$f\colon\bigl(\binom{A_1}{B_1},\ldots,\binom{A_K}{B_K}\bigr)\to\binom{A}{B}$,
+which we call a \emph{Hilbert arrangement}, is a tuple
+$f=(\rv Q,\outp f,\inpt f,U)$: a reactive Hilbert space
+$\rv Q=(Q,\sharpR_Q)$, the \emph{parameter}, and smooth maps
+\begin{equation}\label{eq.harr-morphism}
+\begin{gathered}
+\outp f\colon Q\oplus B_1\oplus\cdots\oplus B_K\to B,
+\qquad
+\inpt f\colon Q\oplus B_1\oplus\cdots\oplus B_K\oplus A
+\to A_1\oplus\cdots\oplus A_K,\\
+U\colon Q\oplus B_1\oplus\cdots\oplus B_K\oplus A\to\R,
+\end{gathered}
+\end{equation}
+the \emph{output map}, the \emph{input map}, and the \emph{potential}.
+(Products in $\hsm$ are direct sums, and in the writer instance the
+backward pass splits into the input map and the potential.)  Composition
+substitutes forward data into forward data and backward data into backward
+data, tensors the parameters, and \emph{adds} the potentials of the
+constituents after substitution; \cite[\S4.1]{cdlm}%rem.huge_wiring_diagram
+draws the composite of two unary arrangements explicitly.
+
+\begin{definition}[Vocabulary]\label{def.vocabulary}
+Following \cite[Def.~5.3.3]{cdlm},%def.arrangement_terminology
+we say a Hilbert arrangement $f=(\rv Q,\outp f,\inpt f,U)$ is:
+\emph{stateless} if $Q=\R^0$; \emph{potential-free} if $U=0$;
+\emph{static} if both; \emph{closed} if its codomain is $I$; a
+\emph{system} if its arity is $K=0$; a \emph{closed system} if it is a
+morphism $I\to I$; and \emph{harmonic} if its reaction $\sharpR_Q$ is
+symmetric and its potential $U$ is a continuous quadratic form
+(\cref{sec.background_hilbert}).
+\end{definition}
+
+For a closed system, the source and target contribute nothing:
+\cref{eq.harr-morphism} reduces to the parameter $\rv Q$ and the potential
+$U\colon Q\to\R$.
+
+\section{Interpretation and integration}
+\label{sec.hilbert_semantics}
+
+Following the framework, semantics for $\harr$ takes two further
+ingredients: a polynomial interpretation datum
+\cite[Def.~4.2.1]{cdlm},%def.polynomial_interpretation
+which casts spaces as polynomial interfaces and fixes what potentials do,
+and an integrator \cite[Def.~4.3.4]{cdlm},%def.integrator
+which turns the resulting effects into dynamics.  We build the Hilbert
+instances of both and obtain the phase dynamics functor
+$\Phiphase\colon\harr\to\pc$ (\cref{thm.phase-functor}).
+
+\subsection{The cotangent functor}
+\label{sec.cot_hilbert}
+
+\begin{definition}[Cotangent functor]\label{def.cot-hilbert}
+The \emph{cotangent functor} $\defineTerm{cot}\colon\hsm\to\poly$ sends a
+Hilbert space $V$ to
+\[
+\cotof V\coloneqq\sum_{v\in V}\yon^{T^*_vV},
+\]
+where $T^*_qV=V^*$ (\cref{sec.background_hilbert}).  It sends a smooth map
+$f\colon V\to W$ to the polynomial map $\cotof f\colon\cotof V\to\cotof W$
+whose position map is $f$ and whose direction map at $v\in V$ is the
+transpose of the Fr\'echet derivative,
+$(D_vf)^*\colon T^*_{f(v)}W\to T^*_vV$.
+\end{definition}
+
+This is functorial: $D_v(\id_V)=\id_V$, whose transpose is the identity,
+and for smooth $f\colon V\to W$, $g\colon W\to X$ the chain rule gives
+$D_v(g\circ f)=D_{f(v)}g\circ D_vf$, so
+$(D_v(g\circ f))^*=(D_vf)^*\circ(D_{f(v)}g)^*$, which is the direction map
+of $\cotof g\circ\cotof f$.  This is the construction of
+\cite[Def.~6.1.1]{cdlm}%def.cot
+with manifolds replaced by Hilbert spaces, tangent maps by Fr\'echet
+derivatives, and dual spaces by continuous duals; note that $\poly$ sees
+only the underlying sets of the cotangent spaces.
+
+\begin{proposition}\label{prop.cot-monoidal-hilbert}
+The cotangent functor
+$\cot\colon(\hsm,1,\oplus)\to(\poly,\yon,\otimes)$ is strong symmetric
+monoidal.
+\end{proposition}
+
+\begin{proof}
+The zero space has $1^*=0$, so $\cotof1=\sum_{\{0\}}\yon^{\{0\}}\cong\yon$.
+For Hilbert spaces $V,W$, the identification
+$(V\oplus W)^*\cong V^*\oplus W^*$ of \cref{sec.background_hilbert} gives
+\[
+\cotof{V\oplus W}
+=\sum_{(v,w)\in V\oplus W}\yon^{(V\oplus W)^*}
+\cong
+\Bigl(\sum_{v\in V}\yon^{V^*}\Bigr)\otimes\Bigl(\sum_{w\in W}\yon^{W^*}\Bigr)
+=\cotof V\otimes\cotof W
+\]
+by the definition of the Dirichlet product.  This isomorphism is natural:
+for smooth $f\colon V\to V'$ and $g\colon W\to W'$, the product map
+$f\oplus g$ has block-diagonal derivative
+$D_{(v,w)}(f\oplus g)=D_vf\oplus D_wg$, whose transpose is
+$(D_vf)^*\oplus(D_wg)^*$.  Coherence follows from the corresponding
+coherence of $(1,\oplus)$ in $\hsm$, as in \cite[Prop.~6.1.2]{cdlm}.%prop.cot_monoidal
+\end{proof}
+
+\subsection{The Hilbert polynomial interpretation datum}
+\label{sec.hilbert_interpretation}
+
+Recall from \cite[Def.~4.2.1]{cdlm}%def.polynomial_interpretation
+that a polynomial interpretation datum for a datum $D$ consists of an
+interface functor (strong symmetric monoidal from spaces to $\poly$), a
+semantic effect (a monoidal monad on $\poly$), an effect comparison
+(a monoidal monad morphism carrying the syntactic effect to the semantic
+one), and a potential algebra (a monoid with an algebra structure for the
+semantic effect, which applies the effects).  For a writer potentials
+monad, the canonical choices of semantic effect and comparison come with
+the interface functor: the writer monad of the image of the carrier, and
+the strong-monoidality comparison.
+
+For the potential algebra we use the same object as the smooth instance.
+The space $\R$ is finite-dimensional and $\R^*\cong\R$ by the standard
+pairing, so the polynomial $\cotof\R=\sum_{a\in\R}\yon^{T^*_a\R}$ and its
+commutative monoid structure (image of $(\R,0,+)$ under the strong monoidal
+$\cot$) are literally those of \cite[\S6.2]{cdlm}.  Hence
+\cite[Lem.~6.2.1]{cdlm}%lem.alpha_constant
+applies unchanged: the $(\cotof\R\otimes\blank)$-monoid structures on
+$\yon$ are exactly the constant covector fields $r\in\R$.  As there, we
+take the canonical choice $r\coloneqq+1$ and write
+$\defineTerm{potd}\colon\cotof\R\to\yon$ for the corresponding algebra map.  It is the
+choice for which potentials contribute their differentials: for a smooth
+map $U\colon V\to\R$ with $V:\hsm$, the composite
+$\potd\circ\cotof U\colon\cotof V\to\yon$ is trivial on positions, and on
+directions at $v\in V$ it selects
+\begin{equation}\label{eq.potential-differential}
+(D_vU)^*(+1)=dU|_v\in T^*_vV,
+\end{equation}
+so under the identification of maps $\cotof V\to\yon$ with covector fields
+on $V$, it is the differential $dU$.
+
+\begin{definition}[Hilbert polynomial interpretation datum]
+\label{def.interp-hilbert}
+The \emph{Hilbert polynomial interpretation datum} for $\Hb$ is
+\[
+\defineTerm{interph}\coloneqq
+\bigl(\cot,\ \cotof\R\otimes\blank,\ \thetacomp,\ (\yon,\potd)\bigr),
+\]
+where $\cot$ is the cotangent functor
+(\cref{def.cot-hilbert,prop.cot-monoidal-hilbert}), the semantic effect is
+the writer monad of the commutative monoid $\cotof\R$, the comparison
+$\defineTerm{theta}\colon\cotof{\R\oplus\blank}\cong\cotof\R\otimes\cotof\blank$ is
+induced by the strong monoidality of $\cot$, and the potential algebra is
+$(\yon,\potd)$ as in \cref{eq.potential-differential}.
+\end{definition}
+
+\begin{corollary}\label{cor.interpretation-functor}
+There is a normal lax symmetric monoidal functor
+\[
+\defineTerm{Phip}_{\interph}\colon\harr\longrightarrow\para{\cot}{\poly},
+\]
+acting on interfaces by
+$\Phip\interph\binom{A}{B}=\cotof B\otimes[\cotof A,\yon]$.
+\end{corollary}
+
+\begin{proof}
+This is \cite[Thm.~4.2.2]{cdlm}%thm.poly_interpretation
+applied to the datum $\Hb$ (\cref{def.hilbert-datum}) and the
+interpretation datum $\interph$ (\cref{def.interp-hilbert}); it is normal
+because the potential-algebra carrier is $\yon$.
+\end{proof}
+
+Here $\para{\cot}{\poly}$ denotes the Para construction for the action
+$\rv Q\cdot p\coloneqq\cotof Q\otimes p$ of $\rhilb$ on $\poly$: an object
+is a polynomial, and a morphism $p\to p'$ is a pair of a reactive Hilbert
+space $\rv Q$ and a polynomial map $\cotof Q\otimes p\to p'$.
+
+\subsection{The phase integrator}
+\label{sec.phase_integrator}
+
+Recall from \cite[Def.~4.3.4]{cdlm}%def.integrator
+that for a strong symmetric monoidal $p\colon\cat Q\to\poly$, a
+\emph{$p$-integrator} is a pair $(\Fn S,\fun{dyn})$ of a strong symmetric
+monoidal state-space functor $\Fn S\colon\cat Q\to\smsetiso$ and a monoidal
+natural transformation $\fun{dyn}\colon\Store\circ\Fn S\Rightarrow p$, and
+that every $p$-integrator induces a normal lax symmetric monoidal functor
+$\para{p}{\poly}\to\pc$ \cite[Prop.~4.3.5]{cdlm}.%prop.integrator_to_org
+We build the phase integrator for $p\coloneqq\cot\circ\inc$, in three
+steps: the phase-space endofunctor $T^*$, the Euler step $\chiE$, and the
+readout $\nuro$.  Throughout we use the identifications
+\[
+\cotof V=\lvert V\rvert\,\yon^{V^*}
+\qquad\text{and}\qquad
+\cotof{T^*V}=\lvert V\oplus V^*\rvert\,\yon^{V^*\oplus V}
+\]
+of \cref{sec.background_hilbert}, where $\lvert\blank\rvert$ denotes the
+underlying set.
+
+\begin{proposition}\label{prop.TT-hilbert}
+The assignments
+\[
+T^*\rv V\coloneqq\bigl(V\oplus V^*,\ \sharpS_{T^*V}\bigr),
+\qquad
+T^*\phi\coloneqq\phi\oplus(\phi^*)^{-1},
+\]
+where the \emph{canonical symplectic sharp} is the bounded map
+\begin{equation}\label{eq.symplectic-sharp}
+\defineTerm{sharpS}_{T^*V}\colon V^*\oplus V\to V\oplus V^*,
+\qquad
+(\xi,v)\mapsto(v,-\xi),
+\end{equation}
+define a strong symmetric monoidal endofunctor $T^*\colon\rhilb\to\rhilb$.
+\end{proposition}
+
+\begin{proof}
+We first check that $T^*\phi$ is a morphism of $\rhilb$ for every
+$\phi\colon\rv V\to\rv W$.  It is a bounded linear isomorphism because
+$\phi$ and $(\phi^*)^{-1}$ are.  For sharp-equivariance
+\cref{eq.sharp-equivariance} we must show
+$T^*\phi\circ\sharpS_{T^*V}\circ(T^*\phi)^*
+=\sharpS_{T^*W}$.  Under the identifications of
+\cref{sec.background_hilbert}, the transpose of
+$T^*\phi=\phi\oplus(\phi^*)^{-1}$ is
+$(T^*\phi)^*=\phi^*\oplus\phi^{-1}$ as a map
+$W^*\oplus W\to V^*\oplus V$, using reflexivity and
+$((\phi^*)^{-1})^*=(\phi^{**})^{-1}=\phi^{-1}$.  So for
+$(\eta,w)\in W^*\oplus W$:
+\[
+(\eta,w)
+\;\xmapsto{(T^*\phi)^*}\;
+(\phi^*\eta,\ \phi^{-1}w)
+\;\xmapsto{\sharpS_{T^*V}}\;
+(\phi^{-1}w,\ -\phi^*\eta)
+\;\xmapsto{T^*\phi}\;
+\bigl(w,\ -\eta\bigr)
+=\sharpS_{T^*W}(\eta,w).
+\]
+Note that the sharp-equivariance of $\phi$ itself was not needed: the
+symplectic sharp is the same formula for every reactive Hilbert space, as
+in \cite[Prop.~6.3.4]{cdlm}.%prop.TT_endofunctors
+Preservation of identities and composites is inherited from $\Hilb$ and
+from $(g\circ f)^*=f^*\circ g^*$.
+
+For strong monoidality, the unitor is the identity, since
+$T^*\rv 0=0$, and the productor is the coordinate swap
+\[
+(T^*)_2\colon T^*V\oplus T^*W\To{\cong}T^*(V\oplus W),
+\qquad
+\bigl((v,\xi),(w,\eta)\bigr)\mapsto\bigl((v,w),(\xi,\eta)\bigr).
+\]
+By \cref{eq.symplectic-sharp}, the symplectic sharp of $T^*(V\oplus W)$
+sends $(\xi,\eta,v,w)\mapsto(v,w,-\xi,-\eta)$; conjugating by $(T^*)_2$
+gives $(\xi,v,\eta,w)\mapsto(v,-\xi,w,-\eta)$, which is
+$\sharpS_{T^*V}\oplus\sharpS_{T^*W}$, the direct-sum
+sharp of \cref{prop.rhilb-monoidal}.  Symmetry and coherence are inherited
+from $(\Hilb,0,\oplus)$, as in \cite[Prop.~6.3.5]{cdlm}.%prop.TT_monoidal
+\end{proof}
+
+Since every morphism of $\rhilb$ is an isomorphism, the underlying-set
+functors $\lvert\blank\rvert$ and $\lvert T^*\blank\rvert$ land in
+$\smsetiso$, and both are strong symmetric monoidal:
+$\lvert V\oplus W\rvert\cong\lvert V\rvert\times\lvert W\rvert$.
+
+\begin{proposition}[Euler step]\label{prop.euler-step-hilbert}
+There is a monoidal natural transformation
+$\defineTerm{chi}\colon\Store\circ\lvert\blank\rvert\Rightarrow\cot\circ\inc$ of
+functors $\rhilb\to\poly$ whose component
+$\chiE_{\rv V}\colon\Store(\lvert V\rvert)\to\cotof V$ is the identity on
+positions and, on directions at $v\in V$, is
+\[
+T^*_vV=V^*\to\lvert V\rvert,
+\qquad
+\xi\mapsto v+\sharpR_V(\xi).
+\]
+When $\rv V$ is nondegenerate, $\chiE_{\rv V}$ is an isomorphism.
+\end{proposition}
+
+\begin{proof}
+Both composites send $\rv V$ to a polynomial with position set
+$\lvert V\rvert$, so the identity is a valid position map, and the stated
+direction maps assemble into a polynomial map
+$\Store(\lvert V\rvert)=\lvert V\rvert\,\yon^{\lvert V\rvert}\to
+\lvert V\rvert\,\yon^{V^*}$.  For naturality at
+$\phi\colon\rv V\to\rv W$, the position squares commute by definition; on
+directions at $v\in V$, the two composites
+$T^*_{\phi(v)}W\to\lvert V\rvert$ are
+\[
+\xi\;\xmapsto{\phi^*}\;\phi^*\xi\;\xmapsto{}\;v+\sharpR_V(\phi^*\xi)
+\qquad\text{and}\qquad
+\xi\;\xmapsto{}\;\phi(v)+\sharpR_W(\xi)\;\xmapsto{\phi^{-1}}\;
+v+\phi^{-1}(\sharpR_W\xi),
+\]
+along $\chiE_{\rv V}\circ\cotof\phi$ and
+$\Store(\phi)\circ\chiE_{\rv W}$ respectively.  These agree if and only if
+$\sharpR_V\circ\phi^*=\phi^{-1}\circ\sharpR_W$, which is sharp-equivariance
+\cref{eq.sharp-equivariance}.  Monoidality holds because
+$\sharpR_{V\oplus W}=\sharpR_V\oplus\sharpR_W$
+(\cref{prop.rhilb-monoidal}) and translation acts coordinatewise.  When
+$\sharpR_V$ is an isomorphism, so is each direction map, hence so is
+$\chiE_{\rv V}$.  This is \cite[Prop.~6.3.2]{cdlm}%prop.rvect_polynomial
+with constant reactions and bounded sharps.
+\end{proof}
+
+\begin{proposition}[Phase readout]\label{prop.nu-hilbert}
+There is a monoidal natural transformation
+$\defineTerm{nu}\colon\cot\circ\inc\circ\,T^*\Rightarrow\cot\circ\inc$ of functors
+$\rhilb\to\poly$ whose component
+$\nuro_{\rv V}\colon\cotof{T^*V}\to\cotof V$ has position map the
+\emph{presented position}
+\begin{equation}\label{eq.presented-position-abstract}
+(v,\xi)\mapsto\tilde v\coloneqq v+\sharpR_V(\xi)
+\end{equation}
+and direction map at $(v,\xi)$ given by
+\[
+V^*\to V^*\oplus V,
+\qquad
+\xi'\mapsto\bigl(\xi',\ \sharpR_V(\xi)\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+The position map is bounded linear, and the direction maps land in
+$V^*\oplus V\cong T^*_{(v,\xi)}(T^*V)$, so the components are polynomial
+maps.  For naturality at $\phi\colon\rv V\to\rv W$ we compare
+$\cotof\phi\circ\nuro_{\rv V}$ with $\nuro_{\rv W}\circ\cotof{T^*\phi}$.  On
+positions, using sharp-equivariance \cref{eq.sharp-equivariance} in the
+middle step,
+\[
+\phi\bigl(v+\sharpR_V\xi\bigr)
+=\phi(v)+\phi\bigl(\sharpR_V\xi\bigr)
+=\phi(v)+\sharpR_W\bigl((\phi^*)^{-1}\xi\bigr),
+\]
+which is the presented position of
+$T^*\phi(v,\xi)=(\phi v,(\phi^*)^{-1}\xi)$.  On directions at $(v,\xi)$,
+take $\xi'\in W^*$.  Along $\cotof\phi\circ\nuro_{\rv V}$ it maps to
+$\bigl(\phi^*\xi',\ \sharpR_V\xi\bigr)$.  Along
+$\nuro_{\rv W}\circ\cotof{T^*\phi}$ it maps first to
+$\bigl(\xi',\sharpR_W(\phi^*)^{-1}\xi\bigr)$ and then, along the transpose
+$(T^*\phi)^*=\phi^*\oplus\phi^{-1}$ (proof of \cref{prop.TT-hilbert}), to
+$\bigl(\phi^*\xi',\ \phi^{-1}\sharpR_W(\phi^*)^{-1}\xi\bigr)$; and
+$\phi^{-1}\circ\sharpR_W\circ(\phi^*)^{-1}=\sharpR_V$ by
+\cref{eq.sharp-equivariance}.  Monoidality holds coordinatewise, as in
+\cref{prop.euler-step-hilbert}.  This transformation is the composite
+readout $\nuro_{\exp,\beta}$ of \cite[Lem.~6.3.16]{cdlm},%lem.combined_update
+assembled from the exponential readout \cite[Lem.~6.3.9]{cdlm}%lem.readout_examples
+and the kinetic $1$-form \cite[Ex.~6.3.13]{cdlm};%ex.kinetic_one_form
+we have verified it directly.
+\end{proof}
+
+\begin{definition}[Phase integrator]\label{def.phase-integrator-hilbert}
+The \emph{phase dynamics} is the monoidal natural transformation
+\[
+\defineTerm{dynphase}\colon
+\Store\circ\lvert T^*\blank\rvert
+\xRightarrow{\ \chiE_{T^*\blank}\ }
+\cot\circ\inc\circ\,T^*
+\xRightarrow{\ \nuro\ }
+\cot\circ\inc,
+\]
+the Euler step on phase space (\cref{prop.euler-step-hilbert} whiskered by
+the strong monoidal $T^*$ of \cref{prop.TT-hilbert}) followed by the phase
+readout (\cref{prop.nu-hilbert}).  The \emph{phase integrator} is the
+$(\cot\circ\inc)$-integrator
+\[
+\phase\coloneqq\bigl(\lvert T^*\blank\rvert,\ \dynphase\bigr)
+\]
+in the sense of \cite[Def.~4.3.4]{cdlm}.%def.integrator
+\end{definition}
+
+We record the resulting update.  At $\rv V$, the direction map of
+$\chiE_{T^*\rv V}$ adds the symplectic sharp of the covector assembled by
+$\nuro$: by \cref{eq.symplectic-sharp},
+$\sharpS_{T^*V}(\xi',\sharpR_V\xi)=(\sharpR_V\xi,\,-\xi')$, so on
+directions
+\begin{equation}\label{eq.phase-update}
+\lvert T^*V\rvert\times V^*\to\lvert T^*V\rvert,
+\qquad
+\bigl((v,\xi),\xi'\bigr)\mapsto
+\bigl(v+\sharpR_V(\xi),\ \xi-\xi'\bigr),
+\end{equation}
+while the position reported is the presented position
+\cref{eq.presented-position-abstract}.
+
+\begin{theorem}[Phase dynamics functor]\label{thm.phase-functor}
+There is a normal operad functor
+\[
+\defineTerm{Phiphase}\coloneqq\Phi_{\interph,\phase}
+\colon\harr\longrightarrow\pc,
+\]
+with
+$\Phiphase\binom{A}{B}=\cotof B\otimes[\cotof A,\yon]$ on interfaces and
+$\Phiphase(I)\cong\yon$.
+\end{theorem}
+
+\begin{proof}
+This is \cite[Thm.~4.3.6]{cdlm}%thm.dynamics_functor
+applied to the interpretation datum $\interph$
+(\cref{def.interp-hilbert}) and the integrator $\phase$
+(\cref{def.phase-integrator-hilbert}); normality, hence
+$\Phiphase(I)\cong\yon$, holds because the potential-algebra carrier is
+$\yon$.
+\end{proof}
+
+In particular $\Phiphase$ sends a closed system $f\colon I\to I$ to a
+$1$-cell $\yon\to\yon$ in $\pc$, i.e.\ to a discrete dynamical system
+(\cref{sec.background_categories}).
+
+\begin{proposition}[Closed systems]\label{prop.closed-step}
+Let $f\colon I\to I$ be a closed system in $\harr$ with parameter
+$\rv Q=(Q,\sharpR_Q)$ and potential $U\colon Q\to\R$.  Then
+$\Phiphase(f)\in\pc(\yon,\yon)$ is the discrete dynamical system with state
+set $\lvert T^*Q\rvert$ and transition
+\begin{equation}\label{eq.closed-step}
+(q,\xi)\longmapsto
+\bigl(\tilde q,\ \xi-dU|_{\tilde q}\bigr),
+\qquad
+\tilde q=q+\sharpR_Q(\xi).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+For a closed system the interfaces contribute nothing, and the backward
+pass of $f$ is the potential alone.  Under $\Phip\interph$ the potential
+enters through the potential algebra as the covector field
+$\potd\circ\cotof U=dU$ \cref{eq.potential-differential}, evaluated at the
+parameter position that the integrator presents; by
+\cref{eq.presented-position-abstract} that position is $\tilde q$.  The
+integrator then performs the update \cref{eq.phase-update} with incoming
+covector $\xi'\coloneqq dU|_{\tilde q}$, giving \cref{eq.closed-step}.
+This unwinding is that of \cite[\S6.6, Eq.~(63)]{cdlm},%eqn.closed_update
+which depends only on the component formulas of $\chiE$, $\nuro$, and
+$\potd$; these are shared verbatim by the Hilbert instance
+(\cref{prop.euler-step-hilbert,prop.nu-hilbert,eq.potential-differential}).
+\end{proof}
+
+\subsection{Step scaling}
+\label{sec.step_scaling}
+
+The phase integrator takes one unit-size step per tick of $\pc$-time.  The
+step size is not a parameter of the functor $\Phiphase$; instead it is a
+rescaling of the syntax.
+
+\begin{definition}[Step scaling]\label{def.scale}
+For $\Delta\tau\in\R_{>0}$, define
+$\defineTerm{scale}_{\Delta\tau}\colon\harr\to\harr$ to be the identity on
+interfaces and, on a Hilbert arrangement
+$f=\bigl((Q,\sharpR_Q),\outp f,\inpt f,U\bigr)$,
+\[
+\scale_{\Delta\tau}(f)\coloneqq
+\bigl((Q,\Delta\tau\,\sharpR_Q),\ \outp f,\ \inpt f,\ \Delta\tau\,U\bigr).
+\]
+\end{definition}
+
+\begin{lemma}\label{lem.scale-functor}
+$\scale_{\Delta\tau}$ is an operad endofunctor of $\harr$.
+\end{lemma}
+
+\begin{proof}
+A bounded isomorphism $\phi$ satisfies sharp-equivariance
+\cref{eq.sharp-equivariance} for $\sharpR$ if and only if it does for
+$\Delta\tau\,\sharpR$, so $(Q,\sharpR_Q)\mapsto(Q,\Delta\tau\,\sharpR_Q)$ is
+well defined and preserves the direct-sum reactions of
+\cref{prop.rhilb-monoidal}.  Identity arrangements are static, hence fixed.
+For composition and tensor: composites and tensors of arrangements have
+parameter the tensor of the parameters, forward and input data obtained
+from the constituents' forward and input data by substitution, and
+potential the \emph{sum} of the constituents' potentials precomposed with
+(unscaled) forward data (\cref{sec.datum_operad}).  Scaling every
+constituent potential by $\Delta\tau$ therefore scales the composite
+potential by $\Delta\tau$, and scaling every reaction scales the tensored
+reaction, so $\scale_{\Delta\tau}$ preserves composition, tensor, and
+identities.
+\end{proof}
+
+\begin{remark}[Execution at time step $\Delta\tau$]\label{rmk.scale-execution}
+For a closed system $f$ with parameter $(Q,\sharpR_Q)$ and potential $U$,
+\cref{prop.closed-step} gives
+\[
+\Phiphase\bigl(\scale_{\Delta\tau}f\bigr)\colon
+(q,\xi)\longmapsto
+\bigl(q+\Delta\tau\,\sharpR_Q(\xi),\ \xi-\Delta\tau\,dU|_{\tilde q}\bigr),
+\qquad
+\tilde q=q+\Delta\tau\,\sharpR_Q(\xi),
+\]
+the size-$\Delta\tau$ symplectic Euler step of the Hamiltonian vector field
+of reaction $\sharpR_Q$ and potential $U$.  One tick of $\pc$-time thus
+represents $\Delta\tau$ units of physical time.
+\end{remark}
+
+\begin{remark}[Reciprocal scaling is invisible]\label{rmk.reciprocal-scaling}
+One might instead expect the reaction and the potential to scale by
+reciprocal factors.  The reciprocal variant of \cref{def.scale}---sending
+$(Q,\sharpR_Q)$ to $(Q,\Delta\tau\,\sharpR_Q)$ but $U$ to
+$U/\Delta\tau$---changes nothing.  Indeed, let $f$ be a closed system and
+$g$ its reciprocal scaling, and let
+$\Lambda\colon T^*Q\to T^*Q$ be the bounded isomorphism
+$\Lambda(q,\xi)\coloneqq(q,\xi/\Delta\tau)$.  Writing
+$\tilde q=q+\sharpR_Q(\xi)$ and using \cref{eq.closed-step} for both
+systems,
+\[
+\Phiphase(g)\bigl(\Lambda(q,\xi)\bigr)
+=
+\Bigl(
+q+\Delta\tau\,\sharpR_Q\bigl(\tfrac{\xi}{\Delta\tau}\bigr),\
+\tfrac{\xi}{\Delta\tau}-\tfrac{1}{\Delta\tau}\,dU|_{\tilde q}
+\Bigr)
+=
+\Lambda\bigl(\Phiphase(f)(q,\xi)\bigr),
+\]
+so $\Lambda$ is an isomorphism
+$\Phiphase(f)\cong\Phiphase(g)$ in $\pc(\yon,\yon)$---and in $\Dyn$ when
+$f$ is harmonic.  Reciprocal scaling merely rescales the unit of momentum.
+The two combinations separate cleanly in the harmonic chain of
+\cref{sec.harmonic}: the product of the reaction coefficient
+$\tfrac1{Zh}$ and the stiffness coefficient $\tfrac Zh$ is $1/h^2$, the
+clock that $\scale_{\Delta\tau}$ moves
+(\cref{rmk.characteristic-tuning}), while their ratio is $Z^2$, the
+impedance that reciprocal scaling moves.  Both the reaction and the
+potential enter the step as rates, and elapsed time multiplies rates;
+that is why $\scale_{\Delta\tau}$ scales both by the same factor.
+\end{remark}
+
+\section{Harmonic chains and characteristic factorization}
+\label{sec.harmonic}
+
+\subsection{Masses, bonds, chains, and the lattice}
+\label{sec.mass_bond}
+
+Fix an impedance $Z\in\R_{>0}$ and a cell duration $h\in\R_{>0}$.
+
+\begin{definition}[Mass and bond]\label{def.mass-bond}
+The \emph{mass} is the system
+$\defineTerm{mass}_{Z,h}\colon I\to\binom{1}{\R}$ with parameter
+$(\R,\sharpR_{Z,h})$, output map $q\mapsto q$, and zero potential, where
+\begin{equation}\label{eq.mass-reaction}
+\sharpR_{Z,h}\colon\R^*\to\R,
+\qquad
+\sharpR_{Z,h}(\eta)\coloneqq\frac{\eta}{Zh},
+\end{equation}
+with $\R^*\cong\R$ by the standard pairing.  The \emph{bond} is the
+stateless system
+$\defineTerm{bond}_{Z,h}\colon I\to\binom{\R^2}{1}$ with potential
+\begin{equation}\label{eq.bond-potential}
+U_{Z,h}\colon\R^2\to\R,
+\qquad
+U_{Z,h}(a,b)\coloneqq\frac{Z}{2h}(a-b)^2.
+\end{equation}
+\end{definition}
+
+Thus the cell mass is $Zh$ and the bond stiffness is $Z/h$.  The mass
+outputs its state and reacts to incoming covectors; the bond is pure
+potential, reading the pair delivered to its input port.  Both are
+harmonic (\cref{def.vocabulary}).
+
+\begin{definition}[Chain wiring]\label{def.wire}
+For an integer $K\geq2$, the \emph{chain wiring} is the static arrangement
+\[
+\defineTerm{wire}_K\colon
+\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens(K-1)}
+\longrightarrow I
+\]
+whose output map is the unique map to $1$, whose potential is zero, and
+whose input map
+\[
+\R^K\longrightarrow(\R^2)^{K-1},
+\qquad
+(q_1,\ldots,q_K)\longmapsto
+\bigl((q_1,q_2),(q_2,q_3),\ldots,(q_{K-1},q_K)\bigr)
+\]
+feeds each bond the outputs of its two adjacent masses.  (The mass inputs
+and bond outputs are trivial, and the input map is bounded linear, hence
+smooth.)
+\end{definition}
+
+\begin{proposition}[Finite chains]\label{prop.chain}
+For $K\geq2$, the composite
+\[
+\defineTerm{chain}_K^{Z,h}
+\coloneqq
+\Wire_K\bigl(
+\underbrace{\Mass_{Z,h},\ldots,\Mass_{Z,h}}_{K},
+\underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K-1}
+\bigr)
+\in\harr(I;I)
+\]
+is a closed harmonic system with parameter
+$\bigl(\R^K,\sharpR_{Z,h}^{\oplus K}\bigr)$ and potential
+\begin{equation}\label{eq.chain-potential}
+U(q_1,\ldots,q_K)=\sum_{i=1}^{K-1}\frac{Z}{2h}(q_i-q_{i+1})^2.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+We unwind the composition described in \cref{sec.datum_operad}.  The tensor
+of the $K$ masses and $K-1$ bonds is a system
+$I\to\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens(K-1)}$ with
+parameter the direct sum of the constituents' parameters, which is
+$(\R^K,\sharpR_{Z,h}^{\oplus K})$ by
+\cref{prop.rhilb-monoidal,eq.mass-reaction} since the
+bonds are stateless, and with potential the sum of the constituents'
+potentials: the masses contribute zero and the $i$th bond contributes
+$U_{Z,h}(a_i,b_i)$ \cref{eq.bond-potential} as a function of the pair
+$(a_i,b_i)$ arriving at its input port.  Composing with $\Wire_K$ tensors on the trivial parameter,
+adds the zero potential of the wiring, and substitutes the wiring's input
+map into the backward data: by \cref{def.wire} the $i$th bond receives
+$(a_i,b_i)=(q_i,q_{i+1})$, where $(q_1,\ldots,q_K)$ are the mass outputs,
+i.e.\ the parameter states of the masses.  The total potential is
+therefore \cref{eq.chain-potential}.  The reaction is symmetric and the
+potential is a quadratic form, so the system is harmonic.  This is the
+computation of \cite[\S7.3]{cdlm}%sec.wave_equation
+in the Hilbert instance.
+\end{proof}
+
+\begin{definition}[The harmonic lattice]\label{def.lattice}
+Put $Q\coloneqq\ell^2(\Z)$.  The \emph{harmonic lattice} is the closed
+system $\defineTerm{lat}_{Z,h}\in\harr(I;I)$ with parameter
+$\bigl(Q,\ \riesz_Q/(Zh)\bigr)$---so that
+$(\sharpR\xi)_i=\xi_i/(Zh)$ in components---and potential
+\begin{equation}\label{eq.lattice-potential}
+U_{\Lat}\colon Q\to\R,
+\qquad
+U_{\Lat}(q)
+\coloneqq
+\frac{Z}{2h}\sum_{i\in\Z}(q_i-q_{i-1})^2.
+\end{equation}
+\end{definition}
+
+The potential is the continuous quadratic form
+$U_{\Lat}(q)=\frac{Z}{2h}\lVert Dq\rVert^2$ for the bounded difference
+operator $D$ of \cref{sec.background_hilbert}, hence smooth, with
+differential $dU_{\Lat}|_q=\frac{Z}{h}\,\langle D^*Dq,\blank\rangle$; in
+components,
+\begin{equation}\label{eq.lattice-covector}
+\bigl(dU_{\Lat}|_q\bigr)_i
+=
+\frac{Z}{h}
+\bigl(
+2q_i-q_{i-1}-q_{i+1}
+\bigr).
+\end{equation}
+The reaction is symmetric, so the lattice is a closed harmonic system.
+
+\begin{remark}[Finite arity]\label{rmk.finite-arity}
+Operations of an operad have finite arity, so there is no countably-ary
+wiring in $\harr$ placing one mass at every $i\in\Z$, and the lattice is
+\emph{not} an operadic composite of masses and bonds.  It is a single
+closed arrangement, defined directly by its parameter and potential.
+
+Nor is finite arity a restriction one could simply relax.  A
+countably-ary operad of arrangements would need countable tensors of
+interfaces, and the candidate tensor---the $\ell^2$-direct sum
+$\widehat{\bigoplus}_{i\in\Z}B_i$, whose elements are the tuples with
+$\sum_i\lVert b_i\rVert^2<\infty$---is not cartesian: pairing countably
+many bounded maps requires square-summability of their values, and there
+is no diagonal $B\to\widehat{\bigoplus}_{\N}B$, so $\Hilb$ has no
+countable products.  Moreover the underlying set of
+$\widehat{\bigoplus}_iB_i$ is a proper subset of the product
+$\prod_i\lvert B_i\rvert$, so the semantics of a countable tensor could
+not be the countable parallel product of the semantics---the state-space
+functor $\lvert T^*\blank\rvert$ would fail its monoidality exactly at
+arity $\omega$.  The discrepancy between the $\ell^2$-sum and the product
+is the finite-energy condition itself: the lattice's states form a proper
+subspace of $\R^\Z$ precisely because their energies are summable.
+
+The sense in which the lattice is assembled from masses and bonds is
+therefore a limit rather than a composite:
+\cref{prop.chain-limit} shows that the transitions of the genuinely
+operadic finite chains (\cref{prop.chain}) converge strongly to the
+transition of the lattice.
+\end{remark}
+
+\subsection{Discrete linear dynamics}
+\label{sec.dyn}
+
+\begin{remark}[From syntax to hom-categories]\label{rmk.syntax-to-homs}
+An operad supplies operations and substitution, nothing else: $\harr$
+has no morphisms \emph{between} arrangements, so a comparison of two
+built systems cannot be stated in $\harr$.  It is stated in the
+hom-categories of $\pc$, where $\Phiphase$ lands.  The remainder of
+the paper works there: this subsection refines $\pc(\yon,\yon)$ by
+$\Dyn$, and \cref{sec.harmonic_segments} computes hom-categories at
+monomial interfaces together with their composition.
+\end{remark}
+
+Let $\Cat B\N$ be the one-object category whose endomorphism monoid is
+$(\N,+,0)$, where $\N=\{0,1,2,\ldots\}$.  Define
+\[
+\defineTerm{dynh}\coloneqq[\Cat B\N,\Hilb].
+\]
+An object of $\Dyn$ is a real Hilbert space $X$ with a bounded endomorphism
+$F\colon X\to X$, and a morphism
+$\alpha\colon(X,F)\to(Y,G)$ is a bounded linear map $\alpha\colon X\to Y$
+satisfying $\alpha\circ F=G\circ\alpha$.
+
+Forgetting the Hilbert structure of an object of $\Dyn$ leaves a set with
+an endofunction, i.e.\ a $1$-cell $\yon\to\yon$ in $\pc$
+(\cref{sec.background_categories}), and forgetting the linearity of a
+morphism leaves a $2$-cell.  This gives a faithful functor
+\begin{equation}\label{eq.dyn-forgetful}
+\defineTerm{Ufun}\colon\Dyn\longrightarrow\pc(\yon,\yon).
+\end{equation}
+
+\begin{remark}[Harmonicity is linearity]\label{rmk.harmonic-linearity}
+Harmonicity (\cref{def.vocabulary}) is what places phase semantics in the
+image of $\Ufun$.  For a closed system with a continuous quadratic
+potential, the differential $dU|_q=B(q,\blank)$ is bounded linear in $q$
+(\cref{sec.background_hilbert}), so the closed phase step
+\cref{eq.closed-step} is a bounded linear endomorphism of $T^*Q$, i.e.\ an
+object of $\Dyn$.  For a general smooth potential the step is merely a
+smooth self-map of $\lvert T^*Q\rvert$: still an object of
+$\pc(\yon,\yon)$, but with no reason to lie in the image of $\Ufun$.
+\end{remark}
+
+For a trajectory $x\colon\N\to X$ in a Hilbert space $X$---a sequence
+with $x(t+1)=F(x(t))$ for the transition $F$ at hand---we write,
+following \cite[\S7.3]{cdlm},%eqn.doubledot
+\[
+\dot x(t)\coloneqq x(t+1)-x(t)
+\qquad\text{and}\qquad
+\ddot x(t)\coloneqq x(t+1)-2x(t)+x(t-1)
+\quad(t\geq1)
+\]
+for the discrete velocity and the discrete acceleration; note
+$\ddot x(t)=\dot x(t)-\dot x(t-1)$.
+
+\begin{proposition}[Phase semantics of the lattice]\label{prop.phase-semantics}
+Fix $Z,h\in\R_{>0}$, put $Q\coloneqq\ell^2(\Z)$, and define
+\begin{equation}\label{eq.phase-transition}
+F_{Z,h}\colon T^*Q\to T^*Q,
+\qquad
+F_{Z,h}(q,\xi)
+\coloneqq
+\bigl(\widetilde q,\ \xi-Z\,\riesz_Q^{-1}(D^*D\widetilde q)\bigr),
+\qquad
+\widetilde q\coloneqq q+\riesz_Q(\xi)/Z.
+\end{equation}
+Then $(T^*Q,F_{Z,h})\in\Dyn$,
+\[
+\Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)=\Ufun(T^*Q,F_{Z,h}),
+\]
+and every trajectory of $F_{Z,h}$ satisfies the discrete wave equation
+\begin{equation}\label{eq.discrete-wave}
+\ddot q(t)=-D^*Dq(t),
+\qquad\text{i.e.}\qquad
+\ddot q_i(t)=q_{i-1}(t)-2q_i(t)+q_{i+1}(t).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The arrangement $\scale_h\,\Lat_{Z,h}$ is the closed system with reaction
+$h\cdot\riesz_Q/(Zh)=\riesz_Q/Z$ and potential $h\,U_{\Lat}$
+(\cref{def.scale,def.lattice,eq.lattice-potential}), whose differential
+is $h\,dU_{\Lat}|_{\widetilde q}
+=Z\,\riesz_Q^{-1}(D^*D\widetilde q)$ by \cref{eq.lattice-covector}.  So
+\cref{prop.closed-step} identifies
+$\Phiphase(\scale_h\,\Lat_{Z,h})$ with the discrete dynamical system
+$(\lvert T^*Q\rvert,F_{Z,h})$.  Both components of $F_{Z,h}$ are bounded
+linear, so $(T^*Q,F_{Z,h})\in\Dyn$ and the identification is
+$\Ufun(T^*Q,F_{Z,h})$.  In components, using
+$(D^*Da)_i=(Da)_i-(Da)_{i+1}=2a_i-a_{i-1}-a_{i+1}$
+(\cref{sec.background_hilbert}),
+\[
+F_{Z,h}(q,\xi)
+=
+\Bigl(
+\bigl(q_i+\tfrac{\xi_i}{Z}\bigr)_{i\in\Z},\
+\bigl(\xi_i+Z(\widetilde q_{i-1}-2\widetilde q_i+\widetilde q_{i+1})
+\bigr)_{i\in\Z}
+\Bigr).
+\]
+
+Let $(q(t),\xi(t))_{t\in\N}$ be a trajectory.  The position component of
+\cref{eq.phase-transition} gives $q(t+1)=\widetilde q(t)$, i.e.
+\begin{equation}\label{eq.momentum-position}
+\riesz_Q\bigl(\xi(t)\bigr)=Z\,\dot q(t).
+\end{equation}
+The momentum component of \cref{eq.phase-transition} at time $t-1$,
+together with $\widetilde q(t-1)=q(t)$, gives
+$\riesz_Q(\xi(t))-\riesz_Q(\xi(t-1))=-Z\,D^*Dq(t)$.  Substituting
+\cref{eq.momentum-position} at times $t$ and $t-1$ on the left and
+dividing by $Z$ gives $\dot q(t)-\dot q(t-1)=-D^*Dq(t)$, which is
+\cref{eq.discrete-wave}.
+\end{proof}
+
+\begin{remark}[Characteristic tuning]\label{rmk.characteristic-tuning}
+For a general step $\Delta\tau\in\R_{>0}$, the same computation applied
+to $\scale_{\Delta\tau}\Lat_{Z,h}$ gives
+$\riesz_Q(\xi(t))=\tfrac{Zh}{\Delta\tau}\,\dot q(t)$ and hence
+\[
+\ddot q(t)
+=
+-\Bigl(\frac{\Delta\tau}{h}\Bigr)^{2}D^*Dq(t):
+\]
+the coefficient $(\Delta\tau/h)^2$ multiplies the spatial second
+difference.  The \emph{characteristic tuning} is $\Delta\tau=h$, at which
+\cref{eq.discrete-wave} holds; we use it throughout.
+\end{remark}
+
+\begin{proposition}[Chains converge to the lattice]\label{prop.chain-limit}
+Fix $Z,h\in\R_{>0}$ and put $Q\coloneqq\ell^2(\Z)$.  For $n\geq1$ put
+$\Lambda_n\coloneqq\{-n,\ldots,n\}$, write $\Chain^{(n)}$ for
+$\Chain_{2n+1}^{Z,h}$ with its sites relabelled by $\Lambda_n$, and let
+\[
+\bigl(T^*\ell^2(\Lambda_n),\ F^{(n)}\bigr)
+\coloneqq
+\text{the system representing }
+\Phiphase\bigl(\scale_h\,\Chain^{(n)}\bigr)
+\text{ as in \cref{prop.phase-semantics}}.
+\]
+Let $\iota_n\colon\ell^2(\Lambda_n)\to Q$ be extension by zero, let
+$\pi_n\coloneqq\iota_n^*$ under Riesz be restriction, and define
+\[
+E_n\coloneqq\iota_n\oplus(\pi_n)^*\colon T^*\ell^2(\Lambda_n)\to T^*Q,
+\qquad
+R_n\coloneqq\pi_n\oplus\iota_n^*\colon T^*Q\to T^*\ell^2(\Lambda_n).
+\]
+Then $E_n\circ F^{(n)}\circ R_n$ converges strongly to $F_{Z,h}$: for every
+$(q,\xi)\in T^*Q$,
+\begin{equation}\label{eq.chain-limit}
+F_{Z,h}(q,\xi)=\lim_{n\to\infty}E_n\bigl(F^{(n)}(R_n(q,\xi))\bigr).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By \cref{prop.chain,prop.closed-step}, the system
+$\scale_h\,\Chain^{(n)}$ has reaction $\eta\mapsto\eta/Z$ per site and
+potential $\frac Z2\sum_{i=-n}^{n-1}(q_i-q_{i+1})^2$, so $F^{(n)}$ sends
+$(x,\zeta)\in T^*\ell^2(\Lambda_n)$ to $(\widetilde x,\ \zeta-d^{(n)})$, where
+$\widetilde x_i=x_i+\zeta_i/Z$ and the covector $d^{(n)}$ has components
+\begin{equation}\label{eq.chain-covector}
+d^{(n)}_i=
+\begin{cases}
+Z\bigl(2\widetilde x_i-\widetilde x_{i-1}-\widetilde x_{i+1}\bigr),
+&-n<i<n,\\
+Z\bigl(\widetilde x_{-n}-\widetilde x_{-n+1}\bigr),&i=-n,\\
+Z\bigl(\widetilde x_{n}-\widetilde x_{n-1}\bigr),&i=n,
+\end{cases}
+\end{equation}
+by differentiating the finite sum: interior sites appear in two summands,
+boundary sites in one.
+
+Fix $(q,\xi)\in T^*Q$ and let $(\widetilde q,m)\coloneqq F_{Z,h}(q,\xi)$ as
+in \cref{eq.phase-transition}.  Applying $R_n$ gives
+$x=\pi_nq$ and $\zeta=\iota_n^*\xi$, whose components are $q_i$ and
+$\xi_i$ for $\lvert i\rvert\leq n$; hence
+$\widetilde x=\pi_n\widetilde q$.  We compare
+$E_n(F^{(n)}(R_n(q,\xi)))$ with $(\widetilde q,m)$ componentwise.
+
+\emph{Positions.}  The position component of the left side is
+$\iota_n\pi_n\widetilde q$, and
+$\lVert\widetilde q-\iota_n\pi_n\widetilde q\rVert^2
+=\sum_{\lvert i\rvert>n}\widetilde q_i^{\,2}\to0$
+as $n\to\infty$, being a tail of the $\ell^2$-vector $\widetilde q$.
+
+\emph{Momenta.}  For $\lvert i\rvert<n$, the $i$th components of
+$m$ and of the embedded chain momentum agree, by
+\cref{eq.phase-transition,eq.chain-covector}.  At $i=n$ the difference is
+\[
+m_n-\bigl(\xi_n-d^{(n)}_n\bigr)
+=
+-Z\bigl(2\widetilde q_n-\widetilde q_{n-1}-\widetilde q_{n+1}\bigr)
++Z\bigl(\widetilde q_n-\widetilde q_{n-1}\bigr)
+=
+-Z\bigl(\widetilde q_n-\widetilde q_{n+1}\bigr),
+\]
+and symmetrically $-Z(\widetilde q_{-n}-\widetilde q_{-n-1})$ at $i=-n$;
+both tend to $0$ because the components of the $\ell^2$-vector
+$\widetilde q$ tend to $0$.  For $\lvert i\rvert>n$ the embedded chain
+momentum vanishes while the lattice contributes $m_i$, and
+$\sum_{\lvert i\rvert>n}m_i^2\to0$, being a tail of the $\ell^2$-vector
+$m$.  Summing the three contributions, the squared norm of the difference
+tends to $0$, which is \cref{eq.chain-limit}.
+\end{proof}
+
+The convergence is strong but not uniform: for states concentrated near
+the sites $\pm n$, the boundary discrepancy in the proof has norm
+independent of $n$.
+
+\subsection{The characteristic morphism}
+\label{sec.characteristic}
+
+For $Z,h\in\R_{>0}$, define the \emph{cell packet} $\defineTerm{CZ}(h)\in\Hilb$ to have
+underlying vector space $\R$ and inner product
+\[
+\langle a,b\rangle_{\CZ(h)}\coloneqq Zh\,ab
+\qquad(a,b\in\R).
+\]
+Define the bidirectional characteristic state and its transition
+\[
+\mathcal C_{Z,h}
+\coloneqq
+\ell^2\bigl(\Z,\CZ(h)\bigr)
+\oplus
+\ell^2\bigl(\Z,\CZ(h)\bigr),
+\qquad
+\Sigma_{Z,h}
+\coloneqq
+\sigma^{\leftarrow}\oplus\sigma^{\rightarrow},
+\]
+with the shifts $\sigma^{\leftarrow},\sigma^{\rightarrow}$ of
+\cref{sec.background_hilbert}.  Write
+\begin{equation}\label{eq.shift-system}
+\defineTerm{shift}_{Z,h}\coloneqq(\mathcal C_{Z,h},\Sigma_{Z,h})\in\Dyn.
+\end{equation}
+
+\begin{theorem}[Characteristic factorization]
+\label{thm.characteristic-factorization}
+Fix $Z,h\in\R_{>0}$ and put $Q\coloneqq\ell^2(\Z)$.  The bounded map
+\begin{equation}\label{eq.characteristic-coordinates}
+\defineTerm{Wchar}_{Z,h}\colon T^*Q\to\mathcal C_{Z,h},
+\qquad
+\Wc_{Z,h}(q,\xi)
+\coloneqq
+\frac1{2h}
+\bigl(\riesz_Q(\xi)/Z+Dq,\ \ \riesz_Q(\xi)/Z+D^*q\bigr),
+\end{equation}
+is a morphism in $\Dyn$ and, under $\Ufun$, a 2-cell:
+\begin{equation}\label{eq.characteristic-morphism-type}
+\Wc_{Z,h}\colon\bigl(T^*Q,F_{Z,h}\bigr)\longrightarrow\Shift_{Z,h}
+\quad\text{in }\Dyn,
+\end{equation}
+\begin{equation}\label{eq.characteristic-two-cell}
+\Ufun(\Wc_{Z,h})\colon
+\Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)
+\Longrightarrow
+\Ufun(\Shift_{Z,h})
+\quad\text{in }\pc.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Boundedness holds because $\riesz_Q$, $D$, and $D^*$ are bounded
+(\cref{sec.background_hilbert}).  For
+\cref{eq.characteristic-morphism-type} we must show
+$\Wc_{Z,h}\circ F_{Z,h}=\Sigma_{Z,h}\circ\Wc_{Z,h}$; since every state
+begins a trajectory, it suffices to check this along trajectories.  Let
+$(q(t),\xi(t))_{t\in\N}$ be a trajectory of $F_{Z,h}$ and put
+\begin{equation}\label{eq.characteristic-trajectory}
+\bigl(w^{\leftarrow}(t),\,w^{\rightarrow}(t)\bigr)
+\coloneqq\Wc_{Z,h}\bigl(q(t),\xi(t)\bigr);
+\end{equation}
+the claim is the propagation law
+\begin{equation}\label{eq.characteristic-propagation}
+w^{\leftarrow}(t+1)=\sigma^{\leftarrow}w^{\leftarrow}(t),
+\qquad
+w^{\rightarrow}(t+1)=\sigma^{\rightarrow}w^{\rightarrow}(t).
+\end{equation}
+By \cref{eq.characteristic-coordinates,eq.momentum-position} and
+$D=\id-\sigma^{\rightarrow}$,
+\[
+2h\,w^{\leftarrow}(t)=\dot q(t)+Dq(t)=q(t+1)-\sigma^{\rightarrow}q(t).
+\]
+Since the two shifts are inverse to each other,
+$D^*D=(\id-\sigma^{\leftarrow})(\id-\sigma^{\rightarrow})
+=2\,\id-\sigma^{\leftarrow}-\sigma^{\rightarrow}$, so
+$D-D^*D=\sigma^{\leftarrow}-\id$; and \cref{eq.discrete-wave} at time
+$t+1$ reads $\dot q(t+1)=\dot q(t)-D^*Dq(t+1)$.  Therefore
+\[
+2h\,w^{\leftarrow}(t+1)
+=\dot q(t+1)+Dq(t+1)
+=\dot q(t)+(D-D^*D)\,q(t+1)
+=\sigma^{\leftarrow}q(t+1)-q(t)
+=\sigma^{\leftarrow}\bigl(q(t+1)-\sigma^{\rightarrow}q(t)\bigr),
+\]
+which is $2h\,\sigma^{\leftarrow}w^{\leftarrow}(t)$.  The right-travelling
+case is the same computation with $D^*$, $\sigma^{\rightarrow}$ in place
+of $D$, $\sigma^{\leftarrow}$, using $D^*-D^*D=\sigma^{\rightarrow}-\id$.
+This proves \cref{eq.characteristic-propagation}, hence
+\cref{eq.characteristic-morphism-type}; applying $\Ufun$
+\cref{eq.dyn-forgetful} and the identification of
+\cref{prop.phase-semantics} gives
+\cref{eq.characteristic-two-cell}.
+\end{proof}
+
+The two categorical steps have different types.  The operad functor
+$\Phiphase$ sends the operation
+$\scale_h\,\Lat_{Z,h}\in\harr(I;I)$ to an object of the hom-category
+$\pc(\yon,\yon)$.  The map $\Wc_{Z,h}$ is a morphism in that
+hom-category, hence a 2-cell in $\pc$.  They are therefore not consecutive
+1-arrows in a single category.
+
+\section{Universal queues and subdivision}
+\label{sec.queues}
+
+\subsection{The queue representation theorem}
+
+Fix a real Hilbert space $B\in\Hilb$ and an integer $N\geq1$.  Define
+\[
+Q_N(B)\coloneqq B^{\oplus N}.
+\]
+For every $x=(b_0,\ldots,b_{N-1})\in Q_N(B)$ and every $b\in B$, define
+\begin{equation}\label{eq.queue-structure}
+\begin{aligned}
+S_Nx&\coloneqq(b_1,\ldots,b_{N-1},0),\\
+J_Nb&\coloneqq(0,\ldots,0,b),\\
+P_Nx&\coloneqq b_0,\\
+U_N(x,b)&\coloneqq S_Nx+J_Nb.
+\end{aligned}
+\end{equation}
+The lossless queue step is
+\begin{equation}\label{eq.finite-queue-step}
+\defineTerm{step}_N\colon Q_N(B)\oplus B\longrightarrow B\oplus Q_N(B),
+\qquad
+\step_N(x,b)\coloneqq\bigl(P_Nx,U_N(x,b)\bigr).
+\end{equation}
+
+\begin{definition}[Exact-delay realization]
+\label{def.delay-realization}
+Fix $B\in\Hilb$ and an integer $N\geq1$.  A \emph{bounded linear
+realization of exact $N$-step delay on $B$} consists of a Hilbert space
+$X\in\Hilb$ and bounded maps
+\[
+T_X\colon X\to X,
+\qquad
+G_X\colon B\to X,
+\qquad
+R_X\colon X\to B
+\]
+satisfying
+\begin{equation}\label{eq.delay-laws}
+R_XT_X^N=0,
+\qquad
+R_XT_X^kG_X
+=
+\begin{cases}
+0,&0\leq k<N-1,\\
+\id_B,&k=N-1.
+\end{cases}
+\end{equation}
+A morphism $f\colon(X,T_X,G_X,R_X)\to(Y,T_Y,G_Y,R_Y)$ is a bounded
+linear map $f\colon X\to Y$ satisfying
+\[
+fT_X=T_Yf,
+\qquad
+fG_X=G_Y,
+\qquad
+R_X=R_Yf.
+\]
+Write $\defineTerm{delay}_N(B)$ for the resulting category.
+\end{definition}
+
+\begin{remark}[Delay realizations are linear Moore machines]
+\label{rmk.delay-moore}
+By linearity, a realization $(X,T_X,G_X,R_X)$ is the same data as a
+bounded linear \emph{Moore machine} $(X,U_X,R_X)$ with update
+$U_X\colon X\oplus B\to X$ and readout $R_X\colon X\to B$: set
+$U_X(x,b)\coloneqq T_Xx+G_Xb$ and recover $T_X=U_X(\blank,0)$ and
+$G_X=U_X(0,\blank)$; the morphism conditions match likewise.
+\Cref{sec.harmonic_segments} will regard such machines, at the level of
+underlying sets, as $1$-cells in $\pc$.
+\end{remark}
+
+\begin{theorem}[Queue representation]\label{thm.queue-representation}
+Fix $B\in\Hilb$ and an integer $N\geq1$.
+
+\begin{enumerate}
+\item The map $\step_N$ of \cref{eq.finite-queue-step} is unitary.
+
+\item The realization
+\[
+\mathbb Q_N(B)
+\coloneqq
+\bigl(Q_N(B),S_N,J_N,P_N\bigr)
+\]
+is terminal in $\DelayCat_N(B)$.
+
+\item For every object
+$M=(X,T_X,G_X,R_X)\in\DelayCat_N(B)$, the terminal map is
+\[
+\begin{aligned}
+\Theta_M\colon X&\longrightarrow Q_N(B),\\
+\Theta_M(x)&\coloneqq
+\bigl(R_Xx,R_XT_Xx,\ldots,R_XT_X^{N-1}x\bigr).
+\end{aligned}
+\]
+Its underlying map in $\Hilb$ is a split epimorphism.  If
+\begin{equation}\label{eq.lossless-observability}
+\lVert x\rVert_X^2
+=
+\sum_{k=0}^{N-1}\lVert R_XT_X^kx\rVert_B^2
+\qquad(x\in X),
+\end{equation}
+then $\Theta_M$ is a unitary isomorphism in
+$\DelayCat_N(B)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The map $\step_N$ is the coordinate permutation
+\[
+\bigl((b_0,\ldots,b_{N-1}),b\bigr)
+\longmapsto
+\bigl(b_0,(b_1,\ldots,b_{N-1},b)\bigr),
+\]
+with the first component designated as output and the last $N$ components
+designated as the new state; hence it is unitary.
+
+The maps in \cref{eq.queue-structure} satisfy the delay laws
+\cref{eq.delay-laws}.  Fix an object
+$M=(X,T_X,G_X,R_X)\in\DelayCat_N(B)$.  Its delay laws give
+\[
+P_N\Theta_M=R_X,
+\qquad
+\Theta_MT_X=S_N\Theta_M,
+\qquad
+\Theta_MG_X=J_N.
+\]
+Thus $\Theta_M$ is a morphism to $\mathbb Q_N(B)$.  Its $k$th component
+must be $R_XT_X^k$, so it is the unique such morphism.
+
+A section of $\Theta_M$ is
+\[
+\begin{aligned}
+L_M\colon Q_N(B)&\longrightarrow X,\\
+L_M(b_0,\ldots,b_{N-1})
+&\coloneqq
+\sum_{k=0}^{N-1}T_X^{N-1-k}G_Xb_k.
+\end{aligned}
+\]
+Indeed, \cref{eq.delay-laws} gives
+$\Theta_ML_M=\id_{Q_N(B)}$.  Finally,
+\cref{eq.lossless-observability} says exactly that $\Theta_M$ is isometric;
+the split epimorphism is then unitary.
+\end{proof}
+
+\subsection{Harmonic segments as open subsystems}
+\label{sec.harmonic_segments}
+
+We factor the shift system as a hom-composite in $\pc$: a window of
+$K$ sites is a queue and the rest of the line is its environment.  We
+first compute the relevant hom-categories.
+
+\begin{lemma}[Hom-categories at a monomial interface]
+\label{lem.monomial-homs}
+Let $B_0$ be a set and put $p\coloneqq B_0\yon^{B_0}$.
+\begin{enumerate}
+\item $\pc(\yon,p)$ is isomorphic to the category of \emph{Moore
+machines}: objects are triples $(S,r,u)$ of a set $S$, a readout
+$r\colon S\to B_0$, and an update $u\colon S\times B_0\to S$;
+morphisms are functions of state sets commuting with readouts and
+updates.
+\item $\pc(p,\yon)$ is isomorphic to the category of \emph{Mealy
+environments}: objects are pairs $(S',\langle u',e\rangle)$ of a set
+$S'$ and a function
+$\langle u',e\rangle\colon S'\times B_0\to S'\times B_0$; morphisms
+are functions commuting with $\langle u',e\rangle$.
+\item Under these isomorphisms, hom-composition
+$\pc(\yon,p)\times\pc(p,\yon)\to\pc(\yon,\yon)$ is given on
+objects by
+\begin{equation}\label{eq.loop-transition}
+\bigl((S,r,u),\,(S',\langle u',e\rangle)\bigr)
+\longmapsto
+\Bigl(S\times S',\ \
+(s,s')\mapsto
+\bigl(u(s,\,e(s',r(s))),\ u'(s',r(s))\bigr)\Bigr)
+\end{equation}
+and on morphisms by the product of functions.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) Since $\yon$ is the $\otimes$-unit, $[\yon,p]\cong p$, so an
+object of $\pc(\yon,p)$ is a $p$-coalgebra
+$S\to p(S)=B_0\times S^{B_0}$, i.e.\ a pair $(r,u)$ as stated; its
+morphisms are the coalgebra morphisms, which unwind to the stated
+commutations.
+
+(ii) An object of $\pc(p,\yon)$ is a coalgebra $S'\to[p,\yon](S')$,
+equivalently a polynomial map $\Store(S')\otimes p\to\yon$
+(\cref{sec.background_categories}).  On positions such a map is the
+unique function $S'\times B_0\to1$; on directions it selects, at each
+$(s',b)$, an element of $S'\times B_0$.  This is exactly a function
+$\langle u',e\rangle\colon S'\times B_0\to S'\times B_0$, and
+coalgebra morphisms unwind to functions commuting with it.
+
+(iii) The composite coalgebra is carried by $S\times S'$, with
+structure map the composite
+\[
+\Store(S\times S')\cong\Store(S)\otimes\Store(S')
+\longrightarrow p\otimes\Store(S')
+\longrightarrow\yon
+\]
+of the two structure maps, after the symmetry
+\cite[\S2.2.4]{cdlm}.%sec.org
+On positions it is unique; on directions at $(s,s')$, the second map
+selects $\bigl(u'(s',r(s)),\,e(s',r(s))\bigr)$ and the first returns
+$u\bigl(s,e(s',r(s))\bigr)$ in the $S$-coordinate, giving
+\cref{eq.loop-transition}.  Morphisms compose componentwise.
+\end{proof}
+
+\begin{lemma}[Stateless 1-cells]\label{lem.stateless}
+For polynomials $p,p'$, evaluation gives
+$[p,p'](1)\cong\poly(p,p')$, so every polynomial map
+$f\colon p\to p'$ determines a $1$-cell in $\pc(p,p')$ with a single
+state, its \emph{stateless} $1$-cell.  The assignment preserves
+identities, hom-composition, and $\otimes$; we elide it, writing $f$
+for the stateless $1$-cell of $f$.
+\end{lemma}
+
+\begin{proof}
+A coalgebra with carrier $1$ is a point of $[p,p'](1)$, and
+$[p,p'](1)\cong\poly(p,p')$ \cite{niu2025polynomial}.  On single-state
+carriers, hom-composition and $\otimes$ of coalgebras restrict to
+composition and $\otimes$ of the selected polynomial maps, by the same
+unwinding as in \cref{lem.monomial-homs}.
+\end{proof}
+
+\begin{definition}[Queue and environment 1-cells]
+\label{def.queue-environment}
+Fix $B\in\Hilb$ and an integer $K\geq1$, and put
+$\Lambda'_K\coloneqq\Z\setminus\{1,\ldots,K\}$.
+\begin{enumerate}
+\item We write again
+$\mathbb Q_K(B)\colon\yon\to\lvert B\rvert\,\yon^{\lvert B\rvert}$
+for the Moore machine (\cref{lem.monomial-homs}) underlying the
+terminal realization (\cref{thm.queue-representation,rmk.delay-moore}):
+states $\lvert Q_K(B)\rvert$, readout $P_K$, update $U_K$.
+\item The \emph{left environment}
+$\fun{env}^{\leftarrow}_K\colon
+\lvert B\rvert\,\yon^{\lvert B\rvert}\to\yon$
+has states $\lvert\ell^2(\Lambda'_K,B)\rvert$, reply
+$e(s,b)\coloneqq s_{K+1}$, and update $u'(s,b)$ given by
+$u'(s,b)_0\coloneqq b$ and $u'(s,b)_i\coloneqq s_{i+1}$ at all other
+$i\in\Lambda'_K$.
+\item The \emph{right environment} $\fun{env}^{\rightarrow}_K$ has the
+same states, reply $e(s,b)\coloneqq s_0$, and update given by
+$u'(s,b)_{K+1}\coloneqq b$ and $u'(s,b)_i\coloneqq s_{i-1}$ at all
+other $i\in\Lambda'_K$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Segment factorization]\label{thm.segment-factorization}
+Fix $Z,h\in\R_{>0}$ and $K\geq1$, and put $B\coloneqq\CZ(h)$.  In
+$\pc(\yon,\yon)$,
+\begin{equation}\label{eq.segment-factorization}
+\Ufun(\Shift_{Z,h})
+\;\cong\;
+\bigl(\fun{env}^{\leftarrow}_K\circ\mathbb Q_K(B)\bigr)
+\otimes
+\bigl(\fun{env}^{\rightarrow}_K\circ\mathbb Q_K(B)\bigr),
+\end{equation}
+the isomorphism given on the left factor by
+$a\mapsto\bigl((a_1,\ldots,a_K),\,a|_{\Lambda'_K}\bigr)$ and on the
+right factor by
+$a\mapsto\bigl((a_K,\ldots,a_1),\,a|_{\Lambda'_K}\bigr)$, for
+$a\in\ell^2(\Z,B)$.
+\end{theorem}
+
+\begin{proof}
+For the left factor, let $a\in\ell^2(\Z,B)$ correspond to the pair
+$(x,s)$ with $x\coloneqq(a_1,\ldots,a_K)\in Q_K(B)$ and
+$s\coloneqq a|_{\Lambda'_K}$.  In the composite transition
+\cref{eq.loop-transition}: the queue emits $b=P_K(x)=a_1$; the
+environment replies $e(s,b)=s_{K+1}=a_{K+1}$ and updates to the sequence
+with value $b=a_1$ at $0$ and $s_{i+1}=a_{i+1}$ at all other
+$i\in\Lambda'_K$, which is $(\sigma^{\leftarrow}a)|_{\Lambda'_K}$;
+and the queue updates to $U_K(x,a_{K+1})=(a_2,\ldots,a_{K+1})$, the
+window part of $\sigma^{\leftarrow}a$.  So under the stated bijection
+the composite transition is $\sigma^{\leftarrow}$.  Symmetrically, on
+the right factor the queue stores the window in the order
+$(a_K,\ldots,a_1)$, emits $a_K$, receives the reply $a_0$, and the
+composite transition is $\sigma^{\rightarrow}$.  Finally, $\otimes$ in
+$\pc(\yon,\yon)$ is the parallel product of dynamical systems and
+$\Sigma_{Z,h}=\sigma^{\leftarrow}\oplus\sigma^{\rightarrow}$
+\cref{eq.shift-system}, so the two bijections together form an
+invertible 2-cell as claimed.
+\end{proof}
+
+\begin{corollary}[The queue inside the lattice]
+\label{cor.queue-in-lattice}
+Composing \cref{eq.characteristic-two-cell} with
+\cref{eq.segment-factorization} gives a 2-cell in $\pc(\yon,\yon)$:
+\[
+\Phiphase\bigl(\scale_h\,\Lat_{Z,h}\bigr)
+\Longrightarrow
+\bigl(\fun{env}^{\leftarrow}_K\circ\mathbb Q_K(B)\bigr)
+\otimes
+\bigl(\fun{env}^{\rightarrow}_K\circ\mathbb Q_K(B)\bigr),
+\qquad B=\CZ(h).
+\]
+\end{corollary}
+
+\begin{corollary}[Characteristic queues]\label{cor.harmonic-queues}
+Fix $Z,h\in\R_{>0}$ and an integer $K\geq1$.  Let
+$(q(t),\xi(t))_{t\in\N}$ be a trajectory of the phase transition
+$F_{Z,h}$, and let
+$w^{\leftarrow}(t),w^{\rightarrow}(t)$ be its characteristic trajectory
+\cref{eq.characteristic-trajectory}.  Define
+\begin{equation}\label{eq.segment-states}
+\begin{aligned}
+\mathbf w_K^{\leftarrow}(t)
+&\coloneqq
+\bigl(w_1^{\leftarrow}(t),\ldots,w_K^{\leftarrow}(t)\bigr),\\
+\mathbf w_K^{\rightarrow}(t)
+&\coloneqq
+\bigl(w_K^{\rightarrow}(t),\ldots,w_1^{\rightarrow}(t)\bigr),
+\end{aligned}
+\end{equation}
+as elements of $Q_K(\CZ(h))$, and define the incoming packets
+$b^{\leftarrow}(t)\coloneqq w_{K+1}^{\leftarrow}(t)$ and
+$b^{\rightarrow}(t)\coloneqq w_0^{\rightarrow}(t)$.
+Then the two segment trajectories satisfy
+\[
+\begin{aligned}
+\step_K\bigl(\mathbf w_K^{\leftarrow}(t),b^{\leftarrow}(t)\bigr)
+&=
+\bigl(w_1^{\leftarrow}(t),\mathbf w_K^{\leftarrow}(t+1)\bigr),\\
+\step_K\bigl(\mathbf w_K^{\rightarrow}(t),b^{\rightarrow}(t)\bigr)
+&=
+\bigl(w_K^{\rightarrow}(t),\mathbf w_K^{\rightarrow}(t+1)\bigr).
+\end{aligned}
+\]
+Consequently each one-way segment is the terminal exact
+$K$-step delay on the packet space $\CZ(h)$, and each update satisfies the
+energy balance obtained from the unitarity of $\step_K$.
+\end{corollary}
+
+\begin{proof}
+By \cref{eq.characteristic-propagation}, the characteristic trajectory
+is a trajectory of $\Ufun(\Shift_{Z,h})$; transport it through the
+isomorphism of \cref{thm.segment-factorization}.  On the left factor its
+queue leg at time $t$ is $\mathbf w_K^{\leftarrow}(t)$, and by
+\cref{eq.loop-transition} one tick emits $w_1^{\leftarrow}(t)$,
+receives the environment's reply
+$b^{\leftarrow}(t)=w_{K+1}^{\leftarrow}(t)$, and updates by $U_K$; by
+\cref{eq.finite-queue-step} this is the first line of the display.  The
+right factor is symmetric, with the travel-order convention of
+\cref{eq.segment-states}.  Terminality and losslessness follow from
+\cref{thm.queue-representation}.
+\end{proof}
+
+\subsection{Subdivision as time dilation}
+
+For every integer $r\geq1$, let
+$D_r\colon\Cat B\N\to\Cat B\N$ be the functor induced by multiplication by
+$r$.  Restriction along $D_r$ gives
+\[
+D_r^*\colon\Dyn\longrightarrow\Dyn,
+\qquad
+D_r^*(X,F)\coloneqq(X,F^r).
+\]
+Thus a map $\rho\colon X\to Y$ identifies one coarse step with $r$ fine
+steps precisely when
+$\rho\colon(X,F)\to D_r^*(Y,G)$ in $\Dyn$,
+or equivalently $\rho F=G^r\rho$.
+
+For a real Hilbert space $C$, integers $L,r\geq1$, and the standard queue
+step $\step_L$ on $C$, define the $r$-fold block step
+\[
+\step_L^{[r]}\colon
+Q_L(C)\oplus C^{\oplus r}
+\longrightarrow
+C^{\oplus r}\oplus Q_L(C)
+\]
+as follows.  Given $x_0\in Q_L(C)$ and
+$(c_0,\ldots,c_{r-1})\in C^{\oplus r}$, define
+\[
+(y_j,x_{j+1})\coloneqq\step_L(x_j,c_j)
+\quad(0\leq j<r),
+\qquad
+\step_L^{[r]}(x_0,c_0,\ldots,c_{r-1})
+\coloneqq(y_0,\ldots,y_{r-1},x_r).
+\]
+
+\begin{theorem}[Queue subdivision]\label{thm.queue-subdivision}
+Fix real Hilbert spaces $B,C\in\Hilb$, integers $N,r\geq1$, and an
+isometric embedding
+$\sigma\colon B\hookrightarrow C^{\oplus r}$.
+Let
+$\lambda_{N,r}\colon
+Q_N(C^{\oplus r})\To{\cong}Q_{rN}(C)$
+be the unitary that removes parentheses while preserving order, and define
+\[
+\rho_{N,r,\sigma}
+\coloneqq
+\lambda_{N,r}\circ Q_N(\sigma)
+\colon
+Q_N(B)\lhook\joinrel\longrightarrow Q_{rN}(C).
+\]
+Then the following square commutes:
+\begin{equation}\label{eq.queue-subdivision-square}
+\begin{CD}
+Q_N(B)\oplus B
+@>{\step_N}>>
+B\oplus Q_N(B)\\
+@V{\rho_{N,r,\sigma}\oplus\sigma}VV
+@VV{\sigma\oplus\rho_{N,r,\sigma}}V\\
+Q_{rN}(C)\oplus C^{\oplus r}
+@>>{\step_{rN}^{[r]}}>
+C^{\oplus r}\oplus Q_{rN}(C).
+\end{CD}
+\end{equation}
+In particular,
+\begin{equation}\label{eq.queue-dilated-equivariance}
+\rho_{N,r,\sigma}S_N
+=
+S_{rN}^{\,r}\rho_{N,r,\sigma},
+\end{equation}
+so
+\begin{equation}\label{eq.queue-dyn-morphism}
+\rho_{N,r,\sigma}\colon
+\bigl(Q_N(B),S_N\bigr)
+\longrightarrow
+D_r^*\bigl(Q_{rN}(C),S_{rN}\bigr)
+\quad\text{in }\Dyn.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The map $\rho_{N,r,\sigma}$ replaces each coarse packet by its ordered
+$r$-packet subdivision.  The top of \cref{eq.queue-subdivision-square}
+removes the first coarse packet and appends one coarse input.  The bottom
+removes its $r$ refined packets and appends the $r$ components of the
+refined input.  Both routes are therefore the same coordinate
+reassociation.  Setting the input equal to zero gives
+\cref{eq.queue-dilated-equivariance,eq.queue-dyn-morphism}.
+\end{proof}
+
+\begin{corollary}[Dyadic harmonic subdivision]
+\label{cor.dyadic-subdivision}
+Fix $Z,d\in\R_{>0}$.  For every $n\in\N$, define
+\begin{equation}\label{eq.dyadic-data}
+K_n\coloneqq2^n,
+\qquad
+h_n\coloneqq d/K_n,
+\qquad
+C_n\coloneqq \CZ(h_n),
+\qquad
+H_n\coloneqq Q_{K_n}(C_n).
+\end{equation}
+The packet map
+$\sigma_n\colon C_n\hookrightarrow C_{n+1}^{\oplus2}$,
+$\sigma_n(b)\coloneqq(b,b)$,
+is an isometric embedding.  The state refinement
+\begin{equation}\label{eq.dyadic-state-refinement}
+\rho_n
+\coloneqq
+\lambda_{K_n,2}\circ Q_{K_n}(\sigma_n)
+\colon H_n\lhook\joinrel\longrightarrow H_{n+1}
+\end{equation}
+is therefore an isometric embedding and satisfies
+$\rho_nS_{K_n}=S_{K_{n+1}}^2\rho_n$.
+The full input-output refinement is the instance of
+\cref{eq.queue-subdivision-square} determined by
+$B=C_n$, $C=C_{n+1}$, $N=K_n$, $r=2$, and $\sigma=\sigma_n$.
+Applying the same square to both summands of $H_n\oplus H_n$ refines the
+two characteristic queues of \cref{cor.harmonic-queues}.
+\end{corollary}
+
+\begin{proof}
+For every $b\in C_n$,
+\[
+\lVert\sigma_n(b)\rVert^2
+=
+2Zh_{n+1}b^2
+=
+Zh_nb^2
+=
+\lVert b\rVert^2.
+\]
+The result is now \cref{thm.queue-subdivision}.
+\end{proof}
+
+\section{Completion and interval algebra}
+\label{sec.completion}
+
+\subsection{The completed characteristic state}
+
+Fix $Z,d\in\R_{>0}$ and let $(H_n,\rho_n)_{n\in\N}$ be the directed system
+\cref{eq.dyadic-data,eq.dyadic-state-refinement} of isometric embeddings.
+Using the increasing-union and completion constructions of
+\cref{sec.background_hilbert}, define
+\begin{equation}\label{eq.completed-state}
+H_\infty(d,Z)
+\coloneqq
+\bigcup_{n\in\N}H_n,
+\qquad
+\defineTerm{EZ}(d)\coloneqq\widehat{H_\infty(d,Z)},
+\end{equation}
+and for duration zero put $\EZ(0)\coloneqq0$.
+
+\begin{theorem}[Dyadic completion]\label{thm.dyadic-completion}
+Fix $Z,d\in\R_{>0}$ and let $\EZ(d)$ be the Hilbert space
+\cref{eq.completed-state}.  There is a canonical unitary
+\begin{equation}\label{eq.interval-realization}
+\iota_Z(d)\colon
+\EZ(d)\xrightarrow{\ \cong\ }L^2([0,d),Z\,dx).
+\end{equation}
+For every $n\in\N$, the image of $H_n$ consists of the functions constant
+on each interval
+\begin{equation}\label{eq.dyadic-cells}
+\left[
+\frac{jd}{2^n},
+\frac{(j+1)d}{2^n}
+\right),
+\qquad
+0\leq j<2^n.
+\end{equation}
+Moreover, for every $Y\in\Hilb$, restriction induces a natural bijection
+\begin{equation}\label{eq.completion-universal-property}
+\Hilb\bigl(\EZ(d),Y\bigr)
+\cong
+\left\{
+(f_n)_{n\in\N}
+\ \middle|\
+\begin{array}{l}
+f_n\colon H_n\to Y\text{ is bounded},\\
+f_{n+1}\rho_n=f_n,\
+\sup_n\lVert f_n\rVert<\infty
+\end{array}
+\right\}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+For every $n\in\N$, send
+$x=(x_0,\ldots,x_{2^n-1})\in H_n$ to the step function with value $x_j$
+on the $j$th interval in \cref{eq.dyadic-cells}.  This map is isometric
+because
+\[
+\sum_{j=0}^{2^n-1}
+\int_{jd/2^n}^{(j+1)d/2^n}Zx_j^2\,dx
+=
+\frac{Zd}{2^n}\sum_{j=0}^{2^n-1}x_j^2
+=
+\lVert x\rVert_{H_n}^2.
+\]
+The maps commute with $\rho_n$, so they assemble into an isometry from
+$H_\infty(d,Z)$ onto the subspace of dyadic step functions, which is dense
+in $L^2([0,d),Z\,dx)$; completion gives \cref{eq.interval-realization}.
+
+For \cref{eq.completion-universal-property}, restriction along the
+embeddings $H_n\hookrightarrow \EZ(d)$ sends a bounded
+$f\colon \EZ(d)\to Y$ to a compatible family with
+$\lVert f_n\rVert\leq\lVert f\rVert$.  It is injective because
+$\bigcup_nH_n$ is dense in $\EZ(d)$.  For surjectivity, let $(f_n)$ be a
+compatible family with $s\coloneqq\sup_n\lVert f_n\rVert<\infty$.  Every
+element $x\in H_\infty(d,Z)$ lies in some $H_n$; setting
+$F(x)\coloneqq f_n(x)$ is well defined by compatibility, linear, and
+bounded with $\lVert F\rVert\leq s$.  By the completion adjunction
+(\cref{sec.background_hilbert}), $F$ extends uniquely to a bounded map on
+$\EZ(d)$, which restricts to the given family.
+\end{proof}
+
+\subsection{Ordered intervals}
+
+\begin{definition}[Ordered interval operad]\label{def.interval-operad}
+The nonsymmetric colored operad $\defineTerm{intop}$ has colors
+$d\in\R_{\geq0}$ and operation sets
+\[
+\Int(d_1,\ldots,d_k;d)
+\coloneqq
+\begin{cases}
+\{*\},&d=d_1+\cdots+d_k,\\
+\varnothing,&d\neq d_1+\cdots+d_k,
+\end{cases}
+\]
+for every integer $k\geq0$ and all
+$d,d_1,\ldots,d_k\in\R_{\geq0}$.  Substitution is induced by
+associativity of addition.
+\end{definition}
+
+\begin{theorem}[The characteristic interval algebra]
+\label{thm.characteristic-interval-algebra}
+Fix $Z\in\R_{>0}$.  For every integer $k\geq0$ and durations
+$d_1,\ldots,d_k\in\R_{\geq0}$, interval concatenation gives a unitary
+\[
+\Gamma^Z_{d_1,\ldots,d_k}\colon
+\bigoplus_{i=1}^k\EZ(d_i)
+\xrightarrow{\ \cong\ }
+\EZ(d_1+\cdots+d_k).
+\]
+These maps make
+$\EZ\colon\Int\to\Hilb$, $d\mapsto \EZ(d)$,
+a strong $\Int$-algebra in $(\Hilb,0,\oplus)$
+(\cref{sec.background_categories}).
+\end{theorem}
+
+\begin{proof}
+Put $s_0\coloneqq0$ and
+$s_i\coloneqq d_1+\cdots+d_i$ for $1\leq i\leq k$.  Under
+\cref{eq.interval-realization}, the map
+$\Gamma^Z_{d_1,\ldots,d_k}$ translates the function on $[0,d_i)$ to
+$[s_{i-1},s_i)$.  These intervals are disjoint and cover $[0,s_k)$, so
+the map is unitary; for $k=0$ it is the identity of $\EZ(0)=0$.
+Translation in stages equals translation all at once,
+which is the substitution axiom of $\Int$.
+\end{proof}
+
+\subsection{Delay lines from interval algebras}
+
+\begin{theorem}[Interval-algebra delay line]
+\label{thm.interval-delay-line}
+Let $A\colon\Int\to\Hilb$ be a strong $\Int$-algebra whose structure maps
+$\Gamma^A_{d_1,\ldots,d_k}\colon
+\bigoplus_{i=1}^kA(d_i)\To{\cong}A(d_1+\cdots+d_k)$
+are unitary.  Fix $d\in\R_{>0}$ and $a\in(0,d]$.  The composite
+\begin{equation}\label{eq.abstract-delay-step}
+\begin{aligned}
+\step^A_{d,a}\colon
+A(d)\oplus A(a)
+&\xrightarrow{\ (\Gamma^A_{a,d-a})^{-1}\oplus\id\ }
+A(a)\oplus A(d-a)\oplus A(a)\\
+&\xrightarrow{\ \id\oplus\Gamma^A_{d-a,a}\ }
+A(a)\oplus A(d)
+\end{aligned}
+\end{equation}
+is unitary.
+
+For every $a_1,a_2\in\R_{>0}$ with $a_1+a_2\leq d$, the two-step and
+one-block composites agree:
+\begin{equation}\label{eq.temporal-coherence}
+\begin{aligned}
+(\id\oplus\step^A_{d,a_2})
+\circ(\step^A_{d,a_1}\oplus\id)
+&=
+\bigl((\Gamma^A_{a_1,a_2})^{-1}\oplus\id\bigr)
+\circ\step^A_{d,a_1+a_2}\\
+&\qquad\circ
+\bigl(\id\oplus\Gamma^A_{a_1,a_2}\bigr),
+\end{aligned}
+\end{equation}
+where canonical direct-sum associators are suppressed.
+
+Finally, fix an integer $N\geq1$ and $a\in\R_{>0}$, and put $d\coloneqq
+Na$ and $B\coloneqq A(a)$.  The iterated structure map
+$\gamma^A_{N,a}\colon Q_N(B)\To{\cong}A(d)$
+identifies $\step_N$ with $\step^A_{d,a}$; equivalently, the square
+\begin{equation}\label{eq.queue-delay-line-square}
+\begin{CD}
+Q_N(B)\oplus B
+@>{\step_N}>>
+B\oplus Q_N(B)\\
+@V{\gamma^A_{N,a}\oplus\id}VV
+@VV{\id\oplus\gamma^A_{N,a}}V\\
+A(d)\oplus B
+@>>{\step^A_{d,a}}>
+B\oplus A(d)
+\end{CD}
+\end{equation}
+commutes.  Hence $A(d)$, equipped with the corresponding shift, insertion,
+and readout maps, is terminal in $\DelayCat_N(B)$.
+\end{theorem}
+
+\begin{proof}
+The two arrows in \cref{eq.abstract-delay-step} are unitary, so their
+composite is unitary.  Equation \cref{eq.temporal-coherence} is the
+associativity axiom for the strong $\Int$-algebra $A$: both sides split off
+the first intervals of durations $a_1$ and $a_2$, preserve their order, and
+append the two input intervals in that order.  The same associativity axiom
+gives \cref{eq.queue-delay-line-square}.  Terminality follows from
+\cref{thm.queue-representation}.
+\end{proof}
+
+Applying \cref{thm.interval-delay-line} to the algebra
+$\EZ\colon\Int\to\Hilb$ gives the completed lossless queue
+\begin{equation}\label{eq.completed-delay-step}
+\step^Z_{d,a}
+\coloneqq
+\step^{\EZ}_{d,a}\colon
+\EZ(d)\oplus \EZ(a)
+\longrightarrow
+\EZ(a)\oplus \EZ(d).
+\end{equation}
+
+\begin{theorem}[Finite queues determine the completed queue]
+\label{thm.finite-completed-queue}
+Fix $Z,d\in\R_{>0}$ and integers $n,m\in\N$ with $n\leq m$.  Put
+\[
+\begin{gathered}
+K_m\coloneqq2^m,
+\qquad
+h_m\coloneqq d/K_m,
+\qquad
+C_m\coloneqq \CZ(h_m),
+\qquad
+H_m\coloneqq Q_{K_m}(C_m),\\
+h_n\coloneqq d/2^n,
+\qquad
+M_{n,m}\coloneqq2^{m-n},
+\qquad
+B_{n,m}\coloneqq Q_{M_{n,m}}(C_m).
+\end{gathered}
+\]
+Let
+$\jmath_m\colon H_m\to \EZ(d)$ and
+$\epsilon_{n,m}\colon B_{n,m}\to \EZ(h_n)$
+be the step-function embeddings supplied by
+\cref{eq.interval-realization}.  Then
+\begin{equation}\label{eq.finite-completed-square}
+\begin{CD}
+H_m\oplus B_{n,m}
+@>{\step_{K_m}^{[M_{n,m}]}}>>
+B_{n,m}\oplus H_m\\
+@V{\jmath_m\oplus\epsilon_{n,m}}VV
+@VV{\epsilon_{n,m}\oplus\jmath_m}V\\
+\EZ(d)\oplus \EZ(h_n)
+@>>{\step^Z_{d,h_n}}>
+\EZ(h_n)\oplus \EZ(d)
+\end{CD}
+\end{equation}
+commutes.  For fixed $n$, the union of the top rows over all $m\geq n$ is
+dense in the bottom row.  Consequently $\step^Z_{d,h_n}$ is the unique
+unitary extension of the compatible finite block steps.
+\end{theorem}
+
+\begin{proof}
+Both paths in \cref{eq.finite-completed-square} cut off the first interval
+of duration $h_n$, record it as output, and append the input interval.
+The square is therefore the restriction of
+\cref{eq.queue-delay-line-square} to dyadic step functions.  Density follows
+from \cref{thm.dyadic-completion}; uniqueness follows by continuity.
+\end{proof}
+
+The continuous queue is thus derived from the harmonic lattice in four
+typed steps: the characteristic morphism
+\cref{eq.characteristic-morphism-type}, the segment factorization
+\cref{eq.segment-factorization}, the time-dilated subdivision
+\cref{eq.queue-dyn-morphism}, and the universal completion
+\cref{eq.completion-universal-property}.  The finite-to-continuum comparison
+is the commuting square \cref{eq.finite-completed-square}.
+
+\section{Continuous waves}
+\label{sec.waves}
+
+This section uses local $L^2$ analysis that the rest of the paper does
+not, so we record that background here rather than in
+\cref{sec.background_hilbert}.
+
+\paragraph{Local spaces and distributions.}
+Let $\Omega\subseteq\R^2$ be open.  We write $L^2_{\mathrm{loc}}(\Omega)$
+for the space of measurable functions square-integrable on every compact
+subset.  Every $u\in L^2_{\mathrm{loc}}(\Omega)$ is a distribution on
+$\Omega$ and has distributional partial derivatives; we write
+$H^1_{\mathrm{loc}}(\Omega)$ for the space of
+$u\in L^2_{\mathrm{loc}}(\Omega)$ whose first distributional derivatives
+again lie in $L^2_{\mathrm{loc}}(\Omega)$
+\cite{brezis2011functional}.  For a bounded interval $J\subseteq\R$, the
+Sobolev space $H^1(J)$ consists of the $u\in L^2(J)$ with distributional
+derivative $\partial_xu\in L^2(J)$; we write $H^1(J)/\R$ for its quotient
+by the constant functions.  Translation acts strongly continuously on
+$L^2_{\mathrm{loc}}$: for $u\in L^2_{\mathrm{loc}}$, the translates of $u$
+converge to $u$ in $L^2$ on compacta as the displacement tends to $0$.  We
+use the distributional Poincar\'e lemma on rectangles: if
+$v,e\in L^2_{\mathrm{loc}}(\Omega)$ with $\Omega$ an open rectangle satisfy
+$\partial_\tau e=\partial_xv$ distributionally, then the closed
+distributional one-form
+$v\,d\tau+e\,dx$ has a potential $u\in H^1_{\mathrm{loc}}(\Omega)$---that
+is, $\partial_\tau u=v$ and $\partial_xu=e$---unique
+up to an additive constant \cite{schwartz1966distributions}.
+
+Under the interval realization \cref{eq.interval-realization}, the completed
+delay step \cref{eq.completed-delay-step} is cut-and-translate.  Fix
+$Z,d\in\R_{>0}$ and $a\in(0,d]$.  For every
+$q\in \EZ(d)$ and every $b\in \EZ(a)$, write
+$\operatorname{next}_{d,a}(q,b)\in \EZ(d)$ for the state component of
+$\step^Z_{d,a}(q,b)$.  For almost every $x\in[0,d)$,
+\[
+\operatorname{next}_{d,a}(q,b)(x)
+=
+\begin{cases}
+q(x+a),&0\leq x<d-a,\\
+b(x-d+a),&d-a\leq x<d.
+\end{cases}
+\]
+
+\begin{theorem}[Characteristic-wave correspondence]
+\label{thm.characteristic-wave}
+Let $\Omega\subseteq\R^2$ be an open rectangle with coordinates
+$(\tau,x)$, and let
+$w^{\leftarrow},w^{\rightarrow}\in L^2_{\mathrm{loc}}(\Omega)$.
+The following are equivalent.
+
+\begin{enumerate}
+\item For every $a\in\R_{>0}$ for which the displayed arguments belong to
+$\Omega$, the local translation laws
+\begin{equation}\label{eq.local-translation-laws}
+w^{\leftarrow}(\tau+a,x)
+=
+w^{\leftarrow}(\tau,x+a),
+\qquad
+w^{\rightarrow}(\tau+a,x)
+=
+w^{\rightarrow}(\tau,x-a)
+\end{equation}
+hold for almost every $(\tau,x)\in\Omega$.
+
+\item The distributional transport equations
+\begin{equation}\label{eq.transport-equations}
+(\partial_\tau-\partial_x)w^{\leftarrow}=0,
+\qquad
+(\partial_\tau+\partial_x)w^{\rightarrow}=0
+\end{equation}
+hold on $\Omega$.
+
+\item There is a function $u\in H^1_{\mathrm{loc}}(\Omega)$, unique up to
+an additive constant, satisfying
+\begin{equation}\label{eq.characteristic-reconstruction}
+\partial_\tau u
+=
+w^{\leftarrow}+w^{\rightarrow},
+\qquad
+\partial_xu
+=
+w^{\leftarrow}-w^{\rightarrow},
+\end{equation}
+and the weak wave equation
+\begin{equation}\label{eq.wave-equation}
+\partial_\tau^2u=\partial_x^2u.
+\end{equation}
+\end{enumerate}
+
+Conversely, for every
+$u\in H^1_{\mathrm{loc}}(\Omega)$ satisfying
+\cref{eq.wave-equation}, the formulas
+\begin{equation}\label{eq.wave-characteristics}
+w^{\leftarrow}
+\coloneqq
+\frac{\partial_\tau u+\partial_xu}{2},
+\qquad
+w^{\rightarrow}
+\coloneqq
+\frac{\partial_\tau u-\partial_xu}{2}
+\end{equation}
+define the unique characteristic fields satisfying
+\cref{eq.characteristic-reconstruction}.
+\end{theorem}
+
+\begin{proof}
+Strong continuity of translation on $L^2_{\mathrm{loc}}(\Omega)$
+(recorded at the start of this section) identifies
+the difference quotients of \cref{eq.local-translation-laws} with the two
+distributional derivatives in \cref{eq.transport-equations}.  Conversely,
+the coordinates $(\tau,x+\tau)$ for $w^{\leftarrow}$ and
+$(\tau,x-\tau)$ for $w^{\rightarrow}$ show that
+\cref{eq.transport-equations} makes each field constant along its
+characteristics, which gives \cref{eq.local-translation-laws}.
+
+Put
+$v\coloneqq w^{\leftarrow}+w^{\rightarrow}$ and
+$e\coloneqq w^{\leftarrow}-w^{\rightarrow}$.  The transport equations give
+\begin{equation}\label{eq.closed-energy-form}
+\partial_\tau e=\partial_xv.
+\end{equation}
+Hence the distributional one-form $v\,d\tau+e\,dx$ is closed.  Since
+$\Omega$ is an open rectangle, the distributional Poincar\'e lemma
+(recorded at the start of this section) gives
+$u\in H^1_{\mathrm{loc}}(\Omega)$ satisfying
+\cref{eq.characteristic-reconstruction}, uniquely up to a constant.
+Equation \cref{eq.closed-energy-form} then gives
+\cref{eq.wave-equation}.  The converse follows by substituting
+\cref{eq.wave-characteristics} into \cref{eq.transport-equations}.
+\end{proof}
+
+The discrete and continuous semantics fit together: every lattice
+trajectory samples a weak solution of the wave equation.
+
+\begin{corollary}[Lattice trajectories are sampled waves]
+\label{cor.sampled-waves}
+Fix $Z,h\in\R_{>0}$.  Let $(q(t),\xi(t))_{t\in\N}$ be a trajectory of
+$F_{Z,h}$ and let $w^{\leftarrow}(t),w^{\rightarrow}(t)\in\ell^2(\Z)$ be
+its characteristic trajectory \cref{eq.characteristic-trajectory}.  Put
+$\Omega\coloneqq\R_{>0}\times\R$ and define
+$W^{\leftarrow},W^{\rightarrow}\in L^2_{\mathrm{loc}}(\Omega)$ by
+\[
+W^{\leftarrow}(\tau,x)\coloneqq
+\sum_{i\in\Z}w_i^{\leftarrow}(0)\,
+\mathbf1_{[(i-1)h,\,ih)}(x+\tau),
+\qquad
+W^{\rightarrow}(\tau,x)\coloneqq
+\sum_{i\in\Z}w_i^{\rightarrow}(0)\,
+\mathbf1_{[(i-1)h,\,ih)}(x-\tau).
+\]
+Then:
+\begin{enumerate}
+\item\label{item.sampling} for every $t\in\N$ and almost every $x\in\R$,
+the time-$th$ slices sample the discrete trajectory:
+\[
+W^{\leftarrow}(th,x)=
+\sum_{i\in\Z}w_i^{\leftarrow}(t)\,\mathbf1_{[(i-1)h,\,ih)}(x),
+\qquad
+W^{\rightarrow}(th,x)=
+\sum_{i\in\Z}w_i^{\rightarrow}(t)\,\mathbf1_{[(i-1)h,\,ih)}(x);
+\]
+\item\label{item.wave} $W^{\leftarrow},W^{\rightarrow}$ satisfy the
+translation laws \cref{eq.local-translation-laws} on $\Omega$, and hence
+there is a $u\in H^1_{\mathrm{loc}}(\Omega)$, unique up to an additive
+constant, satisfying the weak wave equation \cref{eq.wave-equation} whose
+characteristic fields \cref{eq.wave-characteristics} are
+$W^{\leftarrow},W^{\rightarrow}$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+Both fields are square-integrable on every compact subset of $\Omega$: each
+time slice of $W^{\leftarrow}$ is a step function whose squared
+$L^2(\R,dx)$-norm is $h\sum_iw_i^{\leftarrow}(0)^2<\infty$, independent of
+$\tau$, and likewise for $W^{\rightarrow}$; integrating in $\tau$ over a
+compact set gives a finite value.
+
+For \cref{item.sampling}, fix $t\in\N$ and let $x\in[(i-1)h,ih)$ for some
+$i\in\Z$.  Then $x+th\in[(i+t-1)h,(i+t)h)$, so
+$W^{\leftarrow}(th,x)=w_{i+t}^{\leftarrow}(0)$.  Iterating the propagation
+law \cref{eq.characteristic-propagation} $t$ times gives
+$w_i^{\leftarrow}(t)=w_{i+t}^{\leftarrow}(0)$, so the two step functions
+agree.  Similarly $x-th\in[(i-t-1)h,(i-t)h)$ gives
+$W^{\rightarrow}(th,x)=w_{i-t}^{\rightarrow}(0)=w_i^{\rightarrow}(t)$.
+
+For \cref{item.wave}, the translation laws hold by construction: for every
+$a\in\R_{>0}$ and every $(\tau,x)\in\Omega$ with $(\tau+a,x)\in\Omega$,
+\[
+W^{\leftarrow}(\tau+a,x)
+=W^{\leftarrow}(0,\,x+\tau+a)
+=W^{\leftarrow}(\tau,\,x+a),
+\]
+and likewise for $W^{\rightarrow}$ with $x-\tau$ in place of $x+\tau$.
+Now apply \cref{thm.characteristic-wave}, items (i) $\Rightarrow$ (iii).
+\end{proof}
+
+The coordinate $x$ measures transit time.  If $y\in\R$ is physical position
+and $v_{\mathrm{wave}}\in\R_{>0}$ is wave speed, define
+$u_{\mathrm{phys}}(\tau,y)\coloneqq u(\tau,y/v_{\mathrm{wave}})$.
+Then \cref{eq.wave-equation} becomes
+\[
+\partial_\tau^2u_{\mathrm{phys}}
+=
+v_{\mathrm{wave}}^2\partial_y^2u_{\mathrm{phys}}.
+\]
+
+\begin{corollary}[Energy coordinates]\label{cor.energy-coordinates}
+Fix $Z,d\in\R_{>0}$ and let $J\subseteq\R$ be an interval of duration $d$.
+Define
+\[
+\mathcal E_Z(J)
+\coloneqq
+\bigl(H^1(J)/\R\bigr)\oplus L^2(J)
+\]
+with squared norm
+\[
+\lVert([\varphi],v)\rVert_{\mathcal E_Z(J)}^2
+\coloneqq
+\frac Z2\int_J
+\bigl(|\partial_x\varphi|^2+|v|^2\bigr)\,dx.
+\]
+After translating $J$ to $[0,d)$, the map
+\[
+\begin{aligned}
+\kappa_{Z,J}\colon
+\mathcal E_Z(J)&\xrightarrow{\ \cong\ }\EZ(d)\oplus \EZ(d),\\
+\kappa_{Z,J}([\varphi],v)
+&\coloneqq
+\left(
+\frac{v+\partial_x\varphi}{2},
+\frac{v-\partial_x\varphi}{2}
+\right)
+\end{aligned}
+\]
+is unitary.
+\end{corollary}
+
+\begin{proof}
+For every $([\varphi],v)\in\mathcal E_Z(J)$,
+\[
+\left|\frac{v+\partial_x\varphi}{2}\right|^2
++
+\left|\frac{v-\partial_x\varphi}{2}\right|^2
+=
+\frac12\bigl(|v|^2+|\partial_x\varphi|^2\bigr),
+\]
+so $\kappa_{Z,J}$ is isometric.  Given
+$f,g\in L^2(J,Z\,dx)$, put $v=f+g$ and $e=f-g$.  There is a unique
+$[\varphi]\in H^1(J)/\R$ with $\partial_x\varphi=e$, proving surjectivity.
+\end{proof}
+
+\section{Associative strings}
+\label{sec.strings}
+
+\subsection{Transparent serial composition}
+
+\begin{definition}[Two-ended Moore systems]\label{def.moore-systems}
+Fix a real Hilbert space $B\in\Hilb$.  A \emph{two-ended linear Moore
+system on $B$} is a quadruple
+$M=(X,L_M,R_M,U_M)$ consisting of a state space $X\in\Hilb$, bounded
+readouts
+$L_M,R_M\colon X\to B$,
+and a bounded update
+$U_M\colon X\oplus B\oplus B\to X$.
+A morphism is a bounded linear map of state spaces commuting with the two
+readouts and the update.  Write $\defineTerm{moore}_2(B)$ for the resulting
+category.
+\end{definition}
+
+For $M_i=(X_i,L_i,R_i,U_i)\in\MooreCat_2(B)$,
+$i\in\{1,2\}$, define the transparent serial product
+$M_1\diamond M_2$ to have state $X_1\oplus X_2$, outer readouts
+\[
+L_{1\diamond2}(x_1,x_2)\coloneqq L_1(x_1),
+\qquad
+R_{1\diamond2}(x_1,x_2)\coloneqq R_2(x_2),
+\]
+and update
+\[
+U_{1\diamond2}(x_1,x_2,b^{\mathrm L},b^{\mathrm R})
+\coloneqq
+\left(
+U_1(x_1,b^{\mathrm L},L_2(x_2)),
+U_2(x_2,R_1(x_1),b^{\mathrm R})
+\right)
+\]
+for every $x_i\in X_i$ and $b^{\mathrm L},b^{\mathrm R}\in B$.  On
+morphisms, put $f_1\diamond f_2\coloneqq f_1\oplus f_2$.
+
+\begin{proposition}[Serial composition is hom-composition in $\pc$]
+\label{prop.seam}
+Fix $B\in\Hilb$ and put
+$p\coloneqq\lvert B\rvert\,\yon^{\lvert B\rvert}$.  Forgetting
+Hilbert structure, a two-ended system $M\in\MooreCat_2(B)$ is a
+$1$-cell $\mathsf M\colon\yon\to p\otimes p$ in $\pc$: the
+coalgebra with states $\lvert X\rvert$, positions $(L_M,R_M)$, and
+update $U_M$.  Let
+$\fun{seam}\colon p\otimes p\to\yon$ be the polynomial map that is
+unique on positions and returns, on directions at $(b_1,b_2)$, the pair
+$(b_2,b_1)$, regarded as a stateless $1$-cell (\cref{lem.stateless}).
+Then for all
+$M_1,M_2\in\MooreCat_2(B)$,
+\[
+\mathsf M_{1\diamond2}
+=
+\bigl(\id_p\otimes\fun{seam}\otimes\id_p\bigr)
+\circ
+\bigl(\mathsf M_1\otimes\mathsf M_2\bigr)
+\colon\yon\to p\otimes p,
+\]
+where $\mathsf M_{1\diamond2}$ denotes the $1$-cell of
+$M_1\diamond M_2$ and $\id_p$ is stateless (\cref{lem.stateless}).
+\end{proposition}
+
+\begin{proof}
+Both sides have state set
+$\lvert X_1\rvert\times\lvert X_2\rvert$, the seam and the
+identities being stateless.  At a state $(x_1,x_2)$, the $1$-cell
+$\mathsf M_1\otimes\mathsf M_2$ presents the four positions
+$(L_1(x_1),R_1(x_1),L_2(x_2),R_2(x_2))$, of which the right-hand
+composite presents the outer pair $(L_1(x_1),R_2(x_2))$---the readouts
+of $M_1\diamond M_2$.  Given outer directions
+$(b^{\mathrm L},b^{\mathrm R})$, the identities relay them to the
+first and fourth ports, and the seam returns $(L_2(x_2),R_1(x_1))$ to
+the second and third; the state updates to
+$\bigl(U_1(x_1,b^{\mathrm L},L_2(x_2)),\
+U_2(x_2,R_1(x_1),b^{\mathrm R})\bigr)$, the update of
+$M_1\diamond M_2$.
+\end{proof}
+
+\begin{remark}\label{rmk.seam-native}
+The serial product is therefore not a new composition: it is
+hom-composition in $\pc$ against a stateless seam, and the two-ended
+strings below live in the same $2$-category as the phase semantics of
+\cref{sec.hilbert_semantics}.
+\end{remark}
+
+\begin{proposition}[Associativity]\label{prop.serial-associativity}
+Fix $B\in\Hilb$.  The product $\diamond$ makes
+$\MooreCat_2(B)$ a semigroupal category
+(\cref{sec.background_categories}).
+\end{proposition}
+
+\begin{proof}
+For $M_i=(X_i,L_i,R_i,U_i)$, $i\in\{1,2,3\}$, both parenthesizations have
+state $X_1\oplus X_2\oplus X_3$, outer readouts $L_1$ and $R_3$, and
+update
+\[
+\left(
+U_1(x_1,b^{\mathrm L},L_2(x_2)),
+U_2(x_2,R_1(x_1),L_3(x_3)),
+U_3(x_3,R_2(x_2),b^{\mathrm R})
+\right).
+\]
+The direct-sum associator therefore gives the semigroupal associator and
+satisfies the pentagon.
+
+There is no stateless Moore unit when $B\neq0$: a zero-state Moore system
+has zero current output and cannot transmit its current input.  A unit
+requires direct feedthrough, which belongs to Mealy rather than Moore
+semantics.
+\end{proof}
+
+\subsection{Strings from an interval algebra}
+
+\begin{theorem}[Interval algebras produce associative strings]
+\label{thm.interval-strings}
+Let $A\colon\Int\to\Hilb$ be a strong $\Int$-algebra with unitary structure
+maps $\Gamma^A$, and fix $h\in\R_{>0}$.  Put $B\coloneqq A(h)$.  For every
+$d\in\R_{\geq h}$, write the delay step \cref{eq.abstract-delay-step} as
+\[
+\step^A_{d,h}(q,b)
+=
+\bigl(P^A_{d,h}(q),U^A_{d,h}(q,b)\bigr)
+\]
+for every $q\in A(d)$ and $b\in B$.  Define
+$\mathsf S_{A,h}(d)\in\MooreCat_2(B)$ to have state
+$A(d)\oplus A(d)$,
+left and right readouts
+\[
+L_d(q^{\rightarrow},q^{\leftarrow})
+\coloneqq P^A_{d,h}(q^{\leftarrow}),
+\qquad
+R_d(q^{\rightarrow},q^{\leftarrow})
+\coloneqq P^A_{d,h}(q^{\rightarrow}),
+\]
+and update
+\[
+U_d(q^{\rightarrow},q^{\leftarrow},
+b^{\mathrm L},b^{\mathrm R})
+\coloneqq
+\left(
+U^A_{d,h}(q^{\rightarrow},b^{\mathrm L}),
+U^A_{d,h}(q^{\leftarrow},b^{\mathrm R})
+\right).
+\]
+
+For all $d_1,d_2\in\R_{\geq h}$, the state map
+\begin{equation}\label{eq.serial-string-isomorphism}
+\begin{aligned}
+\chi^A_{d_1,d_2}
+\bigl(
+q_1^{\rightarrow},q_1^{\leftarrow},
+q_2^{\rightarrow},q_2^{\leftarrow}
+\bigr)
+\coloneqq
+\bigl(
+&\Gamma^A_{d_2,d_1}
+(q_2^{\rightarrow},q_1^{\rightarrow}),\\
+&\Gamma^A_{d_1,d_2}
+(q_1^{\leftarrow},q_2^{\leftarrow})
+\bigr)
+\end{aligned}
+\end{equation}
+is a unitary isomorphism
+\[
+\chi^A_{d_1,d_2}\colon
+\mathsf S_{A,h}(d_1)\diamond\mathsf S_{A,h}(d_2)
+\xrightarrow{\ \cong\ }
+\mathsf S_{A,h}(d_1+d_2)
+\]
+in $\MooreCat_2(B)$.  The family
+$(\chi^A_{d_1,d_2})$ satisfies semigroupal associativity.  Hence
+\[
+d\in\R_{\geq h}
+\longmapsto
+\mathsf S_{A,h}(d)
+\]
+is a strong semigroupal representation of
+$(\R_{\geq h},+)$ in
+$(\MooreCat_2(B),\diamond)$.
+\end{theorem}
+
+\begin{proof}
+Each queue is stored in the order in which its packets leave.  The
+right-travelling state of the second string therefore precedes that of the
+first, while the left-travelling state of the first precedes that of the
+second.  This gives the two orders in
+\cref{eq.serial-string-isomorphism}.
+
+The internal seam in $\diamond$ sends each exposed packet into the adjacent
+queue.  Temporal coherence \cref{eq.temporal-coherence} shows that
+$\chi^A_{d_1,d_2}$ intertwines both updates and both outer readouts.  The
+associativity coherence is the substitution axiom for the
+$\Int$-algebra $A$.
+\end{proof}
+
+\begin{corollary}[Associative harmonic strings]
+\label{cor.associative-harmonic-strings}
+Fix $Z,h\in\R_{>0}$ and apply
+\cref{thm.interval-strings} to the characteristic interval algebra
+$\EZ\colon\Int\to\Hilb$.  The resulting assignment
+\[
+d\in\R_{\geq h}
+\longmapsto
+\mathsf S_{\EZ,h}(d)
+\]
+is a strong semigroupal representation in
+$\MooreCat_2(\EZ(h))$.  Its state is
+$\EZ(d)\oplus \EZ(d)$, the Hilbert completion of the two characteristic
+queues obtained from the harmonic phase system by
+$\Wc_{Z,h}$.
+\end{corollary}
+
+Under $\Phiphase$, a box receives its inputs as covectors: the directions
+of $\Phiphase\binom{A}{B}$ at a position include the cotangent directions
+of $\cotof B$ (\cref{thm.phase-functor}).  If a string is to be attached to
+such an interface, the Riesz isomorphism
+$\EZ(h)\To{\cong}\EZ(h)^*$
+converts each incoming packet to the required variance.  This conversion
+belongs to the interface.  The mechanics remains entirely in the
+$\harr$-operation $\Lat_{Z,h}$ and its phase semantics; the completed
+string uses the characteristic state selected by the 2-cell
+\cref{eq.characteristic-two-cell}.
+
+\begin{thebibliography}{9}
+
+\bibitem{cdlm}
+D.~I. Spivak.
+\newblock \emph{Compositional Dynamics in Learning and Mechanics}.
+\newblock Draft, 2026.  Cited by the numbering of the July 2026 draft.
+
+\bibitem{niu2025polynomial}
+N.~Niu and D.~I. Spivak.
+\newblock \emph{Polynomial Functors: A Mathematical Theory of Interaction}.
+\newblock London Mathematical Society Lecture Note Series.  Cambridge
+University Press, 2025.
+
+\bibitem{conway1990functional}
+J.~B. Conway.
+\newblock \emph{A Course in Functional Analysis}.
+\newblock Second edition, Graduate Texts in Mathematics 96.  Springer, 1990.
+
+\bibitem{heunen2019categories}
+C.~Heunen and J.~Vicary.
+\newblock \emph{Categories for Quantum Theory: An Introduction}.
+\newblock Oxford University Press, 2019.
+
+\bibitem{cartan1971differential}
+H.~Cartan.
+\newblock \emph{Differential Calculus}.
+\newblock Hermann, 1971.
+
+\bibitem{brezis2011functional}
+H.~Brezis.
+\newblock \emph{Functional Analysis, Sobolev Spaces and Partial Differential
+Equations}.
+\newblock Springer, 2011.
+
+\bibitem{schwartz1966distributions}
+L.~Schwartz.
+\newblock \emph{Th\'eorie des distributions}.
+\newblock Hermann, 1966.
+
+\bibitem{leinster2004higher}
+T.~Leinster.
+\newblock \emph{Higher Operads, Higher Categories}.
+\newblock London Mathematical Society Lecture Note Series 298.  Cambridge
+University Press, 2004.
+
+\end{thebibliography}
+
+\end{document}
