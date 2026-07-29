@@ -2752,6 +2752,43 @@ $v\,d\tau+e\,dx$ has a potential $u\in H^1_{\mathrm{loc}}(\Omega)$---that
 is, $\partial_\tau u=v$ and $\partial_xu=e$---unique
 up to an additive constant \cite{schwartz1966distributions}.
 
+\paragraph{The translation representation.}
+For $Z\in\R_{>0}$ and $a\in\R$, the translation
+$(\lambda_af)(x)\coloneqq f(x+a)$ is unitary on $L^2(\R,Z\,dx)$, and
+$\lambda\colon a\mapsto\lambda_a$ makes $L^2(\R,Z\,dx)$ a unitary
+representation of $\R$ (\cref{sec.background_hilbert}).  For
+$h\in\R_{>0}$, write $e_h\colon\Z\to\R$ for the group homomorphism
+$1\mapsto h$; time change along it restricts $\lambda$ to the single
+unitary $\lambda_h$.
+
+\begin{proposition}[Sampling]\label{prop.sampling}
+Fix $Z,h\in\R_{>0}$.  The map
+\[
+s_h\colon\ell^2\bigl(\Z,\CZ(h)\bigr)\longrightarrow L^2(\R,Z\,dx),
+\qquad
+s_h(w)\coloneqq\sum_{i\in\Z}w_i\,\mathbf1_{[(i-1)h,\,ih)},
+\]
+is an isometric morphism of unitary representations of $\Z$
+\[
+s_h\colon
+\bigl(\ell^2(\Z,\CZ(h)),\ \sigma^{\leftarrow}\bigr)
+\longrightarrow
+e_h^*\bigl(L^2(\R,Z\,dx),\ \lambda\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+The summands have disjoint supports, so
+$\lVert s_h(w)\rVert^2=Z\sum_{i\in\Z}w_i^2\,h
+=\sum_{i\in\Z}Zh\,w_i^2=\lVert w\rVert^2_{\ell^2(\Z,\CZ(h))}$, and
+$s_h$ is a well-defined isometry.  For the intertwining, let $x\in\R$;
+then $\bigl(\lambda_hs_h(w)\bigr)(x)=s_h(w)(x+h)=w_i$ exactly when
+$x+h\in[(i-1)h,\,ih)$, i.e.\ $x\in[(i-2)h,\,(i-1)h)$; reindexing by
+$j\coloneqq i-1$ gives
+$\lambda_hs_h(w)=\sum_{j\in\Z}w_{j+1}\mathbf1_{[(j-1)h,\,jh)}
+=s_h(\sigma^{\leftarrow}w)$.
+\end{proof}
+
 Under the interval realization \cref{eq.interval-realization}, the completed
 delay step \cref{eq.completed-delay-step} is cut-and-translate.  Fix
 $Z,d\in\R_{>0}$ and $a\in(0,d]$.  For every
@@ -2861,29 +2898,26 @@ trajectory samples a weak solution of the wave equation.
 \begin{corollary}[Lattice trajectories are sampled waves]
 \label{cor.sampled-waves}
 Fix $Z,h\in\R_{>0}$.  Let $(q(t),\xi(t))_{t\in\N}$ be a trajectory of
-$F_{Z,h}$ and let $w^{\leftarrow}(t),w^{\rightarrow}(t)\in\ell^2(\Z)$ be
+$F_{Z,h}$ and let $w^{\leftarrow}(t),w^{\rightarrow}(t)$ be
 its characteristic trajectory \cref{eq.characteristic-trajectory}.  Put
 $\Omega\coloneqq\R_{>0}\times\R$ and define
-$W^{\leftarrow},W^{\rightarrow}\in L^2_{\mathrm{loc}}(\Omega)$ by
+$W^{\leftarrow},W^{\rightarrow}\in L^2_{\mathrm{loc}}(\Omega)$ as the
+translation orbits of the sampled initial fields:
 \[
-W^{\leftarrow}(\tau,x)\coloneqq
-\sum_{i\in\Z}w_i^{\leftarrow}(0)\,
-\mathbf1_{[(i-1)h,\,ih)}(x+\tau),
+W^{\leftarrow}(\tau,\blank)\coloneqq
+\lambda_\tau\,s_h\bigl(w^{\leftarrow}(0)\bigr),
 \qquad
-W^{\rightarrow}(\tau,x)\coloneqq
-\sum_{i\in\Z}w_i^{\rightarrow}(0)\,
-\mathbf1_{[(i-1)h,\,ih)}(x-\tau).
+W^{\rightarrow}(\tau,\blank)\coloneqq
+\lambda_{-\tau}\,s_h\bigl(w^{\rightarrow}(0)\bigr).
 \]
 Then:
 \begin{enumerate}
-\item\label{item.sampling} for every $t\in\N$ and almost every $x\in\R$,
-the time-$th$ slices sample the discrete trajectory:
+\item\label{item.sampling} for every $t\in\N$, the time-$th$ slices
+sample the discrete trajectory:
 \[
-W^{\leftarrow}(th,x)=
-\sum_{i\in\Z}w_i^{\leftarrow}(t)\,\mathbf1_{[(i-1)h,\,ih)}(x),
+W^{\leftarrow}(th,\blank)=s_h\bigl(w^{\leftarrow}(t)\bigr),
 \qquad
-W^{\rightarrow}(th,x)=
-\sum_{i\in\Z}w_i^{\rightarrow}(t)\,\mathbf1_{[(i-1)h,\,ih)}(x);
+W^{\rightarrow}(th,\blank)=s_h\bigl(w^{\rightarrow}(t)\bigr);
 \]
 \item\label{item.wave} $W^{\leftarrow},W^{\rightarrow}$ satisfy the
 translation laws \cref{eq.local-translation-laws} on $\Omega$, and hence
@@ -2895,28 +2929,34 @@ $W^{\leftarrow},W^{\rightarrow}$.
 \end{corollary}
 
 \begin{proof}
-Both fields are square-integrable on every compact subset of $\Omega$: each
-time slice of $W^{\leftarrow}$ is a step function whose squared
-$L^2(\R,dx)$-norm is $h\sum_iw_i^{\leftarrow}(0)^2<\infty$, independent of
-$\tau$, and likewise for $W^{\rightarrow}$; integrating in $\tau$ over a
-compact set gives a finite value.
+Every time slice lies in $L^2(\R,Z\,dx)$ with norm independent of $\tau$
+($\lambda$ is unitary and $s_h$ isometric), and
+$(\tau,x)\mapsto s_h(w)(x\pm\tau)$ is measurable, so both fields lie in
+$L^2_{\mathrm{loc}}(\Omega)$ by integrating over compacta.
 
-For \cref{item.sampling}, fix $t\in\N$ and let $x\in[(i-1)h,ih)$ for some
-$i\in\Z$.  Then $x+th\in[(i+t-1)h,(i+t)h)$, so
-$W^{\leftarrow}(th,x)=w_{i+t}^{\leftarrow}(0)$.  Iterating the propagation
-law \cref{eq.characteristic-propagation} $t$ times gives
-$w_i^{\leftarrow}(t)=w_{i+t}^{\leftarrow}(0)$, so the two step functions
-agree.  Similarly $x-th\in[(i-t-1)h,(i-t)h)$ gives
-$W^{\rightarrow}(th,x)=w_{i-t}^{\rightarrow}(0)=w_i^{\rightarrow}(t)$.
-
-For \cref{item.wave}, the translation laws hold by construction: for every
-$a\in\R_{>0}$ and every $(\tau,x)\in\Omega$ with $(\tau+a,x)\in\Omega$,
+For \cref{item.sampling}: iterating the intertwining of
+\cref{prop.sampling} gives
+$\lambda_{th}\circ s_h=s_h\circ(\sigma^{\leftarrow})^t$, and iterating
+the propagation law \cref{eq.characteristic-propagation} gives
+$(\sigma^{\leftarrow})^t\,w^{\leftarrow}(0)=w^{\leftarrow}(t)$; hence
 \[
-W^{\leftarrow}(\tau+a,x)
-=W^{\leftarrow}(0,\,x+\tau+a)
-=W^{\leftarrow}(\tau,\,x+a),
+W^{\leftarrow}(th,\blank)
+=\lambda_{th}\,s_h\bigl(w^{\leftarrow}(0)\bigr)
+=s_h\bigl(w^{\leftarrow}(t)\bigr).
 \]
-and likewise for $W^{\rightarrow}$ with $x-\tau$ in place of $x+\tau$.
+The right-travelling case is the same with $\lambda_{-th}$ and
+$\sigma^{\rightarrow}$, using
+$\lambda_{-h}\circ s_h=s_h\circ\sigma^{\rightarrow}$, which follows
+from \cref{prop.sampling} because the shifts and the translations are
+inverse pairs.
+
+For \cref{item.wave}, the translation laws hold because the fields are
+$\lambda$-orbits: for every $a\in\R_{>0}$,
+$W^{\leftarrow}(\tau+a,\blank)
+=\lambda_a\bigl(W^{\leftarrow}(\tau,\blank)\bigr)$, which is the first
+law of \cref{eq.local-translation-laws} almost everywhere, and likewise
+$W^{\rightarrow}(\tau+a,\blank)
+=\lambda_{-a}\bigl(W^{\rightarrow}(\tau,\blank)\bigr)$ is the second.
 Now apply \cref{thm.characteristic-wave}, items (i) $\Rightarrow$ (iii).
 \end{proof}
 
