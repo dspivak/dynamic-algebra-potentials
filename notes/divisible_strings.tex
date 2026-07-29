@@ -99,6 +99,8 @@
 \trackTerm{\Store}{Store}{\Fn{Store}}
 \trackTerm{\Mass}{mass}{\fun{mass}}
 \trackTerm{\Bond}{bond}{\fun{bond}}
+\trackTerm{\Anchor}{anchor}{\fun{anchor}}
+\trackTerm{\Harm}{harmcat}{\Cat{Harm}}% category of closed harmonic systems
 \trackTerm{\Wire}{wire}{\fun{wire}}
 \trackTerm{\Chain}{chain}{\fun{chain}}
 \trackTerm{\Lat}{lat}{\fun{lat}}
@@ -1373,6 +1375,54 @@ computation of \cite[\S7.3]{cdlm}%sec.wave_equation
 in the Hilbert instance.
 \end{proof}
 
+\begin{definition}[Anchor and clamped wiring]\label{def.anchor}
+The \emph{anchor} is the stateless system
+$\defineTerm{anchor}_{Z,h}\colon I\to\binom{\R}{1}$ with potential
+$a\mapsto\frac{Z}{2h}a^2$---a bond one of whose ends is held at $0$.
+For $K\geq2$, the \emph{clamped wiring}
+\[
+\Wire^{\mathrm{cl}}_K\colon
+\binom{1}{\R}^{\ltens K}\ltens\binom{\R^2}{1}^{\ltens(K-1)}
+\ltens\binom{\R}{1}^{\ltens2}
+\longrightarrow I
+\]
+is the static arrangement with input map
+\[
+(q_1,\ldots,q_K)\longmapsto
+\bigl((q_1,q_2),\ldots,(q_{K-1},q_K),\ q_1,\ q_K\bigr).
+\]
+\end{definition}
+
+\begin{proposition}[Clamped chains]\label{prop.clamped-chain}
+For $K\geq2$, the composite
+\[
+\Chain^{\mathrm{cl}}_K
+\coloneqq
+\Wire^{\mathrm{cl}}_K\bigl(
+\underbrace{\Mass_{Z,h},\ldots,\Mass_{Z,h}}_{K},
+\underbrace{\Bond_{Z,h},\ldots,\Bond_{Z,h}}_{K-1},
+\Anchor_{Z,h},\Anchor_{Z,h}
+\bigr)
+\in\harr(I;I)
+\]
+is a closed harmonic system with parameter
+$\bigl(\R^K,\sharpR_{Z,h}^{\oplus K}\bigr)$ and potential
+\begin{equation}\label{eq.clamped-potential}
+U^{\mathrm{cl}}(q_1,\ldots,q_K)
+=
+\frac{Z}{2h}
+\Bigl(
+q_1^2+\sum_{i=1}^{K-1}(q_i-q_{i+1})^2+q_K^2
+\Bigr).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+As in \cref{prop.chain}, with the two anchors receiving $q_1$ and $q_K$
+from the clamped wiring and contributing $\frac{Z}{2h}q_1^2$ and
+$\frac{Z}{2h}q_K^2$ to the total potential.
+\end{proof}
+
 \subsection{The harmonic system of a unitary representation}
 \label{sec.unitary_harmonic}
 
@@ -1450,10 +1500,12 @@ is the finite-energy condition itself: the lattice's states form a proper
 subspace of $\R^\Z$ precisely because their energies are summable.
 
 The sense in which the lattice is assembled from masses and bonds is
-therefore a limit rather than a composite:
-\cref{prop.chain-limit} shows that the transitions of the genuinely
-operadic finite chains (\cref{prop.chain}) converge strongly to the
-transition of the lattice.
+therefore a colimit rather than a composite:
+\cref{thm.lattice-colimit} exhibits $\Lat_{Z,h}$ as the colimit, in the
+category $\Harm$ of closed harmonic systems, of the clamped
+chains---which \emph{are} operadic composites
+(\cref{prop.clamped-chain})---and \cref{prop.chain-limit} shows that
+the phase semantics converges along with the syntax.
 \end{remark}
 
 Not every instance of \cref{def.lat-rep} lies beyond the operad's reach:
@@ -1610,82 +1662,212 @@ difference.  The \emph{characteristic tuning} is $\Delta\tau=h$, at which
 \cref{eq.discrete-wave} holds; we use it throughout.
 \end{remark}
 
-\begin{proposition}[Chains converge to the lattice]\label{prop.chain-limit}
-Fix $Z,h\in\R_{>0}$ and put $Q\coloneqq\ell^2(\Z)$.  For $n\geq1$ put
-$\Lambda_n\coloneqq\{-n,\ldots,n\}$, write $\Chain^{(n)}$ for
-$\Chain_{2n+1}^{Z,h}$ with its sites relabelled by $\Lambda_n$, and let
-\[
-\bigl(T^*\ell^2(\Lambda_n),\ F^{(n)}\bigr)
-\coloneqq
-\Phih\bigl(\scale_h\,\Chain^{(n)}\bigr).
-\]
-Let $\iota_n\colon\ell^2(\Lambda_n)\to Q$ be extension by zero, let
-$\pi_n\coloneqq\iota_n^*$ under Riesz be restriction, and define
-\[
-E_n\coloneqq\iota_n\oplus(\pi_n)^*\colon T^*\ell^2(\Lambda_n)\to T^*Q,
-\qquad
-R_n\coloneqq\pi_n\oplus\iota_n^*\colon T^*Q\to T^*\ell^2(\Lambda_n).
-\]
-Then $E_n\circ F^{(n)}\circ R_n$ converges strongly to $F_{Z,h}$: for every
-$(q,\xi)\in T^*Q$,
-\begin{equation}\label{eq.chain-limit}
-F_{Z,h}(q,\xi)=\lim_{n\to\infty}E_n\bigl(F^{(n)}(R_n(q,\xi))\bigr).
+\subsection{The lattice as a colimit of chains}
+\label{sec.lattice_colimit}
+
+\begin{definition}[The category of closed harmonic systems]\label{def.harm}
+The category $\defineTerm{harmcat}$ has as objects the closed harmonic
+systems of $\harr(I;I)$ and as morphisms
+$(\rv Q,U)\to(\rv Q',U')$ the isometries $\iota\colon Q\to Q'$ satisfying
+\begin{equation}\label{eq.harm-morphism}
+U'\circ\iota=U
+\qquad\text{and}\qquad
+\sharpR_Q=\iota^\dagger\circ\sharpR_{Q'}\circ(\iota^\dagger)^*,
 \end{equation}
-\end{proposition}
+with composition that of $\Hilb$.
+\end{definition}
+
+Composites of such isometries again satisfy \cref{eq.harm-morphism}, so
+the definition is valid.  For unitary $\iota$ the sharp condition is
+sharp-equivariance \cref{eq.sharp-equivariance}, so the isomorphisms of
+$\Harm$ are the potential-preserving isomorphisms of $\rhilb$.  When both
+sharps are multiples $c\,\riesz$ of the Riesz maps---as for every closed
+system in this paper---the sharp condition holds for \emph{every}
+isometry: by the definition of the adjoint,
+$\riesz_{Q'}\circ(\iota^\dagger)^*=\iota\circ\riesz_Q$, so
+$\iota^\dagger\circ(c\,\riesz_{Q'})\circ(\iota^\dagger)^*
+=c\,\iota^\dagger\iota\riesz_Q=c\,\riesz_Q$.  Finally,
+$\scale_{\Delta\tau}$ (\cref{def.scale}) scales the potentials and the
+sharps on both sides of \cref{eq.harm-morphism} by $\Delta\tau$, so it
+lifts to an endofunctor of $\Harm$ that is the identity on morphisms.
+
+\begin{theorem}[The lattice is a colimit of clamped chains]
+\label{thm.lattice-colimit}
+Fix $Z,h\in\R_{>0}$.  For $n\geq1$ put $\Lambda_n\coloneqq\{-n,\ldots,n\}$
+and write $\Chain^{\mathrm{cl},n}$ for $\Chain^{\mathrm{cl}}_{2n+1}$
+(\cref{prop.clamped-chain}) with its sites relabelled by $\Lambda_n$.
+The extensions by zero
+$\rho_n\colon\ell^2(\Lambda_n)\hookrightarrow\ell^2(\Lambda_{n+1})$ and
+$\iota_n\colon\ell^2(\Lambda_n)\hookrightarrow\ell^2(\Z)$ are morphisms
+\[
+\rho_n\colon\Chain^{\mathrm{cl},n}\to\Chain^{\mathrm{cl},n+1},
+\qquad
+\iota_n\colon\Chain^{\mathrm{cl},n}\to\Lat_{Z,h}
+\quad\text{in }\Harm,
+\]
+and the $\iota_n$ exhibit $\Lat_{Z,h}$ as the colimit
+$\operatorname{colim}_n\Chain^{\mathrm{cl},n}$: for every $g\in\Harm$,
+composition with them is a bijection
+\begin{equation}\label{eq.lattice-colimit-up}
+\Harm\bigl(\Lat_{Z,h},\ g\bigr)
+\cong
+\bigl\{
+(f_n)_{n\geq1}
+\ \big|\
+f_n\colon\Chain^{\mathrm{cl},n}\to g\text{ in }\Harm,\
+f_{n+1}\circ\rho_n=f_n
+\bigr\}.
+\end{equation}
+\end{theorem}
 
 \begin{proof}
-By \cref{prop.chain,prop.harmonic-lift}, the system
-$\scale_h\,\Chain^{(n)}$ has reaction $\eta\mapsto\eta/Z$ per site and
-potential $\frac Z2\sum_{i=-n}^{n-1}(q_i-q_{i+1})^2$, so $F^{(n)}$ sends
-$(x,\zeta)\in T^*\ell^2(\Lambda_n)$ to $(\widetilde x,\ \zeta-d^{(n)})$, where
-$\widetilde x_i=x_i+\zeta_i/Z$ and the covector $d^{(n)}$ has components
-\begin{equation}\label{eq.chain-covector}
-d^{(n)}_i=
-\begin{cases}
-Z\bigl(2\widetilde x_i-\widetilde x_{i-1}-\widetilde x_{i+1}\bigr),
-&-n<i<n,\\
-Z\bigl(\widetilde x_{-n}-\widetilde x_{-n+1}\bigr),&i=-n,\\
-Z\bigl(\widetilde x_{n}-\widetilde x_{n-1}\bigr),&i=n,
-\end{cases}
-\end{equation}
-by differentiating the finite sum: interior sites appear in two summands,
-boundary sites in one.
+All sharps in sight are multiples of Riesz maps, so the sharp condition
+of \cref{eq.harm-morphism} holds for every isometry among these systems,
+and only the potential conditions need checking.  For $\rho_n$:
+evaluating $U^{\mathrm{cl}}_{n+1}$ \cref{eq.clamped-potential} at an
+extension by zero, the anchor terms at $\pm(n+1)$ vanish, the bonds from
+$\pm n$ to $\pm(n+1)$ contribute $\frac{Z}{2h}q_{\pm n}^2$---the anchor
+terms of $U^{\mathrm{cl}}_n$---and the interior bonds match; the total
+is $U^{\mathrm{cl}}_n(q)$.  For $\iota_n$: evaluating $U_{\Lat}$
+\cref{eq.lattice-potential} at an extension by zero, all summands with
+$\lvert i\rvert>n+1$ vanish, the summands at $i=\pm n$ or $i=n+1$
+adjacent to the window boundary contribute $\frac{Z}{2h}q_{\pm n}^2$,
+and the interior summands match; the total is again
+$U^{\mathrm{cl}}_n(q)$.
 
-Fix $(q,\xi)\in T^*Q$ and let $(\widetilde q,m)\coloneqq F_{Z,h}(q,\xi)$ as
-in \cref{eq.phase-transition}.  Applying $R_n$ gives
-$x=\pi_nq$ and $\zeta=\iota_n^*\xi$, whose components are $q_i$ and
-$\xi_i$ for $\lvert i\rvert\leq n$; hence
-$\widetilde x=\pi_n\widetilde q$.  We compare
-$E_n(F^{(n)}(R_n(q,\xi)))$ with $(\widetilde q,m)$ componentwise.
-
-\emph{Positions.}  The position component of the left side is
-$\iota_n\pi_n\widetilde q$, and
-$\lVert\widetilde q-\iota_n\pi_n\widetilde q\rVert^2
-=\sum_{\lvert i\rvert>n}\widetilde q_i^{\,2}\to0$
-as $n\to\infty$, being a tail of the $\ell^2$-vector $\widetilde q$.
-
-\emph{Momenta.}  For $\lvert i\rvert<n$, the $i$th components of
-$m$ and of the embedded chain momentum agree, by
-\cref{eq.phase-transition,eq.chain-covector}.  At $i=n$ the difference is
-\[
-m_n-\bigl(\xi_n-d^{(n)}_n\bigr)
-=
--Z\bigl(2\widetilde q_n-\widetilde q_{n-1}-\widetilde q_{n+1}\bigr)
-+Z\bigl(\widetilde q_n-\widetilde q_{n-1}\bigr)
-=
--Z\bigl(\widetilde q_n-\widetilde q_{n+1}\bigr),
-\]
-and symmetrically $-Z(\widetilde q_{-n}-\widetilde q_{-n-1})$ at $i=-n$;
-both tend to $0$ because the components of the $\ell^2$-vector
-$\widetilde q$ tend to $0$.  For $\lvert i\rvert>n$ the embedded chain
-momentum vanishes while the lattice contributes $m_i$, and
-$\sum_{\lvert i\rvert>n}m_i^2\to0$, being a tail of the $\ell^2$-vector
-$m$.  Summing the three contributions, the squared norm of the difference
-tends to $0$, which is \cref{eq.chain-limit}.
+For the bijection, note first that $\ell^2(\Z)$ is the completed
+increasing union of the $\ell^2(\Lambda_n)$: the union is the space of
+finitely supported sequences, which is dense.  Restriction along the
+$\iota_n$ sends a morphism $F\colon\Lat_{Z,h}\to g$ to a compatible
+family, and is injective by density.  Conversely, let $(f_n)$ be a
+compatible family, with $g=(\rv Y,U_g)$.  Each $f_n$ is an isometry,
+hence a contraction, so by \cref{lem.isometric-colimits} the family
+extends uniquely to a bounded $F\colon\ell^2(\Z)\to Y$, which is
+isometric because it is isometric on a dense subspace.  The sharp
+condition again comes for free, and $U_g\circ F$ and $U_{\Lat}$ are
+continuous quadratic forms agreeing on the dense union---for
+$q\in\ell^2(\Lambda_n)$,
+$U_g(F\iota_nq)=U_g(f_nq)=U^{\mathrm{cl}}_n(q)=U_{\Lat}(\iota_nq)$---so
+they agree everywhere, and $F$ is a morphism of $\Harm$.
 \end{proof}
 
-The convergence is strong but not uniform: for states concentrated near
-the sites $\pm n$, the boundary discrepancy in the proof has norm
+\begin{theorem}[Strong continuity of the harmonic lift]
+\label{thm.lift-continuity}
+Let $f=(\rv Q,U)$ and $f_n=(\rv Q_n,U_n)$ be closed harmonic systems and
+let $\iota_n\colon f_n\to f$ be morphisms in $\Harm$ whose images
+increase with dense union.  Writing $\Phih(f)=(T^*Q,F_f)$ and
+$\Phih(f_n)=(T^*Q_n,F_{f_n})$, put
+\[
+E_n\coloneqq\iota_n\oplus(\iota_n^\dagger)^*
+\colon T^*Q_n\to T^*Q,
+\qquad
+R_n\coloneqq\iota_n^\dagger\oplus\iota_n^*
+\colon T^*Q\to T^*Q_n.
+\]
+Then $E_n\circ F_{f_n}\circ R_n\to F_f$ strongly.
+\end{theorem}
+
+\begin{proof}
+Write $S\coloneqq\sharpR_Q\circ\riesz_Q^{-1}$ and
+$A\coloneqq\riesz_Q\circ dU$ for the operators of the sharp and the
+potential of $f$, and $S_n,A_n$ for those of $f_n$.  The two conditions
+of \cref{eq.harm-morphism} say exactly that $S_n$ and $A_n$ are the
+compressions of $S$ and $A$:
+\[
+S_n=\iota_n^\dagger S\iota_n,
+\qquad
+A_n=\iota_n^\dagger A\iota_n.
+\]
+For $A_n$: evaluating $U\circ\iota_n=U_n$ at $q\in Q_n$ gives
+$U_n(q)=\tfrac12\langle A\iota_nq,\iota_nq\rangle
+=\tfrac12\langle\iota_n^\dagger A\iota_nq,q\rangle$, and
+$\iota_n^\dagger A\iota_n$ is self-adjoint.  For $S_n$: by the
+definition of the adjoint,
+$\riesz_Q\circ(\iota_n^\dagger)^*=\iota_n\circ\riesz_{Q_n}$ and
+$\riesz_{Q_n}\circ\iota_n^*=\iota_n^\dagger\circ\riesz_Q$, so
+conjugating the sharp condition by the Riesz maps gives
+$S_n=\iota_n^\dagger S\iota_n$.
+
+Conjugate everything by the unitaries
+$\id\oplus\riesz\colon T^*V\to V\oplus V$: the lift transitions become
+\[
+\hat F_f(q,p)=\bigl(q+Sp,\ p-A(q+Sp)\bigr),
+\qquad
+\hat F_{f_n}(x,z)=\bigl(x+S_nz,\ z-A_n(x+S_nz)\bigr),
+\]
+and, by the two Riesz identities above, $E_n$ and $R_n$ become
+$\iota_n\oplus\iota_n$ and $\iota_n^\dagger\oplus\iota_n^\dagger$.
+Put $P_n\coloneqq\iota_n\iota_n^\dagger\colon Q\to Q$, the orthogonal
+projection onto the image of $\iota_n$.  Substituting the compressions,
+the conjugate of $E_nF_{f_n}R_n$ is
+\[
+(q,p)\longmapsto
+\bigl(P_nq+P_nSP_np,\ \ P_np-P_nA(P_nq+P_nSP_np)\bigr).
+\]
+Since the images increase with dense union and
+$\lVert P_n\rVert\leq1$, \cref{lem.strong-limits}\cref{item.dense-limit}
+gives $P_n\to\id_Q$ strongly.  Each coordinate above is a sum of
+composites of the fixed bounded maps $S$, $A$, $\id$ with the uniformly
+bounded, strongly convergent $P_n$; sums of strong limits are strong
+limits, and composites are by
+\cref{lem.strong-limits}\cref{item.composed-limit}, so the display
+converges strongly to
+$(q,p)\mapsto\bigl(q+Sp,\ p-A(q+Sp)\bigr)=\hat F_f(q,p)$.  Conjugating
+back by the fixed unitaries preserves strong convergence, so
+$E_nF_{f_n}R_n\to F_f$ strongly.
+\end{proof}
+
+\begin{corollary}[Chains converge to the lattice]\label{prop.chain-limit}
+Fix $Z,h\in\R_{>0}$, put $Q\coloneqq\ell^2(\Z)$, and let $E_n,R_n$ be as
+in \cref{thm.lift-continuity} for the extensions by zero
+$\iota_n\colon\ell^2(\Lambda_n)\to Q$.  Write
+$\bigl(T^*\ell^2(\Lambda_n),F^{\mathrm{cl},n}\bigr)
+\coloneqq\Phih\bigl(\scale_h\,\Chain^{\mathrm{cl},n}\bigr)$
+and, for the free chains $\Chain^{(n)}\coloneqq\Chain^{Z,h}_{2n+1}$ of
+\cref{prop.chain} relabelled by $\Lambda_n$,
+$\bigl(T^*\ell^2(\Lambda_n),F^{(n)}\bigr)
+\coloneqq\Phih\bigl(\scale_h\,\Chain^{(n)}\bigr)$.  Then, strongly,
+\[
+E_n\circ F^{\mathrm{cl},n}\circ R_n\longrightarrow F_{Z,h}
+\qquad\text{and}\qquad
+E_n\circ F^{(n)}\circ R_n\longrightarrow F_{Z,h}.
+\]
+\end{corollary}
+
+\begin{proof}
+Applying the endofunctor $\scale_h$ of $\Harm$ to
+\cref{thm.lattice-colimit} gives morphisms
+$\scale_h\Chain^{\mathrm{cl},n}\to\scale_h\Lat_{Z,h}$ along the same
+$\iota_n$, whose images increase with dense union;
+\cref{thm.lift-continuity} gives the clamped case.
+
+For the free case, \cref{prop.chain,prop.clamped-chain} give
+$U^{\mathrm{cl}}-U=\frac{Z}{2h}(q_{-n}^2+q_n^2)$ on $\Lambda_n$, so
+after $\scale_h$ the two lifts differ only in the momentum update, by
+the differential of $\frac Z2(q_{-n}^2+q_n^2)$ at the presented
+position:
+\[
+\bigl(F^{(n)}-F^{\mathrm{cl},n}\bigr)(x,\zeta)
+=\Bigl(0,\ Z\,\riesz^{-1}\bigl(\widetilde x_{-n}e_{-n}
++\widetilde x_ne_n\bigr)\Bigr),
+\qquad
+\widetilde x=x+\riesz(\zeta)/Z.
+\]
+At $(x,\zeta)=R_n(q,\xi)$ the presented positions agree,
+$\widetilde x_{\pm n}=\widetilde q_{\pm n}$, and the momentum leg of
+$E_n$ is an isometry, so
+\[
+\bigl\lVert E_n\bigl(F^{(n)}-F^{\mathrm{cl},n}\bigr)R_n(q,\xi)
+\bigr\rVert^2
+=Z^2\bigl(\widetilde q_{-n}^{\,2}+\widetilde q_n^{\,2}\bigr)
+\longrightarrow0,
+\]
+being a tail of the $\ell^2$-vector $\widetilde q$.  Hence the free
+compressions have the same strong limit.
+\end{proof}
+
+The convergence is strong but not uniform: for unit states concentrated
+at the sites $\pm n$, the boundary terms in the proof have norm
 independent of $n$.
 
 \subsection{The characteristic morphism}
