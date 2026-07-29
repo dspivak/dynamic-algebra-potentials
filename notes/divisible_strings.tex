@@ -105,6 +105,7 @@
 \trackTerm{\Shift}{shift}{\fun{shift}}
 \trackTerm{\scale}{scale}{\Fn{scale}}
 \trackTerm{\Phiphase}{Phiphase}{\Phi_{\phase}}
+\trackTerm{\Phih}{Phih}{\Phi_{\mathrm h}}% harmonic lift of the phase semantics
 \trackTerm{\Hb}{Hb}{\mathrm{Hb}}% the Hilbert adaptive-arrangement datum
 \trackTerm{\interph}{interph}{\mathrm{hb}}% the Hilbert polynomial interpretation datum
 \trackTerm{\thetacomp}{theta}{\theta}% effect comparison of the interpretation datum
@@ -1121,6 +1122,79 @@ $\potd$; these are shared verbatim by the Hilbert instance
 (\cref{prop.euler-step-hilbert,prop.nu-hilbert,eq.potential-differential}).
 \end{proof}
 
+\subsection{The harmonic lift}
+\label{sec.harmonic_lift}
+
+\begin{remark}[From syntax to hom-categories]\label{rmk.syntax-to-homs}
+An operad supplies operations and substitution, nothing else: $\harr$
+has no morphisms \emph{between} arrangements, so a comparison of two
+built systems cannot be stated in $\harr$.  It is stated in the
+hom-categories of $\pc$, where $\Phiphase$ lands.  This subsection
+refines $\pc(\yon,\yon)$ by $\Dyn$ on the closed harmonic systems, and
+\cref{sec.harmonic_segments} computes hom-categories at monomial
+interfaces together with their composition.
+\end{remark}
+
+Forgetting the Hilbert structure of an object of $\Dyn$ leaves a set with
+an endofunction, i.e.\ a $1$-cell $\yon\to\yon$ in $\pc$
+(\cref{sec.background_categories}), and forgetting the linearity of a
+morphism leaves a $2$-cell.  This gives a faithful functor
+\begin{equation}\label{eq.dyn-forgetful}
+\defineTerm{Ufun}\colon\Dyn\longrightarrow\pc(\yon,\yon).
+\end{equation}
+
+\begin{proposition}[Harmonic lift]\label{prop.harmonic-lift}
+Let $f\in\harr(I;I)$ be a closed harmonic system with parameter
+$\rv Q=(Q,\sharpR_Q)$ and potential $U$, and let
+$A\coloneqq\riesz_Q\circ dU\colon Q\to Q$ be the operator of $U$
+(\cref{sec.background_hilbert}).  Then
+\[
+\defineTerm{Phih}(f)\coloneqq\bigl(T^*Q,\ F_f\bigr):\Dyn,
+\qquad
+F_f(q,\xi)\coloneqq\bigl(\tilde q,\ \xi-\riesz_Q^{-1}(A\tilde q)\bigr),
+\quad
+\tilde q\coloneqq q+\sharpR_Q(\xi),
+\]
+satisfies $\Ufun\bigl(\Phih(f)\bigr)=\Phiphase(f)$ and
+$\Phih(f\ltens f')=\Phih(f)\oplus\Phih(f')$.
+\end{proposition}
+
+\begin{proof}
+Here $\tilde q$ is the presented position
+\cref{eq.presented-position-abstract} of the phase integrator at
+$(q,\xi)$.  Both components of $F_f$ are composites of the bounded
+linear maps $\sharpR_Q$, $A$, $\riesz_Q^{-1}$, identities, and sums, so
+$F_f$ is a bounded endomorphism of $T^*Q$ and $(T^*Q,F_f):\Dyn$.
+
+By \cref{prop.closed-step}, $\Phiphase(f)$ is the discrete dynamical
+system with state set $\lvert T^*Q\rvert$ and transition
+$(q,\xi)\mapsto(\tilde q,\ \xi-dU|_{\tilde q})$ \cref{eq.closed-step}.
+Since $A=\riesz_Q\circ dU$, we have
+$dU|_{\tilde q}=\riesz_Q^{-1}(A\tilde q)$, so this transition is the
+underlying function of $F_f$; hence
+$\Ufun(\Phih(f))=\Phiphase(f)$.
+
+For the last claim, let $f'$ be closed harmonic with parameter
+$\rv Q'=(Q',\sharpR_{Q'})$ and potential $U'$.  The tensor $f\ltens f'$
+is the closed system with parameter $\rv Q\oplus\rv Q'$ and potential
+$U''(q,q')=U(q)+U'(q')$ (\cref{sec.datum_operad}).  It is harmonic:
+its sharp is the symmetric $\sharpR_Q\oplus\sharpR_{Q'}$
+(\cref{prop.rhilb-monoidal}), and $U''$ is the continuous quadratic
+form of the bounded symmetric bilinear map
+$B\oplus B'$, with operator $A''=A\oplus A'$.  Under the coordinate
+identification $T^*(Q\oplus Q')\cong T^*Q\oplus T^*Q'$ of
+\cref{prop.TT-hilbert}, both components of $F_{f\ltens f'}$ therefore
+act summandwise, so $F_{f\ltens f'}=F_f\oplus F_{f'}$.
+\end{proof}
+
+Harmonicity is what makes the lift exist: for a continuous quadratic
+potential, the differential $dU|_q=B(q,\blank)$ is bounded linear in $q$
+(\cref{sec.background_hilbert}), and this is the linearity of $F_f$ used
+above.  For a general smooth potential, the closed phase step
+\cref{eq.closed-step} is merely a smooth self-map of
+$\lvert T^*Q\rvert$: still an object of $\pc(\yon,\yon)$, but with no
+reason to lie in the image of $\Ufun$.
+
 \subsection{Step scaling}
 \label{sec.step_scaling}
 
@@ -1359,38 +1433,6 @@ transition of the lattice.
 
 \subsection{Discrete linear dynamics}
 \label{sec.dyn}
-
-\begin{remark}[From syntax to hom-categories]\label{rmk.syntax-to-homs}
-An operad supplies operations and substitution, nothing else: $\harr$
-has no morphisms \emph{between} arrangements, so a comparison of two
-built systems cannot be stated in $\harr$.  It is stated in the
-hom-categories of $\pc$, where $\Phiphase$ lands.  The remainder of
-the paper works there: this subsection refines $\pc(\yon,\yon)$ by
-$\Dyn$, and \cref{sec.harmonic_segments} computes hom-categories at
-monomial interfaces together with their composition.
-\end{remark}
-
-Recall from \cref{sec.background_hilbert} the category $\Dyn=\Dyn_\N$ of
-Hilbert spaces with a bounded transition.
-
-Forgetting the Hilbert structure of an object of $\Dyn$ leaves a set with
-an endofunction, i.e.\ a $1$-cell $\yon\to\yon$ in $\pc$
-(\cref{sec.background_categories}), and forgetting the linearity of a
-morphism leaves a $2$-cell.  This gives a faithful functor
-\begin{equation}\label{eq.dyn-forgetful}
-\defineTerm{Ufun}\colon\Dyn\longrightarrow\pc(\yon,\yon).
-\end{equation}
-
-\begin{remark}[Harmonicity is linearity]\label{rmk.harmonic-linearity}
-Harmonicity (\cref{def.vocabulary}) is what places phase semantics in the
-image of $\Ufun$.  For a closed system with a continuous quadratic
-potential, the differential $dU|_q=B(q,\blank)$ is bounded linear in $q$
-(\cref{sec.background_hilbert}), so the closed phase step
-\cref{eq.closed-step} is a bounded linear endomorphism of $T^*Q$, i.e.\ an
-object of $\Dyn$.  For a general smooth potential the step is merely a
-smooth self-map of $\lvert T^*Q\rvert$: still an object of
-$\pc(\yon,\yon)$, but with no reason to lie in the image of $\Ufun$.
-\end{remark}
 
 For a trajectory $x\colon\N\to X$ in a Hilbert space $X$---a sequence
 with $x(t+1)=F(x(t))$ for the transition $F$ at hand---we write,
