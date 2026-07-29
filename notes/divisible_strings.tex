@@ -292,7 +292,10 @@ pre-Hilbert spaces and bounded linear maps, and $\defineTerm{hilb}$ for its
 full subcategory of Hilbert spaces.  A bounded linear map is an
 \emph{isometry} if it preserves norms, and \emph{unitary} if it is a
 surjective isometry.  In any category, a morphism is a \emph{split
-epimorphism} if it admits a section.
+epimorphism} if it admits a section.  For $c\in\R_{>0}$, we write $V[c]$
+for the same vector space with the \emph{rescaled} inner product
+$c\langle\blank,\blank\rangle$; it is again a pre-Hilbert space, complete
+if $V$ is.
 
 \paragraph{Completion.}
 The inclusion $\Hilb\hookrightarrow\PreHilb$ has a left adjoint, the
@@ -306,11 +309,42 @@ Given pre-Hilbert spaces $H_n$ and isometric embeddings
 $\rho_n\colon H_n\hookrightarrow H_{n+1}$ for $n\in\N$, the \emph{increasing
 union} $\bigcup_n H_n$ is the union of the images in the colimit of the
 underlying vector spaces, a pre-Hilbert space in which each $H_n$ embeds
-isometrically and every element lies in some $H_n$.  (We avoid calling the
-union a colimit in $\PreHilb$: a compatible family of bounded maps out of
-the $H_n$ induces a bounded map out of the union only when its operator
-norms are uniformly bounded; \cref{thm.dyadic-completion} states the
-resulting universal property in exactly that form.)
+isometrically and every element lies in some $H_n$.
+
+\begin{lemma}[Isometric colimits]\label{lem.isometric-colimits}
+Let $(H_n,\rho_n)_{n\in\N}$ be as above and let $Y\in\Hilb$.  Restriction
+along the embeddings $H_n\hookrightarrow\widehat{\bigcup_nH_n}$ is a
+bijection
+\begin{equation}\label{eq.completion-universal-property}
+\Hilb\Bigl(\widehat{\textstyle\bigcup_nH_n},\ Y\Bigr)
+\cong
+\left\{
+(f_n)_{n\in\N}
+\ \middle|\
+\begin{array}{l}
+f_n\colon H_n\to Y\text{ is bounded},\\
+f_{n+1}\rho_n=f_n,\
+\sup_n\lVert f_n\rVert<\infty
+\end{array}
+\right\}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Restriction sends a bounded $f$ to a compatible family with
+$\lVert f_n\rVert\leq\lVert f\rVert$.  It is injective because
+$\bigcup_nH_n$ is dense in the completion.  For surjectivity, let $(f_n)$
+be a compatible family with $s\coloneqq\sup_n\lVert f_n\rVert<\infty$.
+Every element $x\in\bigcup_nH_n$ lies in some $H_n$; setting
+$F(x)\coloneqq f_n(x)$ is well defined by compatibility, linear, and
+bounded with $\lVert F\rVert\leq s$.  By the completion adjunction, $F$
+extends uniquely to a bounded map on $\widehat{\bigcup_nH_n}$, which
+restricts to the given family.
+\end{proof}
+
+Restricted to contractions, \cref{eq.completion-universal-property} says
+exactly that $\widehat{\bigcup_nH_n}$ is the colimit of $(H_n,\rho_n)$ in
+the category of Hilbert spaces and linear contractions.
 
 \paragraph{Duals, Riesz representation, adjoints.}
 The \emph{dual} $V^*$ of a pre-Hilbert space $V$ is the space of bounded
@@ -395,10 +429,8 @@ $e_i\in\ell^2(\Z)$ for the $i$th standard basis vector and
 $\xi_i\coloneqq\xi(e_i)$ for the components of a functional
 $\xi\in\ell^2(\Z)^*$, so that $\riesz_{\ell^2(\Z)}(\xi)=(\xi_i)_{i\in\Z}$.  The
 two \emph{shift} operators $(\sigma^{\leftarrow}a)_i\coloneqq a_{i+1}$ and
-$(\sigma^{\rightarrow}a)_i\coloneqq a_{i-1}$ are unitary on $\ell^2(\Z,B)$;
-in particular the \emph{difference operator} $D\coloneqq\id-\sigma^{\rightarrow}$,
-$(Da)_i=a_i-a_{i-1}$, is bounded, with transpose given under Riesz by
-$(D^*a)_i=a_i-a_{i+1}$.
+$(\sigma^{\rightarrow}a)_i\coloneqq a_{i-1}$ are unitary on $\ell^2(\Z,B)$,
+and are inverse to each other.
 
 For a measure space $(X,\mu)$ we write $L^2(X,\mu)$ for the Hilbert space
 of \emph{square-integrable functions}: measurable functions
@@ -416,6 +448,45 @@ times Lebesgue measure on $J$; thus the \emph{weighted space}
 $L^2(J,Z\,dx)$ consists of the square-integrable functions on $J$ with
 inner product $\langle f,g\rangle=Z\int_Jfg\,dx$.  The case
 $J=[0,d)$ appears throughout.
+
+\paragraph{Dynamics and time change.}
+For a monoid $(M,+,0)$, write $\Cat BM$ for the category with one object
+whose endomorphism monoid is $M$.  Define
+\[
+\defineTerm{dynh}_M\coloneqq[\Cat BM,\Hilb]:
+\]
+an object is a Hilbert space with an action of $M$ by bounded operators,
+and a morphism is a bounded linear map commuting with the two actions.
+Every monoid homomorphism $\mu\colon M\to M'$ induces a functor
+$\Cat B\mu\colon\Cat BM\to\Cat BM'$, and restriction along it is a
+functor
+\[
+\mu^*\coloneqq[\Cat B\mu,\Hilb]\colon\Dyn_{M'}\longrightarrow\Dyn_M,
+\]
+the \emph{time change} along $\mu$.  We write $\Dyn\coloneqq\Dyn_\N$,
+where $\N=\{0,1,2,\ldots\}$: an object of $\Dyn$ is a pair $(X,F)$ of a
+Hilbert space and a bounded endomorphism $F\colon X\to X$, its
+\emph{transition}, and a morphism $\alpha\colon(X,F)\to(Y,G)$ is a
+bounded linear map $\alpha\colon X\to Y$ satisfying
+$\alpha\circ F=G\circ\alpha$.
+
+\paragraph{Unitary representations.}
+For a group $G$, the category $\Cat BG$ is a dagger category with
+$g^\dagger\coloneqq g^{-1}$, and a \emph{unitary representation} of $G$
+is a dagger functor $\Cat BG\to\Hilb$ \cite{heunen2019categories}: an
+object of $\Dyn_G$ whose action is by unitaries.  A unitary
+representation of $\Z$ is thus a pair $(X,u)$ of a Hilbert space and a
+unitary $u\colon X\to X$; a morphism of unitary representations is a
+morphism of the underlying objects of $\Dyn_G$.  The \emph{difference
+operator} of a unitary $u$ is
+\[
+D_u\coloneqq\id_X-u^{-1},
+\]
+bounded with $\lVert D_u\rVert\leq2$ and with adjoint
+$D_u^\dagger=\id_X-u$.  The shift $\sigma^{\leftarrow}$ makes
+$\ell^2(\Z,B)$ a unitary representation of $\Z$, for which we abbreviate
+$D\coloneqq D_{\sigma^{\leftarrow}}=\id-\sigma^{\rightarrow}$, so that
+$(Da)_i=a_i-a_{i-1}$ and $(D^\dagger a)_i=a_i-a_{i+1}$.
 
 \paragraph{Smooth maps.}
 Let $V,W$ be Hilbert spaces and $f\colon V\to W$ a function.  The
@@ -465,6 +536,42 @@ A sequence of functions $g_n\colon X\to W$ into a Hilbert space
 \emph{converges strongly} to $g$ if $g_n(x)\to g(x)$ in norm for every
 $x\in X$.  Strong convergence does not require---and below will not
 have---convergence in operator norm.
+
+\begin{lemma}[Strong limits]\label{lem.strong-limits}
+Let $X,Y,W$ be Hilbert spaces, and let $F_n,F\colon X\to Y$ and
+$G_n,G\colon Y\to W$ be bounded linear maps with
+$\sup_n\lVert F_n\rVert<\infty$ and $\sup_n\lVert G_n\rVert<\infty$.
+\begin{enumerate}
+\item\label{item.dense-limit} If $F_nx\to Fx$ for every $x$ in a dense
+subset of $X$, then $F_n\to F$ strongly.
+\item\label{item.composed-limit} If $F_n\to F$ and $G_n\to G$ strongly,
+then $G_n\circ F_n\to G\circ F$ strongly.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\cref{item.dense-limit}: put $s\coloneqq\sup_n\lVert F_n\rVert$.  Let
+$x\in X$ and $\varepsilon>0$, and choose $x'$ in the dense subset with
+$\lVert x-x'\rVert<\varepsilon$.  For every $n$,
+\[
+\lVert F_nx-Fx\rVert
+\leq
+\lVert F_n(x-x')\rVert+\lVert F_nx'-Fx'\rVert+\lVert F(x'-x)\rVert
+\leq
+\bigl(s+\lVert F\rVert\bigr)\varepsilon+\lVert F_nx'-Fx'\rVert,
+\]
+and the last term tends to $0$ by hypothesis.
+\cref{item.composed-limit}: for every $x\in X$,
+\[
+\lVert G_nF_nx-GFx\rVert
+\leq
+\lVert G_n(F_nx-Fx)\rVert+\lVert G_n(Fx)-G(Fx)\rVert
+\leq
+\sup_n\lVert G_n\rVert\cdot\lVert F_nx-Fx\rVert
++\lVert G_n(Fx)-G(Fx)\rVert,
+\]
+and both terms tend to $0$.
+\end{proof}
 
 \section{The Hilbert arrangement datum}
 \label{sec.hilbert_datum}
@@ -1209,7 +1316,7 @@ U_{\Lat}(q)
 The potential is the continuous quadratic form
 $U_{\Lat}(q)=\frac{Z}{2h}\lVert Dq\rVert^2$ for the bounded difference
 operator $D$ of \cref{sec.background_hilbert}, hence smooth, with
-differential $dU_{\Lat}|_q=\frac{Z}{h}\,\langle D^*Dq,\blank\rangle$; in
+differential $dU_{\Lat}|_q=\frac{Z}{h}\,\langle D^\dagger Dq,\blank\rangle$; in
 components,
 \begin{equation}\label{eq.lattice-covector}
 \bigl(dU_{\Lat}|_q\bigr)_i
@@ -1263,15 +1370,8 @@ $\Dyn$, and \cref{sec.harmonic_segments} computes hom-categories at
 monomial interfaces together with their composition.
 \end{remark}
 
-Let $\Cat B\N$ be the one-object category whose endomorphism monoid is
-$(\N,+,0)$, where $\N=\{0,1,2,\ldots\}$.  Define
-\[
-\defineTerm{dynh}\coloneqq[\Cat B\N,\Hilb].
-\]
-An object of $\Dyn$ is a real Hilbert space $X$ with a bounded endomorphism
-$F\colon X\to X$, and a morphism
-$\alpha\colon(X,F)\to(Y,G)$ is a bounded linear map $\alpha\colon X\to Y$
-satisfying $\alpha\circ F=G\circ\alpha$.
+Recall from \cref{sec.background_hilbert} the category $\Dyn=\Dyn_\N$ of
+Hilbert spaces with a bounded transition.
 
 Forgetting the Hilbert structure of an object of $\Dyn$ leaves a set with
 an endofunction, i.e.\ a $1$-cell $\yon\to\yon$ in $\pc$
@@ -1311,7 +1411,7 @@ F_{Z,h}\colon T^*Q\to T^*Q,
 \qquad
 F_{Z,h}(q,\xi)
 \coloneqq
-\bigl(\widetilde q,\ \xi-Z\,\riesz_Q^{-1}(D^*D\widetilde q)\bigr),
+\bigl(\widetilde q,\ \xi-Z\,\riesz_Q^{-1}(D^\dagger D\widetilde q)\bigr),
 \qquad
 \widetilde q\coloneqq q+\riesz_Q(\xi)/Z.
 \end{equation}
@@ -1321,7 +1421,7 @@ Then $(T^*Q,F_{Z,h})\in\Dyn$,
 \]
 and every trajectory of $F_{Z,h}$ satisfies the discrete wave equation
 \begin{equation}\label{eq.discrete-wave}
-\ddot q(t)=-D^*Dq(t),
+\ddot q(t)=-D^\dagger Dq(t),
 \qquad\text{i.e.}\qquad
 \ddot q_i(t)=q_{i-1}(t)-2q_i(t)+q_{i+1}(t).
 \end{equation}
@@ -1332,13 +1432,13 @@ The arrangement $\scale_h\,\Lat_{Z,h}$ is the closed system with reaction
 $h\cdot\riesz_Q/(Zh)=\riesz_Q/Z$ and potential $h\,U_{\Lat}$
 (\cref{def.scale,def.lattice,eq.lattice-potential}), whose differential
 is $h\,dU_{\Lat}|_{\widetilde q}
-=Z\,\riesz_Q^{-1}(D^*D\widetilde q)$ by \cref{eq.lattice-covector}.  So
+=Z\,\riesz_Q^{-1}(D^\dagger D\widetilde q)$ by \cref{eq.lattice-covector}.  So
 \cref{prop.closed-step} identifies
 $\Phiphase(\scale_h\,\Lat_{Z,h})$ with the discrete dynamical system
 $(\lvert T^*Q\rvert,F_{Z,h})$.  Both components of $F_{Z,h}$ are bounded
 linear, so $(T^*Q,F_{Z,h})\in\Dyn$ and the identification is
 $\Ufun(T^*Q,F_{Z,h})$.  In components, using
-$(D^*Da)_i=(Da)_i-(Da)_{i+1}=2a_i-a_{i-1}-a_{i+1}$
+$(D^\dagger Da)_i=(Da)_i-(Da)_{i+1}=2a_i-a_{i-1}-a_{i+1}$
 (\cref{sec.background_hilbert}),
 \[
 F_{Z,h}(q,\xi)
@@ -1357,9 +1457,9 @@ Let $(q(t),\xi(t))_{t\in\N}$ be a trajectory.  The position component of
 \end{equation}
 The momentum component of \cref{eq.phase-transition} at time $t-1$,
 together with $\widetilde q(t-1)=q(t)$, gives
-$\riesz_Q(\xi(t))-\riesz_Q(\xi(t-1))=-Z\,D^*Dq(t)$.  Substituting
+$\riesz_Q(\xi(t))-\riesz_Q(\xi(t-1))=-Z\,D^\dagger Dq(t)$.  Substituting
 \cref{eq.momentum-position} at times $t$ and $t-1$ on the left and
-dividing by $Z$ gives $\dot q(t)-\dot q(t-1)=-D^*Dq(t)$, which is
+dividing by $Z$ gives $\dot q(t)-\dot q(t-1)=-D^\dagger Dq(t)$, which is
 \cref{eq.discrete-wave}.
 \end{proof}
 
@@ -1370,7 +1470,7 @@ $\riesz_Q(\xi(t))=\tfrac{Zh}{\Delta\tau}\,\dot q(t)$ and hence
 \[
 \ddot q(t)
 =
--\Bigl(\frac{\Delta\tau}{h}\Bigr)^{2}D^*Dq(t):
+-\Bigl(\frac{\Delta\tau}{h}\Bigr)^{2}D^\dagger Dq(t):
 \]
 the coefficient $(\Delta\tau/h)^2$ multiplies the spatial second
 difference.  The \emph{characteristic tuning} is $\Delta\tau=h$, at which
@@ -1493,7 +1593,7 @@ Fix $Z,h\in\R_{>0}$ and put $Q\coloneqq\ell^2(\Z)$.  The bounded map
 \Wc_{Z,h}(q,\xi)
 \coloneqq
 \frac1{2h}
-\bigl(\riesz_Q(\xi)/Z+Dq,\ \ \riesz_Q(\xi)/Z+D^*q\bigr),
+\bigl(\riesz_Q(\xi)/Z+Dq,\ \ \riesz_Q(\xi)/Z+D^\dagger q\bigr),
 \end{equation}
 is a morphism in $\Dyn$ and, under $\Ufun$, a 2-cell:
 \begin{equation}\label{eq.characteristic-morphism-type}
@@ -1510,7 +1610,7 @@ is a morphism in $\Dyn$ and, under $\Ufun$, a 2-cell:
 \end{theorem}
 
 \begin{proof}
-Boundedness holds because $\riesz_Q$, $D$, and $D^*$ are bounded
+Boundedness holds because $\riesz_Q$, $D$, and $D^\dagger$ are bounded
 (\cref{sec.background_hilbert}).  For
 \cref{eq.characteristic-morphism-type} we must show
 $\Wc_{Z,h}\circ F_{Z,h}=\Sigma_{Z,h}\circ\Wc_{Z,h}$; since every state
@@ -1532,20 +1632,20 @@ $D=\id-\sigma^{\rightarrow}$,
 2h\,w^{\leftarrow}(t)=\dot q(t)+Dq(t)=q(t+1)-\sigma^{\rightarrow}q(t).
 \]
 Since the two shifts are inverse to each other,
-$D^*D=(\id-\sigma^{\leftarrow})(\id-\sigma^{\rightarrow})
+$D^\dagger D=(\id-\sigma^{\leftarrow})(\id-\sigma^{\rightarrow})
 =2\,\id-\sigma^{\leftarrow}-\sigma^{\rightarrow}$, so
-$D-D^*D=\sigma^{\leftarrow}-\id$; and \cref{eq.discrete-wave} at time
-$t+1$ reads $\dot q(t+1)=\dot q(t)-D^*Dq(t+1)$.  Therefore
+$D-D^\dagger D=\sigma^{\leftarrow}-\id$; and \cref{eq.discrete-wave} at time
+$t+1$ reads $\dot q(t+1)=\dot q(t)-D^\dagger Dq(t+1)$.  Therefore
 \[
 2h\,w^{\leftarrow}(t+1)
 =\dot q(t+1)+Dq(t+1)
-=\dot q(t)+(D-D^*D)\,q(t+1)
+=\dot q(t)+(D-D^\dagger D)\,q(t+1)
 =\sigma^{\leftarrow}q(t+1)-q(t)
 =\sigma^{\leftarrow}\bigl(q(t+1)-\sigma^{\rightarrow}q(t)\bigr),
 \]
 which is $2h\,\sigma^{\leftarrow}w^{\leftarrow}(t)$.  The right-travelling
-case is the same computation with $D^*$, $\sigma^{\rightarrow}$ in place
-of $D$, $\sigma^{\leftarrow}$, using $D^*-D^*D=\sigma^{\rightarrow}-\id$.
+case is the same computation with $D^\dagger$, $\sigma^{\rightarrow}$ in place
+of $D$, $\sigma^{\leftarrow}$, using $D^\dagger-D^\dagger D=\sigma^{\rightarrow}-\id$.
 This proves \cref{eq.characteristic-propagation}, hence
 \cref{eq.characteristic-morphism-type}; applying $\Ufun$
 \cref{eq.dyn-forgetful} and the identification of
@@ -1910,19 +2010,19 @@ right factor is symmetric, with the travel-order convention of
 \cref{thm.queue-representation}.
 \end{proof}
 
-\subsection{Subdivision as time dilation}
+\subsection{Subdivision as time change}
 
-For every integer $r\geq1$, let
-$D_r\colon\Cat B\N\to\Cat B\N$ be the functor induced by multiplication by
-$r$.  Restriction along $D_r$ gives
+For every integer $r\geq1$, multiplication by $r$ is a monoid
+homomorphism $r\cdot\colon\N\to\N$; time change along it
+(\cref{sec.background_hilbert}) is
 \[
-D_r^*\colon\Dyn\longrightarrow\Dyn,
+(r\cdot)^*\colon\Dyn\longrightarrow\Dyn,
 \qquad
-D_r^*(X,F)\coloneqq(X,F^r).
+(r\cdot)^*(X,F)=(X,F^r).
 \]
 Thus a map $\rho\colon X\to Y$ identifies one coarse step with $r$ fine
 steps precisely when
-$\rho\colon(X,F)\to D_r^*(Y,G)$ in $\Dyn$,
+$\rho\colon(X,F)\to(r\cdot)^*(Y,G)$ in $\Dyn$,
 or equivalently $\rho F=G^r\rho$.
 
 For a real Hilbert space $C$, integers $L,r\geq1$, and the standard queue
@@ -1982,7 +2082,7 @@ so
 \rho_{N,r,\sigma}\colon
 \bigl(Q_N(B),S_N\bigr)
 \longrightarrow
-D_r^*\bigl(Q_{rN}(C),S_{rN}\bigr)
+(r\cdot)^*\bigl(Q_{rN}(C),S_{rN}\bigr)
 \quad\text{in }\Dyn.
 \end{equation}
 \end{theorem}
@@ -2077,20 +2177,6 @@ on each interval
 \qquad
 0\leq j<2^n.
 \end{equation}
-Moreover, for every $Y\in\Hilb$, restriction induces a natural bijection
-\begin{equation}\label{eq.completion-universal-property}
-\Hilb\bigl(\EZ(d),Y\bigr)
-\cong
-\left\{
-(f_n)_{n\in\N}
-\ \middle|\
-\begin{array}{l}
-f_n\colon H_n\to Y\text{ is bounded},\\
-f_{n+1}\rho_n=f_n,\
-\sup_n\lVert f_n\rVert<\infty
-\end{array}
-\right\}.
-\end{equation}
 \end{theorem}
 
 \begin{proof}
@@ -2109,18 +2195,6 @@ because
 The maps commute with $\rho_n$, so they assemble into an isometry from
 $H_\infty(d,Z)$ onto the subspace of dyadic step functions, which is dense
 in $L^2([0,d),Z\,dx)$; completion gives \cref{eq.interval-realization}.
-
-For \cref{eq.completion-universal-property}, restriction along the
-embeddings $H_n\hookrightarrow \EZ(d)$ sends a bounded
-$f\colon \EZ(d)\to Y$ to a compatible family with
-$\lVert f_n\rVert\leq\lVert f\rVert$.  It is injective because
-$\bigcup_nH_n$ is dense in $\EZ(d)$.  For surjectivity, let $(f_n)$ be a
-compatible family with $s\coloneqq\sup_n\lVert f_n\rVert<\infty$.  Every
-element $x\in H_\infty(d,Z)$ lies in some $H_n$; setting
-$F(x)\coloneqq f_n(x)$ is well defined by compatibility, linear, and
-bounded with $\lVert F\rVert\leq s$.  By the completion adjunction
-(\cref{sec.background_hilbert}), $F$ extends uniquely to a bounded map on
-$\EZ(d)$, which restricts to the given family.
 \end{proof}
 
 \subsection{Ordered intervals}
