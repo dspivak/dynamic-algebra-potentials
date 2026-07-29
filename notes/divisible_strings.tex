@@ -118,7 +118,9 @@
 \trackTerm{\step}{step}{\operatorname{step}}% queue / delay-line step
 \trackTerm{\EZ}{EZ}{E_Z}% completed characteristic state
 \trackTerm{\CZ}{CZ}{C_Z}% cell packet
-\trackTerm{\Ufun}{Ufun}{\mathsf{U}}% forgetful Dyn -> PC(y,y)
+\trackTerm{\Ufun}{Ufun}{\mathsf{U}}% forgetful Lin -> PC, restricting to Dyn -> PC(y,y)
+\trackTerm{\Lin}{lin}{\mathbb{L}\Cat{in}}% 2-category of bounded linear machines
+\trackTerm{\pmon}{pmon}{\mathrm{p}}% monomial interface p(B)
 \trackTerm{\Wc}{Wchar}{\mathcal{W}}% characteristic morphism
 \trackTerm{\riesz}{riesz}{r}% Riesz map
 \trackTerm{\sharpR}{sharpR}{\sharp}% reaction sharp
@@ -1154,26 +1156,178 @@ $\potd$; these are shared verbatim by the Hilbert instance
 (\cref{prop.euler-step-hilbert,prop.nu-hilbert,eq.potential-differential}).
 \end{proof}
 
-\subsection{The harmonic lift}
-\label{sec.harmonic_lift}
+\subsection{The linear refinement}
+\label{sec.linear_refinement}
 
-\begin{remark}[From syntax to hom-categories]\label{rmk.syntax-to-homs}
 An operad supplies operations and substitution, nothing else: $\harr$
 has no morphisms \emph{between} arrangements, so a comparison of two
 built systems cannot be stated in $\harr$.  It is stated in the
 hom-categories of $\pc$, where $\Phiphase$ lands.  This subsection
-refines $\pc(\yon,\yon)$ by $\Dyn$ on the closed harmonic systems, and
-\cref{sec.harmonic_segments} computes hom-categories at monomial
-interfaces together with their composition.
-\end{remark}
+equips those hom-categories, at the interfaces this paper uses, with
+bounded linear structure: a 2-category $\Lin$ of bounded linear
+machines refining $\pc$.  The closed harmonic systems land in its
+corner $\Lin(0;0)$ (\cref{sec.harmonic_lift}), the linear fragment of
+the operad lands in all of it (\cref{sec.linear_phase}), and
+\cref{sec.harmonic_segments} factors systems in it.
 
-Forgetting the Hilbert structure of an object of $\Dyn$ leaves a set with
-an endofunction, i.e.\ a $1$-cell $\yon\to\yon$ in $\pc$
-(\cref{sec.background_categories}), and forgetting the linearity of a
-morphism leaves a $2$-cell.  This gives a faithful functor
-\begin{equation}\label{eq.dyn-forgetful}
-\defineTerm{Ufun}\colon\Dyn\longrightarrow\pc(\yon,\yon).
+\begin{lemma}[Machines at monomial interfaces]
+\label{lem.monomial-homs}
+Let $B_0,C_0$ be sets, $p\coloneqq B_0\yon^{B_0}$, and
+$p'\coloneqq C_0\yon^{C_0}$.
+\begin{enumerate}
+\item\label{item.machines} $\pc(p,p')$ is isomorphic to the category
+of \emph{machines}: objects are triples $(S,f^+,f^-)$ of a set $S$ and
+functions
+\[
+f^+\colon S\times B_0\to C_0,
+\qquad
+f^-\colon S\times B_0\times C_0\to B_0\times S;
+\]
+morphisms $(S,f^+,f^-)\to(\bar S,\bar f^+,\bar f^-)$ are functions
+$\alpha\colon S\to\bar S$ with
+$\bar f^+\circ(\alpha\times\id)=f^+$ and
+$\bar f^-\circ(\alpha\times\id\times\id)
+=(\id\times\alpha)\circ f^-$.
+\item\label{item.moore-mealy} At $B_0=1$, machines are \emph{Moore
+machines} $(S,r,u)$: a readout $r\colon S\to C_0$ and an update
+$u\colon S\times C_0\to S$.  At $C_0=1$, machines are \emph{Mealy
+environments} $(S,\langle e,u'\rangle)$: a single function
+$\langle e,u'\rangle\colon S\times B_0\to B_0\times S$, the
+\emph{reply} and the \emph{update}.
+\item\label{item.machine-composition} Hom-composition is by
+substitution: the composite of $(S,f^+,f^-)\colon p\to p'$ and
+$(S',g^+,g^-)\colon p'\to p''$ has state $S\times S'$ and, writing
+$c\coloneqq f^+(s,b)$, then $(c',s_1')\coloneqq g^-(s',c,c'')$, then
+$(b',s_1)\coloneqq f^-(s,b,c')$,
+\begin{equation}\label{eq.loop-transition}
+\text{output}\colon(s,s',b)\mapsto g^+(s',c),
+\qquad
+\text{backward}\colon(s,s',b,c'')\mapsto\bigl(b',\,(s_1,s_1')\bigr);
 \end{equation}
+the tensor $p\otimes\bar p=(B_0\times\bar B_0)
+\yon^{B_0\times\bar B_0}$ composes machines by products of states and
+of structure maps.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\cref{item.machines}: an object of $\pc(p,p')$ is a coalgebra
+$S\to[p,p'](S)$, equivalently a polynomial map
+$\Store(S)\otimes p\to p'$ (\cref{sec.background_categories}).  On
+positions such a map is a function $S\times B_0\to C_0$, i.e.\ $f^+$;
+on directions it selects, at each $(s,b)$ and each direction
+$c''\in C_0$ of $p'$ at $f^+(s,b)$, a direction of
+$\Store(S)\otimes p$ at $(s,b)$, i.e.\ an element of $B_0\times S$;
+together, $f^-$.  Coalgebra morphisms unwind to the stated
+commutations.
+
+\cref{item.moore-mealy}: at $B_0=1$ we have $p=\yon$ and
+$[\yon,p']\cong p'$, so the machine data reduce to $(r,u)$; at
+$C_0=1$ we have $p'=\yon$, the output is the unique function, and
+$f^-$ is the single function $\langle e,u'\rangle$.
+
+\cref{item.machine-composition}: the composite coalgebra is carried by
+$S\times S'$, with structure map the composite
+\[
+\Store(S\times S')\cong\Store(S)\otimes\Store(S')
+\longrightarrow p'\otimes\Store(S')
+\longrightarrow p''
+\]
+of the two structure maps, after the symmetry
+\cite[\S2.2.4]{cdlm}.%sec.org
+On positions and directions this unwinds to
+\cref{eq.loop-transition}: the outer machine consumes the inner
+output $c$, its returned direction $c'$ is consumed by the inner
+machine, and the states update side by side.  Morphisms and the tensor
+compose componentwise.
+\end{proof}
+
+\begin{lemma}[Stateless 1-cells]\label{lem.stateless}
+For polynomials $p,p'$, evaluation gives
+$[p,p'](1)\cong\poly(p,p')$, so every polynomial map
+$f\colon p\to p'$ determines a $1$-cell in $\pc(p,p')$ with a single
+state, its \emph{stateless} $1$-cell.  The assignment preserves
+identities, hom-composition, and $\otimes$; we elide it, writing $f$
+for the stateless $1$-cell of $f$.
+\end{lemma}
+
+\begin{proof}
+A coalgebra with carrier $1$ is a point of $[p,p'](1)$, and
+$[p,p'](1)\cong\poly(p,p')$ \cite{niu2025polynomial}.  On single-state
+carriers, hom-composition and $\otimes$ of coalgebras restrict to
+composition and $\otimes$ of the selected polynomial maps, by the same
+unwinding as in \cref{lem.monomial-homs}.
+\end{proof}
+
+\begin{definition}[Bounded linear machines]\label{def.lin}
+The 2-category $\defineTerm{lin}$ has as objects the real Hilbert
+spaces.  Its hom-category $\Lin(B;C)$ has as objects the \emph{bounded
+linear machines} $(S,f^+,f^-)$: a Hilbert space $S$ with bounded
+linear maps
+\[
+f^+\colon S\oplus B\to C,
+\qquad
+f^-\colon S\oplus B\oplus C\to B\oplus S,
+\]
+and as morphisms the bounded linear maps of state spaces satisfying
+the commutations of \cref{lem.monomial-homs}.  Identities,
+hom-composition, and the monoidal structure (unit $0$, tensor
+$\oplus$) are by the formulas of \cref{lem.monomial-homs}, which are
+composites and direct sums of bounded linear maps.
+\end{definition}
+
+\begin{definition}[Monomial interface]\label{def.monomial-interface}
+For $B:\Hilb$, the \emph{monomial interface} is the polynomial
+\[
+\defineTerm{pmon}(B)\coloneqq\lvert B\rvert\,\yon^{\lvert B\rvert}.
+\]
+Since $\lvert0\rvert$ is a point and
+$\lvert B\oplus C\rvert=\lvert B\rvert\times\lvert C\rvert$,
+\[
+\pmon(0)=\yon
+\qquad\text{and}\qquad
+\pmon(B\oplus C)=\pmon(B)\otimes\pmon(C).
+\]
+\end{definition}
+
+\begin{theorem}[Linear refinement]\label{thm.lin-refinement}
+Sending $B\mapsto\pmon(B)$, a bounded linear machine to its underlying
+machine, and a morphism to its underlying function defines faithful
+functors
+\[
+\defineTerm{Ufun}\colon\Lin(B;C)\longrightarrow
+\pc\bigl(\pmon(B),\pmon(C)\bigr)
+\]
+preserving identities, hom-composition, and $\otimes$.  In particular
+$\Lin(0;0)=\Dyn$, on which
+\begin{equation}\label{eq.dyn-forgetful}
+\Ufun\colon\Dyn\longrightarrow\pc(\yon,\yon)
+\end{equation}
+forgets the Hilbert structure of a transition.
+\end{theorem}
+
+\begin{proof}
+The underlying function of a bounded linear map $S\oplus B\to C$ is a
+function $\lvert S\rvert\times\lvert B\rvert\to\lvert C\rvert$, so a
+bounded linear machine has an underlying machine
+(\cref{lem.monomial-homs}\cref{item.machines}), and the morphism
+commutations match; the functors are faithful because a bounded
+linear map is determined by its underlying function.  The 2-category
+laws hold in $\Lin$ by the same computations as in $\pc$, with bounded
+linear maps in place of functions and the direct-sum coherences of
+$\Hilb$ as constraints; and $\Ufun$ preserves identities ($\lvert
+0\rvert$ is the one-point state set of the stateless identity,
+\cref{lem.stateless}), hom-composition, and $\otimes$, because taking
+underlying functions commutes with composition and products.  Finally,
+a bounded linear machine with $B=C=0$ is a Hilbert space $S$ with a
+bounded endomorphism $f^-\colon S\to S$, i.e.\ an object of $\Dyn$,
+and its underlying machine is the state set $\lvert S\rvert$ with the
+underlying endofunction: a $1$-cell $\yon\to\yon$
+(\cref{sec.background_categories}).
+\end{proof}
+
+\subsection{The harmonic lift}
+\label{sec.harmonic_lift}
 
 \begin{proposition}[Harmonic lift]\label{prop.harmonic-lift}
 Let $f\in\harr(I;I)$ be a closed harmonic system with parameter
@@ -2425,84 +2579,9 @@ the split epimorphism is then unitary.
 \subsection{Harmonic segments as open subsystems}
 \label{sec.harmonic_segments}
 
-We factor the shift system as a hom-composite in $\pc$: a window of
-$K$ sites is a queue and the rest of the line is its environment.  We
-first compute the relevant hom-categories.
-
-\begin{lemma}[Hom-categories at a monomial interface]
-\label{lem.monomial-homs}
-Let $B_0$ be a set and put $p\coloneqq B_0\yon^{B_0}$.
-\begin{enumerate}
-\item $\pc(\yon,p)$ is isomorphic to the category of \emph{Moore
-machines}: objects are triples $(S,r,u)$ of a set $S$, a readout
-$r\colon S\to B_0$, and an update $u\colon S\times B_0\to S$;
-morphisms are functions of state sets commuting with readouts and
-updates.
-\item $\pc(p,\yon)$ is isomorphic to the category of \emph{Mealy
-environments}: objects are pairs $(S',\langle u',e\rangle)$ of a set
-$S'$ and a function
-$\langle u',e\rangle\colon S'\times B_0\to S'\times B_0$; morphisms
-are functions commuting with $\langle u',e\rangle$.
-\item Under these isomorphisms, hom-composition
-$\pc(\yon,p)\times\pc(p,\yon)\to\pc(\yon,\yon)$ is given on
-objects by
-\begin{equation}\label{eq.loop-transition}
-\bigl((S,r,u),\,(S',\langle u',e\rangle)\bigr)
-\longmapsto
-\Bigl(S\times S',\ \
-(s,s')\mapsto
-\bigl(u(s,\,e(s',r(s))),\ u'(s',r(s))\bigr)\Bigr)
-\end{equation}
-and on morphisms by the product of functions.
-\end{enumerate}
-\end{lemma}
-
-\begin{proof}
-(i) Since $\yon$ is the $\otimes$-unit, $[\yon,p]\cong p$, so an
-object of $\pc(\yon,p)$ is a $p$-coalgebra
-$S\to p(S)=B_0\times S^{B_0}$, i.e.\ a pair $(r,u)$ as stated; its
-morphisms are the coalgebra morphisms, which unwind to the stated
-commutations.
-
-(ii) An object of $\pc(p,\yon)$ is a coalgebra $S'\to[p,\yon](S')$,
-equivalently a polynomial map $\Store(S')\otimes p\to\yon$
-(\cref{sec.background_categories}).  On positions such a map is the
-unique function $S'\times B_0\to1$; on directions it selects, at each
-$(s',b)$, an element of $S'\times B_0$.  This is exactly a function
-$\langle u',e\rangle\colon S'\times B_0\to S'\times B_0$, and
-coalgebra morphisms unwind to functions commuting with it.
-
-(iii) The composite coalgebra is carried by $S\times S'$, with
-structure map the composite
-\[
-\Store(S\times S')\cong\Store(S)\otimes\Store(S')
-\longrightarrow p\otimes\Store(S')
-\longrightarrow\yon
-\]
-of the two structure maps, after the symmetry
-\cite[\S2.2.4]{cdlm}.%sec.org
-On positions it is unique; on directions at $(s,s')$, the second map
-selects $\bigl(u'(s',r(s)),\,e(s',r(s))\bigr)$ and the first returns
-$u\bigl(s,e(s',r(s))\bigr)$ in the $S$-coordinate, giving
-\cref{eq.loop-transition}.  Morphisms compose componentwise.
-\end{proof}
-
-\begin{lemma}[Stateless 1-cells]\label{lem.stateless}
-For polynomials $p,p'$, evaluation gives
-$[p,p'](1)\cong\poly(p,p')$, so every polynomial map
-$f\colon p\to p'$ determines a $1$-cell in $\pc(p,p')$ with a single
-state, its \emph{stateless} $1$-cell.  The assignment preserves
-identities, hom-composition, and $\otimes$; we elide it, writing $f$
-for the stateless $1$-cell of $f$.
-\end{lemma}
-
-\begin{proof}
-A coalgebra with carrier $1$ is a point of $[p,p'](1)$, and
-$[p,p'](1)\cong\poly(p,p')$ \cite{niu2025polynomial}.  On single-state
-carriers, hom-composition and $\otimes$ of coalgebras restrict to
-composition and $\otimes$ of the selected polynomial maps, by the same
-unwinding as in \cref{lem.monomial-homs}.
-\end{proof}
+We factor the shift system in $\Lin$
+(\cref{sec.linear_refinement}): a window of $K$ sites is a queue and
+the rest of the line is its environment.
 
 \begin{definition}[Queue and environment 1-cells]
 \label{def.queue-environment}
