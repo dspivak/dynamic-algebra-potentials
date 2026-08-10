@@ -525,7 +525,11 @@ We give a single compositional setting in which gradient-based learning and Hami
 
 The main technical result of the paper is what we call \emph{lens internalization}, a lax symmetric monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the 2-category of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
 
-When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is conservative and second-order, and $\Phiconf$ gives the discrete heat equation, which is dissipative and first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
+When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is
+%conservative and
+second-order, and $\Phiconf$ gives the discrete heat equation, which is
+%dissipative and
+first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
 \end{abstract}
 
 \medskip
@@ -679,9 +683,16 @@ The passage from lenses to polynomial coalgebras uses a functor we call \emph{le
 Together, $\cot$ and lens internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position but also a momentum, which carries the position forward. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the arrangement corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
-We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}): the conservative, second-order regime and the dissipative, first-order one are two readings of a single syntactic object.
+We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}). Thus the second-order and first-order regimes are two semantics of a single syntactic object, differing mainly in terms of
+whether to store position and momentum data or just position data.
 
-This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime, conservative or dissipative. On the conservative side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with constant symmetric reaction and quadratic potential---preserves the canonical symplectic pairing exactly.
+This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime,
+%conservative or dissipative.
+second-order or first-order. %
+On the
+%conservative
+phase %
+side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with constant symmetric reaction and quadratic potential---preserves the canonical symplectic pairing exactly.
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a monoidal monad (the writer monad of $(\rr,0,+)$ being the main instance). We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later (e.g.\ \cref{ex.syntactic_datum})---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
@@ -1604,7 +1615,7 @@ We write $\defineTerm{potalg}\coloneqq(z,e_z,m_z,\alpha)$ for this data, with \e
 \end{definition}
 
 \begin{remark}\label{rmk.T_monoid_EM}
-A $\Fun{T}$-monoid $\potalg$ in $\cat{C}$ is the same data as a $\otimes$-monoid in the Eilenberg--Moore category $\cat{C}^{\Fun{T}}$, equivalently a $\Fun{T}$-algebra in $\Cat{Mon}_\otimes(\cat{C})$. The two presentations agree because $\Fun{T}$ being monoidal is exactly the condition that the monoidal structure on $\cat{C}$ lifts to one on $\cat{C}^{\Fun{T}}$ (equivalently, that $\Fun{T}$ lifts to a monad on $\Cat{Mon}_\otimes(\cat{C})$); see~\cite{nlab:monoidal_monad, seal2013tensors}.
+A $\Fun{T}$-monoid $\potalg$ in $\cat{C}$ is the same data as a $\Fun{T}$-algebra in $\Cat{Mon}_\otimes(\cat{C})$: $\Fun{T}$ being monoidal is exactly the condition that $\Fun{T}$ lifts to a monad on $\Cat{Mon}_\otimes(\cat{C})$, and \eqref{eqn.T_monoid} is exactly the condition that the structure map $\alpha$ is a morphism there; see~\cite{nlab:monoidal_monad}.
 \end{remark}
 
 Recall that in a symmetric monoidal closed category the functor $-\otimes a$ is left adjoint to the internal hom $\ihom{a,-}$ for each object $a$. We write $\ev_a\colon\ihom{a,b}\otimes a\to b$ for the counit (\emph{evaluation}) and $\coev_a\colon b\to\ihom{a,b\otimes a}$ for the unit (\emph{coevaluation}) of this adjunction; they satisfy the two triangle identities $(\coev_a\otimes a)\then\ev_a=\id_{b\otimes a}$ and $\coev_a\then[a,\ev_a]=\id_{[a,b]}$.
@@ -2391,7 +2402,7 @@ its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\in
 \end{remark} %
 
 \begin{definition}[Vocabulary for smooth adaptive arrangements]\label{def.arrangement_terminology}
-A multimorphism $\varphi\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth adaptive arrangement}, carrying a reactive parameter $Q$ and a potential $U\colon Q\to\rr$ (\cref{def.potlens}). We say that $\varphi$ is:
+A multimorphism $\varphi\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth adaptive arrangement}, carrying a reactive parameter $Q$ and a potential $U$ as in \eqref{eqn.srw_morphism}. We say that $\varphi$ is:
 \begin{description}[labelindent=2em, leftmargin=!, labelwidth=\widthof{\itshape a closed system}, labelsep=1em, align=left, font=\normalfont\itshape]
   \item[stateless] if its parameter $Q=\rr^0$ is trivial;
   \item[potential-free] if its potential $U=0$ vanishes;
@@ -2880,7 +2891,12 @@ so the update is
 \begin{equation}\label{eqn.phase_update}
 \absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((q,\xi),\xi')\mapsto(q+\sharpR_q(\xi),\,\xi-\xi').
 \end{equation}
-This is one step of Hamilton's equations: the position moves by the velocity $\sharpR_q\xi$, landing on $\tilde q$, and the momentum moves by $-\xi'$, the incoming gradient at $\tilde q$. See \cref{sec.closed_conservation}.
+This
+%is
+has %
+one step of Hamilton's equations
+as a special case%
+: the position moves by the velocity $\sharpR_q\xi$, landing on $\tilde q$, and the momentum moves by $-\xi'$, the incoming gradient at $\tilde q$. See \cref{sec.closed_conservation}.
 
 %--------------------------------------------------------------------
 \section{The dynamics functors}\label{sec.dynamics_functor}
@@ -3222,7 +3238,10 @@ If \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then the presented pos
 \[
 (q,\xi)\longmapsto\bigl(q+\sharpR_0(\xi),\,\xi-dU|_{\tilde q}\bigr)=\bigl(\tilde q,\,\xi-dU|_{\tilde q}\bigr).
 \]
-This is the \emph{symplectic} Euler step~\cite[\S 2.1]{gauckler2017dynamics} of the vector field
+This is
+%the \emph{symplectic} Euler step~\cite[\S 2.1]{gauckler2017dynamics}
+one Euler step %
+of the vector field
 \[
 \dot q\coloneqq \sharpR_0(\xi),
 \qquad
@@ -3239,6 +3258,7 @@ This is the \emph{energy function} of a classical mechanical system~\cite[\S 18.
 \sharpS_S(dH|_{(q,\xi)})=(\sharpR_0(\xi),-dU|_q)=(\dot{q},\dot{\xi}).
 \]
 In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.
+The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}. %
 
 The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly. However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---the sharp constant and symmetric and the potential a \textbf{quadratic form}---it does preserve the canonical symplectic pairing. With $\sharpR_0$ constant and symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
 \[U(q)\coloneqq\tfrac12(\kappa q)(q).\]
@@ -3253,7 +3273,7 @@ and we will see in \cref{prop.closed_conservation} that the step \eqref{eqn.clos
 are the standard \emph{drift} and \emph{kick} steps of the symplectic Euler method~\cite[\S 2.2]{gauckler2017dynamics}, the drift advancing the position and the kick applying the force.
 
 \begin{proposition}[Symplecticity of the closed phase step]\label{prop.closed_conservation}
-For a harmonic arrangement (\cref{def.arrangement_terminology}), we obtain the equation
+For a closed harmonic arrangement (\cref{def.arrangement_terminology}), we obtain the equation
 \[\Phiphase(f)=\fun{kick}\circ\fun{drift}.\]
 In particular, the update \eqref{eqn.closed_update} is an endomorphism of the reactive vector space $T^*Q$ in $\rvect$, i.e.\ a linear isomorphism preserving the canonical symplectic pairing \eqref{eqn.canonical_form}.
 \end{proposition}
@@ -3321,7 +3341,9 @@ For a non-quadratic example, take $Q=\rr$ and $U(x)=e^x-x$. Its Hessian $T_x(dU)
 \[
 x\longmapsto x-\sharpR^{U}_x(dU|_x)=x-e^{-x}(e^x-1)=x-1+e^{-x}.
 \]
-Its unique fixed point is the minimum at $x=0$. The dynamical system $\rr\To{\eqref{eqn.newton}}\rr$ for this $U$ always approaches $x=0$, but never reaches it.
+Its unique fixed point is the minimum at $x=0$. The dynamical system $\rr\To{\eqref{eqn.newton}}\rr$ for this $U$ always approaches $x=0$
+%, but never reaches it.
+but, unless initialized there, never reaches it. %
 
 In general, the reactive structure $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic, and the configuration integrator's descent step jumps to that quadratic's critical point. When $U$ is exactly quadratic, the Hessian $T_q(dU)$ is constant, so this quadratic model lands on the true critical point in one step. In dimension $>1$, this could be a maximum, minimum, or saddle. 
 
@@ -3496,7 +3518,7 @@ We begin with a single particle whose state is a transverse displacement and mom
 \end{tikzpicture}
 \end{equation}
 and aim to show that the resulting state dynamics evolves according to the discrete wave equation:%
-\footnote{Taking the continuum limit gives the usual wave equation.}
+\footnote{Taking a continuum limit with the inter-particle spacing and time step going to zero---with $m$ and $\kappa$ scaled accordingly---results in the usual wave equation.}
 \begin{equation}\label{eqn.discrete_wave}
 m\ddot q_i=\kappa(q_{i-1}-2q_i+q_{i+1}),
 \end{equation}
@@ -3900,19 +3922,37 @@ M\,\dot{\vec q}\;=\;-L_G\,\vec q,
 \]
 diffusion on $G$ with the masses $m_v$ serving as heat capacities.
 
-Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, energy-conserving regime and the first-order, dissipative regime are two semantics of one syntactic object.
+Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, symplectic regime and the first-order,
+%dissipative
+descent %
+regime are two semantics of one syntactic object.
 \end{remark}
 
 \begin{remark}[Predicting a closed system]\label{rmk.graph_environment}
-The environment of \cref{ex.training_data} need not be a dataset; it can be a closed system, observed. Given a closed system $c\colon S\to S$ (a $\yon$-coalgebra, \cref{ex.y_coalgebra_trajectory}) and an observation $o\colon S\to X$, the carrier $S$ with readout and update
+The environment of \cref{ex.training_data} need not be a dataset; it can be a closed system being observed. Given a closed system $c\colon S\to S$ (a $\yon$-coalgebra, \cref{ex.y_coalgebra_trajectory}) and an observation $o\colon S\to X$, the carrier $S$ with readout and update
 \[
 \langle o,\ o\circ c\rangle\colon S\to X\times X
 \qqand
 c\colon S\to S
 \]
-is a $\cotof X\otimes\cotof X$-coalgebra---an environment $\yon\to\Phiconf(\tbinom1X\ltens\tbinom1X)$ in $\pc$---presenting the observation now, $o(s)$, as input and one step ahead, $o(c(s))$, as label, then advancing by $c$. Closing the learner \eqref{eqn.dl_composite} (with $\rr^m=\Lambda=X$) with it descends the weights \eqref{eqn.dl_gradient_update} toward predicting $o\circ c$ from $o$, the system's one-step map.
+is a $\cotof X\otimes\cotof X$-coalgebra---an environment $\yon\to\Phiconf(\tbinom1X\ltens\tbinom1X)$ in $\pc$---presenting the observation now, $o(s)$, as input and one step ahead, $o(c(s))$, as label, then advancing by $c$. Closing the learner \eqref{eqn.dl_composite} (with $\rr^m=\Lambda=X$) with it descends the weights \eqref{eqn.dl_gradient_update} toward predicting $o\circ c$
+%from $o$, the system's one-step map.
+from $o$. %
+If $o\circ c=\bar c\circ o$ for some $\bar c\colon X\to X$, the target is the system's one-step map $\bar c$; %
+in general no such $\bar c$ exists, and the learner is trained only on the observed transition pairs $\bigl(o(s),\,o(c(s))\bigr)$. %
 
-For the graph, $c\coloneqq\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ \eqref{eqn.graph_state_update} and $o\coloneqq\pi\colon T^*\rr^V\to\rr^V$ the bundle projection (\cref{lem.TT_projection_diagonal_monoidal}), $X\coloneqq\rr^V$; then $\langle\pi,\pi\circ c\rangle(q,\xi)=\bigl(q,\ q+\sharpR_q\xi\bigr)$ is the current and next configuration, and the network is fit to the graph's propagator, here linear in $L_G$. Any other closed system $c$ in its place---Newton's method, gradient descent---trains a predictor of that one instead.
+For the graph, take the closed system to be $c\coloneqq\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ \eqref{eqn.graph_state_update}%
+%and $o\coloneqq\pi\colon T^*\rr^V\to\rr^V$ the bundle projection (\cref{lem.TT_projection_diagonal_monoidal}), $X\coloneqq\rr^V$; then $\langle\pi,\pi\circ c\rangle(q,\xi)=\bigl(q,\ q+\sharpR_q\xi\bigr)$ is the current and next configuration, and the network is fit to the graph's propagator, here linear in $L_G$.
+. %
+With the bundle projection $\pi\colon T^*\rr^V\to\rr^V$ (\cref{lem.TT_projection_diagonal_monoidal}), no $\bar c$ as above exists: only positions are observed, but states with the same position and different momenta have different next positions. 
+However, if we instead take $X\coloneqq\rr^V\times\rr^V$ and observe two consecutive configurations, $o\coloneqq\langle\pi,\,\pi\circ c\rangle\colon T^*\rr^V\to X$, sending $(q,\xi)$ to $\bigl(q,\ q+\sharpR_q\xi\bigr)$, then $o\circ c=\bar c\circ o$ for some $\bar c\colon X\to X$.
+%, where $\bar c(x,x')\coloneqq\bigl(x',\ 2x'-x-M^{-1}L_G\,x'\bigr)$, the recurrence \eqref{eqn.graph_laplacian_dynamics} in first-order form.
+%Indeed, starting from \eqref{eqn.graph_laplacian_dynamics}, unfold $\ddot q_v(t)$ as in \eqref{eqn.doubledot} and collect components into vector form: $M\bigl(\vec q(t+1)-2\vec q(t)+\vec q(t-1)\bigr)=-L_G\,\vec q(t)$. %
+%Solving for $\vec q(t+1)$ gives $\vec q(t+1)=2\,\vec q(t)-\vec q(t-1)-M^{-1}L_G\,\vec q(t)$, i.e.\ $\bar c\bigl(\vec q(t-1),\vec q(t)\bigr)=\bigl(\vec q(t),\vec q(t+1)\bigr)$: $\bar c$ carries each consecutive pair of configurations to the next. Since the position update of \eqref{eqn.graph_state_update} gives $o\bigl(\vec q(t),\vec\xi(t)\bigr)=\bigl(\vec q(t),\vec q(t+1)\bigr)$, this says exactly that $o\circ c=\bar c\circ o$ at every state. 
+In this case, the network is fit to the graph's propagator $\bar c$%
+%and is linear in $L_G$.
+, which is linear in $L_G$. %
+Any other closed system $c$ in its place---Newton's method, gradient descent---trains a predictor of that one instead.
 \end{remark}
 
 \section*{Conclusion}
