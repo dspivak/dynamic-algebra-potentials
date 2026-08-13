@@ -1,4 +1,4 @@
-# Notation conventions for `dynamic-algebra-potentials.tex`
+# Notation conventions for `CDLM.tex`
 
 This file is **both** the notation table for the paper **and** the audit procedure
 for verifying that the paper conforms to it. There are two distinct operations on
@@ -18,7 +18,7 @@ or the *table* is stale (a maintain edit) — is a separate, user-owned step. Ne
 side effect happens inside an audit.
 
 An LLM handed this file *to audit* should read this whole document, then execute the
-audit described in §"Audit procedure" against `dynamic-algebra-potentials.tex` in the
+audit described in §"Audit procedure" against `CDLM.tex` in the
 same directory. When auditing, treat the table as a draft under test: assume it is
 incomplete and may contain errors, verify every claim against the `.tex`, and report
 findings only — do not propose fixes.
@@ -115,13 +115,14 @@ edit, where updating the table is the whole point.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Generic smooth manifold | `M`, `N` | `\mfd` for the category |
+| Generic smooth manifold | `M`, `N`, `O` | `\mfd` for the category; a third manifold, e.g. the outer interface of a composite `f\then g`, is `O` (`prop.suboperads`) |
 | Reactive vector space (object of `\rvect`) | `\rv Q`=`(Q,\sharpR_Q)` | bold `\rv` macro; emphasizes sharp-dependence (e.g. `\chiQ{\rv Q}`) |
-| Underlying / carrier vector space | `Q`, `W` | also: domain for `T^*Q` constructions; abused for the object `\rv Q` when sharp is understood or canonical (`T^*Q`) |
-| Point of a manifold | `m`, `n` | `m\colon\rr^0\to M` style |
-| Point of a vector space | `q` | element tracks the carrier `Q`; position in `(q,\xi)\in T^*Q`; second point `q'`, indexed `q_1,\ldots,q_K` (physics generalized coordinates). `x` is retired as a point, and `q` is never a polynomial |
+| Underlying / carrier vector space | `Q`, `W`, `R` | also: domain for `T^*Q` constructions; abused for the object `\rv Q` when sharp is understood or canonical (`T^*Q`). A second parameter carrier, for the second factor of a composite `f\then g` or a tensor `f\ltens g`, is `R` (`prop.suboperads`)---font-distinct from the potentials monad `\Fun R` |
+| Point of a manifold | `m`, `n`, `o` | `m\colon\rr^0\to M` style; the element tracks its manifold, so `o\in O` |
+| Point of a vector space | `q` | element tracks the carrier `Q`; position in `(q,\xi)\in T^*Q`; second point `q'`, indexed `q_1,\ldots,q_K` (physics generalized coordinates); a point of a second carrier `R` is `r`. `x` is retired as a point, and `q` is never a polynomial |
 | Tangent vector (generic) | `v`, `w` | at `T_qQ`; avoid clashing with vector-space `Q`. A generic direction with no underlying trajectory — e.g. the reactive-pairing arguments `\pairing{v,v'}_q` (`def.rvect`). For a velocity (derivative of a trajectory) use the dot below |
 | Velocity (tangent vector as time-derivative) | `\dot q`, `\dot m`, `\dot\xi` | the derivative of a `Q`-/`M`-/`Q^*`-valued trajectory; **tracks its basepoint** (so `\dot q\in T_qQ`, not `v`). Used in Euler steps (`q\mapsto q+\dot q`), differentials (`eqn.differential`: `\dot m\in T_mM`), and vector fields (`\dot q=\sharpR_0(\xi)`, `\dot\xi=-dU|_q` in `sec.phase_dynamics`) |
+| Partial differential (in one factor) | `\partial_q f` | `\partial_q f\coloneqq T_q(f(\blank,m))` (`eqn.partial_differential`, `sec.manifolds_notation`): differential of the partial application in the named factor, other arguments held at the in-scope point. Scalar codomain: a covector under `eqn.tangent_vec` (so `\partial_qR`, `\partial_\lambda U` in ch.applications are instances). Manifold codomain: a linear map, used transposed, e.g. `(\partial_q\outp f)^\top` (*unilateral*, `def.arrangement_terminology`) |
 | Covector | `\xi` | primed/indexed: `\xi'`, `\xi_Q`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,q)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
 | Phase point | `(q,\xi)\in T^*Q` | position–momentum pair |
 | Presented position | `\tilde q` | `\tilde q\coloneqq q+\sharpR_q(\xi)` (`eqn.presented_position`): the position the phase integrator reads out, where the environment evaluates forces; vector form `\vec{\tilde q}` in §7.3–7.4. Tilde reserved for this |
@@ -144,7 +145,7 @@ Search hints: `\\omega`, `\\colon T^*`.
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| `p`-coalgebra structure map | `f` | generic function name; `\beta`, `\phi`, `\delta` forbidden for this sort |
+| `p`-coalgebra structure map | `f` | generic function name; `\beta`, `\phi`, `\delta` forbidden for this sort. **Scoped clash:** `f` also names lens morphisms and adaptive arrangements (§Lenses, §Abstract framework); coalgebra-`f` binding sites live in `sec.poly_dynamic_bg` and the intro. Where an arrangement and a bare coalgebra co-occur (the closed-system-environment passage citing `ex.training_data`), the coalgebra takes `c\colon S\to S` locally |
 | State set | `S` | |
 | State element | `s` | |
 
@@ -165,24 +166,25 @@ Search hints: `"coalgebra"`, `S\\to p\\(S\\)`, `S\\to p\\tri`, `S\\to`,
 | Closed phase step | (unnamed; `eqn.closed_update`) | self-map of `\absval{T^*Q}` for a closed system `f` (= morphism `I\to I`, def. at "From this point on we work in `\sarr`", `sec.forming_potlens`): `(q,\xi)\mapsto(q+\sharpR_q\xi,\,\xi-dU|_{\tilde q})`; the wave/graph-Laplacian setting. Terminology: **closed** = codomain `I`, **system** = domain `I`, **closed system** = both (a *scalar*); **closed morphism** keeps inputs (e.g. the loss, `sec.dl_warmup`) |
 | Drift / kick | `\fun{drift}`, `\fun{kick}` | the two shears on `T^*Q` (`eqn.drift_kick`); each an `\rvect`-endomorphism of `T^*Q`, composite = closed quadratic step, which is hence symplectic (`prop.closed_conservation`) |
 | Stiffness | `\kappa` | symmetric linear map `Q\to Q^*`, the `dU` of the quadratic potential `U(q)=\tfrac12(\kappa q)(q)` (block before `prop.closed_conservation`); the scalar `\kappa` of `sec.wave_equation` is its 1-dimensional instance |
-| Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\org` (`prop.integrator_to_org`); indexed by the integrator pair |
-| Dynamics functor | `\Phi_{\interp,\intg}`, `\Phip{\interp}` | **The dynamics functor has two independent inputs — interpretation datum and integrator — and the notation names both, interpretation first: `\Phi_{\interp,\intg}` (`thm.dynamics_functor`, `\rwd_D\to\org`).** Never silently suppress an input. The smooth chapter (`ch.smooth_dynamics`) fixes the interpretation to `\interpsm`=`\mathrm{sm}` and then **explicitly announces** that it drops it from the notation (sentence right after the composite display in the chapter opener), writing `\Phi_\intg` for `\Phi_{\interpsm,\intg}` thereafter. So `\Phi_\intg` is fine *because the drop is declared at that moment* — do not reintroduce the drop anywhere the framework's two-subscript notation is still live, and do not delete the announcement. Named smooth functors render with the dropped form: `\Phiconf`→`\Phi_{\conf}` (macro line 471), `\Phiphase`→`\Phi_{\phase}` (line 469). The polynomial-interpretation *factor* is separate: `\Phip{\interp}` (the macro `\Phip[1]{\Phi'_{#1}}`, renders `\Phi'_\mathfrak{p}`), into `\para{\Fun c\circ J}\poly` (`thm.poly_interpretation`); the prime distinguishes it from the dynamics functor `\Phi`. **Always write `\Phip{...}`, never a bare `\Phi'`** — its subscript is the in-scope interpretation `\interp` (`\mathfrak p`, or `\interpsm` in the smooth chapter), abbreviating the full 4-tuple datum (`def.smooth_setup`). Do not unfold it into a partial subscript like `\Phi'_{\cot,(\yon,\potd)}`: that drops the semantic effect and comparison, which are canonical from `\cot` in the smooth instance but are genuine inputs in the general `thm.poly_interpretation`. See §"Abstract framework" |
+| Integrator semantics | `\Psisem` (renders `\Psi`) | `\Psi_\intg\colon\para p\poly\to\pciso` (`prop.integrator_to_org`; label keeps the legacy `org` stem; included into `\pc` by `thm.dynamics_functor`); indexed by the integrator pair |
+| Dynamics functor | `\Phi_{\interp,\intg}`, `\Phip{\interp}` | **The dynamics functor has two independent inputs — interpretation datum and integrator — and the notation names both, interpretation first: `\Phi_{\interp,\intg}` (`thm.dynamics_functor`, `\arr_D\to\pc`).** Never silently suppress an input. The smooth chapter (`ch.smooth_dynamics`) fixes the interpretation to `\interpsm`=`\mathrm{sm}` and then **explicitly announces** that it drops it from the notation (sentence right after the composite display in the chapter opener), writing `\Phi_\intg` for `\Phi_{\interpsm,\intg}` thereafter. So `\Phi_\intg` is fine *because the drop is declared at that moment* — do not reintroduce the drop anywhere the framework's two-subscript notation is still live, and do not delete the announcement. Named smooth functors render with the dropped form: `\Phiconf`→`\Phi_{\conf}` (macro line 471), `\Phiphase`→`\Phi_{\phase}` (line 469). The polynomial-interpretation *factor* is separate: `\Phip{\interp}` (the macro `\Phip[1]{\Phi'_{#1}}`, renders `\Phi'_\mathfrak{p}`), into `\para{\Fun c\circ J}\poly` (`thm.poly_interpretation`); the prime distinguishes it from the dynamics functor `\Phi`. **Always write `\Phip{...}`, never a bare `\Phi'`** — its subscript is the in-scope interpretation `\interp` (`\mathfrak p`, or `\interpsm` in the smooth chapter), abbreviating the full 4-tuple datum (`def.smooth_setup`). Do not unfold it into a partial subscript like `\Phi'_{\cot,(\yon,\potd)}`: that drops the semantic effect and comparison, which are canonical from `\cot` in the smooth instance but are genuine inputs in the general `thm.poly_interpretation`. See §"Abstract framework" |
 
 Search hints: `"integrator"`, `\\intg`, `\\Store\\circ`, `\\Rightarrow p`, `\\dyn`, `\\Fun S`, `\\Psisem`, `\\Phi_`, `\\Phip`.
 
-### Abstract framework (rewiring data)
+### Abstract framework (adaptive-arrangement data)
 
-A *rewiring datum* is `D = (\cat M, \cat Q, J, \Fun R)` (`def.rewiring_datum`), introduced in
-`ch.framework`; the syntax operad `\rwd_D` depends only on it. Interpreting that syntax
+An *adaptive-arrangement datum* is `D = (\cat M, \cat Q, J, \Fun R)` (`def.rewiring_datum` —
+labels keep the legacy `rewiring`/`org` stems; prose is "adaptive-arrangement" throughout), introduced in
+`ch.framework`; the syntax operad `\arr_D` depends only on it. Interpreting that syntax
 adds an interface functor `\Fun c` into `\poly` and a potential algebra `(z,\alpha)` (the
 polynomial interpretation, `sec.poly_interpretation`); an integrator then gives the dynamics functor into
-`\org`. The smooth instance plugs in the rewiring datum `\Sm = (\mfd, \rvect, \inc, \rr)`
+`\pc`. The smooth instance plugs in the adaptive-arrangement datum `\Sm = (\mfd, \rvect, \inc, \rr)`
 (`def.potlens`) with interface functor `\Fun c = \cot` and potential algebra
-`(z,\alpha) = (\yon, \potd)` (`prop.smooth_setup`); the rightmost column gives it.
+`(z,\alpha) = (\yon, \potd)` (`def.smooth_setup`); the rightmost column gives it.
 
 | Sort | Symbol | Notes | Smooth instance |
 |---|---|---|---|
-| Rewiring datum (whole tuple) | `D = (\cat M, \cat Q, J, \Fun R)` | `def.rewiring_datum`; determines the syntax operad `\rwd_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
+| Adaptive-arrangement datum (whole tuple) | `D = (\cat M, \cat Q, J, \Fun R)` | `def.rewiring_datum`; determines the syntax operad `\arr_D` | `\Sm` (`def.potlens`, renders `\mathrm{Sm}`) |
 | Spaces (cartesian category) | `\cat M` | source of lens syntax | `\mfd` |
 | Parameters (sym. monoidal category) | `\cat Q` | acts on `\cat M` via `J`; font-distinct from the carrier `Q` | `\rvect` |
 | Parameter inclusion | `J\colon\cat Q\to\cat M` | strong monoidal | `\inc` |
@@ -190,12 +192,13 @@ polynomial interpretation, `sec.poly_interpretation`); an integrator then gives 
 | Interface functor | `\Fun c` | strong monoidal `\cat M\to\poly`; sans-serif like `\cot`; the `p` of `def.integrator` is `\Fun c\circ J`. **Forbidden clash:** the lens component `c` and the friction `c` | `\cot` |
 | Potential algebra | `(z,\alpha)` | `\otimes`-monoid `z` with a `\Fun R'`-monoid structure `\alpha` (`def.T_monoid`; `\Fun R'=\Fun c(R)\otimes\blank` in the writer instance). `\alpha` is reserved for this map: **not** covectors (write the pair) nor `\Para` 2-cells (use `g`, `prop.para`). The submersion-lens backward map in `prop.euler_submersion_lenses` reuses `\alpha` locally—sanctioned, since that proof never co-occurs with the potential algebra | `(\yon,\potd)` |
 | Set of modes | `\md` (`\mathsf{Md}`) | finite set decorating a monad via the power `(\blank)^{\md}` (`prop.moding`, `prop.moded_algebra`); a mode is an element `i\in\md`. Sans-serif to stay clear of the space `M` and the category `\cat M`; element indexed by `i` to stay clear of the manifold point `m` | single-mode `z=\yon` |
-| Rewiring-diagram operad | `\rwd_D` (renders `\mathbb{R}\Cat{WD}_D`; blackboard `\mathbb{R}` marks it as a (2,1)-operad, in-family with `\org`) | underlying operad of `\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}` (`def.rewiring_datum`) | `\srwd \coloneqq \rwd_{\Sm}` by definition (`def.potlens`); `\srwd` expands to `\rwd_{\Sm}` (renders `\mathbb{R}\Cat{WD}_{\mathrm{Sm}}`) |
+| Adaptive-arrangement operad | `\arr_D` (renders `\mathbb{A}\Cat{rr}_D`; blackboard `\mathbb{A}` marks it as a (2,1)-operad, in-family with `\pc`; registry term-key `rwd`, tex line 411) | underlying operad of `\para{\cat Q}{\Lcokl{\cat M}{\Fun R}}` (`def.rewiring_datum`) | `\sarr\coloneqq\arr_{\Sm}` by definition (`def.potlens`); `\sarr` renders `\mathbb{A}\Cat{rr}_{\mathrm{Sm}}` (registry term-key `srwd`, tex line 439) |
+| Adaptive arrangement (morphism of `\arr_D`) | `f`, `g` | the tuple `f=(Q,\outp f,\inpt f)` (unwinding after `def.rewiring_datum`); components `\inpt f`/`\outp f` extend the lens-morphism row (§Lenses); composable pairs are `f`, `g` (`rem.huge_wiring_diagram`). **`\varphi`, `\psi` forbidden for this sort** (normalized 2026-08-13 at `def.arrangement_terminology` and `sec.wave_equation`): the `\varphi`-family names *static patterns* — generic `\cat W`-morphisms (`sec.wd_operads`, intro), wiring lenses (`\varphi_K`, `\varphi_G`), polynomial maps (§Polynomial functors) — and a pattern promoted into the operad is either named (`\fun{wire}_K`, `\rr^{\varphi_G}`) or takes `f`, `g`. **Scoped clash:** `f` is also the coalgebra structure map — see §p-coalgebras | `f\coloneqq(\rv Q,\binom{\inpt f}{\outp f},U)` (`def.potlens` unwinding); vocabulary in `def.arrangement_terminology` |
 
-Search hints: `"rewiring datum"`, `\\rwd`, `\\Sm`, `\\cat M`, `\\cat Q`, `\\Fun c`,
+Search hints: `"adaptive-arrangement datum"`, `\\arr`, `\\sarr`, `\\Sm`, `\\cat M`, `\\cat Q`, `\\Fun c`,
 `def.rewiring_datum`, `def.potlens`, `thm.dynamics_functor`, `cor.functor`.
 
-Named (smooth) rewiring diagrams use the wiring family: `\Part` (particle), `\boxob` (box), `\fun{wire}_K` (K-ary wiring), `\fun{wire}_G` (graph `G`'s wiring, `eqn.psi_graph_lap`). `\psi` is **not** used for these—it is only a local proof variable and the second of a composable `(\varphi,\psi)` pair.
+Named (smooth) arrangements use the wiring family: `\Part` (particle), `\boxob` (box), `\fun{wire}_K` (K-ary wiring), `\fun{wire}_G` (graph `G`'s wiring, `eqn.psi_graph_lap`). `\psi` is **not** used for these—it is only a local proof variable and the second of a composable `(\varphi,\psi)` pair.
 
 ### Scalars and parameters
 
@@ -234,6 +237,7 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 | Generic polynomial | `p`, `p'`, `p''` | the parameter-interface functor is *also* `p` (a poly-valued functor `\cat Q\to\poly`, `p_a:\poly`); see §"Integrators & dynamics functors". Second and third polynomials are **primed** (e.g. composition `[p,p']\otimes[p',p'']\to[p,p'']`); a probe/variable object (tensor--hom, internal hom) is `a`. **`q` is never a polynomial**---it denotes a point of `Q` (full-consistency rename, 2026-06-05) |
 | Position set | `p(1)` | |
 | Directions at `i` | `p[i]` | |
+| Polynomial map | `\varphi\colon p\to p'`; second of a composable pair is `\psi` | components: forward-on-positions `\varphi_1`, backward-on-directions `\bk{\varphi}{i}` (the `\sharp`-free notation; footnote following `eqn.poly_map`). `\varphi` is the *static-map* letter family throughout: also generic `\cat W`-morphisms (`sec.wd_operads`, intro `eqn.varphi`) and wiring lenses (`\varphi_K`, `\varphi_G`); **never an adaptive arrangement** (§Abstract framework) |
 | Cotangent polynomial | `\cotof{M}` | from `\cot\colon\mfd\to\poly` |
 | Representable | `\yon^N`, just `\yon` | `\defineTerm{yon}\coloneqq\yon^1` |
 
@@ -242,7 +246,7 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 | Sort | Symbol(s) | Notes |
 |---|---|---|
 | Lens object | `\lensob{c}` | binomial `\binom{\inpt c}{\outp c}` |
-| Lens morphism | `f\colon\lensob c\to\lensob d` | components: `\inpt f`, `\outp f` |
+| Lens morphism | `f\colon\lensob c\to\lensob d` | components: `\inpt f`, `\outp f`; adaptive arrangements extend this row (§Abstract framework). A lens used as a *static wiring pattern* takes `\varphi` (`\varphi_K`, `\varphi_G`; intro `eqn.varphi`) |
 
 #### `\Cat{Lens}` decoration rule
 

@@ -80,73 +80,75 @@
 \newcommand{\cotof}[1]{\cot(#1)}
 
 % ---------- term tracking (from CDLM) ----------
-% \defineTerm{name} marks the definition site of a tracked term; every later
-% use of the associated macro hyperlinks (in black) back to that site.
+% \trackTerm{\xyz}{symbol} defines \xyz to typeset symbol; every use of \xyz
+% hyperlinks (in black) back to the definition site \defineTerm{xyz}.  The
+% tracking key is derived from the macro name itself, so key = macro holds by
+% construction; \defineTerm with any other key is a compile error.  The
+% starred form \trackTerm* overwrites an existing command (e.g. \cot).
 \makeatletter
-\NewDocumentCommand{\trackTermSymbol}{m m}{%
-  \expandafter\newcommand\csname termraw@#1\endcsname{{#2}}%
-}
 \NewDocumentCommand{\termraw}{m}{%
   \@ifundefined{termraw@#1}%
-    {\PackageError{termraw}{Term '#1' not registered}{Use \string\trackTermSymbol{#1}{...} first.}}%
+    {\PackageError{termraw}{Term '#1' not registered}{Register it with \string\trackTerm first.}}%
     {\@nameuse{termraw@#1}}%
 }
 \DeclareRobustCommand{\termref}[2]{{\hypersetup{linkcolor=black}\hyperlink{term.#1}{#2}}}
-\NewDocumentCommand{\trackTerm}{m m m}{%
-  \trackTermSymbol{#2}{#3}%
-  \newcommand{#1}{\termref{#2}{\termraw{#2}}}%
+\NewDocumentCommand{\trackTerm}{s m m}{%
+  \edef\trackTerm@key{\expandafter\@gobble\string#2}%
+  \expandafter\newcommand\csname termraw@\trackTerm@key\endcsname{{#3}}%
+  \IfBooleanTF{#1}{\let#2\@undefined}{}%
+  \expandafter\trackTerm@def\expandafter{\trackTerm@key}{#2}%
+}
+\NewDocumentCommand{\trackTerm@def}{m m}{%
+  \newcommand{#2}{\termref{#1}{\termraw{#1}}}%
 }
 \NewDocumentCommand{\defineTerm}{m}{\hypertarget{term.#1}{\termraw{#1}}}
 \makeatother
 
-\trackTerm{\PreHilb}{prehilb}{\Cat{PreHilb}}
-\trackTerm{\Hilb}{hilb}{\Cat{Hilb}}
-\trackTerm{\hsm}{hsm}{\Cat{Hilb}_{\mathrm{sm}}}
-\trackTerm{\rhilb}{rhilb}{\Cat{RHilb}}
-\trackTerm{\smsetiso}{smsetiso}{\Cat{Set}_{\cong}}
-\trackTerm{\poly}{poly}{\Cat{Poly}}
-\trackTerm{\yon}{yon}{\mathsf{y}}
-\trackTerm{\pc}{pc}{\mathbb{P}\Cat{C}}
-\trackTerm{\harr}{harr}{\mathbb{A}\Cat{rr}_{\mathrm{Hb}}}
-\trackTerm{\Dyn}{dynh}{\Cat{Dyn}}
-\trackTerm{\Int}{intop}{\Cat{Int}}
-\trackTerm{\DelayCat}{delay}{\Cat{Delay}}
-\trackTerm{\Store}{Store}{\Fn{Store}}
-\trackTerm{\Hb}{Hb}{\mathrm{Hb}}% the Hilbert adaptive-arrangement datum
-\trackTerm{\interph}{interph}{\mathrm{hb}}% the Hilbert polynomial interpretation datum
-\trackTerm{\thetacomp}{theta}{\theta}% effect comparison of the interpretation datum
-\trackTerm{\potd}{potd}{\fun{d}}% potential algebra map cot(R) -> y
-\trackTerm{\chiE}{chi}{\chi}% Euler step
-\trackTerm{\nuro}{nu}{\nu}% phase readout
-\trackTerm{\dynphase}{dynphase}{\fun{dyn}_{\phase}}% phase dynamics
-\trackTerm{\step}{step}{\operatorname{step}}% queue / delay-line step
-\trackTerm{\EZ}{EZ}{E_Z}% completed characteristic state
-\trackTerm{\CZ}{CZ}{C_Z}% cell packet
-\trackTerm{\riesz}{riesz}{r}% Riesz map
-\trackTerm{\sharpR}{sharpR}{\sharp}% reaction sharp
-\trackTerm{\sharpS}{sharpS}{\sharp^{\mathrm{s}}}% canonical symplectic sharp
-\trackTerm{\Open}{opencat}{\Cat{Open}}% semicategory of open harmonic systems (1-categorical: \Cat, not \mathbb)
-\trackTerm{\Lin}{lin}{\mathbb{L}\Cat{in}}% semicategory of ported machines
-\trackTerm{\Ufun}{Ufun}{\mathsf{U}}% embedding of ported machines into PC
-\trackTerm{\Phiopen}{Phiopen}{\Phi_{\mathrm{open}}}% open linear semantics
-\trackTerm{\seam}{seam}{\fun{seam}}% seam wiring
-\trackTerm{\Qu}{Qu}{Q}% queue state space Q_N(B)
-\trackTerm{\Qterm}{Qterm}{\mathbb{Q}}% terminal delay realization
-\trackTerm{\Fl}{Fl}{\Fn{Fl}}% covector fields on a Hilbert space
-\trackTerm{\blk}{blk}{\fun{blk}}% block steps as a natural transformation
-\trackTerm{\headf}{head}{\fun{head}}% completed-step head
-\trackTerm{\nextf}{next}{\fun{next}}% completed-step next
-\trackTerm{\Zport}{Zport}{P_Z}% the Z-port
-\trackTerm{\cellm}{cellm}{\fun{cell}}% the cell
-\trackTerm{\Chain}{chain}{\fun{chain}}% chains = powers of the cell
-\trackTerm{\Tm}{Tm}{\mathsf{T}}% the chain machine
-\trackTerm{\Sm}{Sm}{\mathsf{S}}% the string
-\trackTermSymbol{Phip}{\Phi'}% polynomial interpretation functor
-\newcommand{\Phip}[1]{\termref{Phip}{\termraw{Phip}}_{#1}}
-\trackTermSymbol{cot}{\Fn{cot}}
-\renewcommand{\cot}{\termref{cot}{\termraw{cot}}}
-\trackTermSymbol{Phiphase}{\Phi_{\phase}}
-\newcommand{\Phiphase}{\termref{Phiphase}{\termraw{Phiphase}}}
+\trackTerm{\PreHilb}{\Cat{PreHilb}}
+\trackTerm{\Hilb}{\Cat{Hilb}}
+\trackTerm{\hsm}{\Cat{Hilb}_{\mathrm{sm}}}
+\trackTerm{\rhilb}{\Cat{RHilb}}
+\trackTerm{\smsetiso}{\Cat{Set}_{\cong}}
+\trackTerm{\poly}{\Cat{Poly}}
+\trackTerm{\yon}{\mathsf{y}}
+\trackTerm{\pc}{\mathbb{P}\Cat{C}}
+\trackTerm{\harr}{\mathbb{A}\Cat{rr}_{\mathrm{Hb}}}
+\trackTerm{\Dyn}{\Cat{Dyn}}
+\trackTerm{\Int}{\Cat{Int}}
+\trackTerm{\DelayCat}{\Cat{Delay}}
+\trackTerm{\Store}{\Fn{Store}}
+\trackTerm{\Hb}{\mathrm{Hb}}% the Hilbert adaptive-arrangement datum
+\trackTerm{\interph}{\mathrm{hb}}% the Hilbert polynomial interpretation datum
+\trackTerm{\thetacomp}{\theta}% effect comparison of the interpretation datum
+\trackTerm{\potd}{\fun{d}}% potential algebra map cot(R) -> y
+\trackTerm{\chiE}{\chi}% Euler step
+\trackTerm{\nuro}{\nu}% phase readout
+\trackTerm{\dynphase}{\fun{dyn}_{\phase}}% phase dynamics
+\trackTerm{\step}{\operatorname{step}}% queue / delay-line step
+\trackTerm{\EZ}{E_Z}% completed characteristic state
+\trackTerm{\CZ}{C_Z}% cell packet
+\trackTerm{\riesz}{r}% Riesz map
+\trackTerm{\sharpR}{\sharp}% reaction sharp
+\trackTerm{\sharpS}{\sharp^{\mathrm{s}}}% canonical symplectic sharp
+\trackTerm{\Open}{\Cat{Open}}% semicategory of open harmonic systems (1-categorical: \Cat, not \mathbb)
+\trackTerm{\Lin}{\mathbb{L}\Cat{in}}% semicategory of ported machines
+\trackTerm{\Ufun}{\mathsf{U}}% embedding of ported machines into PC
+\trackTerm{\Phiopen}{\Phi_{\mathrm{open}}}% open linear semantics
+\trackTerm{\seam}{\fun{seam}}% seam wiring
+\trackTerm{\Qu}{Q}% queue state space Q_N(B)
+\trackTerm{\Qterm}{\mathbb{Q}}% terminal delay realization
+\trackTerm{\Fl}{\Fn{Fl}}% covector fields on a Hilbert space
+\trackTerm{\blk}{\fun{blk}}% block steps as a natural transformation
+\trackTerm{\headf}{\fun{head}}% completed-step head
+\trackTerm{\nextf}{\fun{next}}% completed-step next
+\trackTerm{\Zport}{P_Z}% the Z-port
+\trackTerm{\cellm}{\fun{cell}}% the cell
+\trackTerm{\Chain}{\fun{chain}}% chains = powers of the cell
+\trackTerm{\Tm}{\mathsf{T}}% the chain machine
+\trackTerm{\Sm}{\mathsf{S}}% the string
+\trackTerm{\Phip}{\Phi'}% polynomial interpretation functor
+\trackTerm*{\cot}{\Fn{cot}}
+\trackTerm{\Phiphase}{\Phi_{\phase}}
 
 \title{Open Harmonic Chains and Divisible Strings}
 \author{}
@@ -440,8 +442,8 @@ $\langle\blank,\blank\rangle$; a \emph{Hilbert space} is a pre-Hilbert space
 that is complete for the induced norm.  A linear map $f\colon V\to W$ is
 \emph{bounded} if $\lVert f\rVert\coloneqq\sup_{\lVert v\rVert\leq1}\lVert
 f(v)\rVert_W<\infty$; we call $\lVert f\rVert$ the \emph{operator norm} of
-$f$.  We write $\defineTerm{prehilb}$ for the category of
-pre-Hilbert spaces and bounded linear maps, and $\defineTerm{hilb}$ for its
+$f$.  We write $\defineTerm{PreHilb}$ for the category of
+pre-Hilbert spaces and bounded linear maps, and $\defineTerm{Hilb}$ for its
 full subcategory of Hilbert spaces.  A bounded linear map is an
 \emph{isometry} if it preserves norms, and \emph{unitary} if it is a
 surjective isometry.  In any category, a morphism is a \emph{split
@@ -587,7 +589,7 @@ throughout.
 For a monoid $(M,+,0)$, write $\Cat BM$ for the category with one object
 whose endomorphism monoid is $M$.  Define
 \[
-\defineTerm{dynh}_M\coloneqq[\Cat BM,\Hilb]:
+\defineTerm{Dyn}_M\coloneqq[\Cat BM,\Hilb]:
 \]
 an object is a Hilbert space with an action of $M$ by bounded operators,
 and a morphism is a bounded linear map commuting with the two actions.
@@ -920,7 +922,7 @@ The \emph{Hilbert polynomial interpretation datum} for $\Hb$ is
 where $\cot$ is the cotangent functor
 (\cref{def.cot_hilbert,prop.cot_monoidal_hilbert}), the semantic effect is
 the writer monad of the commutative monoid $\cotof\R$, the comparison
-$\defineTerm{theta}\colon\cotof{\R\oplus\blank}\cong\cotof\R\otimes\cotof\blank$ is
+$\defineTerm{thetacomp}\colon\cotof{\R\oplus\blank}\cong\cotof\R\otimes\cotof\blank$ is
 induced by the strong monoidality of $\cot$, and the potential algebra is
 $(\yon,\potd)$ as in \cref{eq.potential_differential}.
 \end{definition}
@@ -931,7 +933,7 @@ There is a normal lax symmetric monoidal functor
 \defineTerm{Phip}\colon\harr\longrightarrow\para{\cot}{\poly},
 \]
 acting on interfaces by
-$\Phip{\interph}\binom{A}{B}=\cotof B\otimes[\cotof A,\yon]$.
+$\Phip_{\interph}\binom{A}{B}=\cotof B\otimes[\cotof A,\yon]$.
 \end{corollary}
 
 \begin{proof}
@@ -1034,7 +1036,7 @@ $\lvert V\oplus W\rvert\cong\lvert V\rvert\times\lvert W\rvert$.
 
 \begin{proposition}[Euler step]\label{prop.euler_step_hilbert}
 There is a monoidal natural transformation
-$\defineTerm{chi}\colon\Store\circ\lvert\blank\rvert\Rightarrow\cot\circ\inc$ of
+$\defineTerm{chiE}\colon\Store\circ\lvert\blank\rvert\Rightarrow\cot\circ\inc$ of
 functors $\rhilb\to\poly$ whose component
 $\chiE_{\rv V}\colon\Store(\lvert V\rvert)\to\cotof V$ is the identity on
 positions and, on directions at $v\in V$, is
@@ -1074,7 +1076,7 @@ with constant reactions and bounded sharps.
 
 \begin{proposition}[Phase readout]\label{prop.nu_hilbert}
 There is a monoidal natural transformation
-$\defineTerm{nu}\colon\cot\circ\inc\circ\,T^*\Rightarrow\cot\circ\inc$ of functors
+$\defineTerm{nuro}\colon\cot\circ\inc\circ\,T^*\Rightarrow\cot\circ\inc$ of functors
 $\rhilb\to\poly$ whose component
 $\nuro_{\rv V}\colon\cotof{T^*V}\to\cotof V$ has position map the
 \emph{presented position}
@@ -1265,7 +1267,7 @@ $(b,c,d,a)\mapsto(a,b,c)$.
 \end{proof}
 
 \begin{definition}[Open systems]\label{def.open}
-The semicategory $\defineTerm{opencat}$ has as objects the ports.  A
+The semicategory $\defineTerm{Open}$ has as objects the ports.  A
 morphism $f\colon(A,\lambda)\to(B,\mu)$ is a harmonic linear system
 (\cref{def.vocabulary}) $f=(\rv Q,\outp f,U)\colon I\to\binom{A}{B}$
 in $\harr$ whose potential satisfies the \emph{impedance condition}
@@ -1388,7 +1390,7 @@ injective on positions and bijective on directions.
 \end{definition}
 
 \begin{definition}[Ported machines]\label{def.ported_machine}
-The semicategory $\defineTerm{lin}$ has as objects the ports.  Its
+The semicategory $\defineTerm{Lin}$ has as objects the ports.  Its
 hom-category $\Lin\bigl((A,\lambda),(B,\mu)\bigr)$ has as objects the
 \emph{ported machines} $(S,f^+,f^-)$: a Hilbert space $S$, the
 \emph{state space}, with bounded linear maps
@@ -1790,7 +1792,7 @@ which is why the cell has a bond at its input only.
 \begin{definition}[Chains]\label{def.chain}
 For $K\in\Z_{\geq1}$, the \emph{$K$-chain} is the $K$th power
 \[
-\defineTerm{chain}_K\coloneqq\cellm_Z^{\circ K}
+\defineTerm{Chain}_K\coloneqq\cellm_Z^{\circ K}
 \colon \Zport\longrightarrow \Zport
 \quad\text{in }\Open.
 \]
@@ -2197,7 +2199,7 @@ fG_X=G_Y,
 \qquad
 R_X=R_Yf.
 \]
-Write $\defineTerm{delay}_N(B)$ for the resulting category.
+Write $\defineTerm{DelayCat}_N(B)$ for the resulting category.
 \end{definition}
 
 \begin{theorem}[Queue representation]\label{thm.queue_representation}
@@ -2624,7 +2626,7 @@ in $L^2([0,d),Z\,dx)$; completion gives \cref{eq.interval_realization}.
 \label{sec.intervals}
 
 \begin{definition}[Ordered interval operad]\label{def.interval_operad}
-The nonsymmetric colored operad $\defineTerm{intop}$ has colors
+The nonsymmetric colored operad $\defineTerm{Int}$ has colors
 $d\in\R_{\geq0}$ and operation sets
 \[
 \Int(d_1,\ldots,d_k;d)
@@ -2677,8 +2679,8 @@ unitary composite
 \xrightarrow{\ \id\oplus\Gamma^Z_{d-a,a}\ }
 \EZ(a)\oplus \EZ(d).
 \end{equation}
-We write $\defineTerm{head}_{d,a}\colon\EZ(d)\to\EZ(a)$ and
-$\defineTerm{next}_{d,a}\colon\EZ(d)\oplus\EZ(a)\to\EZ(d)$ for its two
+We write $\defineTerm{headf}_{d,a}\colon\EZ(d)\to\EZ(a)$ and
+$\defineTerm{nextf}_{d,a}\colon\EZ(d)\oplus\EZ(a)\to\EZ(d)$ for its two
 components.
 \end{definition}
 

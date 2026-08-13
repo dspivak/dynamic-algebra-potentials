@@ -1922,7 +1922,7 @@ The following diagram depicts composition of 1-ary arrangements in $\arr_D$, in 
 
 Suppose given adaptive arrangements $f=(Q,\outp f,\inpt f,U)\colon\lensob L\to\lensob M$, with parameter $Q$ and potential $U$, and $g=(Q',\outp g,\inpt g,V)\colon\lensob M\to\lensob N$, with parameter $Q'$ and potential $V$. One may imagine $\lensob{L}$ as the inner-most box, $\lensob{M}$ as the middle box, and $\lensob{N}$ as the outer-most box.
 
-The composite $g\circ f$ has parameter $Q\otimes Q'$, forward and backward components inherited from $\Lcokl{\cat M}{R}$, and potential added via the monoid multiplication $(+)$.
+The composite $g\circ f$ has parameter $Q'\otimes Q$---the outer parameter first, as in \cref{sec.para_general}, which is also how the two enter the picture below---forward and backward components inherited from $\Lcokl{\cat M}{R}$, and potential added via the monoid multiplication $(+)$.
 \[
 \begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.4cm, bbx=.5cm, bby=.7ex, baseline=(fo)]
   \node[bb={2}{1}] (fo) {$\outp f$};
@@ -2271,9 +2271,31 @@ dU\colon M\to T^*M,\qquad dU|_m\coloneqq(T_m U)^\top(+1)\in T^*_mM.
 \end{equation}
 Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=Q$ is a vector space, we regard $dU|_q$ as an element of $Q^*$ under \eqref{eqn.tangent_vec}.
 
+For a smooth map $f\colon M\times N\to P$ and a point $(m,n)\in M\times N$, we write
+\begin{equation}\label{eqn.partial_differential}
+\partial_m f\coloneqq T_m\bigl(f(\blank,n)\bigr)\colon T_mM\to T_{f(m,n)}P %
+\end{equation}
+for the differential at $m$ of the partial application $f(\blank,n)\colon M\to P$, and similarly in any factor of a finite product: the subscript names the point at which we differentiate, and all other arguments are held fixed. When $P=\rr$, we regard $\partial_m f$ as a covector in $T^*_mM$ under \eqref{eqn.tangent_vec}, so that $\partial_m f=d\bigl(f(\blank,n)\bigr)\big|_m$ in the sense of \eqref{eqn.differential}.
+
 \begin{warning}\label{warn.prime}
 We will not ever use $f'$ notation to mean derivatives in this paper; ``priming'' a symbol (such as $f$) will only be used to indicate that $f'$ is somehow analogous to $f$.
 \end{warning}
+
+\begin{remark}[$C^1$ regularity]\label{rmk.C1_regularity}
+We use smooth manifolds and smooth maps throughout the paper, but the latter is purely a convenience rather than a necessity. We have checked that---with a single exception, recorded as the first item below---every definition, proposition, and proof in this paper remains valid when the manifolds are smooth but the maps of manifolds (the output and input maps $\outp f,\inpt f$ and the potential $U$ of \eqref{eqn.srw_morphism}, and the sharp map $\sharpR_Q$ of \cref{def.rvect}) \emph{are allowed to be $C^1$} rather than smooth. 
+
+The reason it works is that the semantics is first-order and set-theoretic: the cotangent functor $\cot$ (\cref{def.cot}) uses only the pointwise differentials $T_mf$ and their transposes; its functoriality is the chain rule, which is valid for $C^1$ maps. The differential $dU$ of a $C^1$ potential is merely continuous, but even that is unused. It enters only as the backward component of the polynomial map $\potd\circ\cotof{U}\colon\cotof{X}\to\yon$ \eqref{eqn.d_potential}, and maps in $\poly$ carry no regularity requirement: the coalgebra updates in $\pc$ are functions of sets.
+
+In all, four statements weaken:
+\begin{enumerate}
+\item The operad functor $\cat R\to\sarr$ of \cref{sec.related_cls} remains faithful but is no longer full; the arrow label $\mathrm{ff}$ becomes $\mathrm{faithful}$ in both copies of the comparison diagram \eqref{eqn.cls_diag}, and likewise in the proof of \cref{prop.euler_submersion_lenses}, whose obligations are only weakened.
+CLS is a smooth framework, so the morphisms of $\cat R$ keep smooth $w$, $E$, and sharp, while $\sarr$ includes morphisms that aren't smooth.
+\item The tangent functor $T\colon\mfd\to\mfd$ above ceases to be an endofunctor: if $f$ is $C^1$, the global tangent map $Tf$ may not be. Its pointwise content---the identifications \eqref{eqn.T_products}---and the pointwise differentials $T_mf$ are unaffected, the former because the manifolds remain smooth and the latter because $f$ is $C^1$; the constructions of this paper use only these.
+\item Two statements about \emph{flow}---the final clause of \cref{rmk.symplectic_perpendicular} and the sentence ``In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}'' in \cref{sec.closed_conservation}---require the Hamiltonian vector field to generate a flow. However, for a $C^1$ Hamiltonian that field is merely continuous, so the flow may not exist or be unique.
+\item Newton's method (\cref{sec.newton_warmup}) defines its reaction as an inverse Hessian, but this is undefined for $C^1$ potentials, which is an issue for the construction of the Newton reaction structure.
+\end{enumerate}
+An example potential we have seen in practice is $U(q)\coloneqq\absval{q}^{3/2}$, which is $C^1$ but not $C^2$, its differential is non-Lipschitz, and the descent ODE it generates reaches the origin in finite time and is non-unique when going backwards in time. Yet \cref{cor.functor} still assigns its arrangement a total, deterministic dynamical system, because the discrete semantics never solves an ODE.
+\end{remark}
 
 %--------------------------------------------------------------------
 \section{Reactive vector spaces}\label{sec.rvect}
@@ -2305,6 +2327,8 @@ In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwi
 
 Where the sharp is understood, or is the canonical one (as on $T^*Q$, \cref{prop.canonical_symplectic_pairing}), we may abuse notation and write simply $Q$ for $\rv Q$.
 \end{definition}
+
+Our theory does not privilege nondegenerate reactions in any way: the only nondegeneracy our results rely on is that of the canonical symplectic pairing on $T^*Q$ (\cref{prop.canonical_symplectic_pairing}), which holds regardless of the reaction $\sharpR_Q$. For control theory---formalized as unilateral arrangements in \cref{prop.suboperads}---it will be important to allow degenerate reactions.
 
 \begin{proposition}\label{prop.rvect_monoidal}
 Direct sum gives $\rvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space as unit and direct-sum sharp $\sharpR_{Q\oplus W}$ given by
@@ -2380,10 +2404,14 @@ The \emph{smooth adaptive-arrangement datum} is
 \[
 \Sm\coloneqq(\mfd,\rvect,\inc,\rr),
 \]
-an adaptive-arrangement datum (\cref{def.rewiring_datum}): $\mfd$ is cartesian monoidal, $(\rr,0,+)$ is a commutative monoid object in it---giving the writer potentials monad $\rr\otimes\blank$, which we abbreviate by its carrier $\rr$---$\rvect$ is symmetric monoidal (\cref{prop.rvect_monoidal}), and $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal (\cref{prop.rvect_smc_action}). Its adaptive-arrangement operad $\defineTerm{srwd}$ is the underlying operad of the symmetric monoidal category $\para{\rvect}{\plmfd}$ (\cref{lem.para_monoidal}).
+an adaptive-arrangement datum (\cref{def.rewiring_datum}): $\mfd$ is cartesian monoidal, $(\rr,0,+)$ is a commutative monoid object in it---giving the writer potentials monad $\rr\otimes\blank$, which we abbreviate by its carrier $\rr$---$\rvect$ is symmetric monoidal (\cref{prop.rvect_monoidal}), and $\inc\colon\rvect\to\mfd$ is strong symmetric monoidal (\cref{prop.rvect_smc_action}). 
+
+Its adaptive-arrangement operad $\defineTerm{srwd}$ is the underlying operad of the symmetric monoidal category $\para{\rvect}{\plmfd}$ (\cref{lem.para_monoidal}).
 \end{definition}
 
-A morphism $f\colon\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}\to\lensob{N}$ is a tuple $f\coloneqq\left(\rv Q,\binom{\inpt f}{\outp f},U\right)$ with $\rv Q\coloneqq(Q,\sharpR_Q):\rvect$. Writing $\lensob M\coloneqq\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}$ for the tensored domain, so that $\outp M=\prod_{i=1}^K\outp M_i$ and $\inpt M=\prod_{i=1}^K\inpt M_i$, the components are smooth maps
+An object in $\sarr$ is a pair $\lensob{M}$ of manifolds and a multimorphism
+\[f\colon\lensob{M_1},\cdots,\lensob{M_K}\to\lensob{N}\] 
+consists of a tuple $f\coloneqq(\rv Q,\inpt f,\outp f,U)$ with $\rv Q\coloneqq(Q,\sharpR_Q):\rvect$ a reactive vector space, and, writing $\lensob M\coloneqq\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}$ for the tensored domain, so that $\outp M=\prod_{i=1}^K\outp M_i$ and $\inpt M=\prod_{i=1}^K\inpt M_i$, the components are smooth maps
 \begin{equation}\label{eqn.srw_morphism}
 \begin{gathered}
 \outp f\colon Q\times\outp M\to\outp N,\qquad
@@ -2394,28 +2422,75 @@ U\colon Q\times\outp M\times\inpt N\to\rr.
 \eqref{eqn.arrangement} depicts this data in the case $K=1$. %
 
 \begin{remark}\label{rmk.preference_slogan} %
-The asymmetry in the domains of \eqref{eqn.srw_morphism} is worth naming as a slogan: %
-\emph{inputs $\inpt \blank$ are what the interior has preferences over, and %
-outputs $\outp \blank$ are what the exterior has preferences over}. %
-Since the arrangement $f$ lives interior to $\lensob N$ and exterior to each $\lensob{M_i}$, %
-its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$. %
-\end{remark} %
+The asymmetry in the domains of \eqref{eqn.srw_morphism} is worth naming as a slogan:
+\emph{inputs $\inpt \blank$ are what the interior has preferences over, and
+outputs $\outp \blank$ are what the exterior has preferences over}. By preferences, we mean that these variables can be used in potential functions. Since the arrangement $f$ lives interior to $\lensob N$ and exterior to each $\lensob{M_i}$, its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$.
+\end{remark}
 
-\begin{definition}[Vocabulary for smooth adaptive arrangements]\label{def.arrangement_terminology}
-A multimorphism $\varphi\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth adaptive arrangement}, carrying a reactive parameter $Q$ and a potential $U$ as in \eqref{eqn.srw_morphism}. We say that $\varphi$ is:
+\begin{definition}[Vocabulary]\label{def.arrangement_terminology}
+A multimorphism $f=(Q,\sharpR_Q,\inpt f,\outp f,U)\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth adaptive arrangement} as in \eqref{eqn.srw_morphism}. We say that $f$ is:
 \begin{description}[labelindent=2em, leftmargin=!, labelwidth=\widthof{\itshape a closed system}, labelsep=1em, align=left, font=\normalfont\itshape]
+  \item[closed] if its codomain is the monoidal unit $I=\binom{1}{1}$;
+  \item[a system] if its domain is $I=\binom{1}{1}$ (i.e.\ the arity is $K=0$); 
+  \item[a closed system] if it is a morphism $I\to I$ (sometimes called a \emph{scalar});
   \item[stateless] if its parameter $Q=\rr^0$ is trivial;
   \item[potential-free] if its potential $U=0$ vanishes;
   \item[static] if it is both stateless and potential-free;
-  \item[closed] if its codomain is the monoidal unit $I=\binom{1}{1}$;
-  \item[a system] if its domain is $I=\binom{1}{1}$ (i.e.\ the arity is $K=0$); 
-  \item[a closed system] if it is a morphism $I\to I$ (sometimes called a \emph{scalar}); and
-  \item[harmonic] if $\outp M$ and $\inpt N$ are vector spaces, its sharp $\sharpR_Q$ is constant and symmetric, and its potential $U$ is a quadratic form.\footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it.}
+  \item[harmonic] if $\outp M$ and $\inpt N$ are vector spaces, its sharp $\sharpR_Q$ is constant and symmetric, and its potential $U$ is a quadratic form;\footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.}
+  \item[linear] if it is harmonic, its other interfaces $\inpt M$ and $\outp N$ are also vector spaces, and its maps $\outp f$ and $\inpt f$ are linear;
+  \item[unilateral] if whenever $\outp f(q,\outp m)=\outp n$ and $\xi\in T^*_{\outp n}\outp N$, we have $\sharpR_q\bigl((\partial_q\outp f)^\top\xi\bigr)=0$ \eqref{eqn.partial_differential}, i.e.\ if the following diagram commutes
+  \[
+  \begin{tikzcd}
+  	T^*_{\outp n}\outp N\ar[d, "\bang"']\ar[r, "(T_{(q,\outp m)}\outp f)^\top"]&[25pt]
+		Q^*\oplus T^*_{\outp m}\outp M\ar[r, "\pi_{Q^*}"]&
+		Q^*\ar[d, "\sharpR_q"]\\
+		0\ar[rr, "\bang"']&&
+		Q
+  \end{tikzcd}
 \qedhere
+  \]
 \end{description}
 \end{definition}
 
 We have now settled the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: from this point forward, we work in $\cat{W}\coloneqq\sarr$.
+
+\begin{proposition}\label{prop.suboperads}
+The stateless, potential-free, static, linear, and unilateral morphisms each span a suboperad of $\sarr$.
+\end{proposition}
+\begin{proof}
+We'll show that all but the linear case are \emph{wide} suboperads, i.e.\ they have the same objects as $\sarr$. 
+
+Static is just the intersection of stateless and potential-free. The identity has $Q=0$ and $U=0$, so it is stateless and potential free, and any stateless arrangement is unilateral. It is also linear since its output is identity and its input is a projection (see \cref{def.lens}). So it suffices to show that stateless, potential-free, linear, and unilateral maps are each closed under composition. In fact, we may assume they are 1-ary $\lensob{M}\to\lensob{N}$ at the cost of additionally showing that they are each also closed under tensor product.
+
+Under tensor product, everything adds: $Q_{f\ltens g}=Q\oplus R$, $U_{f\ltens g}=U+V$ by the productor \eqref{eqn.monoid_productor} of the monad $\rr\times\blank$, $\sharpR_{(q,r)}=\sharpR_q\oplus\sharpR_r$ by \eqref{eqn.directsum_sharp}, and $\outp{(f\ltens g)}=\outp f\times\outp g$. So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, potential-free is preserved because $0+0=0$, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric and $U+V$ is again a quadratic form, and unilateral is preserved because %
+\[
+\sharpR_{(q,r)}\left(\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top\right)
+=\sharpR_q\Bigl((\partial_q\outp f)^\top\Bigr)\oplus\sharpR_r\Bigl((\partial_r\outp g)^\top\Bigr)
+\]
+is a direct sum of maps that each vanish by unilaterality of $f$ and $g$.
+
+Under composition $f\colon\lensob M\to\lensob N$ and $g\colon\lensob N\to\lensob O$, again the state spaces and potentials add, $Q_{f\then g}=R\oplus Q$, and potentials are given by
+\[
+U_{f\then g}(r,q,\outp m,\inpt o)=U\bigl(q,\outp m,\inpt g(r,\outp n,\inpt o)\bigr)+V(r,\outp n,\inpt o),
+\qquad\outp n\coloneqq\outp f(q,\outp m),
+\]
+coming from the multiplication of the writer monad $\rr\times\blank$ in the coKleisli composition of \cref{prop.backward_comonad}. So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, and potential-free is preserved because $0+0=0$.
+Linearity is preserved as well: the maps $\outp{(f\then g)}$ and $\inpt{(f\then g)}$ are each composites of linear maps, the sharp $\sharpR_r\oplus\sharpR_q$ is again constant and symmetric, and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too. Thus it suffices to prove that unilaterality is preserved under composition.
+
+So suppose $f$ and $g$ are unilateral, let $\outp n\coloneqq\outp f(q,\outp m)$ and $\outp o\coloneqq\outp g(r,\outp n)$, and let $\xi\in T^*_{\outp o}\outp O$. The output map of the composite $R\times Q\times\outp M\To{R\times\outp f}R\times\outp N\To{\outp g}\outp O$ is $\outp{(f\then g)}(r,q,\outp m)=\outp g\bigl(r,\outp f(q,\outp m)\bigr)$, so the chain rule gives
+\[
+\bigl(\partial_{(r,q)}\outp{(f\then g)}\bigr)^\top(\xi)
+=\Bigl((\partial_r\outp g)^\top(\xi),\;(\partial_q\outp f)^\top(\xi')\Bigr)\in R^*\oplus Q^*,
+\qquad\xi'\coloneqq(\partial_{\outp n}\outp g)^\top(\xi)\in T^*_{\outp n}\outp N.
+\]
+Applying the sharp $\sharpR_{(r,q)}=\sharpR_r\oplus\sharpR_q$ of the composite, we obtain
+\[
+\sharpR_{(r,q)}\left(\bigl(\partial_{(r,q)}\outp{(f\then g)}\bigr)^\top(\xi)\right)
+=\Bigl(\sharpR_r\bigl((\partial_r\outp g)^\top(\xi)\bigr),\;\sharpR_q\bigl((\partial_q\outp f)^\top(\xi')\bigr)\Bigr)
+=(0,0),
+\]
+each vanishing by unilaterality.
+\end{proof}
 
 %====================================================================
 \chapter{Smooth adaptive dynamics}\label{ch.smooth_dynamics}
@@ -2626,11 +2701,12 @@ T^*_qQ\To{\cong}Q^*\To{\sharpR_q}Q\To{q+\blank}Q,
 \qquad
 \xi\longmapsto q+\sharpR_q(\xi).
 \end{equation}
-When $\sharpR$ is nondegenerate, $\chiQ{\rv Q}$ is an isomorphism.
+%When $\sharpR$ is nondegenerate, $\chiQ{\rv Q}$ is an isomorphism.
 \end{proposition}
 
 \begin{proof}
-On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $Q$ to its underlying set, so we can take the on-positions component of $\chiQ{\rv Q}$ to be the identity. At each $q\in Q$, \eqref{eqn.directions_sharp} is the composite of an isomorphism \eqref{eqn.tangent_vec}, the linear map $\sharpR_q$, and translation by $q$---the flat \emph{exponential} step $q\mapsto q+\sharpR_q(\xi)$, which on linear $Q$ coincides with a single Euler step---giving a well-defined polynomial map $\Store(\absval{Q})\to\cotof{Q}$. When $\sharpR_q$ is an isomorphism for all $q$, the on-directions component is a bijection, so $\chiQ{\rv Q}$ is an isomorphism in $\poly$.
+On positions, both composite functors $\Store\circ\absval{\blank}$ and $\cot\circ\inc$ send $Q$ to its underlying set, so we can take the on-positions component of $\chiQ{\rv Q}$ to be the identity. At each $q\in Q$, \eqref{eqn.directions_sharp} is the composite of an isomorphism \eqref{eqn.tangent_vec}, the linear map $\sharpR_q$, and translation by $q$---the flat \emph{exponential} step $q\mapsto q+\sharpR_q(\xi)$, which on linear $Q$ coincides with a single Euler step---giving a well-defined polynomial map $\Store(\absval{Q})\to\cotof{Q}$.
+%When $\sharpR_q$ is an isomorphism for all $q$, the on-directions component is a bijection, so $\chiQ{\rv Q}$ is an isomorphism in $\poly$.
 
 For naturality at a $\rvect$-isomorphism $\phi\colon\rv Q\to\rv W$, the on-positions square commutes by definition. On directions at $q:Q$, we must check that the two backward composites $T^*_{\phi(q)}W\to Q$ agree:
 \begin{align*}
@@ -3529,7 +3605,8 @@ where for $t\geq1$ we use $\ddot q_i(t)$ to denote
 
 We will work in the full suboperad of $\sarr$ (in the sense of \cref{sec.wd_operads}) spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider arrangements of the form
 \[
-\varphi\in\sarr(\boxob\ltpow{K},\boxob)
+%\varphi\in\sarr(\boxob\ltpow{K},\boxob)
+f\in\sarr(\boxob\ltpow{K},\boxob) %
 \]
 for varying $K$. Note that $\boxob\ltpow{0}=\binom{1}{1}$ is the monoidal unit.
 
@@ -3582,7 +3659,8 @@ Indeed, the map $\Part\colon\binom{1}{1}\to\binom{\rr}{\rr}$ is actually the com
 	\draw (dot) to (bond_in1);
 \end{tikzpicture}
 \]
-So $\Part=\varphi(\RealPart,\Bond)$ where $\RealPart\cong\binom{1}{1}\to\binom{1}{\rr}$ is potential-free with state $Q=\rr$ and $\outp\RealPart=\id$, and $\Bond\colon\binom{1}{1}\to\binom{\rr^2}{1}$ is stateless with potential $U(q_1,q_2)=\frac\kappa2(q_1-q_2)^2$. We will not use these pictures $\RealPart$, $\Bond$ again.
+%So $\Part=\varphi(\RealPart,\Bond)$ where $\RealPart\cong\binom{1}{1}\to\binom{1}{\rr}$ is potential-free with state $Q=\rr$ and $\outp\RealPart=\id$, and $\Bond\colon\binom{1}{1}\to\binom{\rr^2}{1}$ is stateless with potential $U(q_1,q_2)=\frac\kappa2(q_1-q_2)^2$. We will not use these pictures $\RealPart$, $\Bond$ again.
+So $\Part=g(\RealPart,\Bond)$ where $\RealPart\cong\binom{1}{1}\to\binom{1}{\rr}$ is potential-free with state $Q=\rr$ and $\outp\RealPart=\id$, and $\Bond\colon\binom{1}{1}\to\binom{\rr^2}{1}$ is stateless with potential $U(q_1,q_2)=\frac\kappa2(q_1-q_2)^2$. We will not use these pictures $\RealPart$, $\Bond$ again. %
 
 So what we have called the particle $\Part$ already carries its own bond: it is a pure mass (vertex) with a stateless bond attached on one side. If one wishes, the asymmetry in the presentation to follow can be avoided by working this way: replace edges with stateless bonds and vertices with potential-free (pure) particles.%
 \footnote{I thank Ryan Tavenner for this observation.}
@@ -3964,33 +4042,43 @@ The same split appears in the neural-network example of \cref{sec.dl_warmup}. Ap
 Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. It also remains to realize specific multi-stage integrators such as leapfrog (\cref{rmk.multistage}). 
 
 
-Finally, there may be several suboperads of interest
-\[
-\sarr^{\tn{lin}}\ss\sarr^{\tn{har}}\ss\sarr
-\]
-on which other
-semantics can be extracted. It may be that the superposition
-principle exhibited by the wave and heat examples can be generalized to a
-``linear stratum'' suboperad $\sarr^{\tn{lin}}$ consisting of
-constant symmetric sharps, linear lens maps, and quadratic potentials. In
-fact we expect that this inclusion factors through a suboperad of
-``critically pointed diagrams,'' and that second-order Taylor expansion
-about the critical point will provide a retraction onto $\sarr^{\tn{lin}}$.
-%We also expect that the larger ``harmonic stratum'' suboperad, consisting of constant
-%symmetric sharps and quadratic potentials, should
+%Finally, there may be several suboperads of interest
+%\[
+%\sarr^{\tn{lin}}\ss\sarr^{\tn{har}}\ss\sarr
+%\]
+%on which other
+%semantics can be extracted.
+%Finally, beyond those of \cref{prop.suboperads}, there may be further suboperads of interest
+%\[
+%\sarr^{\tn{lin}}\ss\sarr
+%\]
+%on which other semantics can be extracted. 
+%It may be that the superposition
+%principle exhibited by the wave and heat examples can be generalized to a
+%``linear stratum'' suboperad $\sarr^{\tn{lin}}$ consisting of
+%constant symmetric sharps, linear lens maps, and quadratic potentials. In
+%fact we expect that this inclusion factors through a suboperad of
+%``critically pointed diagrams,'' and that second-order Taylor expansion
+%about the critical point will provide a retraction onto $\sarr^{\tn{lin}}$.
+Finally, the linear arrangements span a suboperad $\sarr^{\tn{lin}}\ss\sarr$ %
+(\cref{prop.suboperads}) on which other semantics may be extracted. It may be that the %
+superposition principle exhibited by the wave and heat examples is one such, defined on %
+the linear stratum alone. We further expect that this inclusion factors through a %
+suboperad of ``critically pointed diagrams,'' and that second-order Taylor expansion %
+about the critical point will provide a retraction onto $\sarr^{\tn{lin}}$. %
+%We also expect that $\sarr^{\tn{lin}}$ should
 %have semantics in \emph{Lagrangian spans}: to each interface
 %$\binom{\inpt M}{\outp M}$ we assign the symplectic vector space
 %$T^*\outp M\times\overline{T^*\inpt M}$, and to each arrangement the span
 %whose apex records all the data of a single step: the states before and after, together with
 %the port data at each interface. We believe that these should form a
-%symmetric lax monoidal functor $\sarr^{\tn{har}}\to\Cat{LagSpan}$. 
+%symmetric lax monoidal functor $\sarr^{\tn{lin}}\to\Cat{LagSpan}$. 
 %\[
 %\begin{tikzcd}
 %	\sarr^{\tn{crit}}\ar[r]\ar[d, ->>]&
 %		\sarr\ar[r]&
 %			\pc\\
-%	\sarr^{\tn{lin}}\ar[r, hook]\ar[u, bend left, hook]&
-%		\sarr^{\tn{har}}\ar[r]\ar[u, hook]&
+%	\sarr^{\tn{lin}}\ar[rr]\ar[u, bend left, hook]\ar[ur, hook]&&
 %			\Cat{LagSpan}
 %\end{tikzcd}
 %\]
