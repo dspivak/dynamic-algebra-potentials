@@ -2316,7 +2316,8 @@ the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_q\co
 \footnote{
 Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_qQ\cong Q$ and $T^*_qQ\cong Q^*$. It will be more convenient to use the above form.
 }
-We say the reaction is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We call a reactive vector space \emph{nondegenerate} if $\sharpR_q$ is an isomorphism for every $q$; in that case we denote the pointwise inverse $\flat_q\coloneqq\sharpR_q\inv\colon Q\to Q^*$ and call it the \emph{flat} map, and we call $\pairing{v,v'}_q\coloneqq\flat_q(v)(v')$ the \emph{pairing at $q$}.
+We say the reaction is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We say the reaction is \emph{symmetric} if $\xi(\sharpR_q(\xi'))=\xi'(\sharpR_q(\xi))$ for all $q\in Q$ and all $\xi,\xi'\in Q^*$, and we call the reactive vector space \emph{constant-symmetric} if its reaction is constant and symmetric.
+We call a reactive vector space \emph{nondegenerate} if $\sharpR_q$ is an isomorphism for every $q$; in that case we denote the pointwise inverse $\flat_q\coloneqq\sharpR_q\inv\colon Q\to Q^*$ and call it the \emph{flat} map, and we call $\pairing{v,v'}_q\coloneqq\flat_q(v)(v')$ the \emph{pairing at $q$}.
 
 We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects---we write $\rv Q\coloneqq(Q,\sharpR_Q)$ for the object and $Q$ for its underlying vector space---and as morphisms $\rv Q\to\rv W$ the linear isomorphisms $\phi\colon Q\To{\cong}W$ that are \emph{sharp-equivariant}: 
 for all $q\in Q$,
@@ -2432,7 +2433,7 @@ outputs $\outp \blank$ are what the exterior can have preferences over}. By pref
 \end{remark}
 
 \begin{definition}[Vocabulary]\label{def.arrangement_terminology}
-A multimorphism $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\colon b_1,\dots,b_K\to c$ in $\sarr$ is a \emph{smooth adaptive arrangement} as in \eqref{eqn.srw_morphism}. We say that $f$ is:
+We say that a smooth adaptive arrangement $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\in\sarr(b_1,\dots,b_K; c)$ as in \eqref{eqn.srw_morphism} is:
 \begin{description}[labelindent=2em, leftmargin=!, labelwidth=\widthof{\itshape a closed system}, labelsep=1em, align=left, font=\normalfont\itshape]
   \item[closed] if its codomain is the monoidal unit $I=\lensunit$;
   \item[a system] if its domain is $I=\lensunit$ (i.e.\ the arity is $K=0$); 
@@ -2440,7 +2441,9 @@ A multimorphism $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\colon b_1,\dots,b_K\to c$ in 
   \item[stateless] if its parameter $Q=\rr^0$ is trivial;
   \item[potential-free] if its potential $U=0$ vanishes;
   \item[static] if it is both stateless and potential-free;
-  \item[harmonic] if $\outp M$ and $\inpt N$ are vector spaces, its sharp $\sharpR_Q$ is constant and symmetric, and its potential $U$ is a quadratic form;\footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.}
+  \item[constant-symmetric] if its reactive parameter space $\rv Q$ is constant-symmetric (\cref{def.rvect});
+  \item[harmonic] if it is constant-symmetric, $\outp M$ and $\inpt N$ are vector spaces, and its potential $U$ is a quadratic form;%
+  \footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.} %
   \item[linear] if it is harmonic, its other interfaces $\inpt M$ and $\outp N$ are also vector spaces, and its maps $\outp f$ and $\inpt f$ are linear;
   \item[unilateral] if whenever $\outp f(q,\outp m)=\outp n$ and $\xi\in T^*_{\outp n}\outp N$, we have $\sharpR_q\bigl((\partial_q\outp f)^\top\xi\bigr)=0$ \eqref{eqn.partial_differential}, i.e.\ if the following diagram commutes
   \[
@@ -2459,14 +2462,18 @@ A multimorphism $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\colon b_1,\dots,b_K\to c$ in 
 We have now settled the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: from this point forward, we work in $\cat{W}\coloneqq\sarr$.
 
 \begin{proposition}\label{prop.suboperads}
-The stateless, potential-free, static, linear, and unilateral morphisms each span a suboperad of $\sarr$.
+The stateless, potential-free, static, constant-symmetric, linear, and unilateral morphisms each span a suboperad of $\sarr$.
 \end{proposition}
 \begin{proof}
 We'll show that all but the linear case are \emph{wide} suboperads, i.e.\ they have the same objects as $\sarr$; in the linear case, objects are vector spaces, so for any claims about linear below, assume the objects are vector spaces.
 
-Static is just the intersection of stateless and potential-free. The identity has $Q=0$ and $U=0$, so it is stateless and potential free, and any stateless arrangement is unilateral. It is also linear since its output is identity and its input is a projection (see \cref{def.lens}). So it suffices to show that stateless, potential-free, linear, and unilateral maps are each closed under composition. In fact, we may assume they are 1-ary $\lensob{M}\to\lensob{N}$ at the cost of additionally showing that they are each also closed under tensor product.
+Static is just the intersection of stateless and potential-free. The identity has $Q=0$ and $U=0$, so it is stateless and potential free, and any stateless arrangement is constant-symmetric and unilateral. It is also linear since its output is identity and its input is a projection (see \cref{def.lens}). So it suffices to show that stateless, potential-free,
+constant-symmetric, linear, and unilateral maps are each closed under composition.
+In fact, we may assume they are 1-ary $\lensob{M}\to\lensob{N}$ at the cost of additionally showing that they are each also closed under tensor product.
 
-Under tensor product, everything adds: $Q_{f\ltens g}=Q\oplus R$, $U_{f\ltens g}=U+V$ by the productor \eqref{eqn.monoid_productor} of the monad $\rr\times\blank$, $\sharpR_{(q,r)}=\sharpR_q\oplus\sharpR_r$ by \eqref{eqn.directsum_sharp}, and $\outp{(f\ltens g)}=\outp f\times\outp g$. So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, potential-free is preserved because $0+0=0$, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric and $U+V$ is again a quadratic form, and unilateral is preserved because %
+Under tensor product, everything adds: $Q_{f\ltens g}=Q\oplus R$, $U_{f\ltens g}=U+V$ by the productor \eqref{eqn.monoid_productor} of the monad $\rr\times\blank$, $\sharpR_{(q,r)}=\sharpR_q\oplus\sharpR_r$ by \eqref{eqn.directsum_sharp}, and $\outp{(f\ltens g)}=\outp f\times\outp g$.
+So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, potential-free is preserved because $0+0=0$,
+constant-symmetric is preserved because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and $U+V$ is again a quadratic form, and unilateral is preserved because %
 \[
 \sharpR_{(q,r)}\left(\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top\right)
 =\sharpR_q\Bigl((\partial_q\outp f)^\top\Bigr)\oplus\sharpR_r\Bigl((\partial_r\outp g)^\top\Bigr)
@@ -2479,7 +2486,10 @@ U_{f\then g}(r,q,\outp m,\inpt o)=U\bigl(q,\outp m,\inpt g(r,\outp n,\inpt o)\bi
 \qquad\outp n\coloneqq\outp f(q,\outp m),
 \]
 coming from the multiplication of the writer monad $\rr\times\blank$ in the coKleisli composition of \cref{prop.backward_comonad}. So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, and potential-free is preserved because $0+0=0$.
-Linearity is preserved as well: the maps $\outp{(f\then g)}$ and $\inpt{(f\then g)}$ are each composites of linear maps, the sharp $\sharpR_r\oplus\sharpR_q$ is again constant and symmetric, and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too. Thus it suffices to prove that unilaterality is preserved under composition.
+Constant-symmetric is preserved because the sharp $\sharpR_r\oplus\sharpR_q$ of the composite is again constant and symmetric. %
+Linearity is preserved as well: the maps $\outp{(f\then g)}$ and $\inpt{(f\then g)}$ are each composites of linear maps,
+the composite is constant-symmetric as above, %
+and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too. Thus it suffices to prove that unilaterality is preserved under composition.
 
 So suppose $f$ and $g$ are unilateral, let $\outp n\coloneqq\outp f(q,\outp m)$ and $\outp o\coloneqq\outp g(r,\outp n)$, and let $\xi\in T^*_{\outp o}\outp O$. The output map of the composite $R\times Q\times\outp M\To{R\times\outp f}R\times\outp N\To{\outp g}\outp O$ is $\outp{(f\then g)}(r,q,\outp m)=\outp g\bigl(r,\outp f(q,\outp m)\bigr)$, so the chain rule gives
 \[
@@ -3341,9 +3351,11 @@ This is the \emph{energy function} of a classical mechanical system~\cite[\S 18.
 In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.
 The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}. %
 
-The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly. However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---the sharp constant and symmetric and the potential a \textbf{quadratic form}---it does preserve the canonical symplectic pairing. With $\sharpR_0$ constant and symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
+The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly.
+However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---constant-symmetric, with potential a \textbf{quadratic form}---it does preserve the canonical symplectic pairing.
+With $\rv Q$ constant-symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
 \[U(q)\coloneqq\tfrac12(\kappa q)(q).\]
-In this case, $dU|_q=\kappa q$ is linear,%
+In this case, $dU|_q=\kappa q$ is linear,
 \footnote{This is computed  using symmetry of $\kappa$: $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$.} 
 and we will see in \cref{prop.closed_conservation} that the step \eqref{eqn.closed_update} factors as $T^*Q\To{\fun{drift}}T^*Q\To{\fun{kick}}T^*Q$, where
 \begin{equation}\label{eqn.drift_kick}
@@ -3376,6 +3388,28 @@ and the last two terms cancel by symmetry of the sharp. For the kick:
 \]
 and the last two terms cancel by symmetry of $\kappa$. Each of $\fun{drift}$ and $\fun{kick}$ therefore preserves the pairing, hence lies in $\rvect(T^*Q,T^*Q)$, and so does their composite.
 \end{proof}
+
+%\begin{remark}\label{rmk.phase_lift}
+%If $f=(Q,\sharpR_0,\outp f,\inpt f,U)$ is constant-symmetric then there exists an arrangement $g$ with $\Phiphase(f)=\Phiconf(g)$. Namely, take $g=\bigl((T^*Q,\sharpR'),\outp g,\inpt g,V\bigr)$, where, writing $\tilde q\coloneqq q+\sharpR_0\xi$ for the presented position \eqref{eqn.presented_position},
+%\begin{gather*}
+%\sharpR'(\xi',q')\coloneqq\bigl(\sharpR_0(\xi')-q',\;\xi'\bigr),\\
+%\outp g(q,\xi,\outp m)\coloneqq\outp f(\tilde q,\outp m),\qquad
+%\inpt g(q,\xi,\outp m,\inpt n)\coloneqq\inpt f(\tilde q,\outp m,\inpt n),\\
+%V(q,\xi,\outp m,\inpt n)\coloneqq U(\tilde q,\outp m,\inpt n)+\tfrac12\xi(\sharpR_0\xi).
+%\end{gather*}
+%Indeed for any state $(q,\xi):\absval{T^*Q}$ and any position $(\outp m,\omega_M)$, we let $\outp n\coloneqq\outp f(\tilde q,\outp m)$ and $\omega_N\coloneqq\bigl(\inpt f(\tilde q,\outp m,\blank)\bigr)^*\omega_M+d\bigl(U(\tilde q,\outp m,\blank)\bigr)$ as in \eqref{eqn.outpn} and \eqref{eqn.omega_n}, and obtain the following string of equalities
+%\begin{align*}
+%	\Phiphase(f)(q,\xi)(\outp m,\omega_M)
+%	&=\Bigl((\outp n,\omega_N),\;(\xi_N,\inpt n)\mapsto\bigl((\xi_M,\inpt m),\;(q+\sharpR_0\xi,\;\xi-\xi_Q)\bigr)\Bigr)\\
+%	&=\Bigl((\outp n,\omega_N),\;(\xi_N,\inpt n)\mapsto\bigl((\xi_M,\inpt m),\;(q,\xi)-\sharpR'\bigl(\xi_Q,\;\sharpR_0(\xi_Q+\xi)\bigr)\bigr)\Bigr)\\
+%	&=\Phiconf(g)(q,\xi)(\outp m,\omega_M),
+%\end{align*}
+%where $\inpt m\coloneqq\inpt f(\tilde q,\outp m,\inpt n)$ as in \eqref{eqn.inptm}, and where $\xi_M$ and $\xi_Q$ are the second and first components of the triple
+%\[
+%(\xi_Q,\,\xi_M,\,\xi_{\inpt N})\coloneqq(T_{(\tilde q,\outp m)}\outp f)^\top\xi_N+(T_{(\tilde q,\outp m,\inpt n)}\inpt f)^\top\omega_M(\inpt m)+dU\big|_{(\tilde q,\outp m,\inpt n)}
+%\]
+%of \eqref{eqn.covector_triple}, all evaluated at $\tilde q$. The first equality is the phase coalgebra of $f$; the second holds because $\sharpR'\bigl(\xi_Q,\sharpR_0(\xi_Q+\xi)\bigr)=(-\sharpR_0\xi,\;\xi_Q)$; and the third is the configuration coalgebra of $g$, because each map of $g$ is the corresponding map of $f$ precomposed with the linear map $(q,\xi)\mapsto\tilde q$, whose transpose sends $\xi_Q$ to $(\xi_Q,\sharpR_0\xi_Q)$ by symmetry of $\sharpR_0$. 
+%\end{remark} 
 
 %====================================================================
 \chapter{Applications}\label{ch.applications}
