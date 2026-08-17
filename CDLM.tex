@@ -318,7 +318,8 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \newcommand{\cat}[1]{\mathcal{#1}}%a generic category
 \newcommand{\Cat}[1]{\mathbf{#1}}%a named category
-\newcommand{\fun}[1]{\mathrm{#1}}%a function
+%\newcommand{\fun}[1]{\mathrm{#1}}%a function
+\newcommand{\fun}[1]{\mathtt{#1}}%a function %
 \newcommand{\Fun}[1]{\text{\normalfont\textsf{#1}}}%a named functor
 %\arr is registered via \trackTerm below (after the term-tracking machinery is defined)
 \providecommand{\Data}{\Cat{Data}}%category of adaptive-arrangement data (with integrator)
@@ -461,7 +462,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\lensob}[1]{\binom{\inpt{#1}}{\outp{#1}}}% vertical lens-object notation; to revert, change to (\inpt{#1},\outp{#1})
 \newcommand{\lensobs}[2]{\binom{\inpt{#1}\otimes\inpt{#2}}{\outp{#1}\otimes\outp{#2}}}% monoidal product of two lens objects
 \newcommand{\lensunit}[1][1]{\binom{#1}{#1}}% monoidal unit of a lens category; \lensunit[I] in a general \cat C, \lensunit when the unit is the terminal 1
-\trackTerm{\potd}{potd}{\fun{d}}
+\trackTerm{\potd}{potd}{\mathrm{d}}
 \trackTerm{\potalg}{potalg}{\mathbf z}% T-monoid / potential algebra: \potalg=(z,e_z,m_z,\alpha), carrier z (defined at def.T_monoid)
 \newcommand{\md}{\mathsf{Md}}% finite set of modes; element i\in\md (prop.moding, prop.moded_algebra)
 \newcommand{\conf}{\mathrm{conf}}
@@ -693,7 +694,7 @@ second-order or first-order. %
 On the
 %conservative
 phase %
-side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with constant symmetric reaction and quadratic potential---preserves the canonical symplectic pairing exactly.
+side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with quadratic reaction and quadratic potential---preserves the canonical symplectic pairing exactly.
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a monoidal monad (the writer monad of $(\rr,0,+)$ being the main instance). We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later (e.g.\ \cref{ex.syntactic_datum})---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
@@ -2312,19 +2313,18 @@ A \emph{reactive vector space} is a finite-dimensional real vector space $Q$ tog
 \[
 \sharpR_Q\colon Q\to\vect(Q^*,Q),
 \]
-the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_q\coloneqq\sharpR_Q(q)\colon Q^*\to Q$ for each $q\in Q$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case.}%
-\footnote{
-Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_qQ\cong Q$ and $T^*_qQ\cong Q^*$. It will be more convenient to use the above form.
+the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_q\coloneqq\sharpR_Q(q)\colon Q^*\to Q$ for each $q\in Q$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case. Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_qQ\cong Q$ and $T^*_qQ\cong Q^*$. It will be more convenient to use the above form.
 }
-We say the reaction is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We say the reaction is \emph{symmetric} if $\xi(\sharpR_q(\xi'))=\xi'(\sharpR_q(\xi))$ for all $q\in Q$ and all $\xi,\xi'\in Q^*$, and we call the reactive vector space \emph{constant-symmetric} if its reaction is constant and symmetric.
+We say the reaction is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We say the reaction is \emph{symmetric} if $\xi(\sharpR_q(\xi'))=\xi'(\sharpR_q(\xi))$ for all $q\in Q$ and all $\xi,\xi'\in Q^*$, and we call the reactive vector space \emph{quadratic} if its reaction is constant and symmetric.%
+\footnote{When the reaction is constant, symmetry says exactly that $B(\xi,\xi')\coloneqq\xi\bigl(\sharpR_0(\xi')\bigr)$ is a symmetric bilinear form on $Q^*$, i.e.\ a quadratic form on $Q^*$ (with positive definiteness not assumed).}
 We call a reactive vector space \emph{nondegenerate} if $\sharpR_q$ is an isomorphism for every $q$; in that case we denote the pointwise inverse $\flat_q\coloneqq\sharpR_q\inv\colon Q\to Q^*$ and call it the \emph{flat} map, and we call $\pairing{v,v'}_q\coloneqq\flat_q(v)(v')$ the \emph{pairing at $q$}.
 
-We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects---we write $\rv Q\coloneqq(Q,\sharpR_Q)$ for the object and $Q$ for its underlying vector space---and as morphisms $\rv Q\to\rv W$ the linear isomorphisms $\phi\colon Q\To{\cong}W$ that are \emph{sharp-equivariant}: 
-for all $q\in Q$,
+We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects---we write $\rv Q\coloneqq(Q,\sharpR_Q)$ for the object and $Q$ for its underlying vector space---and as morphisms $\rv Q_1\to\rv Q_2$ the linear isomorphisms $\phi\colon Q_1\To{\cong}Q_2$ that are \emph{sharp-equivariant}: 
+for all $q\in Q_1$,
 \begin{equation}\label{eqn.pairing_triangle}
 \phi\circ\sharpR_q\circ\phi^*=\sharpR_{\phi(q)}
 \end{equation}
-as maps $W^*\to W$.%
+as maps $Q_2^*\to Q_2$.%
 \footnote{
 We require every $\rvect$-morphism to be an isomorphism so that we can define the cotangent endofunctor $T^*\colon\rvect\to\rvect$ (\cref{prop.TT_endofunctors}): its action $T^*\phi=\phi\oplus(\phi^*)\inv$ \eqref{eqn.TT_phi} needs $\phi$ invertible.
 }
@@ -2334,6 +2334,30 @@ Where the sharp is understood, or is the canonical one (as on $T^*Q$, \cref{prop
 \end{definition}
 
 Our theory does not privilege nondegenerate reactions in any way: the only nondegeneracy our results rely on is that of the canonical symplectic pairing on $T^*Q$ (\cref{prop.canonical_symplectic_pairing}), which holds regardless of the reaction $\sharpR_Q$. Degeneracy is what allows things like controllers to act on their environment without being retroactively back-driven by it. We refer to this condition as unilaterality; see \cref{def.arrangement_terminology}.
+
+\begin{example}\label{ex.tank_sharp}
+Imagine a weirdly-shaped water tank for which the cross-sectional area $A\colon \rr\to\rr_{>0}$ is a function of height, and take the tank's state to be the water height $h$.
+\[
+\begin{tikzpicture}[font=\scriptsize,
+	dim/.style={<->, >={Straight Barb[length=3pt,width=3.5pt]}, thin}]
+	\begin{scope}
+		\clip (-1.2,-.05) rectangle (1.2,1.5);
+		\fill[blue!12]
+			plot[smooth, tension=.7] coordinates {(-.55,0) (-.62,.45) (-.9,1.05) (-.8,1.5) (-.5,1.95) (-.6,2.2)}
+			-- plot[smooth, tension=.7] coordinates {(.6,2.2) (.5,1.95) (.8,1.5) (.9,1.05) (.62,.45) (.55,0)}
+			-- cycle;
+	\end{scope}
+	\draw[thick, line join=round]
+		plot[smooth, tension=.7] coordinates {(-.6,2.2) (-.5,1.95) (-.8,1.5) (-.9,1.05) (-.62,.45) (-.55,0)}
+		-- plot[smooth, tension=.7] coordinates {(.55,0) (.62,.45) (.9,1.05) (.8,1.5) (.5,1.95) (.6,2.2)};
+	\draw[dim, blue!50!black] (-.8,1.5) -- node[below=-1pt] {$A(h)$} (.8,1.5);
+	\draw[gray!60, dotted] (-.8,1.5) -- (-1.5,1.5);
+	\draw[gray!60, dotted] (-.55,0) -- (-1.5,0);
+	\draw[dim] (-1.4,0) -- node[left=-1pt] {$h$} (-1.4,1.5);
+\end{tikzpicture}
+\]
+If the height responds to a force at a rate depending on the current area $A(h)$, then it is modeled by a non-constant sharp, e.g.\ $\sharpR_\rr\colon\rr\to\vect(\rr^*,\rr)$ sending $h\in\rr$ to the linear map $\xi\mapsto \xi/A(h)^2$. We will continue this example in \cref{ex.tank_system}.
+\end{example}
 
 \begin{proposition}\label{prop.rvect_monoidal}
 Direct sum gives $\rvect$ a symmetric monoidal structure $(0,\oplus)$, with the zero space as unit and direct-sum sharp $\sharpR_{Q\oplus W}$ given by
@@ -2441,8 +2465,8 @@ We say that a smooth adaptive arrangement $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\in\
   \item[stateless] if its parameter $Q=\rr^0$ is trivial;
   \item[potential-free] if its potential $U=0$ vanishes;
   \item[static] if it is both stateless and potential-free;
-  \item[constant-symmetric] if its reactive parameter space $\rv Q$ is constant-symmetric (\cref{def.rvect});
-  \item[harmonic] if it is constant-symmetric, $\outp M$ and $\inpt N$ are vector spaces, and its potential $U$ is a quadratic form;%
+  \item[quadratic] if its reactive parameter space $\rv Q$ is quadratic (\cref{def.rvect});
+  \item[harmonic] if it is quadratic, $\outp M$ and $\inpt N$ are vector spaces, and its potential $U$ is a quadratic form;%
   \footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.} %
   \item[linear] if it is harmonic, its other interfaces $\inpt M$ and $\outp N$ are also vector spaces, and its maps $\outp f$ and $\inpt f$ are linear;
   \item[unilateral] if whenever $\outp f(q,\outp m)=\outp n$ and $\xi\in T^*_{\outp n}\outp N$, we have $\sharpR_q\bigl((\partial_q\outp f)^\top\xi\bigr)=0$ \eqref{eqn.partial_differential}, i.e.\ if the following diagram commutes
@@ -2462,18 +2486,18 @@ We say that a smooth adaptive arrangement $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\in\
 We have now settled the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: from this point forward, we work in $\cat{W}\coloneqq\sarr$.
 
 \begin{proposition}\label{prop.suboperads}
-The stateless, potential-free, static, constant-symmetric, linear, and unilateral morphisms each span a suboperad of $\sarr$.
+The stateless, potential-free, static, quadratic, linear, and unilateral morphisms each span a suboperad of $\sarr$.
 \end{proposition}
 \begin{proof}
 We'll show that all but the linear case are \emph{wide} suboperads, i.e.\ they have the same objects as $\sarr$; in the linear case, objects are vector spaces, so for any claims about linear below, assume the objects are vector spaces.
 
-Static is just the intersection of stateless and potential-free. The identity has $Q=0$ and $U=0$, so it is stateless and potential free, and any stateless arrangement is constant-symmetric and unilateral. It is also linear since its output is identity and its input is a projection (see \cref{def.lens}). So it suffices to show that stateless, potential-free,
-constant-symmetric, linear, and unilateral maps are each closed under composition.
+Static is just the intersection of stateless and potential-free. The identity has $Q=0$ and $U=0$, so it is stateless and potential free, and any stateless arrangement is quadratic and unilateral. It is also linear since its output is identity and its input is a projection (see \cref{def.lens}). So it suffices to show that stateless, potential-free,
+quadratic, linear, and unilateral maps are each closed under composition.
 In fact, we may assume they are 1-ary $\lensob{M}\to\lensob{N}$ at the cost of additionally showing that they are each also closed under tensor product.
 
 Under tensor product, everything adds: $Q_{f\ltens g}=Q\oplus R$, $U_{f\ltens g}=U+V$ by the productor \eqref{eqn.monoid_productor} of the monad $\rr\times\blank$, $\sharpR_{(q,r)}=\sharpR_q\oplus\sharpR_r$ by \eqref{eqn.directsum_sharp}, and $\outp{(f\ltens g)}=\outp f\times\outp g$.
 So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, potential-free is preserved because $0+0=0$,
-constant-symmetric is preserved because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and $U+V$ is again a quadratic form, and unilateral is preserved because %
+quadratic is preserved because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and $U+V$ is again a quadratic form, and unilateral is preserved because %
 \[
 \sharpR_{(q,r)}\left(\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top\right)
 =\sharpR_q\Bigl((\partial_q\outp f)^\top\Bigr)\oplus\sharpR_r\Bigl((\partial_r\outp g)^\top\Bigr)
@@ -2486,10 +2510,14 @@ U_{f\then g}(r,q,\outp m,\inpt o)=U\bigl(q,\outp m,\inpt g(r,\outp n,\inpt o)\bi
 \qquad\outp n\coloneqq\outp f(q,\outp m),
 \]
 coming from the multiplication of the writer monad $\rr\times\blank$ in the coKleisli composition of \cref{prop.backward_comonad}. So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, and potential-free is preserved because $0+0=0$.
-Constant-symmetric is preserved because the sharp $\sharpR_r\oplus\sharpR_q$ of the composite is again constant and symmetric. %
+Quadratic is preserved because the sharp $\sharpR_r\oplus\sharpR_q$ of the composite is again constant and symmetric. %
 Linearity is preserved as well: the maps $\outp{(f\then g)}$ and $\inpt{(f\then g)}$ are each composites of linear maps,
-the composite is constant-symmetric as above, %
-and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too. Thus it suffices to prove that unilaterality is preserved under composition.
+the composite is quadratic as above, %
+and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too.%
+\footnote{
+The linearity of $\inpt g$ is what keeps this potential quadratic, which is why linear arrangements form a suboperad but harmonic ones don't.
+}
+Thus it suffices to prove that unilaterality is preserved under composition.
 
 So suppose $f$ and $g$ are unilateral, let $\outp n\coloneqq\outp f(q,\outp m)$ and $\outp o\coloneqq\outp g(r,\outp n)$, and let $\xi\in T^*_{\outp o}\outp O$. The output map of the composite $R\times Q\times\outp M\To{R\times\outp f}R\times\outp N\To{\outp g}\outp O$ is $\outp{(f\then g)}(r,q,\outp m)=\outp g\bigl(r,\outp f(q,\outp m)\bigr)$, so the chain rule gives
 \[
@@ -2503,8 +2531,52 @@ Applying the sharp $\sharpR_{(r,q)}=\sharpR_r\oplus\sharpR_q$ of the composite, 
 =\Bigl(\sharpR_r\bigl((\partial_r\outp g)^\top(\xi)\bigr),\;\sharpR_q\bigl((\partial_q\outp f)^\top(\xi')\bigr)\Bigr)
 =(0,0),
 \]
-each vanishing by unilaterality.
+each component vanishing by unilaterality.
 \end{proof}
+
+\begin{example}\label{ex.tank_system}
+Recall the weirdly-shaped water tank with nonconstant sharp $\sharpR_A(h)\colon\xi\mapsto \xi/A(h)^2$ from \cref{ex.tank_sharp}. This time, we consider it as a system
+$
+\begin{tikzpicture}[oriented WD, bb small, bb port length = 3mm, font=\tiny, baseline=(tank.-20)]
+	\node[bb={0}{1}] (tank) {tank};
+\end{tikzpicture}
+$
+with an outgoing pipe, i.e.\ an arrangement of the form $\fun{tank}\colon\lensunit\to\binom{1}{\rr}$; it is not found within any suboperad of \cref{prop.suboperads}. Let $\fun{tank}=(\rr,\sharpR_A,\outp{\fun{tank}},\bang,U)$, i.e.\ its state space represents a height whose reaction to force is controlled by area, its output is the pressure $\outp{\fun{tank}}(h)\coloneqq ch$ for a constant $c>0$ corresponding to water's weight per unit volume, its input is trivial, and its potential is $U(h)\coloneqq c\int_0^h h'A(h')\,dh'$ because the potential energy of a thin slice of water at height $h'$ is given by $h'\,c\,A(h')\,dh'$ representing its height times its weight.
+\end{example}
+
+\begin{example}\label{ex.tanks_connected}
+We can connect two weirdly-shaped tank systems, with cross-sections $A_1,A_2$, of the form
+$\fun{tank}_i=(\rr,\sharpR_{A_i},\outp{\fun{tank}_i},\bang,U_i)$
+as in \cref{ex.tank_system} using a pipe
+\[
+\begin{tikzpicture}[oriented WD, bb small, font=\tiny] 
+	\node[bb port sep=3mm, bb={0}{0}] (pipe) {pipe};
+	\node[bb={0}{1}, above left=2pt and 1 of pipe.180] (t1) {tank1};
+	\node[bb={0}{1}, below left=2pt and 1 of pipe.180] (t2) {tank2};
+	\node[bb={0}{0}, fit=(t1) (t2) (pipe)] (outer) {};
+	\draw[ar] (t1_out1) -- (t1_out1-|pipe.west);
+	\draw[ar] (t2_out1) -- (t2_out1-|pipe.west);
+\end{tikzpicture}
+\]
+Here the pipe system $\fun{pipe}\colon\lensunit\to\binom{\rr^2}{1}$ is given by
+$\fun{pipe}=(\rv 0,\bang,\bang,V_{z_1,z_2})$,
+i.e.\ stateless with potential
+$V_{z_1,z_2}(e_1,e_2)\coloneqq\tfrac{\kappa}{2}((e_1+cz_1)-(e_2+cz_2))^2$, where $e_1,e_2$ are the pressures arriving at the pipe's two inputs, $\kappa$ is conductance, $c$ is water's weight per volume and $z_1,z_2$ are the elevations of the tanks' bases, which we assume are known to the pipe. The whole wiring diagram shown is a closed static arrangement of the form
+\[
+\fun{wire}\colon\binom{1}{\rr}\ltens\binom{1}{\rr}\ltens\binom{\rr^2}{1}\to\lensunit
+\]
+given by $\fun{wire}=(\rv 0,\bang,\id,0)$, i.e.\ the only content being that the lens feeds the outputs of the tanks to the inputs of the pipe by the isomorphism $\rr\times\rr\times 1\times 1\to1\times 1\times \rr^2$, which we're calling $\id$ by abuse of notation.
+
+Composing, we get a map
+$\fun{wire}(\fun{tank}_1,\fun{tank}_2,\fun{pipe})\colon\lensunit\to\lensunit$
+whose state space is $\rr^2$ with sharp $\sharpR_{A_1}\oplus\sharpR_{A_2}$ (\cref{prop.rvect_monoidal}), and whose potential $\rr^2\to\rr$ is
+$(h_1,h_2)\mapsto U_1(h_1)+U_2(h_2)+V_{z_1,z_2}(ch_1,ch_2)$.
+
+If we had instead let $\fun{wire}$ carry as state the elevations $\rv Z\coloneqq(\rr^2,\sharpR_Z)$ and feed those values to a more expressive pipe system $\lensunit\to\binom{\rr^4}{1}$ with potential $V(e_1,e_2,z_1,z_2)$, then $\fun{wire}$ would no longer be static
+%and the composite potential
+and, since the elevations appear in no potential other than $V$, the composite potential %
+would cause the elevations to change until the elevation-adjusted heights $h_i+z_i$ agree. A choice of degenerate $\sharpR_Z=0$ holds them fixed, as would putting the elevations into the state of a fourth---this time unilateral---component.
+\end{example}
 
 %====================================================================
 \chapter{Smooth adaptive dynamics}\label{ch.smooth_dynamics}
@@ -3352,8 +3424,8 @@ In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpend
 The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}. %
 
 The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly.
-However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---constant-symmetric, with potential a \textbf{quadratic form}---it does preserve the canonical symplectic pairing.
-With $\rv Q$ constant-symmetric as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
+However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---quadratic reaction, \textbf{quadratic potential}---it does preserve the canonical symplectic pairing.
+With $\rv Q$ quadratic as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
 \[U(q)\coloneqq\tfrac12(\kappa q)(q).\]
 In this case, $dU|_q=\kappa q$ is linear,
 \footnote{This is computed  using symmetry of $\kappa$: $dU|_q(q')=\tfrac12\bigl((\kappa q')(q)+(\kappa q)(q')\bigr)=(\kappa q)(q')$.} 
@@ -3390,7 +3462,7 @@ and the last two terms cancel by symmetry of $\kappa$. Each of $\fun{drift}$ and
 \end{proof}
 
 %\begin{remark}\label{rmk.phase_lift}
-%If $f=(Q,\sharpR_0,\outp f,\inpt f,U)$ is constant-symmetric then there exists an arrangement $g$ with $\Phiphase(f)=\Phiconf(g)$. Namely, take $g=\bigl((T^*Q,\sharpR'),\outp g,\inpt g,V\bigr)$, where, writing $\tilde q\coloneqq q+\sharpR_0\xi$ for the presented position \eqref{eqn.presented_position},
+%If $f=(Q,\sharpR_0,\outp f,\inpt f,U)$ is quadratic then there exists an arrangement $g$ with $\Phiphase(f)=\Phiconf(g)$. Namely, take $g=\bigl((T^*Q,\sharpR'),\outp g,\inpt g,V\bigr)$, where, writing $\tilde q\coloneqq q+\sharpR_0\xi$ for the presented position \eqref{eqn.presented_position},
 %\begin{gather*}
 %\sharpR'(\xi',q')\coloneqq\bigl(\sharpR_0(\xi')-q',\;\xi'\bigr),\\
 %\outp g(q,\xi,\outp m)\coloneqq\outp f(\tilde q,\outp m),\qquad
