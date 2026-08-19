@@ -131,7 +131,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
     string decoration/.store in=\stringdec,
     string decoration={\arrow{stealth}},
     string decoration pos/.store in=\stringdecpos,
-    string decoration pos=.7,
+    string decoration pos=.5,
     bbx/.store in=\bbx,
     bbx = 1.5cm,
     bby/.store in=\bby,
@@ -183,6 +183,18 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
   \begin{tikzpicture}[oriented WD, bb small, baseline=(M.south)]
     \node[bb={0}{1}] (M) {};
     \node[right=-1pt] at (M_out1) {\scriptsize #1};
+  \end{tikzpicture}%
+}
+
+% the tank/pipe wiring diagram; drawn in \cref{ex.tanks_connected}, reused in \cref{rmk.tank_electrical}
+\newcommand{\tankpic}{%
+  \begin{tikzpicture}[oriented WD, bb small, font=\tiny, baseline=(current bounding box.center)]
+    \node[bb port sep=4.5mm, bb={0}{0}, align=center] (pipe) {$\fun{pipe}$\\$\kappa,z$};
+    \node[bb={0}{1}, align=center, above left=.7 and 4.5 of pipe.180] (t1) {$\fun{tank}_1$\\$v_1$};
+    \node[bb={0}{1}, align=center, below left=.7 and 4.5 of pipe.180] (t2) {$\fun{tank}_2$\\$v_2$};
+    \node[bb={0}{0}, fit=(t1) (t2) (pipe)] (outer) {};
+    \draw[ar] (t1_out1) -- node[above right=-2pt and 0, pos=0]{$e_1$} node[below left=-2pt and 0, pos=1]{$I(e_1,e_2)$} (t1_out1-|pipe.west);
+    \draw[ar] (t2_out1) -- node[above right=-2pt and 0, pos=0]{$e_2$} node[below left=-2pt and 0, pos=1]{$-I(e_1,e_2)$} (t2_out1-|pipe.west);
   \end{tikzpicture}%
 }
 
@@ -469,6 +481,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \newcommand{\phase}{\mathrm{phase}}
 \newcommand{\lrn}{\mathrm{lrn}}
 \newcommand{\euc}{\mathrm{Euc}}
+\trackTerm{\rand}{rand}{\fun{rand}}
 
 \newcommand{\Phip}[1]{\Phi'_{#1}}% polynomial interpretation; subscript is always the interpretation symbol (\interp=\mathfrak p), abbreviating the full 4-tuple datum. Never a partial unfolding like \Phi'_{\cot,(\yon,\potd)}.
 \trackTermSymbol{Phiphase}{\Phi_{\phase}}
@@ -703,10 +716,13 @@ The paper aims to be self-contained for a reader comfortable with monoidal categ
 The main contributions are the following.
 \begin{itemize}
 \item \emph{Lens internalization} (\cref{cor.Theta}): a lax symmetric monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that internalizes each lens interface as an object of $\cat C$, as well as a monad/monoid generalization $\Theta_\potalg$ (\cref{thm.Theta_T_alpha}).
+\item A vocabulary for smooth adaptive arrangements---\emph{stateless}, \emph{potential-free}, \emph{static}, \emph{quadratic}, \emph{linear}, \emph{unilateral}---each class spanning a suboperad of $\sarr$ (\cref{def.arrangement_terminology,prop.suboperads}). %
+%\item $\Phiconf$ takes two species wired to a predation potential, with oppositely-signed reactions, to the Euler step of the Lotka--Volterra predator--prey equations (\cref{ex.lotka_volterra}). %
+\item A closed system of two species wired to a predation potential, with oppositely-signed reactions, whose sharp and potential generate the Lotka--Volterra ODEs (\cref{ex.lotka_volterra}). %
 \item Two functorial semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}), each assembling a system's discrete dynamics from its smooth adaptive arrangement.
+\item A proof that, for a harmonic closed system, each step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
 \item $\Phiconf$ recovers gradient descent with backpropagation (\cref{sec.dl_warmup}), and Newton's method (\cref{sec.newton_warmup}).
 \item One adaptive arrangement of harmonic particles yields, via $\Phiphase$, the discrete wave equation and, via $\Phiconf$, the discrete heat equation. Both are governed by the graph Laplacian (\cref{sec.graph_laplacian,rmk.graph_heat}).
-\item A proof that, for a closed harmonic arrangement, each step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
 \end{itemize}
 
 The next section places this work alongside the open-energy-driven framework of Capucci--Lynch--Spivak; readers interested only in the constructions of this paper may skip to \cref{sec.plan}.
@@ -748,6 +764,8 @@ where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and
 \end{proposition*}
 The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\pc$ on our side, where the tangent component $\dot q$ becomes the Euler step $q\mapsto q+\dot q$.
 
+Another related framework is that of bond graphs, which provide an acausal, relational syntax for power-based interconnection~\cite{coya2017bondgraphs}, whereas smooth adaptive arrangements specify causally resolved interactions and have deterministic discrete-time semantics.
+
 %--------------------------------------------------------------------
 \section{Plan of the paper}\label{sec.plan}
 %--------------------------------------------------------------------
@@ -767,7 +785,7 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 %--------------------------------------------------------------------
 \section*{Acknowledgments}
 %--------------------------------------------------------------------
-Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, Maximilien P\'eroux, Ryan Tavenner, and Scott Viteri for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
+Thanks to Jake Araujo-Simon, Lukas Barth, David Jaz Myers, Maximilien P\'eroux, Eduardo Sontag, Ryan Tavenner, and Scott Viteri for stimulating conversations. I also thank Claude and Codex for assistance in editing the document and for various helpful conversations.
 
 \thanksAFOSR{FA9550-23-1-0376}. 
 
@@ -864,12 +882,13 @@ where $f_1(s)$ returns a position and $\bk{f}{s}\colon p[f_1(s)]\to S$ returns a
 
 A morphism $(S,f)\to(S',f')$ of $p$-coalgebras is a function $g\colon S\to S'$ such that $p(g)\circ f=f'\circ g$. We denote the category of $p$-coalgebras and their morphisms by $p\coalg$.
 
-When $p=B\yon^A$ then a $p$-coalgebra $S\to B\times S^A$ is equivalently a readout function $S\to B$ and an update function $S\times A\to S$, which is independent of the readout. Such a coalgebra is called an $(A,B)$-\emph{Moore machine}~\cite{niu2025polynomial}. In general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$, so could be called a \emph{dependent} Moore machine.
+When $p=B\yon^A$ then a $p$-coalgebra $S\to B\times S^A$ is equivalently a readout function $S\to B$ and an update function $S\times A\to S$, which is independent of the readout. %Such a coalgebra is called an $(A,B)$-\emph{Moore machine}~\cite{niu2025polynomial}.
+Such a coalgebra is called an $(A,B)$-\emph{Moore machine}, for which the canonical reference is~\cite{moore1956gedanken}; see also~\cite{niu2025polynomial}. % In general, the type of the input direction $d$ may depend on the output $r_s\in p(1)$, so could be called a \emph{dependent} Moore machine.
 
 A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$: the state exposes an output in $p(1)$ and transitions in response to inputs in $p[f_1(s)]$, capturing Moore machines, discretized differential equations, Markov decision processes,%
 \footnote{
-Writing $\fun{rand}\coloneqq\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$, whose positions are finitely-supported distributions and whose directions are outcomes, a partially observable Markov decision process with rewards in $R:\smset$ can be modeled as a coalgebra for the composite polynomial functor $O\yon^A\circ\fun{rand}\circ R\yon$, i.e.\ a map $S\to O\times\bigl(\sum_{(N,P)}(R\times S)^N\bigr)^A$: the state emits an observation in $O$, receives an action in $A$, emits a distribution, receives an outcome, and emits a reward in $R$.
-} and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see also~\cite{nlab:coalgebra}.
+ Writing $\defineTerm{rand}\coloneqq\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$, whose positions are finitely-supported distributions and whose directions are outcomes, a partially observable Markov decision process with rewards in $R:\smset$ can be modeled as a coalgebra for the composite polynomial functor $O\yon^A\circ\rand\circ R\yon$, i.e.\ a map $S\to O\times\bigl(\sum_{(N,P)}(R\times S)^N\bigr)^A$: the state emits an observation in $O$, receives an action in $A$, emits a distribution, receives an outcome, and emits a reward in $R$.
+} and other mode-dependent dynamics in a single framework~\cite{niu2025polynomial}. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment, and see also~\cite{nlab:coalgebra}. %
 
 There is a connection between $p$-coalgebras and the $\Store$ comonad from \cref{def.store}.
 
@@ -1220,7 +1239,7 @@ When $\cat D$ is a monoidal $\cat A$-actegory and $\cat D'$ a monoidal $\cat A'$
 \end{proposition}
 
 \begin{proof}
-On objects $\para[\theta]{F}{G}(d)\coloneqq G(d)$, and a parameterized map $(a,f)\colon d_1\to d_2$ goes to $(F(a),\hat f)$ with $\hat f\colon F(a)\cdot' G(d_1)\To{\theta}G(a\cdot d_1)\To{G(f)}G(d_2)$. Functoriality comes from the compatibility of $\theta$ with the action's unitors and associators, as well as $F$'s productor isomorphism $F(a_1)\otimes' F(a_2)\cong F(a_1\otimes a_2)$. In fact, when $F$ is strict this map is the identity in which case we find also that $\para[\theta]{F}{G}$ is strict. For the monoidal claim, $\para[\theta]{F}{G}$ agrees with $G$ on objects and because $\theta$ is monoidal, the comparison cells of $\para[\theta]{F}{G}$---the unit $I_{\cat D'}\to G(I_{\cat D})$ and the multiplication $G(d_1)\otimes' G(d_2)\to G(d_1\otimes d_2)$---are precisely those of $G$. Hence it is strong (resp.\ normal lax, resp.\ lax) monoidal exactly when $G$ is.\qedhere
+On objects $\para[\theta]{F}{G}(d)\coloneqq G(d)$, and a parameterized map $(a,f)\colon d_1\to d_2$ goes to $(F(a),\hat f)$ with $\hat f\colon F(a)\cdot' G(d_1)\To{\theta}G(a\cdot d_1)\To{G(f)}G(d_2)$. Functoriality comes from the compatibility of $\theta$ with the action's unitors and associators, as well as $F$'s productor isomorphism $F(a_1)\otimes' F(a_2)\cong F(a_1\otimes a_2)$. In fact, when $F$ is strict this productor isomorphism is the identity, in which case we find also that $\para[\theta]{F}{G}$ is strict. For the monoidal claim, $\para[\theta]{F}{G}$ agrees with $G$ on objects and because $\theta$ is monoidal, the comparison cells of $\para[\theta]{F}{G}$---the unit $I_{\cat D'}\to G(I_{\cat D})$ and the multiplication $G(d_1)\otimes' G(d_2)\to G(d_1\otimes d_2)$---are precisely those of $G$. Hence it is strong (resp.\ normal lax, resp.\ lax) monoidal exactly when $G$ is.\qedhere
 \end{proof}
 
 When $\theta$ is the identity, we drop it from the notation.
@@ -1240,7 +1259,8 @@ We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmet
 
 An \emph{interface} in $\cat C$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\varepsilon,\delta)$.%
 \footnote{
-When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism.
+%When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism.
+When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism; this is one direction of Fox's theorem~\cite{nlab:cartesian_monoidal}. %
 } 
 A \emph{lens} $f\colon\lensob c\to\lensob d$ consists of a forward map $\outp f\colon\outp c\to\outp d$ (a comonoid homomorphism) and a backward map $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$ (any map in $\cat{C}$). Such a morphism can be depicted as follows:
 \begin{equation}\label{eqn.lens_map}
@@ -1829,7 +1849,7 @@ In fact, the composite functor $(\Lens{\blank\yon}\then\Theta)\colon\Lens{\smset
 \[
 \Theta\binom{A\yon}{B\yon}=[A\yon,\yon]\otimes B\yon\cong B\yon^A.
 \]
-A coalgebra on $B\yon^A$ is a function of the form $S\to B\times S^A$, which is equivalently a pair of functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine~\cite{niu2025polynomial}.
+A coalgebra on $B\yon^A$ is a function of the form $S\to B\times S^A$, which is equivalently a pair of functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine~\cite{moore1956gedanken,niu2025polynomial}. %
 \end{example}
 
 \begin{corollary}\label{cor.parameterized_representation}
@@ -2287,11 +2307,11 @@ We will not ever use $f'$ notation to mean derivatives in this paper; ``priming'
 \end{warning}
 
 \begin{remark}[$C^1$ regularity]\label{rmk.C1_regularity}
-We use smooth manifolds and smooth maps throughout the paper, but the latter is purely a convenience rather than a necessity. We have checked that---with a single exception, recorded as the first item below---every definition, proposition, and proof in this paper remains valid when the manifolds are smooth but the maps of manifolds (the output and input maps $\outp f,\inpt f$ and the potential $U$ of \eqref{eqn.srw_morphism}, and the sharp map $\sharpR_Q$ of \cref{def.rvect}) \emph{are allowed to be $C^1$} rather than smooth. 
+We use smooth manifolds and smooth maps throughout the paper, but the latter is purely a convenience rather than a necessity. With one exception, we have checked that all definitions, theorem and proposition statements, and proofs in this paper remain valid when the manifolds are smooth but the maps of manifolds (the output and input maps $\outp f,\inpt f$ and the potential $U$ of \eqref{eqn.srw_morphism}, and the sharp map $\sharpR_Q$ of \cref{def.rvect}) \emph{are allowed to be $C^1$} rather than smooth.
 
 The reason it works is that the semantics is first-order and set-theoretic: the cotangent functor $\cot$ (\cref{def.cot}) uses only the pointwise differentials $T_mf$ and their transposes; its functoriality is the chain rule, which is valid for $C^1$ maps. The differential $dU$ of a $C^1$ potential is merely continuous, but even that is unused. It enters only as the backward component of the polynomial map $\potd\circ\cotof{U}\colon\cotof{X}\to\yon$ \eqref{eqn.d_potential}, and maps in $\poly$ carry no regularity requirement: the coalgebra updates in $\pc$ are functions of sets.
 
-In all, four statements weaken:
+The exception is the fullness assertion in the first item below; three further ancillary claims also require qualification:
 \begin{enumerate}
 \item The operad functor $\cat R\to\sarr$ of \cref{sec.related_cls} remains faithful but is no longer full; the arrow label $\mathrm{ff}$ becomes $\mathrm{faithful}$ in both copies of the comparison diagram \eqref{eqn.cls_diag}, and likewise in the proof of \cref{prop.euler_submersion_lenses}, whose obligations are only weakened.
 CLS is a smooth framework, so the morphisms of $\cat R$ keep smooth $w$, $E$, and sharp, while $\sarr$ includes morphisms that aren't smooth.
@@ -2334,9 +2354,13 @@ Where the sharp is understood, or is the canonical one (as on $T^*Q$, \cref{prop
 \end{definition}
 
 Our theory does not privilege nondegenerate reactions in any way: the only nondegeneracy our results rely on is that of the canonical symplectic pairing on $T^*Q$ (\cref{prop.canonical_symplectic_pairing}), which holds regardless of the reaction $\sharpR_Q$. Degeneracy is what allows things like controllers to act on their environment without being retroactively back-driven by it. We refer to this condition as unilaterality; see \cref{def.arrangement_terminology}.
+Del Vecchio--Ninfa--Sontag~\cite{delvecchio2008modular} call such
+%back-loading
+back-driving %
+\emph{retroactivity} and identify it as the obstruction to modularity in biomolecular networks.
 
 \begin{example}\label{ex.tank_sharp}
-Imagine a weirdly-shaped water tank for which the cross-sectional area $A\colon \rr\to\rr_{>0}$ is a function of height, and take the tank's state to be the water height $h$.
+Imagine a weirdly-shaped water tank for which the cross-sectional area is a function of height.
 \[
 \begin{tikzpicture}[font=\scriptsize,
 	dim/.style={<->, >={Straight Barb[length=3pt,width=3.5pt]}, thin}]
@@ -2356,7 +2380,7 @@ Imagine a weirdly-shaped water tank for which the cross-sectional area $A\colon 
 	\draw[dim] (-1.4,0) -- node[left=-1pt] {$h$} (-1.4,1.5);
 \end{tikzpicture}
 \]
-If the height responds to a force at a rate depending on the current area $A(h)$, then it is modeled by a non-constant sharp, e.g.\ $\sharpR_\rr\colon\rr\to\vect(\rr^*,\rr)$ sending $h\in\rr$ to the linear map $\xi\mapsto \xi/A(h)^2$. We will continue this example in \cref{ex.tank_system}.
+Whether we take its state to be the height or the volume of water, its response can depend on the shape of the tank at its current state, and hence be modeled by a non-constant sharp. We make a concrete choice in \cref{ex.tank_system}.
 \end{example}
 
 \begin{proposition}\label{prop.rvect_monoidal}
@@ -2450,14 +2474,14 @@ U\colon Q\times\outp M\times\inpt N\to\rr.
 \end{equation}
 \eqref{eqn.arrangement} depicts this data in the case $K=1$. %
 
-\begin{remark}\label{rmk.preference_slogan} %
-The asymmetry in the domains of \eqref{eqn.srw_morphism} is worth naming as a slogan:
-\emph{inputs $\inpt \blank$ are what the interior can have preferences over, and
-outputs $\outp \blank$ are what the exterior can have preferences over}. By preferences, we mean that these variables can be used in potential functions. Since the arrangement $f$ lives interior to $\lensob N$ and exterior to each $\lensob{M_i}$, its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$.
-\end{remark}
+%\begin{remark}\label{rmk.preference_slogan} %
+%The asymmetry in the domains of \eqref{eqn.srw_morphism} is worth naming as a slogan:
+%\emph{inputs $\inpt \blank$ are what the interior can have preferences over, and
+%outputs $\outp \blank$ are what the exterior can have preferences over}. By preferences, we mean that these variables can be used in potential functions. Since the arrangement $f$ lives interior to $\lensob N$ and exterior to each $\lensob{M_i}$, its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$.
+%\end{remark}
 
 \begin{definition}[Vocabulary]\label{def.arrangement_terminology}
-We say that a smooth adaptive arrangement $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\in\sarr(b_1,\dots,b_K; c)$ as in \eqref{eqn.srw_morphism} is:
+We say that a smooth adaptive arrangement $f\in\sarr(b_1,\dots,b_K; c)$, given by $f=(Q,\sharpR_Q,\outp f,\inpt f,U)$ as in \eqref{eqn.srw_morphism} is:
 \begin{description}[labelindent=2em, leftmargin=!, labelwidth=\widthof{\itshape a closed system}, labelsep=1em, align=left, font=\normalfont\itshape]
   \item[closed] if its codomain is the monoidal unit $I=\lensunit$;
   \item[a system] if its domain is $I=\lensunit$ (i.e.\ the arity is $K=0$); 
@@ -2486,10 +2510,10 @@ We say that a smooth adaptive arrangement $f=(Q,\sharpR_Q,\outp f,\inpt f,U)\in\
 We have now settled the choice of composition syntax $\cat{W}$ deferred at the end of \cref{sec.wd_operads}: from this point forward, we work in $\cat{W}\coloneqq\sarr$.
 
 \begin{proposition}\label{prop.suboperads}
-The stateless, potential-free, static, quadratic, linear, and unilateral morphisms each span a suboperad of $\sarr$.
+The stateless, potential-free, static, quadratic, and unilateral morphisms each span a wide suboperad of $\sarr$. The linear morphisms, on the colors $\binom{V^-}{V^+}$ for vector spaces $V^-$ and $V^+$, span a suboperad.
 \end{proposition}
 \begin{proof}
-We'll show that all but the linear case are \emph{wide} suboperads, i.e.\ they have the same objects as $\sarr$; in the linear case, objects are vector spaces, so for any claims about linear below, assume the objects are vector spaces.
+For the linear case, restrict throughout to colors $\binom{V^-}{V^+}$ for vector spaces $V^-$ and $V^+$. The other suboperads are asserted to be wide.
 
 Static is just the intersection of stateless and potential-free. The identity has $Q=0$ and $U=0$, so it is stateless and potential free, and any stateless arrangement is quadratic and unilateral. It is also linear since its output is identity and its input is a projection (see \cref{def.lens}). So it suffices to show that stateless, potential-free,
 quadratic, linear, and unilateral maps are each closed under composition.
@@ -2499,8 +2523,10 @@ Under tensor product, everything adds: $Q_{f\ltens g}=Q\oplus R$, $U_{f\ltens g}
 So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, potential-free is preserved because $0+0=0$,
 quadratic is preserved because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and $U+V$ is again a quadratic form, and unilateral is preserved because %
 \[
-\sharpR_{(q,r)}\left(\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top\right)
-=\sharpR_q\Bigl((\partial_q\outp f)^\top\Bigr)\oplus\sharpR_r\Bigl((\partial_r\outp g)^\top\Bigr)
+%\sharpR_{(q,r)}\left(\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top\right)
+%=\sharpR_q\Bigl((\partial_q\outp f)^\top\Bigr)\oplus\sharpR_r\Bigl((\partial_r\outp g)^\top\Bigr)
+\sharpR_{(q,r)}\circ\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top %
+=\Bigl(\sharpR_q\circ(\partial_q\outp f)^\top\Bigr)\oplus\Bigl(\sharpR_r\circ(\partial_r\outp g)^\top\Bigr) %
 \]
 is a direct sum of maps that each vanish by unilaterality of $f$ and $g$.
 
@@ -2534,48 +2560,146 @@ Applying the sharp $\sharpR_{(r,q)}=\sharpR_r\oplus\sharpR_q$ of the composite, 
 each component vanishing by unilaterality.
 \end{proof}
 
+\section{Examples: tanks, electricity, and predator--prey}\label{sec.arrangement_examples} %
 \begin{example}\label{ex.tank_system}
-Recall the weirdly-shaped water tank with nonconstant sharp $\sharpR_A(h)\colon\xi\mapsto \xi/A(h)^2$ from \cref{ex.tank_sharp}. This time, we consider it as a system
+Recall the weirdly-shaped water tank from \cref{ex.tank_sharp}, with cross-sectional area $A\colon\rr\to\rr_{>0}$ as a function of height. Assume that the cumulative-volume map $h\mapsto\int_0^h A(s)\,ds$ is a diffeomorphism, write $h(v)$ for its inverse, and take the tank's state to be its water volume $v\in\rr$. We consider it as a system
 $
 \begin{tikzpicture}[oriented WD, bb small, bb port length = 3mm, font=\tiny, baseline=(tank.-20)]
 	\node[bb={0}{1}] (tank) {tank};
 \end{tikzpicture}
 $
-with an outgoing pipe, i.e.\ an arrangement of the form $\fun{tank}\colon\lensunit\to\binom{1}{\rr}$; it is not found within any suboperad of \cref{prop.suboperads}. Let $\fun{tank}=(\rr,\sharpR_A,\outp{\fun{tank}},\bang,U)$, i.e.\ its state space represents a height whose reaction to force is controlled by area, its output is the pressure $\outp{\fun{tank}}(h)\coloneqq ch$ for a constant $c>0$ corresponding to water's weight per unit volume, its input is trivial, and its potential is $U(h)\coloneqq c\int_0^h h'A(h')\,dh'$ because the potential energy of a thin slice of water at height $h'$ is given by $h'\,c\,A(h')\,dh'$ representing its height times its weight.
+with an outgoing pipe, i.e.\ a potential-free arrangement $\fun{tank}\colon\lensunit\to\binom{1}{\rr}$. Let $c>0$ denote water's weight per unit volume, and define
+\[
+\fun{tank}\coloneqq(\rr,\sharpR_A,\outp{\fun{tank}},\bang,0),\qquad
+\sharpR_A(v)(\xi)\coloneqq\frac{A(h(v))}{c}\xi,\qquad
+\outp{\fun{tank}}(v)\coloneqq ch(v).
+\]
+Thus its state is the volume of water, its output is the pressure at the base of the tank, and its input is trivial. The sharp says that volume changes in proportion to the force covector received through the pipe and the current cross-sectional area.
 \end{example}
 
 \begin{example}\label{ex.tanks_connected}
 We can connect two weirdly-shaped tank systems, with cross-sections $A_1,A_2$, of the form
-$\fun{tank}_i=(\rr,\sharpR_{A_i},\outp{\fun{tank}_i},\bang,U_i)$
+$\fun{tank}_i=(\rr,\sharpR_{A_i},\outp{\fun{tank}_i},\bang,0)$
 as in \cref{ex.tank_system} using a pipe
 \[
-\begin{tikzpicture}[oriented WD, bb small, font=\tiny] 
-	\node[bb port sep=3mm, bb={0}{0}] (pipe) {pipe};
-	\node[bb={0}{1}, above left=2pt and 1 of pipe.180] (t1) {tank1};
-	\node[bb={0}{1}, below left=2pt and 1 of pipe.180] (t2) {tank2};
-	\node[bb={0}{0}, fit=(t1) (t2) (pipe)] (outer) {};
-	\draw[ar] (t1_out1) -- (t1_out1-|pipe.west);
-	\draw[ar] (t2_out1) -- (t2_out1-|pipe.west);
-\end{tikzpicture}
+\tankpic
 \]
 Here the pipe system $\fun{pipe}\colon\lensunit\to\binom{\rr^2}{1}$ is given by
-$\fun{pipe}=(\rv 0,\bang,\bang,V_{z_1,z_2})$,
+$\fun{pipe}=(\rv 0,\bang,\bang,V_z)$,
 i.e.\ stateless with potential
-$V_{z_1,z_2}(e_1,e_2)\coloneqq\tfrac{\kappa}{2}((e_1+cz_1)-(e_2+cz_2))^2$, where $e_1,e_2$ are the pressures arriving at the pipe's two inputs, $\kappa$ is conductance, $c$ is water's weight per volume and $z_1,z_2$ are the elevations of the tanks' bases, which we assume are known to the pipe. The whole wiring diagram shown is a closed static arrangement of the form
+$V_z(e_1,e_2)\coloneqq\tfrac{\kappa}{2}((e_1-e_2)+cz)^2$, where $e_1,e_2$ are the pressures arriving at the pipe's two inputs, $\kappa$ is conductance, $c$ is water's weight per unit volume and $z$ is the elevation of the first tank's base above the second's, which we assume is known to the pipe. The $i$th input of $\fun{pipe}$ receives $e_i\coloneqq\outp{\fun{tank}_i}(v_i)$, and we write $I\colon\rr^2\to\rr$ for the function
 \[
-\fun{wire}\colon\binom{1}{\rr}\ltens\binom{1}{\rr}\ltens\binom{\rr^2}{1}\to\lensunit
+I(e_1,e_2)\coloneqq\kappa\bigl((e_1-e_2)+cz\bigr),
 \]
+so that $dV_z|_{(e_1,e_2)}=\bigl(I(e_1,e_2),\,-I(e_1,e_2)\bigr)$. We will see in \eqref{eqn.covector_triple} that, semantically, covectors flow backwards through wires, and that those covectors are given by the differential of the potential. Thus $\fun{pipe}$ returns $I(e_1,e_2)$ on its first port and $-I(e_1,e_2)$ on its second, as the picture shows.
+The whole wiring diagram shown is a closed static arrangement of the form
+\begin{equation}\label{eqn.tank_wire}
+\fun{wire}\colon\binom{1}{\rr}\ltens\binom{1}{\rr}\ltens\binom{\rr^2}{1}\to\lensunit
+\end{equation}
 given by $\fun{wire}=(\rv 0,\bang,\id,0)$, i.e.\ the only content being that the lens feeds the outputs of the tanks to the inputs of the pipe by the isomorphism $\rr\times\rr\times 1\times 1\to1\times 1\times \rr^2$, which we're calling $\id$ by abuse of notation.
 
 Composing, we get a map
 $\fun{wire}(\fun{tank}_1,\fun{tank}_2,\fun{pipe})\colon\lensunit\to\lensunit$
 whose state space is $\rr^2$ with sharp $\sharpR_{A_1}\oplus\sharpR_{A_2}$ (\cref{prop.rvect_monoidal}), and whose potential $\rr^2\to\rr$ is
-$(h_1,h_2)\mapsto U_1(h_1)+U_2(h_2)+V_{z_1,z_2}(ch_1,ch_2)$.
+$(v_1,v_2)\mapsto V_z\bigl(ch_1(v_1),ch_2(v_2)\bigr)$.
 
-If we had instead let $\fun{wire}$ carry as state the elevations $\rv Z\coloneqq(\rr^2,\sharpR_Z)$ and feed those values to a more expressive pipe system $\lensunit\to\binom{\rr^4}{1}$ with potential $V(e_1,e_2,z_1,z_2)$, then $\fun{wire}$ would no longer be static
-%and the composite potential
-and, since the elevations appear in no potential other than $V$, the composite potential %
-would cause the elevations to change until the elevation-adjusted heights $h_i+z_i$ agree. A choice of degenerate $\sharpR_Z=0$ holds them fixed, as would putting the elevations into the state of a fourth---this time unilateral---component.
+If we had instead let $\fun{wire}$ carry as state the relative elevation $\rv Z\coloneqq(\rr,\sharpR_Z)$ and feed that value to a more expressive pipe system $\lensunit\to\binom{\rr^3}{1}$ with potential $V(e_1,e_2,z)$, then $\fun{wire}$ would no longer be static
+and, since $z$ appears in no potential other than $V$, the composite potential would cause $z$ to change until the two water surfaces are level. A choice of degenerate $\sharpR_Z=0$ holds it fixed, as would putting $z$ into the state of a fourth---this time unilateral---component.
+\end{example}
+
+\begin{remark}[Electrical reading]\label{rmk.tank_electrical}
+The well-known analogy between hydraulics and electrical circuits let us consider the arrangement \eqref{eqn.tank_wire} as an electrical circuit. Each output port is drawn as the difference between two terminals, like a tank has an opening at the top and bottom. Making one ground $0\in\rr$ is like choosing one tank opening to be open to the air at some known atmospheric pressure:
+\[
+\tankpic
+\qquad\qquad
+\begin{tikzpicture}[font=\tiny, thick, baseline=(current bounding box.center)]
+	\coordinate (n1) at (0,1.9);
+	\coordinate (n2) at (3.2,1.9);
+	\draw (n1) -- (.35,1.9);
+	\draw[decorate, decoration={zigzag, segment length=4.5pt, amplitude=2.5pt}] (.35,1.9) -- (1.25,1.9);
+	\draw (1.25,1.9) -- (1.78,1.9);
+	\draw[line width=2pt] (1.78,1.76) -- (1.78,2.04);
+	\draw (1.95,1.68) -- (1.95,2.12);
+	\draw (1.95,1.9) -- (n2);
+	\draw[->, thin] (.15,1.55) -- (2.15,1.55) node[midway, below=-1.5pt] {$I(e_1,e_2)$};
+	\draw[decorate, decoration={brace, amplitude=3pt}, thin] (.15,2.44) -- (2.15,2.44) node[midway, above=1pt] {$\fun{pipe}$};
+	\node[above=0pt] at (1.87,2.12) {$cz$};
+	\node[above=1pt] at (.80,1.98) {$\kappa$};
+	\draw (n1) -- (0,.85);
+	\draw (-.22,.85) -- (.22,.85);
+	\draw (-.22,.67) -- (.22,.67);
+	\draw (0,.67) -- (0,.28);
+	\node[left=2pt, align=center] at (-.22,.76) {$\fun{tank}_1$\\$v_1$};
+	\draw (3.2,1.9) -- (3.2,.85);
+	\draw (2.98,.85) -- (3.42,.85);
+	\draw (2.98,.67) -- (3.42,.67);
+	\draw (3.2,.67) -- (3.2,.28);
+	\node[right=2pt, align=center] at (3.42,.76) {$\fun{tank}_2$\\$v_2$};
+	\node[right=1pt] at (0,1.02) {$e_1$};
+	\node[left=1pt] at (3.2,1.02) {$e_2$};
+	\draw (0,.28) -- (3.2,.28);
+	\draw (1.6,.28) -- (1.6,.12);
+	\draw (1.44,.12) -- (1.76,.12);
+	\draw (1.50,.04) -- (1.70,.04);
+	\draw (1.56,-.04) -- (1.64,-.04);
+	\node[right=2pt] at (1.70,.04) {$0\in\rr$};
+\end{tikzpicture}
+\]
+Every constituent of $\fun{wire}(\fun{tank}_1,\fun{tank}_2,\fun{pipe})$ has an analogue in the circuit, except $c$: water's weight per unit volume is the translator between the two columns:
+\[
+\begin{array}{ll}
+\text{hydraulics} & \text{electricity}\\\hline
+\text{the }i\text{th tank} & \text{the }i\text{th capacitor}\\
+v_i\text{, the volume of water in the }i\text{th tank} & \text{the charge on the }i\text{th capacitor}\\
+e_i\coloneqq\outp{\fun{tank}_i}(v_i)\text{, the pressure at its base} & \text{the voltage at the }i\text{th node}\\
+\sharpR_{A_i}\text{, shape as $\Delta$ volume per unit pressure} & \text{capacitance as $\Delta$ charge per unit voltage}\\[4pt]
+\text{the pipe and its elevation drop} & \text{a resistor and a voltage source, in series}\\
+cz\text{, the pressure from that drop} & \text{the voltage from that source}\\
+\kappa\text{, the conductance of the pipe} & \text{the conductance of the resistor}\\
+I\text{, the flow through the pipe} & \text{the current through the source and resistor}\\[4pt]
+\text{a wire} & \text{a node}\\
+0\in\rr & \text{the ground}\\
+\text{the outer box: closed} & \text{external terminals: none}
+\end{array}
+\qedhere
+\]
+\end{remark}
+
+\begin{example}[Lotka--Volterra]\label{ex.lotka_volterra}
+We can use the same system, except with oppositely-signed reactions, to model predator-prey systems. Wire two species systems to a predation system as above:
+\[
+\begin{tikzpicture}[oriented WD, bb small, font=\tiny]
+	\node[bb port sep=3mm, bb={0}{0}] (hunt) {hunt};
+	\node[bb={0}{1}, above left=2pt and 1 of hunt.180] (s1) {prey};
+	\node[bb={0}{1}, below left=2pt and 1 of hunt.180] (s2) {pred};
+	\node[bb={0}{0}, fit=(s1) (s2) (hunt)] (outer) {};
+	\draw[ar] (s1_out1) -- (s1_out1-|hunt.west);
+	\draw[ar] (s2_out1) -- (s2_out1-|hunt.west);
+\end{tikzpicture}
+\]
+Each species system $\fun{prey},\fun{pred}\colon\lensunit\to\binom{1}{\rr}$ carries as state the logarithm of its population---noting that $\rr_{>0}$ is not a vector space but its logarithm is---and reports the population itself, $\outp{\fun{prey}}(u)\coloneqq e^u$ and $\outp{\fun{pred}}(v)\coloneqq e^v$.
+
+The predation system $\fun{hunt}\colon\lensunit\to\binom{\rr^2}{1}$ is stateless, $\fun{hunt}=(\rv 0,\bang,\bang,V)$ with mass-action potential $V(e_1,e_2)\coloneqq\beta e_1e_2$ using an encounter rate of $\beta>0$. The systems are combined using $\fun{wire}=(\rv 0,\bang,\id,0)$ as in \eqref{eqn.tank_wire}. The species differ only in their reactions, which as in \cref{ex.tank_sharp} are not constant,
+\[
+\sharpR_{\fun{prey}}(u)\colon\xi\mapsto e^{-u}\xi
+\qqand
+\sharpR_{\fun{pred}}(v)\colon\xi\mapsto-\tfrac{\delta}{\beta}e^{-v}\xi,
+\]
+so the prey descends $V$ while the predator ascends it; the factor $\delta/\beta$ in $\sharpR_{\fun{pred}}$ is the number of predators produced per prey consumed. Here $\xi$ is a flux of individuals per unit time, and each reaction divides by the population to return a per-capita rate.
+The species' potentials are $U_{\fun{prey}}(u)\coloneqq-\alpha e^u$ and $U_{\fun{pred}}(v)\coloneqq-\tfrac{\gamma\beta}{\delta}e^v$, for a prey birth rate $\alpha>0$ and a predator death rate $\gamma>0$. The composite closed system then has state space $\rr^2$, sharp $\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}}$, and potential given by the sum of those above, with $V$ evaluated at the reported populations $e_1\coloneqq e^u$ and $e_2\coloneqq e^v$:
+\[
+U(u,v)=\beta e^{u+v}-\alpha e^u-\tfrac{\gamma\beta}{\delta}e^v.
+\]
+Applying the negative sharp to the differential of the potential gives a vector field $(\dot u,\dot v)=-(\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}})(dU|_{(u,v)})$. Thus, writing $x\coloneqq e^u$ and $y\coloneqq e^v$, we obtain
+\[
+\dot x=x(\alpha-\beta y)
+\qqand
+\dot y=y(\delta x-\gamma),
+\]
+the Lotka--Volterra predator--prey equations, whose orbits are closed curves encircling the coexistence equilibrium $(\gamma/\delta,\alpha/\beta)$---the unique critical point of $U$.
+Since $u=\log x$ and $v=\log y$, we have $\dot u=\dot x/x$ and $\dot v=\dot y/y$, meaning that each state's velocity is its species' per-capita growth rate.
+
+We can make different ecological choices. For example, making both reactions positive---so that both species descend $V$---takes us from a hunt to a competition. Adding $\tfrac{\rho}{2}e^{2u}$ to $U_{\fun{prey}}$ slows the prey's growth as its population increases, modeling limited resources. Finally, one could add an input port to $\fun{prey}$ and make the potential depend on it \eqref{eqn.para_potential_lens_maps}, in which case an environmental signal could drive $\alpha$.
 \end{example}
 
 %====================================================================
@@ -2734,7 +2858,7 @@ exactly as in \eqref{eqn.differential}. That is, under the identification of map
 \begin{definition}[Smooth polynomial interpretation datum]\label{def.smooth_setup}
 We define the \emph{smooth polynomial interpretation datum} for $\Sm$ (\cref{def.potlens}) to be the tuple
 \[
-\interpsm\coloneqq(\cot,\cotof{\rr}\otimes\blank,\theta,(\yon,\potd)),
+\defineTerm{interpsm}\coloneqq(\cot,\cotof{\rr}\otimes\blank,\theta,(\yon,\potd)),
 \]
 an instance of \cref{def.polynomial_interpretation} whose
 \begin{enumerate}
@@ -3423,7 +3547,7 @@ This is the \emph{energy function} of a classical mechanical system~\cite[\S 18.
 In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.
 The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}. %
 
-The discrete step \eqref{eqn.closed_update} does not conserve $H$ exactly.
+The discrete step \eqref{eqn.closed_update} need not conserve $H$ exactly.
 However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---quadratic reaction, \textbf{quadratic potential}---it does preserve the canonical symplectic pairing.
 With $\rv Q$ quadratic as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
 \[U(q)\coloneqq\tfrac12(\kappa q)(q).\]
@@ -3438,7 +3562,7 @@ and we will see in \cref{prop.closed_conservation} that the step \eqref{eqn.clos
 are the \emph{drift} and \emph{kick} steps of the symplectic Euler method~\cite[\S 2.1]{gauckler2017dynamics}, the drift advancing the position and the kick applying the force.
 
 \begin{proposition}[Symplecticity of the closed phase step]\label{prop.closed_conservation}
-For a closed harmonic arrangement (\cref{def.arrangement_terminology}), we obtain the equation
+Let $f=(Q,\sharpR_0,\bang,\bang,U)\colon I\to I$ be a harmonic closed system (\cref{def.arrangement_terminology}) whose potential is $U(q)=\tfrac12(\kappa q)(q)$ for a symmetric linear map $\kappa\colon Q\to Q^*$. Then, for the drift and kick of \eqref{eqn.drift_kick},
 \[\Phiphase(f)=\fun{kick}\circ\fun{drift}.\]
 In particular, the update \eqref{eqn.closed_update} is an endomorphism of the reactive vector space $T^*Q$ in $\rvect$, i.e.\ a linear isomorphism preserving the canonical symplectic pairing \eqref{eqn.canonical_form}.
 \end{proposition}
@@ -3495,7 +3619,8 @@ In this concluding section we illustrate the two dynamics functors on four concr
 
 Newton's method is a \emph{closed system} in the sense of \cref{def.arrangement_terminology}: an arrangement $f\colon \lensunit\to \lensunit$ in $\sarr$. Both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Since $\Phiconf\lensunit\cong\yon$ (\cref{cor.functor}), under $\Phiconf$ it determines a closed system in $\pc$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
 
-Newton's method for \emph{minimization}---given an objective $U$, find a critical point, i.e.\ a point where the gradient $dU$ vanishes---is such a closed system~\cite[Ch.~9]{boyd2004convex}. In the presentation below, the standing hypothesis is that the Hessian of $U$ is invertible at every point of $Q$; this holds in particular in the standard strongly convex case where the Hessian is everywhere positive definite, and the critical point found is the global minimum. 
+Newton's method for \emph{minimization}---given an objective $U$, find a critical point, i.e.\ a point where the gradient $dU$ vanishes---is such a closed system~\cite[Ch.~9]{boyd2004convex}. In the presentation below, the standing hypothesis is that the Hessian of $U$ is invertible at every point of $Q$; %this holds in particular in the standard strongly convex case where the Hessian is everywhere positive definite, and the critical point found is the global minimum.
+this holds in particular when the Hessian is everywhere positive definite, in which case the critical point found is the global minimum. % 
 
 Let $U\colon Q\to\rr$ be a smooth map on a finite-dimensional real vector space $Q$. Its differential $dU\colon Q\to Q^*$ is a smooth map sending $q\in Q$ to the gradient covector $dU|_q\in Q^*$. Wanting it to vanish, we approximate $dU$ to first order about $q$; the linear part of that approximation is the differential of $dU$ at $q$, itself a linear map
 \begin{equation*}
@@ -3540,7 +3665,8 @@ This is genuinely different from gradient descent: there the reactive structure 
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
 %--------------------------------------------------------------------
 
-By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{1}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf$ yields a normal lax symmetric monoidal functor
+By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation~\cite{rumelhart1986learning}. Applying %
+ \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{1}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf$ yields a normal lax symmetric monoidal functor
 \[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\sarr\To{\Phiconf}\pc,\]
 whose composite we denote by
 \begin{equation}\label{eqn.lrn}
@@ -4150,7 +4276,9 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same arrangement may yield momentum-based weight dynamics. This places standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several additional directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. It also remains to realize specific multi-stage integrators such as leapfrog (\cref{rmk.multistage}). 
+Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The monoidality of specific multi-stage integrators such as leapfrog remains to be checked (\cref{rmk.multistage}). A probabilistic extension---replacing the dynamics map $\dyn_Q\colon\Store(S_Q)\to\cotof Q$ of \cref{def.integrator} by a map $\Store(S_Q)\to\cotof Q\circ\rand$, using the polynomial monad $\rand=\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$ introduced in \cref{sec.coalgebras}---might provide finitely-supported stochastic semantics, e.g.\ for stochastic parameter updates in neural networks.
+
+On the suboperad of quadratic arrangements (\cref{prop.suboperads}), we expect the two example semantics $\Phiconf$ and $\Phiphase$ to be related: for every quadratic arrangement $f$ with parameter space $Q$, there should be an arrangement $g$ with parameter space $T^*Q$ such that $\Phiphase(f)=\Phiconf(g)$, functorially in $f$.
 
 
 %Finally, there may be several suboperads of interest
@@ -4171,12 +4299,10 @@ Several additional directions remain open. Replacing reactive vector spaces with
 %fact we expect that this inclusion factors through a suboperad of
 %``critically pointed diagrams,'' and that second-order Taylor expansion
 %about the critical point will provide a retraction onto $\sarr^{\tn{lin}}$.
-Finally, the linear arrangements span a suboperad $\sarr^{\tn{lin}}\ss\sarr$ %
-(\cref{prop.suboperads}) on which other semantics may be extracted. It may be that the %
-superposition principle exhibited by the wave and heat examples is one such, defined on %
-the linear stratum alone. We further expect that this inclusion factors through a %
-suboperad of ``critically pointed diagrams,'' and that second-order Taylor expansion %
-about the critical point will provide a retraction onto $\sarr^{\tn{lin}}$. %
+The linear arrangements span a suboperad $\sarr^{\tn{lin}}\ss\sarr$ (\cref{prop.suboperads}) on which other semantics may be extracted. The superposition principle of heat and wave systems should extend functorially across the whole linear stratum. We expect the inclusion $\sarr^{\tn{lin}}\ss\sarr$ to factor through a suboperad of ``critically pointed arrangements,'' with second-order Taylor expansion about the critical point providing a retraction onto $\sarr^{\tn{lin}}$.
+
+It would also be interesting to compare this framework with Coya's compositional framework for bond graphs~\cite{coya2017bondgraphs}, particularly by relating its Lagrangian-relation semantics to the deterministic coalgebra semantics here.
+
 %We also expect that $\sarr^{\tn{lin}}$ should
 %have semantics in \emph{Lagrangian spans}: to each interface
 %$\binom{\inpt M}{\outp M}$ we assign the symplectic vector space
@@ -4193,9 +4319,7 @@ about the critical point will provide a retraction onto $\sarr^{\tn{lin}}$. %
 %			\Cat{LagSpan}
 %\end{tikzcd}
 %\]
-We plan to pursue
-this symplectic picture, alongside the critical-point linearization above,
-in a sequel.
+We plan to pursue this symplectic picture and the critical-point linearization in a sequel.
 
 \printbibliography
 
