@@ -2673,34 +2673,39 @@ We can use the same system, except with oppositely-signed reactions, to model pr
 \[
 \begin{tikzpicture}[oriented WD, bb small, font=\tiny]
 	\node[bb port sep=3mm, bb={0}{0}] (hunt) {hunt};
-	\node[bb={0}{1}, above left=2pt and 1 of hunt.180] (s1) {prey};
-	\node[bb={0}{1}, below left=2pt and 1 of hunt.180] (s2) {pred};
+	\node[bb={0}{1}, above left=2pt and 1.75 of hunt.180] (s1) {prey};
+	\node[bb={0}{1}, below left=2pt and 1.75 of hunt.180] (s2) {pred};
 	\node[bb={0}{0}, fit=(s1) (s2) (hunt)] (outer) {};
 	\draw[ar] (s1_out1) -- (s1_out1-|hunt.west);
+	\node[above right=-2pt and -3pt] at (s1_out1) {$x$};
 	\draw[ar] (s2_out1) -- (s2_out1-|hunt.west);
+	\node[above right=-2pt and -3pt] at (s2_out1) {$y$};
 \end{tikzpicture}
 \]
-Each species system $\fun{prey},\fun{pred}\colon\lensunit\to\binom{1}{\rr}$ carries as state the logarithm of its population---noting that $\rr_{>0}$ is not a vector space but its logarithm is---and reports the population itself, $\outp{\fun{prey}}(u)\coloneqq e^u$ and $\outp{\fun{pred}}(v)\coloneqq e^v$.
+Each species system $\fun{prey},\fun{pred}\colon\lensunit\to\binom{1}{\rr}$ carries as state the logarithm of its population---noting that $\rr_{>0}$ is not a vector space but its logarithm is---and reports the population itself, $x=\outp{\fun{prey}}(u)\coloneqq e^u$ and $y=\outp{\fun{pred}}(v)\coloneqq e^v$.
 
-The predation system $\fun{hunt}\colon\lensunit\to\binom{\rr^2}{1}$ is stateless, $\fun{hunt}=(\rv 0,\bang,\bang,V)$ with mass-action potential $V(e_1,e_2)\coloneqq\beta e_1e_2$ using an encounter rate of $\beta>0$. The systems are combined using $\fun{wire}=(\rv 0,\bang,\id,0)$ as in \eqref{eqn.tank_wire}. The species differ only in their reactions, which as in \cref{ex.tank_sharp} are not constant,
+The predation system $\fun{hunt}\colon\lensunit\to\binom{\rr^2}{1}$ is stateless, $\fun{hunt}=(\rv 0,\bang,\bang,V)$ with mass-action potential $V(x,y)\coloneqq\beta xy$ using an encounter rate of $\beta>0$. The systems are combined using $\fun{wire}=(\rv 0,\bang,\id,0)$ as in \eqref{eqn.tank_wire}. The species differ only in their reactions, which as in \cref{ex.tank_sharp} are not constant,
 \[
 \sharpR_{\fun{prey}}(u)\colon\xi\mapsto e^{-u}\xi
 \qqand
 \sharpR_{\fun{pred}}(v)\colon\xi\mapsto-\tfrac{\delta}{\beta}e^{-v}\xi,
 \]
-so the prey descends $V$ while the predator ascends it; the factor $\delta/\beta$ in $\sharpR_{\fun{pred}}$ is the number of predators produced per prey consumed. Here $\xi$ is a flux of individuals per unit time, and each reaction divides by the population to return a per-capita rate.
-The species' potentials are $U_{\fun{prey}}(u)\coloneqq-\alpha e^u$ and $U_{\fun{pred}}(v)\coloneqq-\tfrac{\gamma\beta}{\delta}e^v$, for a prey birth rate $\alpha>0$ and a predator death rate $\gamma>0$. The composite closed system then has state space $\rr^2$, sharp $\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}}$, and potential given by the sum of those above, with $V$ evaluated at the reported populations $e_1\coloneqq e^u$ and $e_2\coloneqq e^v$:
+so the prey descends $V$ while the predator ascends it; the factor $\delta/\beta$ in $\sharpR_{\fun{pred}}$ is the number of predators produced per prey consumed. Here $\xi$ is a flux of individuals per unit time,
+and each reaction divides by the population size to obtain the change of log-population. The species' potentials are $U_{\fun{prey}}(u)\coloneqq-\alpha e^u$ and $U_{\fun{pred}}(v)\coloneqq-\tfrac{\gamma\beta}{\delta}e^v$, for a prey birth rate $\alpha>0$ and a predator death rate $\gamma>0$. The composite closed system then has state space $\rr^2$, sharp $\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}}$, and potential given by the sum of those above, with $V$ evaluated at the reported populations $x$ and $y$:
 \[
 U(u,v)=\beta e^{u+v}-\alpha e^u-\tfrac{\gamma\beta}{\delta}e^v.
 \]
-Applying the negative sharp to the differential of the potential gives a vector field $(\dot u,\dot v)=-(\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}})(dU|_{(u,v)})$. Thus, writing $x\coloneqq e^u$ and $y\coloneqq e^v$, we obtain
+Applying the negative sharp to the differential of the potential gives a
+state-space
+vector field $(\dot u,\dot v)=-(\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}})(dU|_{(u,v)})$.
+Since $x=e^u$ and $y=e^v$, we have $\dot x=x\dot u$ and $\dot y=y\dot v$; hence
+we obtain
 \[
 \dot x=x(\alpha-\beta y)
 \qqand
 \dot y=y(\delta x-\gamma),
 \]
-the Lotka--Volterra predator--prey equations, whose orbits are closed curves encircling the coexistence equilibrium $(\gamma/\delta,\alpha/\beta)$---the unique critical point of $U$.
-Since $u=\log x$ and $v=\log y$, we have $\dot u=\dot x/x$ and $\dot v=\dot y/y$, meaning that each state's velocity is its species' per-capita growth rate.
+the Lotka--Volterra predator--prey equations. In population coordinates the potential is $\beta xy-\alpha x-\tfrac{\gamma\beta}{\delta}y$, and its unique critical point is the coexistence equilibrium $(x,y)=(\gamma/\delta,\alpha/\beta)$.
 
 We can make different ecological choices. For example, making both reactions positive---so that both species descend $V$---takes us from a hunt to a competition. Adding $\tfrac{\rho}{2}e^{2u}$ to $U_{\fun{prey}}$ slows the prey's growth as its population increases, modeling limited resources. Finally, one could add an input port to $\fun{prey}$ and make the potential depend on it \eqref{eqn.para_potential_lens_maps}, in which case an environmental signal could drive $\alpha$.
 \end{example}
