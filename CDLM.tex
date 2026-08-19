@@ -198,61 +198,6 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
   \end{tikzpicture}%
 }
 
-% the WD style's `ar', with its arrowhead moved to a chosen position along the path %
-\tikzset{arp/.style={string decoration pos=#1, ar}} %
- %
-% the CMOS NAND wiring diagram; drawn in \cref{ex.nand} %
-% devices at x=0 (ports top-to-bottom: gate, drain, source), reporters at x=-6; %
-% vertical lanes  a:-8.6  b:-8.0  V_dd:-3.0  V_out:-2.2  V_mid:-1.4.  The four gate %
-% levels (+1.4,-6.6,-14.6,-22.6) miss the reporter boxes, so the gate wires cross %
-% the reporter column without touching it.  A dot marks every branch; every other %
-% meeting of lines is a crossing. %
-\newcommand{\nandpic}{% %
-  \begin{tikzpicture}[oriented WD, font=\tiny, baseline=(current bounding box.center), %
-                      bbx=.75cm, bby=2.2ex, bb port sep=1.4, %
-                      bb port length=3pt, bb min width=1.15cm] %
-    \node[bb={3}{0}, align=center] at (0,  0) (P1) {$\fun{P}_1$\\$q^{P_1}$}; %
-    \node[bb={3}{0}, align=center] at (0, -8) (P2) {$\fun{P}_2$\\$q^{P_2}$}; %
-    \node[bb={3}{0}, align=center] at (0,-16) (N1) {$\fun{N}_1$\\$q^{N_1}$}; %
-    \node[bb={3}{0}, align=center] at (0,-24) (N2) {$\fun{N}_2$\\$q^{N_2}$}; %
-    \node[bb={0}{1}] at (-6, -4) (vdd) {$\fun{rail}$}; %
-    \node[bb={0}{1}] at (-6,-12) (out) {$\fun{node}$}; %
-    \node[bb={0}{1}] at (-6,-20) (mid) {$\fun{node}$}; %
-    \coordinate (tl) at (-8.6, 2.8); %
-    \coordinate (br) at ( 1.3,-29.0); %
-    \node[bb={2}{1}, fit=(tl) (br) (P1) (N2) (vdd) (mid)] (outer) {}; %
-    \coordinate (aL) at (-8.6,0);   \coordinate (aJ) at (aL |- outer_in1); %
-    \coordinate (bL) at (-8.0,0);   \coordinate (bJ) at (bL |- outer_in2); %
-    \draw[ar] (vdd_out1) -- node[above=-1pt, pos=.34]{$V_{\!dd}$} (-3,-4); %
-    \draw[arp=.85] (-3,-4) -- (-3, -1.4) -- (P1_in3); %
-    \draw[arp=.85] (-3,-4) -- (-3, -9.4) -- (P2_in3); %
-    \node[dot] at (-3,-4) {}; %
-    \draw (-2.2,0) -- (-2.2,-29); %
-    \draw[ar] (out_out1) -- node[above=-1pt, pos=.34]{$V_{\!out}$} (-2.2,-12); %
-    \draw[arp=.7] (-2.2,  0) -- (P1_in2); %
-    \draw[arp=.7] (-2.2, -8) -- (P2_in2); %
-    \draw[arp=.7] (-2.2,-16) -- (N1_in2); %
-    \draw[arp=.62] (-2.2,-29) -- (1.3,-29) |- (outer_out1); %
-    \node[dot] at (-2.2,-12) {}; %
-    \node[dot] at (-2.2, -8) {}; %
-    \node[dot] at (-2.2,-16) {}; %
-    \draw[ar] (mid_out1) -- node[above=-1pt, pos=.34]{$V_{\!mid}$} (-1.4,-20); %
-    \draw[arp=.94] (-1.4,-20) -- (-1.4,-17.4) -- (N1_in3); %
-    \draw[arp=.94] (-1.4,-20) -- (-1.4,-24)   -- (N2_in2); %
-    \node[dot] at (-1.4,-20) {}; %
-    \draw (outer_in1) -- node[above=-1pt, pos=.55]{$a$} (aJ); %
-    \draw[arp=.72] (aJ) -- (-8.6,  1.4) -- (P1_in1); %
-    \draw[arp=.72] (aJ) -- (-8.6,-14.6) -- (N1_in1); %
-    \node[dot] at (aJ) {}; %
-    \draw (outer_in2) -- node[above=-1pt, pos=.55]{$b$} (bJ); %
-    \draw[arp=.72] (bJ) -- (-8.0, -6.6) -- (P2_in1); %
-    \draw[arp=.78] (bJ) -- (-8.0,-22.6) -- (N2_in1); %
-    \node[dot] at (bJ) {}; %
-    \draw[ar] (-2.6,-25.4) -- (N2_in3); %
-    \node[left=0pt] at (-2.6,-25.4) {$0$}; %
-  \end{tikzpicture}% %
-} %
-
   % amsthm + aliascnt (so cleveref prints the correct environment name) %
 \usepackage{aliascnt}
 
@@ -822,9 +767,9 @@ The point is that, on the overlap $\cat R$, both semantics are built from the sa
 Another related framework is that of bond graphs, a graphical language for network modeling in which components are joined by edges, each carrying an effort and a flow whose product is power~\cite[\S1]{vanderschaft2014port}.%
 \footnote{
 We will talk about bonds in this paper; see
-\cref{rmk.symmetric_bonds}. Our bonds are like chemical bonds---stateless interactions with binding energy---whereas a bond in the sense of bond graphs is a route along which power passes, which we would call a wire.
+\cref{rmk.symmetric_bonds}. Our bonds are like chemical bonds---stateless interactions with binding energy---whereas a bond in the sense of bond graphs is a route along which power passes, which is just an identification that a wiring diagram can make.
 }
- In \cite{coya2017bondgraphs}, Coya categorified bond graphs using cospans and corelations and assigned two functorial semantics in Lagrangian relations: one in terms of effort and flow and the other in terms of potential and current. Bond graph semantics are relational and choose no causal orientation, and for a randomly drawn bond graph it is routinely the case that most initial configurations admit no evolution at all. By contrast, every expression in $\sarr$ denotes a deterministic discrete-time system (\cref{thm.dynamics_functor}), and correspondingly we do not express idealized constraints between systems; e.g.\ a ``rigid'' coupling can only be specified as a stiff potential, rather than an equation.
+ In \cite{coya2017bondgraphs}, Coya categorified bond graphs using cospans and corelations and assigned two functorial semantics in Lagrangian relations: one in terms of effort and flow and the other in terms of potential and current. Bond graph semantics are relational and choose no causal orientation, and arbitrary bond graphs need not admit an evolution at all. By contrast, every expression in $\sarr$ denotes a deterministic discrete-time system (\cref{thm.dynamics_functor}), and correspondingly we do not express idealized constraints between systems; e.g.\ a ``rigid'' coupling can only be specified as a stiff potential, rather than an equation.
 
 %--------------------------------------------------------------------
 \section{Plan of the paper}\label{sec.plan}
@@ -2724,60 +2669,6 @@ I\text{, the flow through the pipe} & \text{the current through the source and r
 \qedhere
 \]
 \end{remark}
-
-\begin{example}[MOS transistors]\label{ex.mosfet} %
-Continuing \cref{rmk.tank_electrical}, we add a three-terminal component to the circuit vocabulary. Fix a threshold $V_t>0$, a gain $\beta>0$, a knee $V_{\!sat}>0$ and a gate stiffness $\kappa>0$, and let %
-\[ %
-\rv{Q}\coloneqq\bigl(\rr^2,\ \sharpR\bigr),\qquad \sharpR(\xi,\xi')\coloneqq(\xi',0), %
-\] %
-a constant reaction which is neither symmetric nor invertible; \cref{def.rvect} asks for neither. Let $g^{\pm}\colon\rr\to\rr_{\geq0}$ be the smoothed square laws $g^{\pm}(v)\coloneqq\beta\bigl(\max(0,\pm v-V_t)\bigr)^2$ and put $W^{\pm}(q,v)\coloneqq g^{\pm}(q)\,V_{\!sat}\log\cosh(v/V_{\!sat})$. %
-
-The transistors are the systems %
-\[ %
-\fun{nmos},\fun{pmos}\colon\lensunit\to\binom{\rr^3}{1},\qquad %
-\fun{nmos}\coloneqq(\rv Q,\bang,\bang,U^{+}),\qquad %
-\fun{pmos}\coloneqq(\rv Q,\bang,\bang,U^{-}), %
-\] %
-whose three inputs receive the gate, drain and source voltages $e_G,e_D,e_S$, and whose potentials are %
-\begin{equation}\label{eqn.mosfet_potential} %
-U^{\pm}\bigl((q,q'),e_G,e_D,e_S\bigr)\coloneqq\tfrac{1}{2}\kappa\bigl(e_G-e_S-q-q'\bigr)^2+W^{\pm}\bigl(q,\,e_D-e_S\bigr). %
-\end{equation} %
-Neither transistor reports anything, so both output maps are $\bang$, and neither contains anything, so both input maps are $\bang$: all of their content is the potential. Since $U^{\pm}$ depends on the terminal voltages only through their differences, the three covectors it returns sum to zero. %
-
-The two summands of \eqref{eqn.mosfet_potential} are read by different components of $\rv Q$. Only the first involves $q'$, so %
-\[ %
-\sharpR\Bigl(\partial_{(q,q')}U^{\pm}\Bigr)=\bigl(-\kappa(e_G-e_S-q-q'),\,0\bigr), %
-\] %
-which does not involve $e_D$, for every choice of $W^{\pm}$. This is the use we make of a degenerate reaction: the drain voltage enters the potential, and hence the covector returned at the drain, without entering the reaction's image. %
-\end{example} %
-
-\begin{example}[A NAND gate]\label{ex.nand} %
-Wiring four transistors, two capacitors and a source gives a logic gate: %
-\[ %
-\nandpic %
-\] %
-Each $\fun{node}\colon\lensunit\to\binom{1}{\rr}$ is a linear capacitor---the constant-cross-section case of \cref{ex.tank_system} under the dictionary of \cref{rmk.tank_electrical}, with the voltage itself as state---given by $\fun{node}\coloneqq(\rv{Q}_C,\id,\bang,0)$ with $\rv Q_C\coloneqq(\rr,\sharpR_C)$ and $\sharpR_C(\xi)\coloneqq\xi/C$ for a capacitance $C>0$. The source $\fun{rail}$ has the same type and the same data except for $\sharpR\coloneqq0$, the degenerate choice which holds a state fixed (\cref{ex.tanks_connected}). %
-
-The four transistors are two copies each of $\fun{pmos}$ and $\fun{nmos}$ from \cref{ex.mosfet}, drawn as $\fun{P}_1,\fun{P}_2$ and $\fun{N}_1,\fun{N}_2$ with states $q^{P_1},\ldots,q^{N_2}$. They are joined by a static arrangement %
-\[ %
-\fun{nandwire}\colon\binom{\rr^3}{1}^{\ltens 4}\ltens\binom{1}{\rr}^{\ltens 3}\to\binom{\rr^2}{\rr}, %
-\qquad\fun{nandwire}\coloneqq(\rv 0,\outp{\fun{nandwire}},\inpt{\fun{nandwire}},0), %
-\] %
-whose whole content is its two maps: $\outp{\fun{nandwire}}$ projects the first reported voltage $V_{\!out}$, and $\inpt{\fun{nandwire}}$ sends %
-\[ %
-\fun{P}_1\mapsto(a,V_{\!out},V_{\!dd}),\quad %
-\fun{P}_2\mapsto(b,V_{\!out},V_{\!dd}),\quad %
-\fun{N}_1\mapsto(a,V_{\!out},V_{\!mid}),\quad %
-\fun{N}_2\mapsto(b,V_{\!mid},0), %
-\] %
-the last source being the constant $0$. Every wire in the picture carries $\rr$; a dot marks a branch, and every other meeting of lines is a crossing. %
-
-Composing, %
-\[ %
-\fun{nand}\coloneqq\fun{nandwire}(\fun{pmos},\fun{pmos},\fun{nmos},\fun{nmos},\fun{node},\fun{node},\fun{rail})\colon\lensunit\to\binom{\rr^2}{\rr} %
-\] %
-is a system with two inputs and one output, whose parameter is the direct sum $\rr^{11}$ with the direct-sum reaction (\cref{prop.rvect_monoidal}) and whose potential is the sum of the four potentials \eqref{eqn.mosfet_potential}, each evaluated at the voltages $\inpt{\fun{nandwire}}$ delivers to it (\cref{prop.suboperads}). Nothing about the gate is written down beyond \cref{ex.mosfet} and the two maps above. %
-\end{example} %
 
 \begin{example}[Lotka--Volterra]\label{ex.lotka_volterra}
 We can use the same system, except with oppositely-signed reactions, to model predator-prey systems. Wire two species systems to a predation system as above:
