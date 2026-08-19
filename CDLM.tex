@@ -413,6 +413,8 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \newcommand{\qand}{\quad\text{and}\quad}
 \newcommand{\qqand}{\qquad\text{and}\qquad}
+\newcommand{\qqwhere}{,\quad\textit{where}\qquad}
+\newcommand{\qqthus}{\qquad\text{thus}\qquad}
 
 \newcommand{\coalg}{\tn{-}\Cat{Coalg}}
 \newcommand{\alg}{\tn{-}\Cat{Alg}}
@@ -2475,13 +2477,9 @@ consists of a tuple $f\coloneqq(\rv Q,\outp f,\inpt f,U)$ with $\rv Q\coloneqq(Q
 U\colon Q\times\outp M\times\inpt N\to\rr.
 \end{gathered}
 \end{equation}
-\eqref{eqn.arrangement} depicts this data in the case $K=1$. %
+\eqref{eqn.arrangement} depicts this data in the case $K=1$.
 
-%\begin{remark}\label{rmk.preference_slogan} %
-%The asymmetry in the domains of \eqref{eqn.srw_morphism} is worth naming as a slogan:
-%\emph{inputs $\inpt \blank$ are what the interior can have preferences over, and
-%outputs $\outp \blank$ are what the exterior can have preferences over}. By preferences, we mean that these variables can be used in potential functions. Since the arrangement $f$ lives interior to $\lensob N$ and exterior to each $\lensob{M_i}$, its potential $U$ reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$.
-%\end{remark}
+The formalism does not prescribe how these data should be chosen for each component, but the dynamics functor then guarantees that these locally-specified behaviors assemble functorially under interconnection.
 
 \begin{definition}[Vocabulary]\label{def.arrangement_terminology}
 We say that a smooth adaptive arrangement $f\in\sarr(b_1,\dots,b_K; c)$, given by $f=(Q,\sharpR_Q,\outp f,\inpt f,U)$ as in \eqref{eqn.srw_morphism} is:
@@ -2573,11 +2571,13 @@ $
 $
 with an outgoing pipe, i.e.\ a potential-free arrangement $\fun{tank}\colon\lensunit\to\binom{1}{\rr}$. Let $c>0$ denote water's weight per unit volume, and define
 \[
-\fun{tank}\coloneqq(\rr,\sharpR_A,\outp{\fun{tank}},\bang,0),\qquad
+\fun{tank}\coloneqq(\rr,\sharpR_A,\outp{\fun{tank}},\bang,0),\qqwhere
 \sharpR_A(v)(\xi)\coloneqq\frac{A(h(v))}{c}\xi,\qquad
 \outp{\fun{tank}}(v)\coloneqq ch(v).
 \]
-Thus its state is the volume of water, its output is the pressure at the base of the tank, and its input is trivial. The sharp says that volume changes in proportion to the force covector received through the pipe and the current cross-sectional area.
+We interpret its output as the pressure at the base of the tank. Applying $\frac{d}{dv}$ to both sides of $v=\int_0^{h(v)}A(s)\,ds$ gives
+\[1=A(h(v))\frac{dh}{dv}\qqthus\frac{d}{dv}\outp{\fun{tank}}(v)=\frac{c}{A(h(v))}.\]
+This is how we chose the sharp: its factor $A(h(v))/c$ cancels the factor $c/A(h(v))$ introduced by differentiating the output map.
 \end{example}
 
 \begin{example}\label{ex.tanks_connected}
