@@ -3780,7 +3780,7 @@ whose job is to present the training stream. At any state, it emits a datum $(x,
 \]
 is a closed discrete dynamical system on $\absval{Q}\times Q_e$, with $Q_e$ the carrier of $e$: at each step the training environment $e$ emits $(x,\lambda)$, the network computes $y=F(q,x)$, the loss seeds the output covector $\xi=dU(\blank,\lambda)|_{y}\in T^*_y\rr^n$, which pulls back to the parameter gradient $\xi_Q$; the parameter descends by \eqref{eqn.dl_gradient_update}, and the two backward covectors return to $e$---the input-gradient $\xi_M$ and the label-gradient $\xi_\Lambda=\partial_\lambda U(y,\lambda)$---after which $e$ advances.
 
-When $e$ ignores these covectors it is an externally specified supervised stream, i.e.\ a fixed dataset of pairs $(x,\lambda)$. When its transitions are based on them, the stream adapts to the model's backpropagated covectors. For instance, for squared-error regression $\xi_\Lambda=\lambda-y$, so $e$---which knows $\lambda$---can read off the prediction $y$ and adapt to it.
+When $e$ ignores these covectors it is an externally specified supervised stream, i.e.\ a fixed dataset of pairs $(x,\lambda)$. When its transitions are based on them, the stream adapts to the model's backpropagated covectors. For instance, for the squared-error loss $U(y,\lambda)=\tfrac12\lVert y-\lambda\rVert^2$, we have $\xi_\Lambda=\lambda-y$, so $e$---which knows $\lambda$---can read off the prediction $y$ and adapt to it.
 \end{example}
 
 \paragraph{Regularization.}
