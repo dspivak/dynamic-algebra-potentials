@@ -558,7 +558,7 @@ first-order. They are two semantics of one adaptive arrangement, e.g.\ with the 
 \chapter{Introduction}\label{ch.intro}
 %====================================================================
 
-There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space~\cite[\S\S 18.1--18.2]{cannasdasilva2008lectures}; in gradient descent it is the Riemannian metric, which determines the learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
+There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space~\cite[\S\S 18.1--18.2]{cannasdasilva2008lectures}; in gradient descent it is the sharp map induced by a Riemannian metric, scaled by a learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
 
 The goal of this paper is to build a compositional syntax for such smooth reactive, adaptive systems---one in which the couplings between subsystems can themselves adapt---and a functorial semantics that turns this syntax into explicit discrete update rules.
 
@@ -3696,7 +3696,7 @@ Suppose we are given a smooth parameterized map
 \begin{equation}\label{eqn.model_map}
 F\colon Q\times\rr^m\to\rr^n,
 \end{equation}
-  thought of as a feedforward neural network with parameter space $(Q,\sharpR_Q):\rvect$---i.e., $Q$ comes equipped with a smooth map $\sharpR_Q\colon Q\to\vect(Q^*,Q)$ (\cref{def.rvect}), whose value $\sharpR_q\colon Q^*\to Q$ at $q\in Q$ will act as a position-dependent learning rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a smooth adaptive arrangement
+  thought of as a feedforward neural network with parameter space $(Q,\sharpR_Q):\rvect$---i.e., $Q$ comes equipped with a smooth map $\sharpR_Q\colon Q\to\vect(Q^*,Q)$ (\cref{def.rvect}), whose value $\sharpR_q\colon Q^*\to Q$ at $q\in Q$ will act as a (possibly position-dependent) learning rate. This $F$ is regarded by $\para{\rvect}{\inc}$ as a smooth adaptive arrangement
 \begin{equation}\label{eqn.learning_lens}
 f=\bigl(\rv Q,\ \outp f=F,\ \inpt f=\bang,\ U=0\bigr)\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n},
 \end{equation}
@@ -3743,7 +3743,9 @@ Altogether, suppressing the unique $1$-components, the coalgebra is
 where $(\xi_Q,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
 
 \paragraph{Losses and backpropagation.}
-Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ (the weights, with $\sharpR_Q$ the position-dependent learning rate), forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential (though see \cref{def.reg_potential}). With the potential zero, the learning signal comes from whatever the network is wired into. We supply it with a \emph{loss}: a stateless $2$-ary closed arrangement (\cref{sec.potentialized_lenses})
+Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ modeling  the weights, with $\sharpR_Q$
+the (possibly position-dependent) learning rate,
+forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential (though see \cref{def.reg_potential}). With the potential zero, the learning signal comes from whatever the network is wired into. We supply it with a \emph{loss}: a stateless $2$-ary closed arrangement (\cref{sec.potentialized_lenses})
 \begin{equation}\label{eqn.loss}
 \fun{loss}\colon\binom{1}{\rr^n}\ltens\binom{1}{\Lambda}\to I,
 \end{equation}
