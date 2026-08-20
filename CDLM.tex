@@ -823,7 +823,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \section{Polynomial functors, coalgebras, and \texorpdfstring{$\termraw{pc}$}{PC}}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.org}).
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.pc}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\termraw{poly}$}{Poly}}\label{sec.poly}
 
@@ -934,7 +934,7 @@ s\colon\nn\to S,\qquad s(0)\coloneqq s_0,\qquad s(t+1)\coloneqq f(s(t)).
 We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $s_0$, and use this notation freely below.
 \end{example}
 
-\subsection{The monoidal 2-category $\pc$ of polynomial coalgebras}\label{sec.org}
+\subsection{The monoidal 2-category $\pc$ of polynomial coalgebras}\label{sec.pc}
 
 The semantics category of this paper, called $\mathbb{O}\Cat{rg}$ in \cite{spivak2021learners,shapiro2022dynamic}, arises naturally from a simple categorical construction: \emph{change of base of enrichment} along a lax monoidal functor.\footnote{I thank Maximilien P\'eroux for pointing out that this construction is a change of base of enrichment.}
 
@@ -965,11 +965,11 @@ The identity $p\to p$ in $\pc$ is the one-state coalgebra $1\To{\id_p}\poly(p,p)
 
 This 2-category has been discussed under the name $\mathbb{O}\Cat{rg}\cong\pc$ previously~\cite{spivak2021learners,smithe2022open,shapiro2022dynamic}.
 
-\begin{proposition}\label{prop.org}
+\begin{proposition}\label{prop.pc}
 $\pc$ is symmetric monoidal closed: the monoidal product $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials, and the internal hom is $\ihom{p,p'}$.
 \end{proposition} 
 \begin{proof}
-Since $(\poly,\yon,\otimes,\ihom{\blank,\blank})$ is symmetric monoidal closed and $\Coalg$ is lax symmetric monoidal, the result follows from the change-of-base discussion at the top of \cref{sec.org}.
+Since $(\poly,\yon,\otimes,\ihom{\blank,\blank})$ is symmetric monoidal closed and $\Coalg$ is lax symmetric monoidal, the result follows from the change-of-base discussion at the top of \cref{sec.pc}.
 \end{proof}
 
 We often elide the difference between $\pc$ as a monoidal 2-category and $\pc$ as a category-enriched operad, with maps
@@ -1169,7 +1169,7 @@ For our purposes, the goal is to build \emph{dynamic} versions of the structures
 \qquad
 \cat{W}_{O\tn{-Opd}}\to\pc
 \] 
-for any $O:\smset$. We continue with this approach, taking values in the 2-category $\pc$ of \cref{sec.org}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
+for any $O:\smset$. We continue with this approach, taking values in the 2-category $\pc$ of \cref{sec.pc}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
 
 %--------------------------------------------------------------------
 \section{The Para construction}\label{sec.para_general}
@@ -2095,7 +2095,7 @@ It is easy to check that $\potalg^{\md}$ is a $(\Fun R'\blank)^{\md}$-monoid.
   \label{sec.dynamics_functor_abstract}
 %----------------------------------------------------------------------------
 
-This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.org_as_para,lem.poly_to_org}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
+This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.pc_as_para,lem.poly_to_pc}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_pc}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
 
 Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
@@ -2108,7 +2108,7 @@ S\cdot p\coloneqq \Store(S)\otimes p.
 \qedhere\]
 \end{definition}
 
-\begin{proposition}\label{prop.org_as_para}
+\begin{proposition}\label{prop.pc_as_para}
 There is an isomorphism of categories
 \[
 \para{\smsetiso}{\poly}\To{\cong}\pciso.
@@ -2128,7 +2128,7 @@ by \cref{def.store_action,eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It r
 In both cases the identity is indexed by the monoidal unit $1:\smsetiso$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}p'\To{(T,\psi)}p''$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
 
-\begin{lemma}\label{lem.poly_to_org}
+\begin{lemma}\label{lem.poly_to_pc}
 Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\pciso.
@@ -2143,10 +2143,10 @@ The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\oti
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with the isomorphism $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
+\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with the isomorphism $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.pc_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
-The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
+The idea of \cref{lem.poly_to_pc} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
 
 
 \begin{definition}[Integrator]\label{def.integrator}
@@ -2167,13 +2167,13 @@ By \cref{prop.coalg_as_poly_map}, any component $\dyn_a\colon\Store(\Fun S_a)\to
 
 We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
 
-\begin{proposition}\label{prop.integrator_to_org}
+\begin{proposition}\label{prop.integrator_to_pc}
 Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{p}{\poly}\to\pciso.\]
 \end{proposition}
 
 \begin{proof}
-Let $\intg=(\Fun S,\dyn)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
+Let $\intg=(\Fun S,\dyn)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_pc} provides a normal lax monoidal functor
 \[
 D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\pciso.
 \]
@@ -2195,13 +2195,13 @@ which is normal (as a lax symmetric monoidal functor) when $z\cong\yon$.
 \end{theorem}
 
 \begin{proof}
-Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below, given by \cref{thm.poly_interpretation,prop.integrator_to_org}:
+Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below, given by \cref{thm.poly_interpretation,prop.integrator_to_pc}:
 \[
 \arr_D\To{\Phip{\interp}}
 \para{\Fun{c}\circ J}{\poly}\To{\Psisem{\intg}}
 \pciso\inj\pc.
 \]
-When $z\cong\yon$ all three factors are normal---$\Phip{\interp}$ by \cref{thm.poly_interpretation}, $\Psisem{\intg}$ by \cref{prop.integrator_to_org}, and the inclusion strongly---so the composite is normal.
+When $z\cong\yon$ all three factors are normal---$\Phip{\interp}$ by \cref{thm.poly_interpretation}, $\Psisem{\intg}$ by \cref{prop.integrator_to_pc}, and the inclusion strongly---so the composite is normal.
 \end{proof}
 
 Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\lensob M$ to the polynomial interface
@@ -2482,7 +2482,7 @@ U\colon Q\times\outp M\times\inpt N\to\rr.
 The formalism does not prescribe how these data should be chosen for each component, but the dynamics functor then guarantees that these locally-specified behaviors assemble functorially under interconnection.
 
 \begin{definition}[Vocabulary]\label{def.arrangement_terminology}
-We say that a smooth adaptive arrangement $f\in\sarr(b_1,\dots,b_K; c)$, given by $f=(Q,\sharpR_Q,\outp f,\inpt f,U)$ as in \eqref{eqn.srw_morphism} is:
+We say that $f\in\sarr(b_1,\dots,b_K; c)$, a smooth adaptive arrangement given by $f=(Q,\sharpR_Q,\outp f,\inpt f,U)$ as in \eqref{eqn.srw_morphism} is:
 \begin{description}[labelindent=2em, leftmargin=!, labelwidth=\widthof{\itshape a closed system}, labelsep=1em, align=left, font=\normalfont\itshape]
   \item[closed] if its codomain is the monoidal unit $I=\lensunit$;
   \item[a system] if its domain is $I=\lensunit$ (i.e.\ the arity is $K=0$); 
@@ -2606,12 +2606,11 @@ $\fun{wire}(\fun{tank}_1,\fun{tank}_2,\fun{pipe})\colon\lensunit\to\lensunit$
 whose state space is $\rr^2$ with sharp $\sharpR_{A_1}\oplus\sharpR_{A_2}$ (\cref{prop.rvect_monoidal}), and whose potential $\rr^2\to\rr$ is
 $(v_1,v_2)\mapsto V_z\bigl(ch_1(v_1),ch_2(v_2)\bigr)$.
 
-If we had instead let $\fun{wire}$ carry as state the relative elevation $\rv Z\coloneqq(\rr,\sharpR_Z)$ and feed that value to a more expressive pipe system $\lensunit\to\binom{\rr^3}{1}$ with potential $V(e_1,e_2,z)$, then $\fun{wire}$ would no longer be static
-and, since $z$ appears in no potential other than $V$, the composite potential would cause $z$ to change until the two water surfaces are level. A choice of degenerate $\sharpR_Z=0$ holds it fixed, as would putting $z$ into the state of a fourth---this time unilateral---component.
+If we had instead let $\fun{wire}$ carry as state the relative elevation $\rv Z\coloneqq(\rr,\sharpR_Z)$ and fed that value to a more expressive pipe system $\lensunit\to\binom{\rr^3}{1}$ with potential $V(e_1,e_2,z)\coloneqq\tfrac{\kappa}{2}((e_1-e_2)+cz)^2$, then $\fun{wire}$ would no longer be static and the elevation difference could move to bring the two water surfaces level. A choice of degenerate $\sharpR_Z=0$ is like a weld holding $z$ fixed, as would putting $z$ into the state of a fourth---this time unilateral---component.
 \end{example}
 
 \begin{remark}[Electrical reading]\label{rmk.tank_electrical}
-The well-known analogy between hydraulics and electrical circuits let us consider the arrangement \eqref{eqn.tank_wire} as an electrical circuit. Each output port is drawn as the difference between two terminals, like a tank has an opening at the top and bottom. Making one ground $0\in\rr$ is like choosing one tank opening to be open to the air at some known atmospheric pressure:
+The well-known analogy between hydraulics and electrical circuits lets us consider the arrangement \eqref{eqn.tank_wire} as an electrical circuit. Each output port is drawn as the difference between two terminals, like a tank has an opening at the top and bottom. Making one ground $0\in\rr$ is like choosing one tank opening to be open to the air at some known atmospheric pressure:
 \[
 \tankpic
 \qquad\qquad
@@ -2626,8 +2625,8 @@ The well-known analogy between hydraulics and electrical circuits let us conside
 	\draw (1.95,1.9) -- (n2);
 	\draw[->, thin] (.15,1.55) -- (2.15,1.55) node[midway, below=-1.5pt] {$I(e_1,e_2)$};
 	\draw[decorate, decoration={brace, amplitude=3pt}, thin] (.15,2.44) -- (2.15,2.44) node[midway, above=1pt] {$\fun{pipe}$};
-	\node[above=0pt] at (1.87,2.12) {$cz$};
-	\node[above=1pt] at (.80,1.98) {$\kappa$};
+	\node[above=0pt] at (1.87,2.07) {$cz$};
+	\node[above=0pt] at (.80,2.07) {$\kappa$};
 	\draw (n1) -- (0,.85);
 	\draw (-.22,.85) -- (.22,.85);
 	\draw (-.22,.67) -- (.22,.67);
@@ -2667,6 +2666,16 @@ I\text{, the flow through the pipe} & \text{the current through the source and r
 \qedhere
 \]
 \end{remark}
+
+\begin{remark}[Further devices]\label{rmk.further_devices} %
+Preliminary work suggests that the electrical reading extends to further devices: DC motors, transistors and logic gates, and feedback amplifiers. For each we give only enough of a hint to convey the flavor---use at your own risk. %
+
+We expect $\sarr$ to accommodate the DC motor~\cite[Ex.~2.5]{vanderschaft2014port} by coupling an electrical and a mechanical system so that the torque is proportional to current and the voltage is proportional to angular velocity. A first pass suggests that configuration dynamics $\Phiconf$ \eqref{eqn.our_phis} suffices when applied to two systems, each with a quadratic potential and with reactive vector space $T^*\rr$ equipped with the opposite $-\sharpS$ of the symplectic sharp; the electrical system reports its momentum and the mechanical reports its position. %
+
+A MOS transistor appears to be a system $\lensunit\to\binom{\rr^3}{1}$ whose three inputs receive the gate, drain, and source voltages, and whose reactive vector space is $(\rr^2,\sharpR)$ with $\sharpR(\xi,\xi')\coloneqq(\xi',0)$, a constant reaction which is neither symmetric nor invertible; \cref{def.rvect} asks for neither. When only one summand of the potential involves the second state component, and only the other involves the drain voltage, the drain voltage enters the potential---and hence the covector returned at the drain---without entering the reaction's image: the drain draws current but cannot move the state. Wiring four such transistors, two capacitors, and a source appears to yield a NAND gate, and hence combinational logic. %
+
+The same unilaterality should be the active ingredient in Black's feedback amplifier: a high-gain unilateral stage whose reported output is returned, attenuated, to one of its inputs by the wiring. The classical insensitivity of the closed-loop gain to the stage's own gain would then be a statement about equilibria of the composite system, though we have not checked this. %
+\end{remark} %
 
 \begin{example}[Lotka--Volterra]\label{ex.lotka_volterra}
 We can use the same system, except with oppositely-signed reactions, to model predator-prey systems. Wire two species systems to a predation system as above:
@@ -2896,13 +2905,13 @@ This completes the polynomial interpretation $\Phip{\interpsm}\colon\sarr\to\par
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; \cref{sec.cotangent_endofunctor} develops the cotangent endofunctor; \cref{sec.readouts_one_forms} introduces readouts and 1-forms; and \cref{sec.phase_integrators} assembles the phase integrator from them.
+With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_pc} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; \cref{sec.cotangent_endofunctor} develops the cotangent endofunctor; \cref{sec.readouts_one_forms} introduces readouts and 1-forms; and \cref{sec.phase_integrators} assembles the phase integrator from them.
 
 \subsection{The Euler step}\label{sec.integrators}
 
 The polynomial interpretation $\Phip{\interpsm}$ of \cref{sec.smooth_interpretation} produces maps of the form $\cotof{Q}\otimes p\to p'$, or equivalently $\cotof{Q}\to[p,p']$. Our goal in this section is to turn them into $[p,p']$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{Q}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
-We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
+We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_pc}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\pciso.\]
 
 \begin{notation}\label{not.rvect_polynomials}
@@ -3425,7 +3434,7 @@ These maps are natural in vector-space isomorphisms and submersion lenses, and m
 \[
 \cat{S}\coloneqq\para{\vectiso}{\SLens}\to\para{\smsetiso}{\poly}.
 \]
-Composing with the identification $\para{\smsetiso}{\poly}\cong\pciso$ of \cref{prop.org_as_para} and the inclusion $\pciso\inj\pc$ gives a normal lax symmetric monoidal functor $\cat S\to\pc$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
+Composing with the identification $\para{\smsetiso}{\poly}\cong\pciso$ of \cref{prop.pc_as_para} and the inclusion $\pciso\inj\pc$ gives a normal lax symmetric monoidal functor $\cat S\to\pc$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
 \begin{equation}\label{eqn.S_coalgebra}
 q\longmapsto b\longmapsto
 \left(
@@ -4082,7 +4091,7 @@ The routing $\omega_{i+1}(q_i)$ into box $i$'s $\xi$-component is how the wiring
 
 \paragraph{Composition.}
 
-The $\pc$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\pc$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\pc$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
+The $\pc$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\pc$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.pc_as_para}, composition in $\pc$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.pc}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
 \[
 \Store(T^*\rr^K)\To{\Phiphase(\Part)^{\otimes K}}\Phiphase(\boxob)^{\otimes K}\To{\Phiphase(\fun{wire}_K)}\Phiphase(\boxob).
 \]
@@ -4294,8 +4303,6 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same arrangement may yield momentum-based weight dynamics. This would place standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
 Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The monoidality of specific multi-stage integrators such as leapfrog remains to be checked (\cref{rmk.multistage}). A probabilistic extension---replacing the dynamics map $\dyn_Q\colon\Store(S_Q)\to\cotof Q$ of \cref{def.integrator} by a map $\Store(S_Q)\to\cotof Q\circ\rand$, using the polynomial monad $\rand=\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$ introduced in \cref{sec.coalgebras}---might provide finitely-supported stochastic semantics, e.g.\ for stochastic parameter updates in neural networks.
-
-We also expect $\sarr$ to accommodate the DC motor~\cite[Ex.~2.5]{vanderschaft2014port} by coupling an electrical and a mechanical system so that the torque is proportional to current and the voltage is proportional to angular velocity. A first pass suggests that configuration dynamics $\Phiconf$ suffices when applied to two systems, each with a quadratic potential and with reactive vector space $T^*\rr$ equipped with the opposite $-\sharpS$ of the symplectic sharp; the electrical system reports its momentum and the mechanical reports its position.
 
 On the suboperad of quadratic arrangements (\cref{prop.suboperads}), we expect the two example semantics $\Phiconf$ and $\Phiphase$ to be related: for every quadratic arrangement $f$ with parameter space $Q$, there should be an arrangement $g$ with parameter space $T^*Q$ such that $\Phiphase(f)=\Phiconf(g)$, functorially in $f$.
 

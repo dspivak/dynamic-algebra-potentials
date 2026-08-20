@@ -10,6 +10,53 @@ This repository contains a mathematics paper in LaTeX. Treat the user as the aut
 - When a local change creates an obvious nearby inconsistency, fix that too.
 - Ask for clarification only when the ambiguity is real or the choice is mathematically risky.
 
+## Edit protocol: reversible `%` markers
+
+Every edit to a `.tex` file in this repo arrives marked, so the original wording is
+exactly recoverable from the file itself and the author can accept or strip it by hand.
+
+**The whole protocol in one example.** To change `decorated cospans` to
+`cospans and corelations` inside a 900-character paragraph line, put a line break
+immediately *before* and immediately *after* those two words — nothing else moves:
+
+```
+...long unchanged text, ending: Coya categorified bond graphs using
+%decorated cospans
+cospans and corelations %
+and assigned two functorial semantics..., long unchanged text continuing...
+```
+
+1. **The unit of edit is the changed fragment** — not the line, not the sentence.
+   Break the long source line exactly at the fragment's boundaries first, so the
+   fragment sits alone. That step is pure reflow, no markers, output unchanged.
+   NEVER SKIP IT. It is not paragraph reflow: do not rewrap prose to ~90 chars,
+   do not break at sentence boundaries for tidiness; unchanged text keeps its
+   shape (long lines stay long).
+2. Every inserted line ends with ` %` — space before the `%`, so the compiled
+   output is identical to a plain newline.
+3. Never delete a line outright; prefix it with `%`.
+4. A line carries a marker **only if its wording actually changed**. N changed
+   fragments in a paragraph ⇒ N `%`-pairs (commented original, then replacement
+   ending ` %`); every other line is the author's text, verbatim and bare. A
+   replacement line containing any unchanged words means step 1 was done as
+   reflow instead of fragment isolation — not allowed, however tidy it looks.
+5. A marker must land at a genuine line end / line start, never mid-original-line.
+   After every edit, check the tail of the edited line: a trailing ` %` dropped
+   mid-line comments out — silently erases — the live text after it.
+6. Extend the fragment to the nearest word boundary rather than stranding
+   punctuation (isolate `state that updates until X.`, replace with `state. %`;
+   never leave `.` alone on a line, which compiles as `state .`).
+
+Seeing earlier chunks already flattened (markers stripped, text inline) does NOT
+mean the convention is off — that is the author having accepted them.
+
+**Afterward, always quote the resulting source block back with line numbers**, not
+a summary of what changed: he approves how the edit reads in place. Then stop.
+Downstream consequences, new gaps, and things spotted for later chunks wait until
+after approval — raising them in the same message buries what he is reviewing.
+Once a chunk is approved, commit it: one commit per chunk, never batched, never
+before approval.
+
 ## Math Editing
 
 - Check statements against the local definitions and surrounding arguments before replying.

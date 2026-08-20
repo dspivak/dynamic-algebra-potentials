@@ -739,7 +739,7 @@ By \emph{operad} we mean \emph{colored operad} unless otherwise stated. We somet
 \section{Polynomial functors, coalgebras, and \texorpdfstring{$\termraw{pc}$}{PC}}\label{sec.poly_dynamic_bg}
 %--------------------------------------------------------------------
 
-This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.org}).
+This section reviews the polynomial-functor machinery underlying our model of dynamics: the symmetric monoidal closed category $\poly$ (\cref{sec.poly}), the store comonad (\cref{sec.substitution_store}), polynomial coalgebras as discrete-time dynamical systems (\cref{sec.coalgebras}), and the monoidal 2-category $\pc$ of polynomial coalgebras (\cref{sec.pc}).
 
 \subsection{The symmetric monoidal closed category \texorpdfstring{$\termraw{poly}$}{Poly}}\label{sec.poly}
 
@@ -846,7 +846,7 @@ s\colon\nn\to S,\qquad s(0)\coloneqq s_0,\qquad s(t+1)\coloneqq f(s(t)).
 We call this the \emph{trajectory} of the $\yon$-coalgebra from initial state $s_0$, and use this notation freely below.
 \end{example}
 
-\subsection{The monoidal 2-category $\pc$ of polynomial coalgebras}\label{sec.org}
+\subsection{The monoidal 2-category $\pc$ of polynomial coalgebras}\label{sec.pc}
 
 The semantics category of this paper, called $\mathbb{O}\Cat{rg}$ in \cite{spivak2021learners,shapiro2022dynamic}, arises naturally from a simple categorical construction: \emph{change of base of enrichment} along a lax monoidal functor.\footnote{I thank Maximilien P\'eroux for pointing out that this construction is a change of base of enrichment.}
 
@@ -877,7 +877,7 @@ The identity $p\to p$ in $\pc$ is the one-state coalgebra $1\To{\id_p}\poly(p,p)
 
 This 2-category has been discussed under the name $\mathbb{O}\Cat{rg}\cong\pc$ previously.
 
-\begin{proposition}[\cite{spivak2021learners,smithe2022open,shapiro2022dynamic}]\label{prop.org}
+\begin{proposition}[\cite{spivak2021learners,smithe2022open,shapiro2022dynamic}]\label{prop.pc}
 $\pc$ is symmetric monoidal closed: the monoidal product $(\yon,\otimes)$ is induced by the Dirichlet product on polynomials, and the internal hom is $\ihom{p,p'}$.
 \end{proposition} 
 \begin{proof}
@@ -1081,7 +1081,7 @@ For our purposes, the goal is to build \emph{dynamic} versions of the structures
 \qquad
 \cat{W}_{O\tn{-Opd}}\to\pc
 \] 
-for any $O:\smset$. We continue with this approach, taking values in the 2-category $\pc$ of \cref{sec.org}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
+for any $O:\smset$. We continue with this approach, taking values in the 2-category $\pc$ of \cref{sec.pc}. In \cref{sec.potentialized_lenses} we will choose the particular composition syntax $\cat{W}$ used in this paper.
 
 %--------------------------------------------------------------------
 \section{The Para construction}\label{sec.para_general}
@@ -2006,7 +2006,7 @@ It is easy to check that $\potalg^{\md}$ is a $(\Fun R'\blank)^{\md}$-monoid.
   \label{sec.dynamics_functor_abstract}
 %----------------------------------------------------------------------------
 
-This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.org_as_para,lem.poly_to_org}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_org}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
+This section assembles the dynamics functor $\Phi\colon\arr_D\to\pc$ in three steps: we repackage $\pciso$ as a Para construction (\cref{prop.pc_as_para,lem.poly_to_pc}), define \emph{integrators} and the semantics they induce (\cref{def.integrator,prop.integrator_to_pc}), and combine these with the polynomial interpretation to obtain $\Phi_{\interp,\intg}$ (\cref{thm.dynamics_functor}).
 
 Following the convention of \cref{sec.prelim}, we refer to $(2,1)$-categories simply as categories, though we do take care of the 2-dimensional isomorphisms in proofs. Recall from \cref{lem.store_monoidal} that $\Store\colon\smsetiso\to\poly$ sends $S:\smset$ to the store comonad $S\yon^S$.
 
@@ -2019,7 +2019,7 @@ S\cdot p\coloneqq \Store(S)\otimes p.
 \qedhere\]
 \end{definition}
 
-\begin{proposition}\label{prop.org_as_para}
+\begin{proposition}\label{prop.pc_as_para}
 There is an isomorphism of categories
 \[
 \para{\smsetiso}{\poly}\To{\cong}\pciso.
@@ -2039,7 +2039,7 @@ by \cref{def.store_action,eqn.dirichlet_adjunction,prop.coalg_as_poly_map}. It r
 In both cases the identity is indexed by the monoidal unit $1:\smsetiso$, and $1\To{\id}\poly(p,p)=[p,p](1)$ and $\yon\To{\id}[p,p]$ are identified as above. Given composable maps $p\To{(S,\varphi)}p'\To{(T,\psi)}p''$, in both cases the composite is of the form $(TS,\psi\circ\varphi)$, and the same identifications match these composites.
 \end{proof}
 
-\begin{lemma}\label{lem.poly_to_org}
+\begin{lemma}\label{lem.poly_to_pc}
 Let $\cat A$ be a symmetric monoidal category and let $F\colon\cat A\to\smsetiso$ be strong symmetric monoidal. Let $\cat A$ act on $\poly$ via the strong monoidal composite $\Store\circ F\colon\cat A\to\poly$ as in \cref{lem.smc_action}. There is an identity-on-objects normal lax symmetric monoidal functor
 \[
 D_F\colon\para{\Store\circ F}{\poly}\to\pciso.
@@ -2054,10 +2054,10 @@ The induced action sends $(Q,p)\mapsto \Store(F(Q))\otimes p=F(Q)\yon^{F(Q)}\oti
 \smsetiso\times\poly\ar[r,"\Store(\blank)\otimes\blank"']\& \poly.
 \end{tikzcd}
 \]
-\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with the isomorphism $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.org_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
+\Cref{prop.para_square} gives $\para{\Store\circ F}{\poly}\to\para{\smsetiso}{\poly}$, and composing with the isomorphism $\para{\smsetiso}{\poly}\cong\pciso$ from \cref{prop.pc_as_para} yields the claim. For normality, note that $F$ being strong monoidal gives $F(I_{\cat A})\cong 1$, so $D_F$ sends the unit $(I_{\cat A},\yon)$ to $\Store(F(I_{\cat A}))\otimes\yon\cong\yon$.
 \end{proof}
 
-The idea of \cref{lem.poly_to_org} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
+The idea of \cref{lem.poly_to_pc} is very simple: that a polynomial map $F(Q)\yon^{F(Q)}\otimes p\to p'$ can be converted into a $[p,p']$-coalgebra with states $F(Q)$, and that this process is functorial.
 
 
 \begin{definition}[Integrator]\label{def.integrator}
@@ -2078,13 +2078,13 @@ By \cref{prop.coalg_as_poly_map}, any component $\dyn_a\colon\Store(\Fun S_a)\to
 
 We call $\intg$ an \emph{integrator} for what its instances turn out to be. Indeed the integrators built below---configuration and phase---are numerical integrators of explicit-Euler type, namely Euler on configuration space and a phase-space analogue. They differ in both the state space $\Fun S$ (configuration versus phase space) and the dynamics $\dyn$.
 
-\begin{proposition}\label{prop.integrator_to_org}
+\begin{proposition}\label{prop.integrator_to_pc}
 Let $\cat Q$ be a symmetric monoidal category and $p\colon\cat Q\to\poly$ a strong symmetric monoidal functor. Every $p$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{p}{\poly}\to\pciso.\]
 \end{proposition}
 
 \begin{proof}
-Let $\intg=(\Fun S,\dyn)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_org} provides a normal lax monoidal functor
+Let $\intg=(\Fun S,\dyn)$. Since the state space functor $\Fun S$ is strong symmetric monoidal, \cref{lem.poly_to_pc} provides a normal lax monoidal functor
 \[
 D_{\Fun S}\colon\para{\Store\circ\Fun S}{\poly}\to\pciso.
 \]
@@ -2106,13 +2106,13 @@ which is normal (as a lax symmetric monoidal functor) when $z\cong\yon$.
 \end{theorem}
 
 \begin{proof}
-Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below, given by \cref{thm.poly_interpretation,prop.integrator_to_org}:
+Define $\Phi_{\interp,\intg}$ to be the composite of the lax monoidal functors below, given by \cref{thm.poly_interpretation,prop.integrator_to_pc}:
 \[
 \arr_D\To{\Phip{\interp}}
 \para{\Fun{c}\circ J}{\poly}\To{\Psisem{\intg}}
 \pciso\inj\pc.
 \]
-When $z\cong\yon$ all three factors are normal---$\Phip{\interp}$ by \cref{thm.poly_interpretation}, $\Psisem{\intg}$ by \cref{prop.integrator_to_org}, and the inclusion strongly---so the composite is normal.
+When $z\cong\yon$ all three factors are normal---$\Phip{\interp}$ by \cref{thm.poly_interpretation}, $\Psisem{\intg}$ by \cref{prop.integrator_to_pc}, and the inclusion strongly---so the composite is normal.
 \end{proof}
 
 Unwinding, we find that the functor $\Phi_{\interp,\intg}$ sends an object $\lensob M$ to the polynomial interface
@@ -2537,13 +2537,13 @@ This completes the polynomial interpretation $\Phip{\interpsm}\colon\sarr\to\par
 \section{Integrator semantics}\label{sec.integrator_semantics}
 %--------------------------------------------------------------------
 
-With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_org} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; \cref{sec.cotangent_endofunctor} develops the cotangent endofunctor; \cref{sec.readouts_one_forms} introduces readouts and 1-forms; and \cref{sec.phase_integrators} assembles the phase integrator from them.
+With the polynomial interpretation in hand, the abstract account of \cref{sec.dynamics_functor_abstract} reduces dynamics to a single datum: a $p$-integrator $(\Fun S,\dyn)$ (\cref{def.integrator}), by which \cref{prop.integrator_to_pc} yields a functor $\para{p}{\poly}\to\pc$. This section supplies the two integrators that we'll use. \Cref{sec.integrators} builds the Euler step $\chi$ on which both rest; \cref{sec.config_integrator} reads off the configuration integrator; \cref{sec.cotangent_endofunctor} develops the cotangent endofunctor; \cref{sec.readouts_one_forms} introduces readouts and 1-forms; and \cref{sec.phase_integrators} assembles the phase integrator from them.
 
 \subsection{The Euler step}\label{sec.integrators}
 
 The polynomial interpretation $\Phip{\interpsm}$ of \cref{sec.smooth_interpretation} produces maps of the form $\cotof{Q}\otimes p\to p'$, or equivalently $\cotof{Q}\to[p,p']$. Our goal in this section is to turn them into $[p,p']$-coalgebras in a functorial way. To do so, \cref{prop.coalg_as_poly_map} says we just need a natural map $\Store(S)\to\cotof{Q}$. Such a map can be thought of as an \emph{integrator}, such as Euler integration, which takes a gradient vector and updates the state.
 
-We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_org}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
+We specialize to $\cat Q=\rvect$ and $p=\cot$, writing $\para{\cot}{\poly}$ for the Para construction of the action $Q\cdot\blank\coloneqq\cotof{Q}\otimes\blank$ induced by $\cot$. By \cref{prop.integrator_to_pc}, every $\cot$-integrator $\intg$ induces a normal lax symmetric monoidal functor
 \[\Psisem{\intg}\colon\para{\cot}{\poly}\to\pciso.\]
 
 \begin{notation}\label{not.rvect_polynomials}
@@ -3052,7 +3052,7 @@ These maps are natural in vector-space isomorphisms and submersion lenses, and m
 \[
 \cat{S}\coloneqq\para{\vectiso}{\SLens}\to\para{\smsetiso}{\poly}.
 \]
-Composing with the identification $\para{\smsetiso}{\poly}\cong\pciso$ of \cref{prop.org_as_para} and the inclusion $\pciso\inj\pc$ gives a normal lax symmetric monoidal functor $\cat S\to\pc$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
+Composing with the identification $\para{\smsetiso}{\poly}\cong\pciso$ of \cref{prop.pc_as_para} and the inclusion $\pciso\inj\pc$ gives a normal lax symmetric monoidal functor $\cat S\to\pc$. Unwinding this composite sends the above morphism $(Q, r, u,\alpha)$ to the $\ihom{P(p),P(p')}$-coalgebra with state set $Q$ whose action is
 \begin{equation}\label{eqn.S_coalgebra}
 q\longmapsto b\longmapsto
 \left(
@@ -3674,7 +3674,7 @@ The routing $\omega_{i+1}(q_i)$ into box $i$'s $\xi$-component is how the wiring
 
 \paragraph{Composition.}
 
-The $\pc$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\pc$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.org_as_para}, composition in $\pc$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.org}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
+The $\pc$-composite $\Phiphase(\fun{wire}_K)\bigl(\Phiphase(\Part),\ldots,\Phiphase(\Part)\bigr)$ is a $0$-ary morphism $\yon\to\Phiphase(\boxob)$ in $\pc$, i.e.\ a $\Phiphase(\boxob)$-coalgebra. By \cref{prop.pc_as_para}, composition in $\pc$ multiplies state spaces and composes the underlying polynomial maps; here $\Phiphase(\fun{wire}_K)$ has trivial state space and each $\Phiphase(\Part)$ has state space $T^*\rr$, so the composite has state space $1\times(T^*\rr)^K=T^*\rr^K$. Concretely, the $K$-many single-particle coalgebra maps $\Phiphase(\Part)\colon T^*\rr\to\Phiphase(\boxob)(T^*\rr)$ combine via the lax monoidal structure of $\blank\coalg$ (\cref{prop.pc}) into a single $\Phiphase(\boxob)^{\otimes K}$-coalgebra with states $T^*\rr^K$, and the static polynomial map $\Phiphase(\fun{wire}_K)\colon\Phiphase(\boxob)^{\otimes K}\to\Phiphase(\boxob)$ then post-composes:
 \[
 \Store(T^*\rr^K)\To{\Phiphase(\Part)^{\otimes K}}\Phiphase(\boxob)^{\otimes K}\To{\Phiphase(\fun{wire}_K)}\Phiphase(\boxob).
 \]

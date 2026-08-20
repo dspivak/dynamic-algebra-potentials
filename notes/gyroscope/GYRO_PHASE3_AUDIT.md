@@ -47,8 +47,8 @@ cannot be negotiated** (compositionality). Verify, via `test_drag_one_form.py`:
 - the prism routing handles `vdim`-blocks correctly (`comp_perm`).
 
 ### A3. RK4-phase integrator (`rk4.rk4_gyro_integrator`, `Phirk4gyro`; `test_rk4_gyro.py`)
-RK4 on the phase ODE `q̇ = sharp(ξ)`, `ξ̇ = −dU − drag·F(v) − γ⊙(Jv)`, as an `org^(4)`
-morphism (the K=4 `IntegratorK` pushed through `orgK_from_integrator`). Verify:
+RK4 on the phase ODE `q̇ = sharp(ξ)`, `ξ̇ = −dU − drag·F(v) − γ⊙(Jv)`, as an `pc^(4)`
+morphism (the K=4 `IntegratorK` pushed through `pcK_from_integrator`). Verify:
 - it is **genuinely 4th order on the phase system** — reproduce the global error vs the
   exact flow `e^{AT}`; ratios should approach 16 (reported 16.6→16.1). If it is secretly
   2nd/3rd order, say so;
@@ -75,7 +75,7 @@ morphism (the K=4 `IntegratorK` pushed through `orgK_from_integrator`). Verify:
 - the classifier's potential **is** the wired `R^2` Laplacian + rod gravity − drive
   (matched to an oracle) — i.e. the **spring coupling comes from the prism wiring**, not a
   hand-written `U`. This is what makes the springs ablation a wiring fact;
-- the rollout **genuinely runs through** `Phirk4gyro` → `orgK_from_integrator` →
+- the rollout **genuinely runs through** `Phirk4gyro` → `pcK_from_integrator` →
   `smooth_interpretation`, with the force `= jax.grad(U)` (the framework's backward pass).
   Try to find a place where the physics is hand-computed outside the functor;
 - **Honest judgment call for you to make** (not pre-decided): the spring coupling and rod
@@ -106,7 +106,7 @@ input signal reaches the output gyros and depends on the input; freeze the stiff
 - **No accuracy claim anywhere.** The trainability test asserts only that the **loss
   decreases** (an earlier weak/lucky 0.64 val-acc was deliberately dropped). Confirm no
   accuracy assertion or boast crept into code, tests, or docstrings.
-- Beyond-paper pieces (drag 1-form, gyroscopic 1-form, RK4-as-`org^(K)` without a
+- Beyond-paper pieces (drag 1-form, gyroscopic 1-form, RK4-as-`pc^(K)` without a
   functoriality proof) are **banner-labeled** with their caveats. Confirm.
 - The grep `grep -rni "reproduc\|0.834\|matches the blog\|state of the art" dap` should
   surface no overclaim.
