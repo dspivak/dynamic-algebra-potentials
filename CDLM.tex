@@ -2668,16 +2668,6 @@ I\text{, the flow through the pipe} & \text{the current through the source and r
 \]
 \end{remark}
 
-\begin{remark}[Further devices]\label{rmk.further_devices} %
-Preliminary work suggests that the electrical reading extends to further devices: DC motors, transistors and logic gates, and feedback amplifiers. For each we give only enough of a hint to convey the flavor---use at your own risk. %
-
-We expect $\sarr$ to accommodate the DC motor~\cite[Ex.~2.5]{vanderschaft2014port} by coupling an electrical and a mechanical system so that the torque is proportional to current and the voltage is proportional to angular velocity. A first pass suggests that configuration dynamics $\Phiconf$ \eqref{eqn.our_phis} suffices when applied to two systems, each with a quadratic potential and with reactive vector space $T^*\rr$ equipped with the opposite $-\sharpS$ of the symplectic sharp; the electrical system reports its momentum and the mechanical reports its position. %
-
-A MOS transistor appears to be a system $\lensunit\to\binom{\rr^3}{1}$ whose three inputs receive the gate, drain, and source voltages, and whose reactive vector space is $(\rr^2,\sharpR)$ with $\sharpR(\xi,\xi')\coloneqq(\xi',0)$, a constant reaction which is neither symmetric nor invertible; \cref{def.rvect} asks for neither. When only one summand of the potential involves the second state component, and only the other involves the drain voltage, the drain voltage enters the potential---and hence the covector returned at the drain---without entering the reaction's image: the drain draws current but cannot move the state. Wiring four such transistors, two capacitors, and a source appears to yield a NAND gate, and hence combinational logic. %
-
-The same unilaterality should be the active ingredient in Black's feedback amplifier: a high-gain unilateral stage whose reported output is returned, attenuated, to one of its inputs by the wiring. The classical insensitivity of the closed-loop gain to the stage's own gain would then be a statement about equilibria of the composite system, though we have not checked this. %
-\end{remark} %
-
 \begin{example}[Lotka--Volterra]\label{ex.lotka_volterra}
 We can use the same system, except with oppositely-signed reactions, to model predator-prey systems. Wire two species systems to a predation system as above:
 \[
@@ -2718,6 +2708,71 @@ we obtain
 the Lotka--Volterra predator--prey equations. In population coordinates the potential is $\beta xy-\alpha x-\tfrac{\gamma\beta}{\delta}y$, and its unique critical point is the coexistence equilibrium $(x,y)=(\gamma/\delta,\alpha/\beta)$.
 
 We can make different ecological modeling choices. For example, making both reactions positive makes each species descend the interaction potential $V$. Adding $\tfrac{\rho}{2}e^{2u}$ to $U_{\fun{prey}}$ slows the prey's growth as its population increases, modeling limited resources. Finally, one could add an input port to $\fun{prey}$ and make the potential depend on it \eqref{eqn.para_potential_lens_maps}, in which case an environmental signal could drive $\alpha$.
+\end{example}
+
+\begin{example}\label{ex.further_reach}
+There are many more examples from electronics, mechanics, control theory, chemistry, biology, and neuroscience that appear to be modellable in this framework.% 
+\footnote{Each construction below is implemented in the companion code (\url{https://github.com/dspivak/dap}) by Claude, which used the definitions
+here to make executable code that was then tested against idealized standard equations. The author understands the content of the claims as stated, and believes them, but has not verified all of them by hand.} 
+
+\begin{description}
+	\item[Transistor.] A transistor is a system with interface $\binom{\rr^3}{1}$ whose three inputs receive the gate, drain, and source voltages; whose reactive vector space is $Q\coloneqq(\rr^2,\sharpR)$ with $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; and whose potential $U\colon Q\times \rr^3\to\rr$ is
+\[
+U\bigl((q,q'),e_G,e_D,e_S\bigr)\coloneqq\tfrac{\kappa}{2}\bigl(e_G-e_S-q-q'\bigr)^2+W\bigl(q,\,e_D-e_S\bigr)
+\]
+for a constant $\kappa>0$ and a function $W\colon\rr^2\to\rr$ determining the kind (called NMOS vs.\ PMOS). The idea is that in a state $(q,q')$, only $q$ represents something meaningful, namely an approximation of the gate--source voltage $e_G-e_S$, whereas $q'$ is there to ensure that the summand involving the drain voltage $e_D$ is unable to change $q$.
+\item[NAND gate.]
+A NAND gate is given by applying a static wiring $\binom{\rr^3}{1}^{\ltens 4}\ltens\binom{1}{\rr}^{\ltens 2}\ltens\binom{1}{\rr}\to\binom{\rr^2}{\rr}$ to four transistors---two NMOS and two PMOS \cite{wikipedia2026nand}---two capacitors, and a supply voltage held fixed by the degenerate $\sharpR=0$; the output voltage settles to the NAND of the two input voltages.
+\item[Logic gates.] We obtain logic gates from the NAND gate by static wiring in the usual way. Our experiments suggest that the settling time, measured in ticks of the coalgebra, grows with the series-depth of the circuit (no cost for parallel).
+\item[Sequential circuits.] Cross-coupling gates yields a latch---a stored bit of memory---and, when combined with logic gates, sequential circuitry as well. 
+\item[Amplifier.]
+An amplifier is a system with interface $\binom{\rr}{\rr}$: it has the transistor's reactive vector space $(\rr^2,\sharpR)$, it reports its state $(q,q')\mapsto q$, and its potential $U(q,q',e)\coloneqq\tfrac{\kappa}{2}(Ae-q-q')^2$ makes $q$ relax toward the amplification $A\gg 0$ times the input $e$.
+Moreover, the amplifier is unilateral: any covector returned at its output port lands in the kernel of $\sharpR$, so whatever is wired to the output cannot move the state.
+\item[Feedback amplifier.]
+Black's feedback amplifier \cite{black1934stabilized} is the system given by applying a
+static arrangement $b\colon\binom{\rr}{\rr}\to\binom{\rr}{\rr}$  to the amplifier above. The output map of $b$ is identity and its input map is $(v,e_{\tn{src}})\mapsto e_{\tn{src}}-\beta v$, where $v$ is emitted from the amp and $e_{\tn{src}}$ is the source voltage input to the system.  Black invented this device for long-distance telephony, where precise amplification is necessary. At equilibrium the system reports $\tfrac{A}{1+A\beta}\approx\tfrac1\beta$ times the source, so the amplification is governed by $\beta$---realized by a precise passive resistor---rather than by $A$, which was generally quite imprecise.
+\item[LC circuit.]
+An LC circuit is a system that resonates with incoming signals, e.g.\ radio, formed by a stateless arrangement of an inductor and a capacitor
+\[
+\lensunit\To{\fun{ind}\ltens\fun{cap}}\binom{1}{\rr}\ltens\binom{1}{\rr}\To{f}\binom{1}{\rr}
+\]
+The inductor is potential-free and has reactive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance $L>0$; its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is
+an oscillation with period $2\pi\sqrt{LC}$; the opposite-signed sharps cause an oscillation as they did in the predator-prey model (\cref{ex.lotka_volterra}). Radio signals enter as covectors returned at the terminal; with a small resistance in the inductor's potential, the response selectively
+amplifies,
+tuning to the signal from the matching radio station.%
+\footnote{
+LC circuits can also be integrated using the phase integrator, if we replace the two systems above with a single one whose state is the charge $q\coloneqq Cv$, reactive vector space $(\rr,\xi\mapsto\xi/L)$, and potential $q^2/2C$.
+}
+\item[DC motor.]
+A DC motor converts electrical current into mechanical rotation. It has the shape of the LC circuit: an electrical component and a mechanical one with states the current $i$ and the angular velocity $\omega$; sharps $\xi/L$ and $-\xi/J$ (inductance $L$, inertia $J$); cell potentials $\tfrac{R}{2}i^2-Vi$ (winding resistance $R$, source voltage $V$) and $-(\tfrac{b}{2}\omega^2+\tau\omega)$ (friction $b$, load torque $\tau$); and coupler potential $Ki\omega$ (motor constant $K$). One tick is exactly the Euler step of the motor's standard equations~\cite[Ex.~2.5]{vanderschaft2014port}.
+\item[Molecular dynamics.]
+Molecular dynamics simulates a molecule or material as $d$-many point particles with pairwise interactions. Each particle is a potential-free system
+$\lensunit\to\binom{1}{\rr^{3}}$ with reactive vector space $(\rr^{3},\sharpR)$,
+$\sharpR(\xi)\coloneqq\xi/m$ for a mass $m>0$, reporting its
+state, the position $x\in\rr^3$;
+each interacting pair is a stateless system
+$\lensunit\to\binom{\rr^{6}}{1}$  whose potential is the Lennard--Jones energy $4\epsilon\bigl((\sigma/r)^{12}-(\sigma/r)^6\bigr)$, $r$ being the distance between the two positions it receives and $\sigma>0$ a length scale; pairs are wired to particles along the interaction graph as in \cref{sec.graph_laplacian}.
+Under the configuration dynamics the particles descend the emergent total energy---structure relaxation---a pair settling at separation exactly $2^{1/6}\sigma$.%
+\footnote{The two-round integrator of \cref{rmk.multistage} applied to this arrangement is exactly velocity Verlet, the standard integration loop of molecular dynamics.}
+\item[Impedance control.]
+Impedance control~\cite{hogan1985impedance} makes a robot arm behave as though it were attached by a spring to its target: push it off the target and it pushes back proportionally. The controller is a stateless system $\lensunit\to\binom{\rr^2}{1}$ whose two inputs receive a reported position $q$ and a run-time setpoint $s$, and whose potential is $\tfrac{k}{2}(q-s)^2$, where $k$ is stiffness. Wired to any system reporting its state $q$, the force moves $q$ toward $s$ geometrically; the force returned at the setpoint port is equal and opposite, and in most control systems would be discarded.
+\item[Kuramoto oscillators.]
+A heart's pacemaker cells and the generators on a power grid synchronize by the same mechanism, modeled by the Kuramoto equations. Each oscillator is a system $\lensunit\to\binom{1}{\rr}$ reporting its state, the phase $\theta\in\rr$, with reactive vector space $(\rr,\sharpR)$, $\sharpR(\xi)\coloneqq\xi$, and potential $-\omega\theta$ (natural frequency $\omega$); each edge of an interaction graph is a stateless system $\binom{\rr^2}{1}$ with potential $-K\cos(\theta-\theta')$ in the two reported phases (coupling strength $K$). Differentiating, the covector returned to an oscillator is $-\omega+K\sum\sin(\theta-\theta')$, summed over its neighbors, so one tick is $\theta\mapsto\theta+\omega+K\sum\sin(\theta'-\theta)$---the Euler step of the Kuramoto equations.%
+\footnote{The phase integrator applied to the same arrangement yields the swing equation governing power grids: a generator is a Kuramoto oscillator with inertia.}
+\item[Petri nets.]
+A chemical reaction network can be modeled by a Petri net
+$(S,T,m,n,r,x^0)$ with arc multiplicities $m,n\colon T\times S\to\nn$, rate constants $r\colon T\to\rr_{\geq 0}$, and initial concentrations $x^0\colon S\to\rr_{\geq0}$: a transition $t$ consumes $m_{ts}$ and produces $n_{ts}$ tokens of the species $s$, and fires at the mass-action rate $f_t(x)\coloneqq r(t)\prod_sx_s^{m_{ts}}$ in the concentrations $x$.
+Each transition $t\in T$ is a system $\lensunit\to\binom{\rr^{S_t}}{\rr}$ whose inputs receive the concentrations at the set $S_t$ of species it touches; it has the transistor's reactive vector space $(\rr^2,\sharpR)$, $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; it reports the first coordinate of its state $(\epsilon_t,\epsilon'_t)\mapsto\epsilon_t$, the extent of reaction; and
+its potential is $U_t\bigl((\epsilon_t,\epsilon'_t),x\bigr)\coloneqq-\epsilon'_t f_t(x)$. The transition-systems are wired together by the static arrangement $\bigltens_{t\in T}\binom{\rr^{S_t}}{\rr}\to\lensunit$ whose input map is affine, as for the feedback amplifier above: it sends the reported extents to the concentration $x_s\coloneqq x^0_s+\sum_t\bigl(n_{ts}-m_{ts}\bigr)\epsilon_t$ at each species $s$.
+Differentiating, the sharp discards $\partial U/\partial\epsilon_t$ and delivers $\partial U/\partial\epsilon'_t=-f_t(x)$, so one tick is $\epsilon_t\mapsto\epsilon_t+f_t(x)$, the Euler step of mass action at any molecularity. Note that $U$ does not represent free energy and, as in the transistor, $\epsilon'_t$ represents nothing---it is frozen and only there to channel covectors to the real state $\epsilon$.
+\item[Replicator dynamics.]
+Evolutionary game theory tracks the fractions $x_1,\dots,x_n$ of a population playing each of $n$ strategies: a strategy grows when it earns more than the population average. This is a single closed system with state $x\in\rr^n$, state-dependent Shahshahani sharp $\sharpR_x(\xi)\coloneqq\bigl(\operatorname{diag}(x)-xx^\top\bigr)\xi$, and potential $U(x)\coloneqq-\tfrac12x^\top Ax$ for a symmetric payoff matrix $A$ (a potential game). Differentiating, one tick is $x_i\mapsto x_i+x_i\bigl((Ax)_i-x^\top Ax\bigr)$---the Euler step of the replicator equation, each share growing by its payoff excess over the average---and when $\sum_ix_i=1$ the update preserves it, so fractions stay fractions.
+\item[Hopfield networks.]
+A Hopfield network~\cite{hopfield1984neurons} stores memories as attractors of a neural dynamics: started near a stored pattern, the state falls into it. Each neuron is a system $\lensunit\to\binom{1}{\rr}$ with state $q\in\rr$, state-dependent sharp $\sharpR_q(\xi)\coloneqq\cosh^2(q)\,\xi$, and potential $U(q)\coloneqq q\tanh q-\log\cosh q-I\tanh q$ (bias current $I$), reporting the activation $V\coloneqq\tanh q$; each synapse is a stateless system $\binom{\rr^2}{1}$ with potential $-W\,VV'$ in the two reported activations (weight $W\in\rr$). One tick of configuration dynamics reproduces the Euler step of Hopfield's equations, and the emergent composite potential is exactly Hopfield's energy function.
+\end{description}
+Each component in each of these examples is specified in its own native variables by a potential and a sharp; any dynamic arrangement of such components is again such a system. All the above components can be mixed and matched---combined without worry---as long as one is willing for them to receive covectors at their output ports in addition to signals at their input ports; indeed, the coupling terms including loading effects are derived from the shared potentials rather than written by hand as in block-diagram tools such as Simulink.
+
+A few additional examples are worked out in complete detail---dynamics included---in \cref{ch.applications}.
 \end{example}
 
 %====================================================================
