@@ -2722,16 +2722,10 @@ U\bigl((q,q'),e_G,e_D,e_S\bigr)\coloneqq\tfrac{\kappa}{2}\bigl(e_G-e_S-q-q'\bigr
 \]
 for a constant $\kappa>0$ and a function $W\colon\rr^2\to\rr$ encoding the channel's current--voltage law (e.g.\ it distinguishes NMOS from PMOS). The idea is that in a state $(q,q')$, only the sum $q+q'$ is meaningful: it relaxes toward the gate--source voltage $e_G-e_S$, whereas $\sharpR$ freezes $q'$, ensuring that the summand involving the drain voltage $e_D$ is unable to change the state.
 \item[NAND gate.]
-A NAND gate is given by applying a static wiring $\binom{\rr^3}{1}^{\ltens 4}\ltens\binom{1}{\rr}^{\ltens 2}\ltens\binom{1}{\rr}\to\binom{\rr^2}{\rr}$ to four transistors---two NMOS and two PMOS \cite{wikipedia2026nand}---two capacitors, and a supply voltage held fixed by the degenerate $\sharpR=0$;
-%the output voltage settles to the NAND of the two input voltages.
-when the two input voltages are each held at one of two fixed values, the output voltage converges to the value prescribed by the NAND truth table. %
-\item[Logic gates.] We obtain logic gates from the NAND gate by static wiring in the usual way.
-%Our experiments suggest that the settling time, measured in ticks of the coalgebra, grows with the series-depth of the circuit (no cost for parallel).
-In our implementation, a chain of $K$ inverters takes roughly $K$ times as many ticks of the coalgebra to converge as one does, whereas $K$ side-by-side copies take the same number of ticks as one. %
+A NAND gate is given by applying a static wiring $\binom{\rr^3}{1}^{\ltens 4}\ltens\binom{1}{\rr}^{\ltens 2}\ltens\binom{1}{\rr}\to\binom{\rr^2}{\rr}$ to four transistors---two NMOS and two PMOS \cite{wikipedia2026nand}---two capacitors, and a supply voltage held fixed by the degenerate $\sharpR=0$; when the two input voltages are each held at one of two fixed values, the output voltage converges to the value prescribed by the NAND truth table.
+\item[Logic gates.] We obtain logic gates from the NAND gate by static wiring in the usual way. In our implementation, a chain of $K$ inverters takes roughly $K$ times as many ticks of the coalgebra to converge as one does, whereas $K$ side-by-side copies take the same number of ticks as one.
 \item[Sequential circuits.]
-%Cross-coupling gates yields a latch---a stored bit of memory---and,
-Cross-coupling two NAND gates yields a latch \cite{wikipedia2026flipflop}---a system with two stable states, each preserved by the dynamics for the parameters we tried, i.e.\ a stored bit of memory---and, %
-when combined with logic gates, sequential circuitry as well.
+Cross-coupling two NAND gates yields a latch \cite{wikipedia2026flipflop}---a system with two stable states, each preserved by the dynamics for the parameters we tried, i.e.\ a stored bit of memory---and, when combined with logic gates, sequential circuitry as well.
 \item[Amplifier.]
 An amplifier is a system with interface $\binom{\rr}{\rr}$: it has the transistor's reactive vector space $(\rr^2,\sharpR)$, it reports its state $(q,q')\mapsto q$, and its potential $U(q,q',e)\coloneqq\tfrac{\kappa}{2}(Ae-q-q')^2$ makes $q$ relax toward the amplification $A\gg 0$ times the input $e$.
 Moreover, the amplifier is unilateral: any covector returned at its output port lands in the kernel of $\sharpR$, so whatever is wired to the output cannot move the state.
