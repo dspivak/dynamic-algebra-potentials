@@ -2711,9 +2711,9 @@ We can make different ecological modeling choices. For example, making both reac
 \end{example}
 
 \begin{example}\label{ex.further_reach}
-There are many more examples from electronics, mechanics, control theory, chemistry, biology, and neuroscience that appear to be modellable in this framework.% 
-\footnote{Each construction below is implemented in the companion code (\url{https://github.com/dspivak/dap}) by Claude, which used the definitions
-here to make executable code that was then tested against idealized standard equations. The author understands the content of the claims as stated, and believes them, but has not verified all of them by hand.} 
+There are many more examples from electronics, mechanics, control theory, chemistry, biology, and neuroscience that appear to be modellable in this framework. 
+
+Each construction below is implemented in the companion code (\url{https://github.com/dspivak/dap}) by Claude, which used the definitions here to make executable code that was then tested against idealized standard equations. The author understands the content of the claims as stated, and believes them to be reasonable and to have been checked, but \textit{has not verified all of them by hand.}
 
 \begin{description}
 	\item[Transistor.] A transistor is a system with interface $\binom{\rr^3}{1}$ whose three inputs receive the gate, drain, and source voltages; whose reactive vector space is $Q\coloneqq(\rr^2,\sharpR)$ with $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; and whose potential $U\colon Q\times \rr^3\to\rr$ is
@@ -2737,12 +2737,21 @@ An LC circuit is a system that resonates with incoming signals, e.g.\ radio, for
 \[
 \lensunit\To{\fun{ind}\ltens\fun{cap}}\binom{1}{\rr}\ltens\binom{1}{\rr}\To{f}\binom{1}{\rr}
 \]
-The inductor is potential-free and has reactive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance $L>0$; its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is
-an oscillation with period $2\pi\sqrt{LC}$; the opposite-signed sharps cause an oscillation as they did in the predator-prey model (\cref{ex.lotka_volterra}). Radio signals enter as covectors returned at the terminal; with a small resistance in the inductor's potential, the response selectively
-amplifies,
+The inductor
+%is potential-free and has
+has %
+reactive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance
+%$L>0$;
+$L>0$ and potential $-\tfrac{R}{2}i^2$ for a small resistance $R>0$, the sign matching that of $\sharpR_{\fun{ind}}$; %
+its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is
+%an oscillation with period $2\pi\sqrt{LC}$; the opposite-signed sharps cause an oscillation as they did in the predator-prey model (\cref{ex.lotka_volterra}).
+an oscillation as in the predator-prey model (\cref{ex.lotka_volterra})---caused by the opposite-signed sharps---with period roughly $2\pi\sqrt{LC}$ ticks, decaying whenever $1/C<R<2\sqrt{L/C}$. %
+%Radio signals enter as covectors returned at the terminal; with a small resistance in the inductor's potential, the response selectively
+%amplifies,
+A radio signal enters as a covector---a current drive---returned at the terminal; the response is strongest when the drive frequency matches the circuit's own, %
 tuning to the signal from the matching radio station.%
 \footnote{
-LC circuits can also be integrated using the phase integrator, if we replace the two systems above with a single one whose state is the charge $q\coloneqq Cv$, reactive vector space $(\rr,\xi\mapsto\xi/L)$, and potential $q^2/2C$.
+LC circuits can also be integrated using the phase integrator, if we replace the two systems above with a single one whose state is the charge $q\coloneqq Cv$, reactive vector space $(\rr,\xi\mapsto\xi/L)$, and potential $q^2/2C$. Doing so keeps the energy bounded whenever $4LC>1$.
 }
 \item[DC motor.]
 A DC motor converts electrical current into mechanical rotation. It has the shape of the LC circuit: an electrical component and a mechanical one with states the current $i$ and the angular velocity $\omega$; sharps $\xi/L$ and $-\xi/J$ (inductance $L$, inertia $J$); cell potentials $\tfrac{R}{2}i^2-Vi$ (winding resistance $R$, source voltage $V$) and $-(\tfrac{b}{2}\omega^2+\tau\omega)$ (friction $b$, load torque $\tau$); and coupler potential $Ki\omega$ (motor constant $K$). One tick is exactly the Euler step of the motor's standard equations~\cite[Ex.~2.5]{vanderschaft2014port}.
