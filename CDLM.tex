@@ -457,7 +457,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \trackTerm{\rmfdc}{rmfdc}{\Cat{RMfdC}}
 \trackTerm{\rvect}{rvect}{\Cat{RVect}}
 \trackTerm{\SLens}{SLens}{\Cat{SLens}}% submersion lenses (def. in proof of prop.euler_submersion_lenses)
-\newcommand{\rv}[1]{\mathbf{#1}}% a reactive vector space (object of \rvect): \rv Q=(Q,\sharpR_Q), carrier Q
+\newcommand{\rv}[1]{\mathbf{#1}}% a responsive vector space (object of \rvect): \rv Q=(Q,\sharpR_Q), carrier Q
 \trackTermSymbol{Lens}{\Cat{Lens}}
 \newcommand{\Lens}[1]{\termref{Lens}{\termraw{Lens}}_{#1}}
 \newcommand{\lmfd}{\Lens{\mfd}}
@@ -538,7 +538,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 \maketitle
 
 \begin{abstract}
-We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is an operad $\sarr$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{smooth adaptive arrangements}, which consist of a reactive parameter space, a lens given by smooth output and input maps, and a real-valued potential.
+We give a single compositional setting in which gradient-based learning and Hamiltonian-style mechanics appear as functorial semantics. The syntax is an operad $\sarr$ whose objects are input-output interfaces (pairs of manifolds) and whose morphisms are \emph{smooth adaptive arrangements}, which consist of a responsive parameter space, a lens given by smooth output and input maps, and a real-valued potential.
 
 The main technical result of the paper is what we call \emph{lens internalization}, a lax symmetric monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the 2-category of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
 
@@ -558,9 +558,9 @@ first-order. They are two semantics of one adaptive arrangement, e.g.\ with the 
 \chapter{Introduction}\label{ch.intro}
 %====================================================================
 
-There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{reactive}. In Hamiltonian dynamics, the reactive structure is the \emph{symplectic sharp} map on phase space~\cite[\S\S 18.1--18.2]{cannasdasilva2008lectures}; in gradient descent it is the sharp map induced by a Riemannian metric, scaled by a learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
+There is a commonality in Hamiltonian dynamics and gradient descent, namely a map $T^*M\to TM$ from a cotangent bundle to a tangent bundle, transforming covectors into vectors that change the state. In each case, the covector it transforms is the differential $dU$ of a potential $U$---the potential energy in Hamiltonian dynamics or the loss in gradient descent---so it is the potential that drives the state. We refer to vector spaces with this sort of covector-to-vector structure as \emph{responsive}. In Hamiltonian dynamics, the response structure is the \emph{symplectic sharp} map on phase space~\cite[\S\S 18.1--18.2]{cannasdasilva2008lectures}; in gradient descent it is the sharp map induced by a Riemannian metric, scaled by a learning rate on parameter space. In both cases, the dynamics is compositional: local subsystems---each with their own dynamics---exchange information through which their dynamics assemble into an integrated system.
 
-The goal of this paper is to build a compositional syntax for such smooth reactive, adaptive systems---one in which the couplings between subsystems can themselves adapt---and a functorial semantics that turns this syntax into explicit discrete update rules.
+The goal of this paper is to build a compositional syntax for such smooth responsive, adaptive systems---one in which the couplings between subsystems can themselves adapt---and a functorial semantics that turns this syntax into explicit discrete update rules.
 
 %--------------------------------------------------------------------
 \section{Motivation for smooth adaptive arrangements}\label{sec.intro_smooth_rewiring}
@@ -621,9 +621,9 @@ whose positions are points $m\in M$ and whose directions at $m$ are the covector
 
 We are now ready to describe the source syntax: ordinary smooth data that will be sent through $\cot$ and then converted into the dynamics of a polynomial coalgebra. A neural network, for example, begins as a smooth map
 \[f\colon Q\times M\to N\]
-i.e.\ a choice of parameter, input, and output manifolds, together with a model map; typically, $M=\rr^m$ and $N=\rr^n$ are Euclidean. Categorically, $f$ is a parameterized map $M\to N$ in the sense of the Para construction~\cite[Def.~2]{capucci2022cybernetics} (\cref{sec.para_general}), with parameter $Q$. Gradient descent updates this parameter via a map $T^*Q\to TQ$ that converts a cotangent (the gradient) into a tangent step on $Q$; such a map is exactly a reaction structure $\sharpR_Q$ (\cref{sec.rvect}), so $Q$ is implicitly reactive in the gradient-descent setting.
+i.e.\ a choice of parameter, input, and output manifolds, together with a model map; typically, $M=\rr^m$ and $N=\rr^n$ are Euclidean. Categorically, $f$ is a parameterized map $M\to N$ in the sense of the Para construction~\cite[Def.~2]{capucci2022cybernetics} (\cref{sec.para_general}), with parameter $Q$. Gradient descent updates this parameter via a map $T^*Q\to TQ$ that converts a cotangent (the gradient) into a tangent step on $Q$; such a map is exactly a response structure $\sharpR_Q$ (\cref{sec.rvect}), so $Q$ is implicitly responsive in the gradient-descent setting.
 
-Aside from making the reactive structure explicit, smooth adaptive arrangements---the morphisms in $\sarr$---generalize the above familiar situation in three ways. First, an ordinary manifold $M$, i.e.\ in the role of $\rr^m$ and $\rr^n$ above---a pure output, \boxpicout{$M$}---becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; that is, we add a new input side $\inpt M$, which is an ordinary smooth port for information supplied by the surrounding system, so that $M$ becomes a box \boxpic{$\inpt M$}{$\outp M$}.
+Aside from making the response structure explicit, smooth adaptive arrangements---the morphisms in $\sarr$---generalize the above familiar situation in three ways. First, an ordinary manifold $M$, i.e.\ in the role of $\rr^m$ and $\rr^n$ above---a pure output, \boxpicout{$M$}---becomes only one component of an interface $\binom{\inpt M}{\outp M}$, namely the output side $\outp M$; that is, we add a new input side $\inpt M$, which is an ordinary smooth port for information supplied by the surrounding system, so that $M$ becomes a box \boxpic{$\inpt M$}{$\outp M$}.
 Second, an ordinary map $f\colon Q\times M\to N$ becomes only one component of a pair of maps
 \begin{equation}\label{eqn.first_lens}
 \outp f\colon Q\times\outp M\to\outp N
@@ -697,10 +697,10 @@ To accommodate the potential---the last ingredient---we pass from lenses to the 
 
 The passage from lenses to polynomial coalgebras uses a functor we call \emph{lens internalization}. In any symmetric monoidal closed category, a lens interface $\lensob c$ can be internalized as $\ihom{\inpt c,I}\otimes\outp c$, and this process constitutes a lax symmetric monoidal functor (\cref{cor.Theta}).
 
-Together, $\cot$ and lens internalization turn ordinary smooth data---output map, input map, a reactive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position but also a momentum, which carries the position forward. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
+Together, $\cot$ and lens internalization turn ordinary smooth data---output map, input map, a responsive parameter, and a potential---into data for a discrete dynamical system, i.e.\ a polynomial coalgebra. At that point, the remaining choice is the state set $S$ that the coalgebra carries and how an incoming covector updates it. For example, in Hamiltonian dynamics, we not only store the data of position but also a momentum, which carries the position forward. We package this choice as an \emph{integrator}: a state space $\Fun S$, depending functorially on $Q$, together with a rule that updates the current state according to an incoming covector. Each integrator $\intg$ gives a dynamics functor $\Phi_\intg\colon\sarr\to\pc$.
 
 Thus the integrator is where the dynamical regime gets decided: one smooth adaptive arrangement fed through different integrators can produce qualitatively different behaviors. We work out two. We show that the \emph{configuration integrator} ($\Fun S_Q\coloneqq Q$) generalizes both Newton's method (\cref{sec.newton_warmup}) and training an artificial neural network (\cref{sec.dl_warmup}). Indeed, when applied to the arrangement corresponding to a parameterized neural network, it recovers gradient descent, with backpropagation as the lens backward pass. 
-We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and reaction---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}). Thus the second-order and first-order regimes are two semantics of a single syntactic object, differing mainly in terms of
+We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and response---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}). Thus the second-order and first-order regimes are two semantics of a single syntactic object, differing mainly in terms of
 whether to store position and momentum data or just position data.
 
 This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime,
@@ -709,7 +709,7 @@ second-order or first-order. %
 On the
 %conservative
 phase %
-side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with quadratic reaction and quadratic potential---preserves the canonical symplectic pairing exactly.
+side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with quadratic response and quadratic potential---preserves the canonical symplectic pairing exactly.
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a monoidal monad (the writer monad of $(\rr,0,+)$ being the main instance). We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later (e.g.\ \cref{ex.syntactic_datum})---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
@@ -719,8 +719,8 @@ The main contributions are the following.
 \begin{itemize}
 \item \emph{Lens internalization} (\cref{cor.Theta}): a lax symmetric monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that internalizes each lens interface as an object of $\cat C$, as well as a monad/monoid generalization $\Theta_\potalg$ (\cref{thm.Theta_T_alpha}).
 \item A vocabulary for smooth adaptive arrangements---\emph{stateless}, \emph{potential-free}, \emph{static}, \emph{quadratic}, \emph{linear}, \emph{unilateral}---each class spanning a suboperad of $\sarr$ (\cref{def.arrangement_terminology,prop.suboperads}). %
-%\item $\Phiconf$ takes two species wired to a predation potential, with oppositely-signed reactions, to the Euler step of the Lotka--Volterra predator--prey equations (\cref{ex.lotka_volterra}). %
-\item A closed system of two species wired to a predation potential, with oppositely-signed reactions, whose sharp and potential generate the Lotka--Volterra ODEs (\cref{ex.lotka_volterra}). %
+%\item $\Phiconf$ takes two species wired to a predation potential, with oppositely-signed responses, to the Euler step of the Lotka--Volterra predator--prey equations (\cref{ex.lotka_volterra}). %
+\item A closed system of two species wired to a predation potential, with oppositely-signed responses, whose sharp and potential generate the Lotka--Volterra ODEs (\cref{ex.lotka_volterra}). %
 \item Two functorial semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}), each assembling a system's discrete dynamics from its smooth adaptive arrangement.
 \item A proof that, for a harmonic closed system, each step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
 \item $\Phiconf$ recovers gradient descent with backpropagation (\cref{sec.dl_warmup}), and Newton's method (\cref{sec.newton_warmup}).
@@ -733,7 +733,7 @@ The next section places this work alongside the open-energy-driven framework of 
 \section{Relation to open energy-driven systems}\label{sec.related_cls}
 %--------------------------------------------------------------------
 
-The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci2024organizing} (hereafter CLS), which identifies the reaction $T^*X\to TX$ in both Hamiltonian mechanics and gradient descent and builds a functorial semantics
+The closest predecessor of this paper is Capucci--Lynch--Spivak~\cite{capucci2024organizing} (hereafter CLS), which identifies the response $T^*X\to TX$---what they call a \emph{reaction}---in both Hamiltonian mechanics and gradient descent and builds a functorial semantics
 \[
 \mathbf{OpenErg}\To{T^*}\mathbf{OpenODE}\To{\mathrm{collapse}}\mathbf{COrg}
 \]
@@ -746,7 +746,7 @@ w\colon Q\times M\to N,\qquad
 E\colon Q\times M\to\rr,
 \]
 and there is a wide strong monoidal functor $\cat{R}\to\mathbf{OpenErg}$ and a fully faithful operad functor $\cat{R}\to\sarr$, the latter sending $M$ to $\binom{1}{M}$, output map $\outp f\coloneqq w$, unique input map $\inpt f\coloneqq \bang$, and potential $U\coloneqq E$. 
-In other words, the two extensions of $\cat{R}$ go in orthogonal directions: $\sarr$ has richer interfaces and additional input-routing data in its morphisms, while CLS allows manifold (rather than vector-space) state spaces. We conjecture that the latter gap is removable by replacing $\rvect$ with a category of reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}), but we do not pursue this here.
+In other words, the two extensions of $\cat{R}$ go in orthogonal directions: $\sarr$ has richer interfaces and additional input-routing data in its morphisms, while CLS allows manifold (rather than vector-space) state spaces. We conjecture that the latter gap is removable by replacing $\rvect$ with a category of responsive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}), but we do not pursue this here.
 
 There is also a semantic comparison between the two.
 
@@ -764,7 +764,7 @@ For $\cat R$ as above, there is a category $\cat S$, whose objects are submersio
 \]
 where the middle vertical functor sends $M$ to the submersion $T^*M\surj M$, and the lower right functor sends a submersion $p\colon E\surj B$ to the polynomial $\sum_{b:B}\yon^{E_b}$.
 \end{proposition*}
-The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the reaction $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\pc$ on our side, where the tangent component $\dot q$ becomes the Euler step $q\mapsto q+\dot q$.
+The point is that, on the overlap $\cat R$, both semantics are built from the same smooth data: cotangent pullback along $w$, the differential of $E$, and the response $\sharpR_Q$. The category $\cat{S}$ records this common data, at which point it can be read in either of two ways: as a continuous-time morphism in $\mathbf{COrg}$ on the CLS side, or as a discrete coalgebra in $\pc$ on our side, where the tangent component $\dot q$ becomes the Euler step $q\mapsto q+\dot q$.
 
 Another related framework is that of bond graphs, a graphical language for network modeling in which components are joined by edges, each carrying an effort and a flow whose product is power~\cite[\S1]{vanderschaft2014port}.%
 \footnote{
@@ -783,7 +783,7 @@ We will talk about bonds in this paper; see
 
 \Cref{ch.framework} is the abstract heart of the paper. From an \emph{adaptive-arrangement datum} $D$---a cartesian category of spaces, a parameter category, and a potentials monad---it builds a syntax operad $\arr_D$. An interface functor into $\poly$, a semantic effect carrying the potentials monad into $\poly$, and a potential algebra then give a \emph{polynomial interpretation} via lens internalization (\cref{cor.Theta}), and an \emph{integrator} turns this into an operad functor $\arr_D\to\pc$ (\cref{thm.dynamics_functor}).
 
-\Cref{ch.smooth_rwd} instantiates the syntax: it introduces reactive vector spaces and assembles the smooth ingredients into the adaptive-arrangement datum $\Sm$, whose syntax operad is the operad $\sarr$ of smooth adaptive arrangements---$\rvect$-parameterized manifold lenses equipped with potentials (\cref{def.potlens}).
+\Cref{ch.smooth_rwd} instantiates the syntax: it introduces responsive vector spaces and assembles the smooth ingredients into the adaptive-arrangement datum $\Sm$, whose syntax operad is the operad $\sarr$ of smooth adaptive arrangements---$\rvect$-parameterized manifold lenses equipped with potentials (\cref{def.potlens}).
 
 \Cref{ch.smooth_dynamics} instantiates the dynamics by applying the framework of \cref{ch.framework} to the datum $\Sm$: the cotangent polynomial interpretation and the two integrators---configuration and phase---together yield operad functors $\Phiconf\colon\sarr\to\pc$ and $\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}); we then unpack the differential geometry underlying $\Phiconf$ and $\Phiphase$ in full detail.
 
@@ -842,7 +842,7 @@ One can derive from the universal property of coproducts and the Yoneda lemma th
 \poly(p,p')=\prod_{i: p(1)}\;\sum_{j: p'(1)}\;\prod_{e: p'[j]}\; \sum_{d: p[i]}1.
 \end{equation}
 The outer $\prod_i\sum_j$ yields a ``forward on positions'' function $\varphi_1\colon p(1)\to p'(1)$, which is the component of $\varphi$ at $1:\smset$, and the inner $\prod_e\sum_d$ yields, for each $i:p(1)$, a ``backward on directions'' function from the directions of $p'$ at $\varphi_1(i)$ to the directions of $p$ at $i$; we denote it as follows:%
-\footnote{We extend the directions bracket to maps: where $p[i]$ is the set of directions of $p$ at $i$, $\bk{\varphi}{i}$ is the backward map $\varphi$ induces there, so $[i]$ acts on a map as it does on a polynomial. This map is often denoted $\varphi^\sharp_i$; we avoid the $\sharp$ because $\sharpR$ is used throughout the paper in the context of reactive vector spaces.}
+\footnote{We extend the directions bracket to maps: where $p[i]$ is the set of directions of $p$ at $i$, $\bk{\varphi}{i}$ is the backward map $\varphi$ induces there, so $[i]$ acts on a map as it does on a polynomial. This map is often denoted $\varphi^\sharp_i$; we avoid the $\sharp$ because $\sharpR$ is used throughout the paper in the context of responsive vector spaces.}
 \[\bk{\varphi}{i}\colon p'[\varphi_1(i)]\to p[i].\]
 
 For polynomials $p,p':\poly$, their \emph{Dirichlet product} is
@@ -1907,7 +1907,7 @@ We can thus apply \cref{prop.para_square,thm.Theta_T_alpha} to obtain \eqref{eqn
 
 This section produces a syntax operad $\arr_D$ of \emph{adaptive arrangements} from a short list of ingredients: an \emph{adaptive-arrangement datum} $D$, including a notion of space, a notion of parameter, and a \emph{potentials monad} through which the backward pass is threaded and potentials accumulate. Two further ingredients then yield functorial semantics, a functor $\arr_D\to\pc$: a \emph{polynomial interpretation}, which casts spaces as polynomial interfaces and fixes what potentials do, and an \emph{integrator}, which turns those effects into dynamics. The three play distinct roles: the adaptive-arrangement datum is the material out of which the syntax operad $\arr_D$ is built, the polynomial interpretation interprets that syntax in $\poly$, and the integrator runs it in $\pc$.
 
-The smooth version $\sarr\To{\Phi}\pc$ will be a special case, where: spaces are manifolds, parameters are reactive vector spaces, potentials live in $\rr$, the cotangent bundle gives interfaces, potentials act via their differential, and integration is by Euler steps. This smooth instance is assembled in \cref{ch.smooth_rwd,ch.smooth_dynamics}: its adaptive-arrangement datum $\Sm$ and syntax operad $\sarr$ (the $\sarr$ of the introduction) appear in \cref{def.potlens}, while its polynomial interpretation (\cref{sec.smooth_interpretation}, built on the cotangent bundle of \cref{sec.cot}) and integrator (Euler steps, \cref{sec.integrator_semantics}) assemble into the dynamics functor $\Phi$ in \cref{sec.dynamics_functor}.
+The smooth version $\sarr\To{\Phi}\pc$ will be a special case, where: spaces are manifolds, parameters are responsive vector spaces, potentials live in $\rr$, the cotangent bundle gives interfaces, potentials act via their differential, and integration is by Euler steps. This smooth instance is assembled in \cref{ch.smooth_rwd,ch.smooth_dynamics}: its adaptive-arrangement datum $\Sm$ and syntax operad $\sarr$ (the $\sarr$ of the introduction) appear in \cref{def.potlens}, while its polynomial interpretation (\cref{sec.smooth_interpretation}, built on the cotangent bundle of \cref{sec.cot}) and integrator (Euler steps, \cref{sec.integrator_semantics}) assemble into the dynamics functor $\Phi$ in \cref{sec.dynamics_functor}.
 
 %--------------------------------------------------------------------
 \section{Adaptive-arrangement data}\label{sec.rewiring_datum}
@@ -2226,7 +2226,7 @@ The integrators we build are \emph{single-stage}: at each tick the system emits 
 \end{remark}
 
 \begin{example}[A syntactic datum]\label{ex.syntactic_datum}
-The spaces $\cat M$ of \cref{def.rewiring_datum} need not be manifolds; they can arise from a genuinely algebraic syntax. For example, one can take the Cartesian category $\Sigma$ presented by a signature of primitive operations---e.g.\ addition, multiplication, and $\tanh\colon\rr\to\rr$, subject to the commutative-$\rr$-algebra laws---but more generally any desired syntax that includes the theory of real vector spaces via some strong monoidal $J\colon\rvect\to\Sigma$ (the reactive vector spaces of \cref{sec.rvect}).
+The spaces $\cat M$ of \cref{def.rewiring_datum} need not be manifolds; they can arise from a genuinely algebraic syntax. For example, one can take the Cartesian category $\Sigma$ presented by a signature of primitive operations---e.g.\ addition, multiplication, and $\tanh\colon\rr\to\rr$, subject to the commutative-$\rr$-algebra laws---but more generally any desired syntax that includes the theory of real vector spaces via some strong monoidal $J\colon\rvect\to\Sigma$ (the responsive vector spaces of \cref{sec.rvect}).
 
 Then $D_\Sigma\coloneqq(\Sigma,\rvect,J,\rr\times\blank)$ is an adaptive-arrangement datum, and if each primitive has a smooth analogue, one has a strong monoidal $\iota\colon\Sigma\to\mfd$ fixing $(\rr,0,+)$. By the functoriality used in the proof of \cref{thm.poly_interpretation}---namely of $\Lcokl{-}{\rr}$ in the base (\cref{lem.lens_T_functoriality}) and of $\para{\rvect}{-}$ (\cref{prop.para_square})---this $\iota$ induces an operad functor $\arr_{D_\Sigma}\to\sarr$ into the smooth adaptive-arrangement operad of \cref{ch.smooth_rwd}, and composing with the smooth dynamics functor $\Phi$ of \cref{ch.smooth_dynamics}, we obtain semantics $\arr_{D_\Sigma}\to\pc$ for the algebraic syntax.
 
@@ -2251,7 +2251,7 @@ Under the configuration semantics, if $\sharpR_q=\etaLR\sharpEuc{}$ and the inco
 \chapter{Smooth adaptive arrangements}\label{ch.smooth_rwd}
 %====================================================================
 
-This section assembles the smooth adaptive-arrangement datum $\Sm$ and its syntax operad $\sarr$. We recall smooth-manifold notation in \cref{sec.manifolds_notation}, introduce the category $\rvect$ of reactive vector spaces in \cref{sec.rvect}, and assemble $\Sm$, whose adaptive-arrangement operad $\sarr$ consists of $\rvect$-parameterized manifold lenses with real-valued potentials, in \cref{sec.potentialized_lenses}. This $\sarr$ is the smooth adaptive-arrangement syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; its interpretation in $\poly$ and the resulting dynamics are the subject of \cref{ch.smooth_dynamics}.
+This section assembles the smooth adaptive-arrangement datum $\Sm$ and its syntax operad $\sarr$. We recall smooth-manifold notation in \cref{sec.manifolds_notation}, introduce the category $\rvect$ of responsive vector spaces in \cref{sec.rvect}, and assemble $\Sm$, whose adaptive-arrangement operad $\sarr$ consists of $\rvect$-parameterized manifold lenses with real-valued potentials, in \cref{sec.potentialized_lenses}. This $\sarr$ is the smooth adaptive-arrangement syntax, the particular $\cat{W}$ promised in \cref{sec.wd_operads}; its interpretation in $\poly$ and the resulting dynamics are the subject of \cref{ch.smooth_dynamics}.
 
 %--------------------------------------------------------------------
 \section{Smooth-manifold notation}\label{sec.manifolds_notation}
@@ -2326,29 +2326,29 @@ The exception is the fullness assertion in the first item below; three further a
 CLS is a smooth framework, so the morphisms of $\cat R$ keep smooth $w$, $E$, and sharp, while $\sarr$ includes morphisms that aren't smooth.
 \item The tangent functor $T\colon\mfd\to\mfd$ above ceases to be an endofunctor: if $f$ is $C^1$, the global tangent map $Tf$ may not be. Its pointwise content---the identifications \eqref{eqn.T_products}---and the pointwise differentials $T_mf$ are unaffected, the former because the manifolds remain smooth and the latter because $f$ is $C^1$; the constructions of this paper use only these.
 \item Two statements about \emph{flow}---the final clause of \cref{rmk.symplectic_perpendicular} and the sentence ``In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}'' in \cref{sec.closed_conservation}---require the Hamiltonian vector field to generate a flow. However, for a $C^1$ Hamiltonian that field is merely continuous, so the flow may not exist or be unique.
-\item Newton's method (\cref{sec.newton_warmup}) defines its reaction as an inverse Hessian, but this is undefined for $C^1$ potentials, which is an issue for the construction of the Newton reaction structure.
+\item Newton's method (\cref{sec.newton_warmup}) defines its response as an inverse Hessian, but this is undefined for $C^1$ potentials, which is an issue for the construction of the Newton response structure.
 \end{enumerate}
 An example potential we have seen in practice is $U(q)\coloneqq\absval{q}^{3/2}$, which is $C^1$ but not $C^2$. Yet \cref{cor.functor} still assigns its arrangement a total, deterministic dynamical system, because the discrete semantics uses $dU$ pointwise and never solves an ODE.
 \end{remark}
 
 %--------------------------------------------------------------------
-\section{Reactive vector spaces}\label{sec.rvect}
+\section{Responsive vector spaces}\label{sec.rvect}
 %--------------------------------------------------------------------
 
 We will eventually define $\sarr$ as the operad underlying $\para{\rvect}{\plmfd}$. Here we define the parameterizing category $\rvect$, whose objects encode the data needed to turn covectors into vectors that serve as state updates. We also give a symplectic example $T^*Q$.
 
 \begin{definition}\label{def.rvect}
-A \emph{reactive vector space} is a finite-dimensional real vector space $Q$ together with a smooth map
+A \emph{responsive vector space} is a finite-dimensional real vector space $Q$ together with a smooth map
 \[
 \sharpR_Q\colon Q\to\vect(Q^*,Q),
 \]
-the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_q\coloneqq\sharpR_Q(q)\colon Q^*\to Q$ for each $q\in Q$.\footnote{The terminology follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case. Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_qQ\cong Q$ and $T^*_qQ\cong Q^*$. It will be more convenient to use the above form.
+the \hypertarget{term.sharp_map}{\emph{sharp}} map, where we write $\sharpR_q\coloneqq\sharpR_Q(q)\colon Q^*\to Q$ for each $q\in Q$.\footnote{The terminology mostly follows~\cite{capucci2024organizing}, where a smooth section of $[T^*X,TX]$ over a manifold $X$ is called a \emph{reaction}; the above is the vector-space case. Equivalently, $\sharpR_Q$ is a smooth bundle map $T^*Q\to TQ$ over $Q$, under the canonical identifications $T_qQ\cong Q$ and $T^*_qQ\cong Q^*$. It will be more convenient to use the above form.
 }
-We say the reaction is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We say the reaction is \emph{symmetric} if $\xi(\sharpR_q(\xi'))=\xi'(\sharpR_q(\xi))$ for all $q\in Q$ and all $\xi,\xi'\in Q^*$, and we call the reactive vector space \emph{quadratic} if its reaction is constant and symmetric.%
-\footnote{When the reaction is constant, symmetry says exactly that $B(\xi,\xi')\coloneqq\xi\bigl(\sharpR_0(\xi')\bigr)$ is a symmetric bilinear form on $Q^*$, i.e.\ a quadratic form on $Q^*$ (with positive definiteness not assumed).}
-We call a reactive vector space \emph{nondegenerate} if $\sharpR_q$ is an isomorphism for every $q$; in that case we denote the pointwise inverse $\flat_q\coloneqq\sharpR_q\inv\colon Q\to Q^*$ and call it the \emph{flat} map, and we call $\pairing{v,v'}_q\coloneqq\flat_q(v)(v')$ the \emph{pairing at $q$}.
+We say the response is \emph{constant} if $\sharpR_q=\sharpR_0$ for all $q$. We say the response is \emph{symmetric} if $\xi(\sharpR_q(\xi'))=\xi'(\sharpR_q(\xi))$ for all $q\in Q$ and all $\xi,\xi'\in Q^*$, and we call the responsive vector space \emph{quadratic} if its response is constant and symmetric.%
+\footnote{When the response is constant, symmetry says exactly that $B(\xi,\xi')\coloneqq\xi\bigl(\sharpR_0(\xi')\bigr)$ is a symmetric bilinear form on $Q^*$, i.e.\ a quadratic form on $Q^*$ (with positive definiteness not assumed).}
+We call a responsive vector space \emph{nondegenerate} if $\sharpR_q$ is an isomorphism for every $q$; in that case we denote the pointwise inverse $\flat_q\coloneqq\sharpR_q\inv\colon Q\to Q^*$ and call it the \emph{flat} map, and we call $\pairing{v,v'}_q\coloneqq\flat_q(v)(v')$ the \emph{pairing at $q$}.
 
-We define the category $\defineTerm{rvect}$ to have reactive vector spaces as objects---we write $\rv Q\coloneqq(Q,\sharpR_Q)$ for the object and $Q$ for its underlying vector space---and as morphisms $\rv Q_1\to\rv Q_2$ the linear isomorphisms $\phi\colon Q_1\To{\cong}Q_2$ that are \emph{sharp-equivariant}: 
+We define the category $\defineTerm{rvect}$ to have responsive vector spaces as objects---we write $\rv Q\coloneqq(Q,\sharpR_Q)$ for the object and $Q$ for its underlying vector space---and as morphisms $\rv Q_1\to\rv Q_2$ the linear isomorphisms $\phi\colon Q_1\To{\cong}Q_2$ that are \emph{sharp-equivariant}: 
 for all $q\in Q_1$,
 \begin{equation}\label{eqn.pairing_triangle}
 \phi\circ\sharpR_q\circ\phi^*=\sharpR_{\phi(q)}
@@ -2362,7 +2362,7 @@ In the nondegenerate case, \eqref{eqn.pairing_triangle} is equivalent to pointwi
 Where the sharp is understood, or is the canonical one (as on $T^*Q$, \cref{prop.canonical_symplectic_pairing}), we may abuse notation and write simply $Q$ for $\rv Q$.
 \end{definition}
 
-Our theory does not privilege nondegenerate reactions in any way: the only nondegeneracy our results rely on is that of the canonical symplectic pairing on $T^*Q$ (\cref{prop.canonical_symplectic_pairing}), which holds regardless of the reaction $\sharpR_Q$. Degeneracy is what allows things like controllers to act on their environment without being retroactively back-driven by it. We refer to this condition as unilaterality; see \cref{def.arrangement_terminology}.
+Our theory does not privilege nondegenerate responses in any way: the only nondegeneracy our results rely on is that of the canonical symplectic pairing on $T^*Q$ (\cref{prop.canonical_symplectic_pairing}), which holds regardless of the response $\sharpR_Q$. Degeneracy is what allows things like controllers to act on their environment without being retroactively back-driven by it. We refer to this condition as unilaterality; see \cref{def.arrangement_terminology}.
 I believe this sort of back-driving is an instance of what Del Vecchio--Ninfa--Sontag call \emph{retroactivity}~\cite{delvecchio2008modular}, which they identify as an obstruction to modularity in biomolecular networks.\footnote{I thank Eduardo Sontag for a helpful discussion.}
 
 \begin{example}\label{ex.tank_sharp}
@@ -2409,11 +2409,11 @@ The forgetful $\rvect\to\vect$ preserves direct sums (which are products in $\ve
 \end{proof}
 
 \begin{proposition}\label{prop.canonical_symplectic_pairing}
-For any finite-dimensional vector space $Q:\vect$, the cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def} is a reactive vector space under the \emph{canonical symplectic pairing}: at every basepoint $(q_0,\xi_0)\in T^*Q$,
+For any finite-dimensional vector space $Q:\vect$, the cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def} is a responsive vector space under the \emph{canonical symplectic pairing}: at every basepoint $(q_0,\xi_0)\in T^*Q$,
 \begin{equation}\label{eqn.canonical_form}
 \pairing{(q,\xi),(q',\xi')}_{(q_0,\xi_0)} \;=\; \xi'(q)-\xi(q').
 \end{equation}
-The right-hand side does not depend on $(q_0,\xi_0)$, so the reaction is constant.
+The right-hand side does not depend on $(q_0,\xi_0)$, so the response is constant.
 \end{proposition}
 
 \begin{proof}
@@ -2434,7 +2434,7 @@ Geometrically, the symplectic sharp ``rotates'' each covector to a vector ``perp
 \end{remark}
 
 \begin{example}[Euclidean sharp]\label{ex.euclidean_sharp}
-A finite-dimensional real vector space $Q$ equipped with an inner product---a symmetric, positive-definite bilinear form $\pairing{-,-}\colon Q\otimes Q\to\rr$---yields a nondegenerate reactive vector space with constant sharp
+A finite-dimensional real vector space $Q$ equipped with an inner product---a symmetric, positive-definite bilinear form $\pairing{-,-}\colon Q\otimes Q\to\rr$---yields a nondegenerate responsive vector space with constant sharp
 \begin{equation*}
 \defineTerm{sharpEuc}\colon Q^*\To{\cong}Q,
 \end{equation*}
@@ -2470,7 +2470,7 @@ Its adaptive-arrangement operad $\defineTerm{srwd}$ is the underlying operad of 
 
 An object in $\sarr$ is a pair $\lensob{M}$ of manifolds and a multimorphism
 \[f\colon\lensob{M_1},\cdots,\lensob{M_K}\to\lensob{N}\] 
-consists of a tuple $f\coloneqq(\rv Q,\outp f,\inpt f,U)$ with $\rv Q\coloneqq(Q,\sharpR_Q):\rvect$ a reactive vector space, and, writing $\lensob M\coloneqq\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}$ for the tensored domain, so that $\outp M=\prod_{i=1}^K\outp M_i$ and $\inpt M=\prod_{i=1}^K\inpt M_i$, the components are smooth maps
+consists of a tuple $f\coloneqq(\rv Q,\outp f,\inpt f,U)$ with $\rv Q\coloneqq(Q,\sharpR_Q):\rvect$ a responsive vector space, and, writing $\lensob M\coloneqq\lensob{M_1}\ltens\cdots\ltens\lensob{M_K}$ for the tensored domain, so that $\outp M=\prod_{i=1}^K\outp M_i$ and $\inpt M=\prod_{i=1}^K\inpt M_i$, the components are smooth maps
 \begin{equation}\label{eqn.srw_morphism}
 \begin{gathered}
 \outp f\colon Q\times\outp M\to\outp N,\qquad
@@ -2491,7 +2491,7 @@ We say that $f\in\sarr(b_1,\dots,b_K; c)$, a smooth adaptive arrangement given b
   \item[stateless] if its parameter $Q=\rr^0$ is trivial;
   \item[potential-free] if its potential $U=0$ vanishes;
   \item[static] if it is both stateless and potential-free;
-  \item[quadratic] if its reactive parameter space $\rv Q$ is quadratic (\cref{def.rvect});
+  \item[quadratic] if its responsive parameter space $\rv Q$ is quadratic (\cref{def.rvect});
   \item[harmonic] if it is quadratic, $\outp M$ and $\inpt N$ are vector spaces, and its potential $U$ is a quadratic form;%
   \footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.} %
   \item[linear] if it is harmonic, its other interfaces $\inpt M$ and $\outp N$ are also vector spaces, and its maps $\outp f$ and $\inpt f$ are linear;
@@ -2669,7 +2669,7 @@ I\text{, the flow through the pipe} & \text{the current through the source and r
 \end{remark}
 
 \begin{example}[Lotka--Volterra]\label{ex.lotka_volterra}
-We can use the same system, except with oppositely-signed reactions, to model predator-prey systems. Wire two species systems to a predation system as above:
+We can use the same system, except with oppositely-signed responses, to model predator-prey systems. Wire two species systems to a predation system as above:
 \[
 \begin{tikzpicture}[oriented WD, bb small, font=\tiny]
 	\node[bb port sep=3mm, bb={0}{0}] (hunt) {hunt};
@@ -2684,14 +2684,14 @@ We can use the same system, except with oppositely-signed reactions, to model pr
 \]
 Each species system $\fun{prey},\fun{pred}\colon\lensunit\to\binom{1}{\rr}$ carries as state the logarithm of its population---noting that $\rr_{>0}$ is not a vector space but its logarithm is---and reports the population itself, $x=\outp{\fun{prey}}(u)\coloneqq e^u$ and $y=\outp{\fun{pred}}(v)\coloneqq e^v$.
 
-The predation system $\fun{hunt}\colon\lensunit\to\binom{\rr^2}{1}$ is stateless, $\fun{hunt}=(\rv 0,\bang,\bang,V)$ with mass-action potential $V(x,y)\coloneqq\beta xy$ using an encounter rate of $\beta>0$. The systems are combined using $\fun{wire}=(\rv 0,\bang,\id,0)$ as in \eqref{eqn.tank_wire}. The species differ only in their reactions, which as in \cref{ex.tank_sharp} are not constant,
+The predation system $\fun{hunt}\colon\lensunit\to\binom{\rr^2}{1}$ is stateless, $\fun{hunt}=(\rv 0,\bang,\bang,V)$ with mass-action potential $V(x,y)\coloneqq\beta xy$ using an encounter rate of $\beta>0$. The systems are combined using $\fun{wire}=(\rv 0,\bang,\id,0)$ as in \eqref{eqn.tank_wire}. The species differ only in their responses, which as in \cref{ex.tank_sharp} are not constant,
 \[
 \sharpR_{\fun{prey}}(u)\colon\xi\mapsto e^{-u}\xi
 \qqand
 \sharpR_{\fun{pred}}(v)\colon\xi\mapsto-\tfrac{\delta}{\beta}e^{-v}\xi,
 \]
 so the prey descends $V$ while the predator ascends it; the factor $\delta/\beta$ in $\sharpR_{\fun{pred}}$ is the number of predators produced per prey consumed. Here $\xi$ is a flux of individuals per unit time,
-and each reaction divides by the population size to obtain the change of log-population. The species' potentials are $U_{\fun{prey}}(u)\coloneqq-\alpha e^u$ and $U_{\fun{pred}}(v)\coloneqq-\tfrac{\gamma\beta}{\delta}e^v$, for a prey birth rate $\alpha>0$ and a predator death rate $\gamma>0$. The composite closed system then has state space $\rr^2$, sharp $\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}}$, and potential given by the sum of those above, with $V$ evaluated at the reported populations $x$ and $y$:
+and each response divides by the population size to obtain the change of log-population. The species' potentials are $U_{\fun{prey}}(u)\coloneqq-\alpha e^u$ and $U_{\fun{pred}}(v)\coloneqq-\tfrac{\gamma\beta}{\delta}e^v$, for a prey birth rate $\alpha>0$ and a predator death rate $\gamma>0$. The composite closed system then has state space $\rr^2$, sharp $\sharpR_{\fun{prey}}\oplus\sharpR_{\fun{pred}}$, and potential given by the sum of those above, with $V$ evaluated at the reported populations $x$ and $y$:
 \[
 U(u,v)=\beta e^{u+v}-\alpha e^u-\tfrac{\gamma\beta}{\delta}e^v.
 \]
@@ -2707,7 +2707,7 @@ we obtain
 \]
 the Lotka--Volterra predator--prey equations. In population coordinates the potential is $\beta xy-\alpha x-\tfrac{\gamma\beta}{\delta}y$, and its unique critical point is the coexistence equilibrium $(x,y)=(\gamma/\delta,\alpha/\beta)$.
 
-We can make different ecological modeling choices. For example, making both reactions positive makes each species descend the interaction potential $V$. Adding $\tfrac{\rho}{2}e^{2u}$ to $U_{\fun{prey}}$ slows the prey's growth as its population increases, modeling limited resources. Finally, one could add an input port to $\fun{prey}$ and make the potential depend on it \eqref{eqn.para_potential_lens_maps}, in which case an environmental signal could drive $\alpha$.
+We can make different ecological modeling choices. For example, making both responses positive makes each species descend the interaction potential $V$. Adding $\tfrac{\rho}{2}e^{2u}$ to $U_{\fun{prey}}$ slows the prey's growth as its population increases, modeling limited resources. Finally, one could add an input port to $\fun{prey}$ and make the potential depend on it \eqref{eqn.para_potential_lens_maps}, in which case an environmental signal could drive $\alpha$.
 \end{example}
 
 \begin{example}\label{ex.further_reach}
@@ -2716,7 +2716,7 @@ There are many more examples from electronics, mechanics, control theory, chemis
 Each construction below is implemented in the companion code (\url{https://github.com/dspivak/dap}) by Claude, which used the definitions here to make executable code that was then tested against idealized standard equations. The author understands the content of the claims as stated, and believes them to be reasonable and to have been checked, but \textit{has not verified all of them by hand.}
 
 \begin{description}
-	\item[Transistor.] A transistor is a system with interface $\binom{\rr^3}{1}$ whose three inputs receive the gate, drain, and source voltages; whose reactive vector space is $Q\coloneqq(\rr^2,\sharpR)$ with $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; and whose potential $U\colon Q\times \rr^3\to\rr$ is
+	\item[Transistor.] A transistor is a system with interface $\binom{\rr^3}{1}$ whose three inputs receive the gate, drain, and source voltages; whose responsive vector space is $Q\coloneqq(\rr^2,\sharpR)$ with $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; and whose potential $U\colon Q\times \rr^3\to\rr$ is
 \[
 U\bigl((q,q'),e_G,e_D,e_S\bigr)\coloneqq\tfrac{\kappa}{2}\bigl(e_G-e_S-q-q'\bigr)^2+W\bigl(q,\,e_D-e_S\bigr)
 \]
@@ -2727,7 +2727,7 @@ A NAND gate is given by applying a static wiring $\binom{\rr^3}{1}^{\ltens 4}\lt
 \item[Sequential circuits.]
 Cross-coupling two NAND gates yields a latch \cite{wikipedia2026flipflop}---a system with two stable states, each preserved by the dynamics for the parameters we tried, i.e.\ a stored bit of memory---and, when combined with logic gates, sequential circuitry as well.
 \item[Amplifier.]
-An amplifier is a system with interface $\binom{\rr}{\rr}$: it has the transistor's reactive vector space $(\rr^2,\sharpR)$, it reports its state $(q,q')\mapsto q$, and its potential $U(q,q',e)\coloneqq\tfrac{\kappa}{2}(Ae-q-q')^2$ makes $q$ relax toward the amplification $A\gg 0$ times the input $e$.
+An amplifier is a system with interface $\binom{\rr}{\rr}$: it has the transistor's responsive vector space $(\rr^2,\sharpR)$, it reports its state $(q,q')\mapsto q$, and its potential $U(q,q',e)\coloneqq\tfrac{\kappa}{2}(Ae-q-q')^2$ makes $q$ relax toward the amplification $A\gg 0$ times the input $e$.
 Moreover, the amplifier is unilateral: any covector returned at its output port lands in the kernel of $\sharpR$, so whatever is wired to the output cannot move the state.
 \item[Feedback amplifier.]
 Black's feedback amplifier \cite{black1934stabilized} is the system given by applying a
@@ -2737,15 +2737,18 @@ An LC circuit is a system that resonates with incoming signals, e.g.\ radio, for
 \[
 \lensunit\To{\fun{ind}\ltens\fun{cap}}\binom{1}{\rr}\ltens\binom{1}{\rr}\To{f}\binom{1}{\rr}
 \]
-The inductor has reactive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance $L>0$ and potential $-\tfrac{R}{2}i^2$ for a small resistance $R>0$, the sign matching that of $\sharpR_{\fun{ind}}$; its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is an oscillation as in the predator-prey model (\cref{ex.lotka_volterra})---caused by the opposite-signed sharps---with period roughly $2\pi\sqrt{LC}$ ticks, decaying whenever $1/C<R<2\sqrt{L/C}$. A radio signal enters as a covector---a current drive---returned at the terminal; the response is strongest when the drive frequency matches the circuit's own, tuning to the signal from the matching radio station.%
+The inductor has responsive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance $L>0$ and potential $-\tfrac{R}{2}i^2$ for a small resistance $R>0$, the sign matching that of $\sharpR_{\fun{ind}}$; its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is an oscillation as in the predator-prey model (\cref{ex.lotka_volterra})---caused by the opposite-signed sharps---with period roughly $2\pi\sqrt{LC}$ ticks, decaying whenever $1/C<R<2\sqrt{L/C}$. A radio signal enters as a covector---a current drive---returned at the terminal; the
+%response
+oscillation %
+is strongest when the drive frequency matches the circuit's own, tuning to the signal from the matching radio station.%
 \footnote{
-LC circuits can also be integrated using the phase integrator, if we replace the two systems above with a single one whose state is the charge $q\coloneqq Cv$, reactive vector space $(\rr,\xi\mapsto\xi/L)$, and potential $q^2/2C$. Doing so keeps the energy bounded whenever $4LC>1$.
+LC circuits can also be integrated using the phase integrator, if we replace the two systems above with a single one whose state is the charge $q\coloneqq Cv$, responsive vector space $(\rr,\xi\mapsto\xi/L)$, and potential $q^2/2C$. Doing so keeps the energy bounded whenever $4LC>1$.
 }
 \item[DC motor.]
 A DC motor converts electrical current into mechanical rotation. It has the shape of the LC circuit: an electrical component and a mechanical one with states the current $i$ and the angular velocity $\omega$; sharps $\xi/L$ and $-\xi/J$ (inductance $L$, inertia $J$); cell potentials $\tfrac{R}{2}i^2-Vi$ (winding resistance $R$, source voltage $V$) and $-(\tfrac{b}{2}\omega^2+\tau\omega)$ (friction $b$, load torque $\tau$); and coupler potential $Ki\omega$ (motor constant $K$). One tick is exactly the Euler step of the motor's standard equations~\cite[Ex.~2.5]{vanderschaft2014port}.
 \item[Molecular dynamics.]
 Molecular dynamics simulates a molecule or material as $d$-many point particles with pairwise interactions. Each particle is a potential-free system
-$\lensunit\to\binom{1}{\rr^{3}}$ with reactive vector space $(\rr^{3},\sharpR)$,
+$\lensunit\to\binom{1}{\rr^{3}}$ with responsive vector space $(\rr^{3},\sharpR)$,
 $\sharpR(\xi)\coloneqq\xi/m$ for a mass $m>0$, reporting its
 state, the position $x\in\rr^3$;
 each interacting pair is a stateless system
@@ -2755,12 +2758,12 @@ $2^{1/6}\sigma$. Actual molecular dynamics, however, requires a better integrato
 \item[Impedance control.]
 Impedance control~\cite{hogan1985impedance} makes a robot arm behave as though it were attached by a spring to its target: push it off the target and it pushes back proportionally. The spring term is a stateless system $\lensunit\to\binom{\rr^2}{1}$ whose two inputs receive a reported position $q$ and a run-time setpoint $s$, and whose potential is $\tfrac{k}{2}(q-s)^2$, where $k$ is stiffness. Wired to a system reporting its state $q$, it pulls $q$ toward $s$; the force returned at the setpoint port is equal and opposite, and in most control systems would be discarded by making the setpoint unilateral.
 \item[Kuramoto oscillators.]
-A heart's pacemaker cells and the generators on a power grid are modeled as synchronizing by the same mechanism, the Kuramoto equations. Each oscillator is a system $\lensunit\to\binom{1}{\rr}$ reporting its state, the phase $\theta\in\rr$, with reactive vector space $(\rr,\sharpR)$, $\sharpR(\xi)\coloneqq\xi$, and potential $-\omega\theta$ (natural frequency $\omega$); each edge of an interaction graph is a stateless system $\binom{\rr^2}{1}$ with potential $-K\cos(\theta-\theta')$ in the two reported phases (coupling strength $K$). Differentiating, the covector returned to an oscillator is $-\omega+K\sum\sin(\theta-\theta')$, summed over its neighbors, so one tick is $\theta\mapsto\theta+\omega+K\sum\sin(\theta'-\theta)$---the Euler step of the Kuramoto equations.%
+A heart's pacemaker cells and the generators on a power grid are modeled as synchronizing by the same mechanism, the Kuramoto equations. Each oscillator is a system $\lensunit\to\binom{1}{\rr}$ reporting its state, the phase $\theta\in\rr$, with responsive vector space $(\rr,\sharpR)$, $\sharpR(\xi)\coloneqq\xi$, and potential $-\omega\theta$ (natural frequency $\omega$); each edge of an interaction graph is a stateless system $\binom{\rr^2}{1}$ with potential $-K\cos(\theta-\theta')$ in the two reported phases (coupling strength $K$). Differentiating, the covector returned to an oscillator is $-\omega+K\sum\sin(\theta-\theta')$, summed over its neighbors, so one tick is $\theta\mapsto\theta+\omega+K\sum\sin(\theta'-\theta)$---the Euler step of the Kuramoto equations.%
 \footnote{The phase integrator applied to the same arrangement yields the undamped swing equation of power grids: a generator is a Kuramoto oscillator with inertia.}
 \item[Petri nets.]
 A chemical reaction network can be modeled by a Petri net
 $(S,T,m,n,r,x^0)$ with arc multiplicities $m,n\colon T\times S\to\nn$, rate constants $r\colon T\to\rr_{\geq 0}$, and initial concentrations $x^0\colon S\to\rr_{\geq0}$: a transition $t$ consumes $m_{ts}$ and produces $n_{ts}$ tokens of the species $s$, and fires at the mass-action rate $f_t(x)\coloneqq r(t)\prod_sx_s^{m_{ts}}$ in the concentrations $x$.
-Each transition $t\in T$ is a system $\lensunit\to\binom{\rr^{S_t}}{\rr}$ whose inputs receive the concentrations at the set $S_t$ of species it touches; it has the transistor's reactive vector space $(\rr^2,\sharpR)$, $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; it reports the first coordinate of its state $(\epsilon_t,\epsilon'_t)\mapsto\epsilon_t$, the extent of reaction; and
+Each transition $t\in T$ is a system $\lensunit\to\binom{\rr^{S_t}}{\rr}$ whose inputs receive the concentrations at the set $S_t$ of species it touches; it has the transistor's responsive vector space $(\rr^2,\sharpR)$, $\sharpR(\xi,\xi')\coloneqq(\xi',0)$; it reports the first coordinate of its state $(\epsilon_t,\epsilon'_t)\mapsto\epsilon_t$, the extent of reaction; and
 its potential is $U_t\bigl((\epsilon_t,\epsilon'_t),x\bigr)\coloneqq-\epsilon'_t f_t(x)$. The transition-systems are wired together by the static arrangement $\bigltens_{t\in T}\binom{\rr^{S_t}}{\rr}\to\lensunit$ whose input map is affine, as for the feedback amplifier above: it sends the reported extents to the concentration $x_s\coloneqq x^0_s+\sum_t\bigl(n_{ts}-m_{ts}\bigr)\epsilon_t$ at each species $s$.
 Differentiating, the sharp discards $\partial U/\partial\epsilon_t$ and delivers $\partial U/\partial\epsilon'_t=-f_t(x)$, so one tick is $\epsilon_t\mapsto\epsilon_t+f_t(x)$, the Euler step of mass action at any molecularity. Note that the chemical reading requires each concentration $x_s$ to remain nonnegative, a condition the update does not enforce.%
 \footnote{Nonnegativity can be obtained by construction by re-encoding the same net in log coordinates, at the cost of exact conservation laws, and likewise for the replicator tick below; see the companion code for details.}
@@ -3002,11 +3005,11 @@ The two are equal iff $\sharpR_q\circ\phi^*=\phi^{-1}\circ\sharpR_{\phi(q)}$, wh
 \begin{remark}[Generalization to manifolds]\label{rmk.rmfdc_generalization}
 The dynamics functor (\cref{thm.dynamics_functor}) depends on $\rvect$ only through the monoidal natural transformation $\chi$ of \cref{prop.rvect_polynomial}. Any symmetric monoidal category of manifolds admitting such a $\chi\colon\Store\circ\absval{\blank}\to\cot\circ\inc$ would serve equally well.
 One possible source would be
-\emph{reactive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$
+\emph{responsive manifolds with connection}: triples $(M,\nabla_M,\sharpR_M)$ of a smooth manifold, a geodesically complete linear connection, and a smooth bundle map $\sharpR_M\colon T^*M\to TM$. The geodesic exponential $\exp^{\nabla_M}_m(\sharpR_m(\xi))$
 would replace
 the Euler step \eqref{eqn.directions_sharp}, and on flat $Q$ recovers it exactly.
 We expect examples to include
-complete Riemannian manifolds via their Levi-Civita connections, and Lie groups once equipped with a complete left-invariant Riemannian metric. We stay with reactive vector spaces for concreteness.
+complete Riemannian manifolds via their Levi-Civita connections, and Lie groups once equipped with a complete left-invariant Riemannian metric. We stay with responsive vector spaces for concreteness.
 \end{remark}
 
 \subsection{The configuration integrator}\label{sec.config_integrator}
@@ -3019,7 +3022,7 @@ where $-1\colon\cot\Rightarrow\cot$ negates the incoming covector and is the ide
 \begin{equation}\label{eqn.conf_integrator}
 \Store(\absval Q)\to\cotof Q,\qquad \xi\longmapsto\chiQ{\rv Q}(-\xi)=q-\sharpR_q(\xi).
 \end{equation}
-The minus is the integrator's: an incoming covector $\xi\in Q^*$ steps the state \emph{against} $\sharpR_q(\xi)$, by $q\mapsto q-\sharpR_q(\xi)$, which is what makes the configuration dynamics descend rather than ascend. It rides on the gradient, not on the reaction---$\sharpR_Q$ is used exactly as the syntax supplies it, so the one reactive vector space $\rv Q$ drives this integrator and the phase integrator below alike. Both legs are monoidal natural transformations---$\chi$ by \cref{prop.rvect_polynomial} and $-1$ trivially---so the composite is one as well, hence a $\cot$-integrator.
+The minus is the integrator's: an incoming covector $\xi\in Q^*$ steps the state \emph{against} $\sharpR_q(\xi)$, by $q\mapsto q-\sharpR_q(\xi)$, which is what makes the configuration dynamics descend rather than ascend. It rides on the gradient, not on the response---$\sharpR_Q$ is used exactly as the syntax supplies it, so the one responsive vector space $\rv Q$ drives this integrator and the phase integrator below alike. Both legs are monoidal natural transformations---$\chi$ by \cref{prop.rvect_polynomial} and $-1$ trivially---so the composite is one as well, hence a $\cot$-integrator.
 
 \subsection{The cotangent endofunctor}\label{sec.cotangent_endofunctor}
 
@@ -3033,9 +3036,9 @@ We now turn to a physics-based semantics. We consider integrators of the form
 	\arrow[from=top, to=bot, Rightarrow, shorten=3pt, "\dyn"]
 \end{tikzcd}
 \]
-On objects, the cotangent endofunctor sends a reactive vector space $(Q,\sharpR_Q):\rvect$ to its cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def}, equipped with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}. Thus for these integrators, the stored state is a point $(q,\xi)$ in the phase space $T^*Q$, with \emph{position} $q$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\phase$ from the canonical symplectic structure on $T^*Q$.
+On objects, the cotangent endofunctor sends a responsive vector space $(Q,\sharpR_Q):\rvect$ to its cotangent bundle $T^*Q\cong Q\oplus Q^*$ \eqref{eqn.TT_def}, equipped with the canonical symplectic pairing of \cref{prop.canonical_symplectic_pairing}. Thus for these integrators, the stored state is a point $(q,\xi)$ in the phase space $T^*Q$, with \emph{position} $q$ and \emph{momentum} $\xi$. Our first job is to show (\cref{prop.TT_endofunctors,prop.TT_monoidal}) that this makes sense, i.e.\ that $T^*\colon\rvect\to\rvect$, and hence $\absval{T^*\blank}$, is a strong monoidal functor. We then build the phase integrator $\phase$ from the canonical symplectic structure on $T^*Q$.
 
-The cotangent bundle is naturally a reactive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
+The cotangent bundle is naturally a responsive vector space via the canonical symplectic pairing, whose sharp map is \eqref{eqn.canonical_sharp}.
 For a $\rvect$-morphism $\phi\colon Q\To{\cong} W$, define
 \begin{equation}\label{eqn.TT_phi}
 T^*\phi\coloneqq\phi\oplus(\phi^*)\inv.
@@ -3248,7 +3251,7 @@ Since $\absval{T^*\blank}$ is a composite of strong monoidal functors (\cref{pro
 \phase\coloneqq(\absval{T^*\blank},\dynphase).
 \end{equation}
 
-The two factors play distinct roles. The map $\nuro$ assembles the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.nu}, and this is the only place the reaction $\sharpR_Q$ enters. The Euler step $\chiQ{T^*\blank}$ \eqref{eqn.directions_sharp} then applies the canonical symplectic sharp on $T^*Q$ \eqref{eqn.canonical_sharp}, the same for every reactive vector space: on directions it adds to the current state $(q,\xi)$ the sharp of that covector,
+The two factors play distinct roles. The map $\nuro$ assembles the covector $(\xi',\sharpR_q\xi)$ \eqref{eqn.nu}, and this is the only place the response $\sharpR_Q$ enters. The Euler step $\chiQ{T^*\blank}$ \eqref{eqn.directions_sharp} then applies the canonical symplectic sharp on $T^*Q$ \eqref{eqn.canonical_sharp}, the same for every responsive vector space: on directions it adds to the current state $(q,\xi)$ the sharp of that covector,
 \[
 \sharpS_{T^*Q}\bigl(\xi',\sharpR_q(\xi)\bigr)=\bigl(\sharpR_q(\xi),\,-\xi'\bigr),
 \]
@@ -3310,7 +3313,7 @@ Given an adaptive-arrangement datum $D=(\cat M,\cat Q,J,\Fun R)$, composing $J$ 
 
 In $\rvect$, the sharp-equivariant isomorphisms between Euclidean parameter spaces (\cref{ex.euclidean_sharp}) are exactly the orthogonal maps. But several optimizers used in practice do not require naturality with respect to orthogonal maps. Any method that acts coordinatewise---e.g.\ an elementwise square or a per-coordinate step
 size---singles out a basis and admits no natural transformation over $\rvect$. Such a method is not outside the framework; it just lives over a smaller $\cat Q$. For example, we could restrict our attention to vector spaces equipped with a Euclidean sharp and take as morphisms any of the following nested classes of isometries:%
-\footnote{With the Euclidean reaction structure fixed, this is as far as the restriction can go while keeping $\cat Q$ symmetric monoidal: the braidings are themselves coordinate permutations, so dropping them too would leave $\cat Q$ without its symmetry.}
+\footnote{With the Euclidean response structure fixed, this is as far as the restriction can go while keeping $\cat Q$ symmetric monoidal: the braidings are themselves coordinate permutations, so dropping them too would leave $\cat Q$ without its symmetry.}
 \[
   \text{orthogonal}\;\supset\;\text{signed coordinate permutations}\;\supset\;\text{coordinate permutations}.
 \]
@@ -3521,7 +3524,7 @@ w(q,m),\;
 \qquad
 (\xi_Q,\xi_M)=dE|_{(q,m)}+(T_{(q,m)}w)^\top(\xi_N),
 \]
-which is exactly the $\Phiconf$-coalgebra \eqref{eqn.state_update_gradient} of the same diagram. Hence the right square commutes. The descent vs. ascent sign here sits in the configuration integrator \eqref{eqn.conf_integrator}---seen as the minus in the velocity $u=-\sharpR_q(\xi_Q)$---while the reaction $\sharpR_Q$ stays sign-free; CLS make the opposite choice, folding the sign into the reaction so that the velocity is $\sharpR_Q(dE)$ directly~\cite[\S\S 2.1--2.2]{capucci2024organizing}. The remaining compatibility with $\mathbf{OpenErg}$ is obtained by restricting to $\cat R$ the CLS functor $\mathbf{OpenErg}\to\mathbf{OpenODE}$ and then applying their ``collapse'' construction~\cite[Thm.~22 and Prop.~21]{capucci2024organizing}.\qedhere
+which is exactly the $\Phiconf$-coalgebra \eqref{eqn.state_update_gradient} of the same diagram. Hence the right square commutes. The descent vs. ascent sign here sits in the configuration integrator \eqref{eqn.conf_integrator}---seen as the minus in the velocity $u=-\sharpR_q(\xi_Q)$---while the response $\sharpR_Q$ stays sign-free; CLS make the opposite choice, folding the sign into the response so that the velocity is $\sharpR_Q(dE)$ directly~\cite[\S\S 2.1--2.2]{capucci2024organizing}. The remaining compatibility with $\mathbf{OpenErg}$ is obtained by restricting to $\cat R$ the CLS functor $\mathbf{OpenErg}\to\mathbf{OpenODE}$ and then applying their ``collapse'' construction~\cite[Thm.~22 and Prop.~21]{capucci2024organizing}.\qedhere
 \end{proof}
 
 Applications of $\Phiconf$ appear in \cref{sec.newton_warmup} (Newton's method) and \cref{sec.dl_warmup} (gradient descent and backpropagation).
@@ -3599,7 +3602,7 @@ When $f$ is a closed system (\cref{def.arrangement_terminology}), the potential 
 \end{equation}
 This step is the phase dynamics $\dynphase\colon\Store\circ\absval{T^*\blank}\Rightarrow\cot$ specialized to a closed system: its readout reports the presented position $\tilde q$, and its state update is \eqref{eqn.state_update}.
 
-Equation \eqref{eqn.closed_update} is the closed phase step for an arbitrary reaction and potential. We now ask when it is \emph{symplectic}, i.e.\ when the step preserves the canonical symplectic pairing on $T^*Q$ \eqref{eqn.canonical_form}. We reach that regime by three hypotheses---imposed cumulatively, each marked in \textbf{bold} below---after which \cref{prop.closed_conservation} proves it symplectic.
+Equation \eqref{eqn.closed_update} is the closed phase step for an arbitrary response and potential. We now ask when it is \emph{symplectic}, i.e.\ when the step preserves the canonical symplectic pairing on $T^*Q$ \eqref{eqn.canonical_form}. We reach that regime by three hypotheses---imposed cumulatively, each marked in \textbf{bold} below---after which \cref{prop.closed_conservation} proves it symplectic.
 
 If \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then the presented position \eqref{eqn.presented_position} is $\tilde q=q+\sharpR_0(\xi)$ and \eqref{eqn.closed_update} becomes
 \[
@@ -3628,7 +3631,7 @@ In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpend
 The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}. %
 
 The discrete step \eqref{eqn.closed_update} need not conserve $H$ exactly.
-However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---quadratic reaction, \textbf{quadratic potential}---it does preserve the canonical symplectic pairing.
+However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---quadratic response, \textbf{quadratic potential}---it does preserve the canonical symplectic pairing.
 With $\rv Q$ quadratic as above, let $\kappa\colon Q\to Q^*$ be \emph{symmetric}, $(\kappa q)(q')=(\kappa q')(q)$ for all $q,q'\in Q$, and take the potential
 \[U(q)\coloneqq\tfrac12(\kappa q)(q).\]
 In this case, $dU|_q=\kappa q$ is linear,
@@ -3644,7 +3647,7 @@ are the \emph{drift} and \emph{kick} steps of the symplectic Euler method~\cite[
 \begin{proposition}[Symplecticity of the closed phase step]\label{prop.closed_conservation}
 Let $f=(Q,\sharpR_0,\bang,\bang,U)\colon I\to I$ be a harmonic closed system (\cref{def.arrangement_terminology}) whose potential is $U(q)=\tfrac12(\kappa q)(q)$ for a symmetric linear map $\kappa\colon Q\to Q^*$. Then, for the drift and kick of \eqref{eqn.drift_kick},
 \[\Phiphase(f)=\fun{kick}\circ\fun{drift}.\]
-In particular, the update \eqref{eqn.closed_update} is an endomorphism of the reactive vector space $T^*Q$ in $\rvect$, i.e.\ a linear isomorphism preserving the canonical symplectic pairing \eqref{eqn.canonical_form}.
+In particular, the update \eqref{eqn.closed_update} is an endomorphism of the responsive vector space $T^*Q$ in $\rvect$, i.e.\ a linear isomorphism preserving the canonical symplectic pairing \eqref{eqn.canonical_form}.
 \end{proposition}
 
 \begin{proof}
@@ -3697,7 +3700,7 @@ In this concluding section we illustrate the two dynamics functors on four concr
 \section{Newton's method}\label{sec.newton_warmup}
 %--------------------------------------------------------------------
 
-Newton's method is a \emph{closed system} in the sense of \cref{def.arrangement_terminology}: an arrangement $f\colon \lensunit\to \lensunit$ in $\sarr$. Both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a reactive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Since $\Phiconf\lensunit\cong\yon$ (\cref{cor.functor}), under $\Phiconf$ it determines a closed system in $\pc$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
+Newton's method is a \emph{closed system} in the sense of \cref{def.arrangement_terminology}: an arrangement $f\colon \lensunit\to \lensunit$ in $\sarr$. Both $\outp f$ and $\inpt f$ in \eqref{eqn.para_potential_lens_maps} are forced to be the unique map $\bang$, and the only data is a responsive parameter space $(Q,\sharpR_Q)$ and a potential $U\colon Q\to\rr$. Since $\Phiconf\lensunit\cong\yon$ (\cref{cor.functor}), under $\Phiconf$ it determines a closed system in $\pc$, i.e.\ a discrete dynamical system $Q\to[\yon,\yon](Q)=Q$.
 
 Newton's method for \emph{minimization}---given an objective $U$, find a critical point, i.e.\ a point where the gradient $dU$ vanishes---is such a closed system~\cite[Ch.~9]{boyd2004convex}. In the presentation below, the standing hypothesis is that the Hessian of $U$ is invertible at every point of $Q$; %this holds in particular in the standard strongly convex case where the Hessian is everywhere positive definite, and the critical point found is the global minimum.
 this holds in particular when the Hessian is everywhere positive definite, in which case the critical point found is the global minimum. % 
@@ -3710,7 +3713,7 @@ called the \emph{Hessian} of $U$ at $q$. In a basis $e_1,\ldots,e_n$ of $Q$, the
 \[
 \bigl(T_q(dU)\bigr)_{ij}=\partial_i\partial_j U(q),
 \]
-which is symmetric by equality of mixed partials. By the standing hypothesis it is invertible at every $q$, hence an isomorphism $T_q(dU)\colon Q\To{\cong}Q^*$, and we obtain a nondegenerate reactive vector space (\cref{def.rvect}) by putting
+which is symmetric by equality of mixed partials. By the standing hypothesis it is invertible at every $q$, hence an isomorphism $T_q(dU)\colon Q\To{\cong}Q^*$, and we obtain a nondegenerate responsive vector space (\cref{def.rvect}) by putting
 \[
 \sharpR^{U}_q\coloneqq\bigl(T_q(dU)\bigr)^{-1}\colon Q^*\To{\cong}Q,
 \]
@@ -3735,9 +3738,9 @@ x\longmapsto x-\sharpR^{U}_x(dU|_x)=x-e^{-x}(e^x-1)=x-1+e^{-x}.
 \]
 Its unique fixed point is the minimum at $x=0$.
 
-In general, the reactive structure $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic, and the configuration integrator's descent step jumps to that quadratic's critical point. When $U$ is exactly quadratic, the Hessian $T_q(dU)$ is constant, so this quadratic model lands on the true critical point in one step. In dimension $>1$, this could be a maximum, minimum, or saddle. 
+In general, the response structure $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ locally approximates $U$ by a quadratic, and the configuration integrator's descent step jumps to that quadratic's critical point. When $U$ is exactly quadratic, the Hessian $T_q(dU)$ is constant, so this quadratic model lands on the true critical point in one step. In dimension $>1$, this could be a maximum, minimum, or saddle. 
 
-This is genuinely different from gradient descent: there the reactive structure $\sharpR=\etaLR\,\id$ is a fixed metric on the parameter space, chosen independently of the potential, whereas here $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ is derived from the potential itself. It is this dependence on the second derivative of $U$ that makes the method second-order, and that lets the same descent step find any critical point rather than only moving downhill toward minima.
+This is genuinely different from gradient descent: there the response structure $\sharpR=\etaLR\,\id$ is a fixed metric on the parameter space, chosen independently of the potential, whereas here $\sharpR^{U}_q=\bigl(T_q(dU)\bigr)^{-1}$ is derived from the potential itself. It is this dependence on the second derivative of $U$ that makes the method second-order, and that lets the same descent step find any critical point rather than only moving downhill toward minima.
 
 %--------------------------------------------------------------------
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
@@ -3808,7 +3811,7 @@ Altogether, suppressing the unique $1$-components, the coalgebra is
 where $(\xi_Q,\xi_M)$ is defined by \eqref{eqn.dl_pullback}.
 
 \paragraph{Losses and backpropagation.}
-Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: reactive parameter $(Q,\sharpR_Q)\colon\rvect$ modeling  the weights, with $\sharpR_Q$
+Recall the network $f\colon\binom{1}{\rr^m}\to\binom{1}{\rr^n}$: responsive parameter $(Q,\sharpR_Q)\colon\rvect$ modeling  the weights, with $\sharpR_Q$
 the (possibly position-dependent) learning rate,
 forward map $\outp f=F\colon Q\times\rr^m\to\rr^n$, trivial input map, and zero potential (though see \cref{def.reg_potential}). With the potential zero, the learning signal comes from whatever the network is wired into. We supply it with a \emph{loss}: a stateless $2$-ary closed arrangement (\cref{sec.potentialized_lenses})
 \begin{equation}\label{eqn.loss}
@@ -3945,7 +3948,7 @@ To define a particle $\Part\colon\lensunit\to\binom{\rr}{\rr}$
 	\node[bb={1}{1}, particle] {};
 \end{tikzpicture}
 \]
-as a $0$-ary smooth adaptive arrangement in $\sarr$ \eqref{eqn.srw_morphism}, we need a reactive vector space $(Q,\sharpR_Q)$, a smooth output map $\outp f\colon Q\to\rr$, and a smooth potential $U\colon Q\times\rr\to\rr$; the input map is trivial. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharpR_q(\xi)\coloneqq\xi/m$ (independent of $q\in\rr$); we read the value $q\in\rr$ as the particle's transverse displacement from equilibrium. We take the output map to be the identity, $\outp f(q)\coloneqq q$, and the potential to be
+as a $0$-ary smooth adaptive arrangement in $\sarr$ \eqref{eqn.srw_morphism}, we need a responsive vector space $(Q,\sharpR_Q)$, a smooth output map $\outp f\colon Q\to\rr$, and a smooth potential $U\colon Q\times\rr\to\rr$; the input map is trivial. We take the parameter space to be $\rr\in\rvect$ with constant sharp $\sharpR_q(\xi)\coloneqq\xi/m$ (independent of $q\in\rr$); we read the value $q\in\rr$ as the particle's transverse displacement from equilibrium. We take the output map to be the identity, $\outp f(q)\coloneqq q$, and the potential to be
 \[U(q,q')\coloneqq\tfrac{\kappa}{2}(q-q')^2,\]
 the \emph{harmonic} potential, assigning energy to the relative displacement of the particle and its neighbor.
 
@@ -4101,7 +4104,7 @@ This is the calculation of \eqref{eqn.state_update_explicit}: writing the state 
 \end{proof}
 
 \begin{remark}[Adaptive spring material]\label{rmk.adaptive_spring}
-The above chain \eqref{eqn.wave_wd} uses a single constant coupling $\kappa$, but the $\sarr$ formalism supports adaptive ones, as mentioned in \cref{sec.intro_smooth_rewiring}. One could give each bond its own spring constant $\kappa_j$ and treat these constants as reactive parameters in their own right, evolving alongside the displacements. How they respond to the state---softening under strain, say---is a modeling choice, governed by whatever potential one picks to encode the intended material behavior; the formalism turns that choice into coupled dynamics.\qedhere
+The above chain \eqref{eqn.wave_wd} uses a single constant coupling $\kappa$, but the $\sarr$ formalism supports adaptive ones, as mentioned in \cref{sec.intro_smooth_rewiring}. One could give each bond its own spring constant $\kappa_j$ and treat these constants as responsive parameters in their own right, evolving alongside the displacements. How bonds change according to the state---softening under strain, say---is a modeling choice, governed by whatever potential one picks to encode the intended material behavior; the formalism turns that choice into coupled dynamics.\qedhere
 \end{remark}
 
 \subsection{Functoriality audit: composing in \texorpdfstring{$\pc$}{Coalg*Poly}}\label{sec.spring_second_pass}
@@ -4303,10 +4306,10 @@ m_v\bigl(q_v(t+1)-q_v(t)\bigr)-m_v\bigl(q_v(t)-q_v(t-1)\bigr)\;=\;-(L_G\vec q(t)
 and collecting the position terms on the left, in the notation of \eqref{eqn.doubledot}, yields \eqref{eqn.graph_laplacian_dynamics}.
 \end{proof}
 
-The reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_{v\in V}$ is constant and symmetric and the potential \eqref{eqn.graph_potential} is quadratic with $dU=L_G$ symmetric---so the arrangement is harmonic (\cref{def.arrangement_terminology}) and \cref{prop.closed_conservation} applies (with $\kappa=L_G$): $\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ is a map in $\rvect$, hence preserves the canonical symplectic pairing.
+The response $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_{v\in V}$ is constant and symmetric and the potential \eqref{eqn.graph_potential} is quadratic with $dU=L_G$ symmetric---so the arrangement is harmonic (\cref{def.arrangement_terminology}) and \cref{prop.closed_conservation} applies (with $\kappa=L_G$): $\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ is a map in $\rvect$, hence preserves the canonical symplectic pairing.
 
 \begin{remark}[Heat equation from the configuration integrator]\label{rmk.graph_heat}
-Rather than $\Phiphase$, applying $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.graph_wire}---same graph wiring, same potential, and the same positive inverse-mass reaction $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and the same computation \eqref{eqn.graph_gradient} applies---except that the configuration integrator presents the stored position itself, so here $\xi_Q=dU(\vec q)=L_G\vec q$. Its descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ then reads component-wise as
+Rather than $\Phiphase$, applying $\Phiconf$ to the \emph{very same} smooth adaptive arrangement $\fun{wire}_{\mathbf G}$ of \eqref{eqn.graph_wire}---same graph wiring, same potential, and the same positive inverse-mass response $\sharpR_{\vec q}(\vec\xi)=(\xi_v/m_v)_v$---recovers the discrete \emph{heat} equation on $G$. The state set is now $Q_G=\rr^V$ (no momentum), and the same computation \eqref{eqn.graph_gradient} applies---except that the configuration integrator presents the stored position itself, so here $\xi_Q=dU(\vec q)=L_G\vec q$. Its descent update $\vec q(t+1)=\vec q(t)-\sharpR_{\vec q(t)}(\xi_Q)$ then reads component-wise as
 \[
 m_v\bigl(q_v(t+1)-q_v(t)\bigr)\;=\;-\bigl(L_G\,\vec q(t)\bigr)_v
 \qquad(v\in V,\ t\geq0).
@@ -4358,7 +4361,7 @@ The operad $\sarr$ of smooth adaptive arrangements provides a single composition
 
 The same split appears in the neural-network example of \cref{sec.dl_warmup}. Applying $\Phiconf$ to the parameterized map $F\colon Q\times\rr^m\to\rr^n$ recovers gradient descent; we expect that applying $\Phiphase$ to the same arrangement may yield momentum-based weight dynamics. This would place standard and momentum-based training as two integrators of one smooth adaptive arrangement, exactly as the wave and heat equations are two integrators of one graph wiring (\cref{rmk.graph_heat}).
 
-Several directions remain open. Replacing reactive vector spaces with reactive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The monoidality of specific multi-stage integrators such as leapfrog remains to be checked (\cref{rmk.multistage}). A probabilistic extension---replacing the dynamics map $\dyn_Q\colon\Store(S_Q)\to\cotof Q$ of \cref{def.integrator} by a map $\Store(S_Q)\to\cotof Q\circ\rand$, using the polynomial monad $\rand=\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$ introduced in \cref{sec.coalgebras}---might provide finitely-supported stochastic semantics, e.g.\ for stochastic parameter updates in neural networks.
+Several directions remain open. Replacing responsive vector spaces with responsive manifolds equipped with connections (\cref{rmk.rmfdc_generalization}) would extend the framework beyond linear parameter spaces. The monoidality of specific multi-stage integrators such as leapfrog remains to be checked (\cref{rmk.multistage}). A probabilistic extension---replacing the dynamics map $\dyn_Q\colon\Store(S_Q)\to\cotof Q$ of \cref{def.integrator} by a map $\Store(S_Q)\to\cotof Q\circ\rand$, using the polynomial monad $\rand=\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$ introduced in \cref{sec.coalgebras}---might provide finitely-supported stochastic semantics, e.g.\ for stochastic parameter updates in neural networks.
 
 On the suboperad of quadratic arrangements (\cref{prop.suboperads}), we expect the two example semantics $\Phiconf$ and $\Phiphase$ to be related: for every quadratic arrangement $f$ with parameter space $Q$, there should be an arrangement $g$ with parameter space $T^*Q$ such that $\Phiphase(f)=\Phiconf(g)$, functorially in $f$.
 

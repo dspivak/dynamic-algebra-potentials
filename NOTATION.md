@@ -116,17 +116,17 @@ edit, where updating the table is the whole point.
 | Sort | Symbol(s) | Notes |
 |---|---|---|
 | Generic smooth manifold | `M`, `N`, `O` | `\mfd` for the category; a third manifold, e.g. the outer interface of a composite `f\then g`, is `O` (`prop.suboperads`) |
-| Reactive vector space (object of `\rvect`) | `\rv Q`=`(Q,\sharpR_Q)` | bold `\rv` macro; emphasizes sharp-dependence (e.g. `\chiQ{\rv Q}`) |
+| Responsive vector space (object of `\rvect`) | `\rv Q`=`(Q,\sharpR_Q)` | bold `\rv` macro; emphasizes sharp-dependence (e.g. `\chiQ{\rv Q}`) |
 | Underlying / carrier vector space | `Q`, `W`, `R` | also: domain for `T^*Q` constructions; abused for the object `\rv Q` when sharp is understood or canonical (`T^*Q`). A second parameter carrier, for the second factor of a composite `f\then g` or a tensor `f\ltens g`, is `R` (`prop.suboperads`)---font-distinct from the potentials monad `\Fun R` |
 | Point of a manifold | `m`, `n`, `o` | `m\colon\rr^0\to M` style; the element tracks its manifold, so `o\in O` |
 | Point of a vector space | `q` | element tracks the carrier `Q`; position in `(q,\xi)\in T^*Q`; second point `q'`, indexed `q_1,\ldots,q_K` (physics generalized coordinates); a point of a second carrier `R` is `r`. `x` is retired as a point, and `q` is never a polynomial |
-| Tangent vector (generic) | `v`, `w` | at `T_qQ`; avoid clashing with vector-space `Q`. A generic direction with no underlying trajectory — e.g. the reactive-pairing arguments `\pairing{v,v'}_q` (`def.rvect`). For a velocity (derivative of a trajectory) use the dot below |
+| Tangent vector (generic) | `v`, `w` | at `T_qQ`; avoid clashing with vector-space `Q`. A generic direction with no underlying trajectory — e.g. the response-pairing arguments `\pairing{v,v'}_q` (`def.rvect`). For a velocity (derivative of a trajectory) use the dot below |
 | Velocity (tangent vector as time-derivative) | `\dot q`, `\dot m`, `\dot\xi` | the derivative of a `Q`-/`M`-/`Q^*`-valued trajectory; **tracks its basepoint** (so `\dot q\in T_qQ`, not `v`). Used in Euler steps (`q\mapsto q+\dot q`), differentials (`eqn.differential`: `\dot m\in T_mM`), and vector fields (`\dot q=\sharpR_0(\xi)`, `\dot\xi=-dU|_q` in `sec.phase_dynamics`) |
 | Partial differential (in one factor) | `\partial_q f` | `\partial_q f\coloneqq T_q(f(\blank,m))` (`eqn.partial_differential`, `sec.manifolds_notation`): differential of the partial application in the named factor, other arguments held at the in-scope point. Scalar codomain: a covector under `eqn.tangent_vec` (so `\partial_qR`, `\partial_\lambda U` in ch.applications are instances). Manifold codomain: a linear map, used transposed, e.g. `(\partial_q\outp f)^\top` (*unilateral*, `def.arrangement_terminology`) |
 | Covector | `\xi` | primed/indexed: `\xi'`, `\xi_Q`, `\xi_M`; a covector on a doubled space is written as the pair `(\xi,q)`, never named `\alpha` (`rmk.symplectic_perpendicular`) |
 | Phase point | `(q,\xi)\in T^*Q` | position–momentum pair |
 | Presented position | `\tilde q` | `\tilde q\coloneqq q+\sharpR_q(\xi)` (`eqn.presented_position`): the position the phase integrator reads out, where the environment evaluates forces; vector form `\vec{\tilde q}` in §7.3–7.4. Tilde reserved for this |
-| State (underlying set) | `s\in S` | `S=|Q|` when from a reactive vector space |
+| State (underlying set) | `s\in S` | `S=|Q|` when from a responsive vector space |
 
 Search hints: "manifold", "vector space", "point", "covector", "tangent",
 `(x,\\xi)`, `T^*_`, `T_xQ`, `m\\colon\\rr^0`.
@@ -221,11 +221,11 @@ Search hints: `"learning rate"`, `"potential"`, `U\\colon`, `\\to\\rr`.
 | Strong-monad strength | `\sigma` | the Kock strength (`ch.lenses`). The *product comparison* of a strong monoidal functor is its **productor** `F_2`, e.g. `(T^*)_2` (`prop.TT_monoidal`)—**not** `\sigma`. Sole use of `\sigma` (the monoidal readout is now `\rho`, row above) |
 | Lax/colax structure map | `\theta` | |
 
-### Reactive vector spaces & sharp maps
+### Responsive vector spaces & sharp maps
 
 | Sort | Symbol(s) | Notes |
 |---|---|---|
-| Reactive sharp | `\sharpR_Q`, `\sharpR_q` | section / fiber-evaluated; the data distinguishing the object `\rv Q=(Q,\sharpR_Q)` |
+| Response sharp | `\sharpR_Q`, `\sharpR_q` | section / fiber-evaluated; the data distinguishing the object `\rv Q=(Q,\sharpR_Q)` |
 | Symplectic (canonical) sharp | `\sharpS_{T^*Q}` | always on `T^*Q` |
 | Euclidean sharp | `\sharpEuc{}` | constant case |
 | Lens backward map | `\bk{\varphi}{i}` = `\varphi[i]` | renders `#1[#2]`: extends the directions bracket `p[i]` to maps (`\varphi[i]\colon p'[\varphi_1(i)]\to p[i]`, footnote at the `eqn.poly_map` display). **never** `\varphi^\sharp` (clashes with `\sharpR`) |
