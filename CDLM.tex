@@ -330,8 +330,7 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
 
 \newcommand{\cat}[1]{\mathcal{#1}}%a generic category
 \newcommand{\Cat}[1]{\mathbf{#1}}%a named category
-%\newcommand{\fun}[1]{\mathrm{#1}}%a function
-\newcommand{\fun}[1]{\mathtt{#1}}%a function %
+\newcommand{\fun}[1]{\mathtt{#1}}%a function
 \newcommand{\Fun}[1]{\text{\normalfont\textsf{#1}}}%a named functor
 %\arr is registered via \trackTerm below (after the term-tracking machinery is defined)
 \providecommand{\Data}{\Cat{Data}}%category of adaptive-arrangement data (with integrator)
@@ -542,11 +541,7 @@ We give a single compositional setting in which gradient-based learning and Hami
 
 The main technical result of the paper is what we call \emph{lens internalization}, a lax symmetric monoidal functor $\Lens{\cat{C}}\to\cat{C}$ associated to any symmetric monoidal closed category $\cat{C}$. Using it, we provide two functors $\Phiphase,\Phiconf\colon\sarr\to\pc$ into the 2-category of polynomial coalgebras---input-output discrete dynamical systems---which we take as the semantics category. $\Phiphase$ stores both position and momentum, whereas $\Phiconf$ stores only position. 
 
-When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is
-%conservative and
-second-order, and $\Phiconf$ gives the discrete heat equation, which is
-%dissipative and
-first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
+When applied to a parameterized function, $\Phiconf$ recovers the gradient descent training algorithm, with backpropagation as the lens' backward pass. When applied to harmonic particles wired together---in series, or according to any finite directed graph---one diagram yields two different regimes, both of which are governed by the graph Laplacian: $\Phiphase$ gives the discrete wave equation, which is second-order, and $\Phiconf$ gives the discrete heat equation, which is first-order. They are two semantics of one adaptive arrangement, e.g.\ with the same potential in each case. And because $\sarr$ is an operad, such diagrams nest---larger systems wired from smaller ones---and each semantics assembles a system's dynamics functorially from its parts. These dynamics are moreover executable: a parameterized neural network and a graph of particles both compile, by the same construction, to explicit state machines one can run.
 \end{abstract}
 
 \medskip
@@ -646,50 +641,50 @@ your outputs are what your exterior can have preferences over.
 Indeed, the potential lives interior to the outer box $N$ and exterior to the inner box $M$,
 so it reads $Q$, $\outp M$, and $\inpt N$, and can read neither $\inpt M$ nor $\outp N$.
 
-All the data from \eqref{eqn.first_lens} and \eqref{eqn.potential} constitutes a morphism $f=(\rv Q,\outp f,\inpt f,U)$ and is depicted in \eqref{eqn.arrangement}: %
-\begin{equation}\label{eqn.arrangement} %
+All the data from \eqref{eqn.first_lens} and \eqref{eqn.potential} constitutes a morphism $f=(\rv Q,\outp f,\inpt f,U)$ and is depicted in \eqref{eqn.arrangement}:
+\begin{equation}\label{eqn.arrangement}
 f\coloneqq\quad
-\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.5cm, bbx=.7cm, bby=.7ex, %
-    ar/.style={postaction={decorate, decoration={markings, reset marks, %
-      mark=at position \stringdecpos with \stringdec}}}, %
-    ann ar/.style={postaction={decorate, decoration={markings, reset marks, %
-      mark=at position .6 with {\arrow{Stealth[length=3.5pt]}}}}}, baseline=(M)] %
-  \node[bb={1}{1}] (M) {$M$}; %
-  \node[circle, draw, thin, inner sep=.5pt, left=.9 of M_in1] (fin) {\scriptsize$\inpt f$}; %
-  \node[circle, draw, thin, inner sep=.5pt, right=.9 of M_out1] (fout) {\scriptsize$\outp f$}; %
-  \node[dot] at ($(M_out1)!.5!(fout.west)$) (split) {}; %
-  \node[cloud, draw=gray, thin, cloud puffs=10, aspect=2.2, inner xsep=1pt, inner ysep=0pt, %
-        anchor=south] at ($(M.north)+(0,6pt)$) (Q) {\scriptsize$Q$}; %
-  \coordinate (fblow) at ($(M.south)+(0,-12pt)$); %
-  \coordinate (pot) at ($(fin.center)+(-16pt,-27pt)$); %
-  \coordinate (potSW) at ($(pot)+(-15pt,-1pt)$); %
-  \coordinate (potNE) at ($(pot)+(15pt,7pt)$); %
-  \node[bb={0}{0}, fit=(M) (Q) (fin) (fout) (fblow) (potSW) (potNE), %
-        inner xsep=.55cm, inner ysep=8pt] (N) {}; %
-  \node[coordinate] at (N.west|-M_in1) (N_in1) {}; %
-  \node[coordinate] at (N.east|-M_out1) (N_out1) {}; %
-  \coordinate (Nin) at ($(N_in1)+(-5pt,0)$); %
-  \coordinate (Nout) at ($(N_out1)+(5pt,0)$); %
-  \draw[thin, gray!55, ann ar] (Q) to[out=180, in=90] (fin); %
-  \draw[thin, gray!55, ann ar] (Q) to[out=0, in=90] (fout); %
-  \draw[ar] (Nin) to (fin); %
-  \draw[ar] (fin) to (M_in1); %
-  \draw (M_out1) to (split); %
-  \draw[ar] (split) to (fout); %
-  \draw[ar] (fout) to (Nout); %
-  \coordinate (fbmid) at ($(fin.-45|-fblow)!.5!(split|-fblow)$); %
-  \draw[ar] (split) to[out=-90, in=0] (fbmid) to[out=180, in=-45] (fin.-45); %
-  \draw[thin, black!60, -{Stealth[length=3.5pt]}] (fin.-135) to[out=-135, in=45] node[left=1pt, font=\scriptsize] {$U$} ($(pot)+(-2pt,8pt)$); %
-  \begin{scope}[shift={(pot)}] %
-    \draw[thin, black!60] plot[domain=-1.45:1.45, samples=41] ({\x*10pt},{(\x*\x-1)^2*5pt}); %
-    \fill[black!60] (-10pt,1.8pt) circle (1.7pt); %
-  \end{scope} %
-  \node[above=.3pt] at ($(M_in1)+(-9pt,0)$) {\scriptsize$\inpt M$}; %
-  \node[above=.3pt] at ($(M_out1)!.5!(split.west)$) {\scriptsize$\outp M$}; %
-  \node[left=-1pt] at (Nin) {\scriptsize$\inpt N$}; %
-  \node[right=0pt] at (Nout) {\scriptsize$\outp N$}; %
-\end{tikzpicture} %
-\end{equation} %
+\begin{tikzpicture}[oriented WD, bb port length=5pt, bb port sep=1, bb min width=.5cm, bbx=.7cm, bby=.7ex,
+    ar/.style={postaction={decorate, decoration={markings, reset marks,
+      mark=at position \stringdecpos with \stringdec}}},
+    ann ar/.style={postaction={decorate, decoration={markings, reset marks,
+      mark=at position .6 with {\arrow{Stealth[length=3.5pt]}}}}}, baseline=(M)]
+  \node[bb={1}{1}] (M) {$M$};
+  \node[circle, draw, thin, inner sep=.5pt, left=.9 of M_in1] (fin) {\scriptsize$\inpt f$};
+  \node[circle, draw, thin, inner sep=.5pt, right=.9 of M_out1] (fout) {\scriptsize$\outp f$};
+  \node[dot] at ($(M_out1)!.5!(fout.west)$) (split) {};
+  \node[cloud, draw=gray, thin, cloud puffs=10, aspect=2.2, inner xsep=1pt, inner ysep=0pt,
+        anchor=south] at ($(M.north)+(0,6pt)$) (Q) {\scriptsize$Q$};
+  \coordinate (fblow) at ($(M.south)+(0,-12pt)$);
+  \coordinate (pot) at ($(fin.center)+(-16pt,-27pt)$);
+  \coordinate (potSW) at ($(pot)+(-15pt,-1pt)$);
+  \coordinate (potNE) at ($(pot)+(15pt,7pt)$);
+  \node[bb={0}{0}, fit=(M) (Q) (fin) (fout) (fblow) (potSW) (potNE),
+        inner xsep=.55cm, inner ysep=8pt] (N) {};
+  \node[coordinate] at (N.west|-M_in1) (N_in1) {};
+  \node[coordinate] at (N.east|-M_out1) (N_out1) {};
+  \coordinate (Nin) at ($(N_in1)+(-5pt,0)$);
+  \coordinate (Nout) at ($(N_out1)+(5pt,0)$);
+  \draw[thin, gray!55, ann ar] (Q) to[out=180, in=90] (fin);
+  \draw[thin, gray!55, ann ar] (Q) to[out=0, in=90] (fout);
+  \draw[ar] (Nin) to (fin);
+  \draw[ar] (fin) to (M_in1);
+  \draw (M_out1) to (split);
+  \draw[ar] (split) to (fout);
+  \draw[ar] (fout) to (Nout);
+  \coordinate (fbmid) at ($(fin.-45|-fblow)!.5!(split|-fblow)$);
+  \draw[ar] (split) to[out=-90, in=0] (fbmid) to[out=180, in=-45] (fin.-45);
+  \draw[thin, black!60, -{Stealth[length=3.5pt]}] (fin.-135) to[out=-135, in=45] node[left=1pt, font=\scriptsize] {$U$} ($(pot)+(-2pt,8pt)$);
+  \begin{scope}[shift={(pot)}]
+    \draw[thin, black!60] plot[domain=-1.45:1.45, samples=41] ({\x*10pt},{(\x*\x-1)^2*5pt});
+    \fill[black!60] (-10pt,1.8pt) circle (1.7pt);
+  \end{scope}
+  \node[above=.3pt] at ($(M_in1)+(-9pt,0)$) {\scriptsize$\inpt M$};
+  \node[above=.3pt] at ($(M_out1)!.5!(split.west)$) {\scriptsize$\outp M$};
+  \node[left=-1pt] at (Nin) {\scriptsize$\inpt N$};
+  \node[right=0pt] at (Nout) {\scriptsize$\outp N$};
+\end{tikzpicture}
+\end{equation}
 
 The first two pieces, $\outp f$ and $\inpt f$, are exactly the shape of a lens $\binom{\inpt f}{\outp f}$. Lenses are a standard language for bidirectional interaction, appearing in bidirectional programming, compositional game theory, and categorical accounts of backpropagation~\cite{foster2007combinators,hedges2017coherence,fong2019backprop,cruttwell2021categorical}. In our manifold setting, these two maps route output and input data between the internal boxes and the external box in a composable way.
 
@@ -703,13 +698,8 @@ Thus the integrator is where the dynamical regime gets decided: one smooth adapt
 We also show that the \emph{phase integrator} ($\Fun S_{Q}\coloneqq T^*Q$) applied to any finite directed graph of harmonic particles yields the discrete dynamics of its graph Laplacian (\cref{sec.graph_laplacian}), generalizing the wave equation. Fed the \emph{very same} adaptive arrangement---identical wiring, potential, and response---the configuration integrator instead gives the corresponding discrete heat equation (\cref{rmk.graph_heat}). Thus the second-order and first-order regimes are two semantics of a single syntactic object, differing mainly in terms of
 whether to store position and momentum data or just position data.
 
-This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime,
-%conservative or dissipative.
-second-order or first-order. %
-On the
-%conservative
-phase %
-side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with quadratic response and quadratic potential---preserves the canonical symplectic pairing exactly.
+This is the sense in which smooth adaptive arrangements are syntax: the diagram fixes the wiring, the potential, and the geometry of the parameter space, while the integrator alone selects the dynamical regime, second-order or first-order.
+On the phase side, we will see in \cref{prop.closed_conservation} that each step of the phase dynamics applied to a closed harmonic system---one with quadratic response and quadratic potential---preserves the canonical symplectic pairing exactly.
 
 That is a lot of moving parts, and almost none of them are special to manifolds: the construction needs only that spaces form a cartesian category, parameters a symmetric monoidal one, and potentials a monoidal monad (the writer monad of $(\rr,0,+)$ being the main instance). We therefore build $\sarr\to\pc$ in two passes. \Cref{ch.framework} carries out the construction at this level of generality---isolating what actually makes it work, and leaving room to specialize it differently later (e.g.\ \cref{ex.syntactic_datum})---and \cref{ch.smooth_rwd,ch.smooth_dynamics} then instantiate it in the smooth setting above.
 
@@ -718,9 +708,8 @@ The paper aims to be self-contained for a reader comfortable with monoidal categ
 The main contributions are the following.
 \begin{itemize}
 \item \emph{Lens internalization} (\cref{cor.Theta}): a lax symmetric monoidal functor $\Theta\colon\Lens{\cat C}\to\cat C$ that internalizes each lens interface as an object of $\cat C$, as well as a monad/monoid generalization $\Theta_\potalg$ (\cref{thm.Theta_T_alpha}).
-\item A vocabulary for smooth adaptive arrangements---\emph{stateless}, \emph{potential-free}, \emph{static}, \emph{quadratic}, \emph{linear}, \emph{unilateral}---each class spanning a suboperad of $\sarr$ (\cref{def.arrangement_terminology,prop.suboperads}). %
-%\item $\Phiconf$ takes two species wired to a predation potential, with oppositely-signed responses, to the Euler step of the Lotka--Volterra predator--prey equations (\cref{ex.lotka_volterra}). %
-\item A closed system of two species wired to a predation potential, with oppositely-signed responses, whose sharp and potential generate the Lotka--Volterra ODEs (\cref{ex.lotka_volterra}). %
+\item A vocabulary for smooth adaptive arrangements---\emph{stateless}, \emph{potential-free}, \emph{static}, \emph{quadratic}, \emph{linear}, \emph{unilateral}---each class spanning a suboperad of $\sarr$ (\cref{def.arrangement_terminology,prop.suboperads}).
+\item A closed system of two species wired to a predation potential, with oppositely-signed responses, whose sharp and potential generate the Lotka--Volterra ODEs (\cref{ex.lotka_volterra}).
 \item Two functorial semantics $\Phiconf,\Phiphase\colon\sarr\to\pc$ (\cref{cor.functor}), each assembling a system's discrete dynamics from its smooth adaptive arrangement.
 \item A proof that, for a harmonic closed system, each step of the phase dynamics preserves the canonical symplectic pairing exactly (\cref{prop.closed_conservation}).
 \item $\Phiconf$ recovers gradient descent with backpropagation (\cref{sec.dl_warmup}), and Newton's method (\cref{sec.newton_warmup}).
@@ -896,7 +885,7 @@ A $p$-coalgebra is thus a deterministic dynamical system whose interface is $p$:
 \footnote{
  Writing $\defineTerm{rand}\coloneqq\sum_{N:\nn}\sum_{P:\fun{Dist}(N)}\yon^N$, whose positions are finitely-supported distributions and whose directions are outcomes, a partially observable Markov decision process with rewards in $R:\smset$ can be modeled as a coalgebra for the composite polynomial functor $O\yon^A\circ\rand\circ R\yon$, i.e.\ a map $S\to O\times\bigl(\sum_{(N,P)}(R\times S)^N\bigr)^A$: the state emits an observation in $O$, receives an action in $A$, emits a distribution, receives an outcome, and emits a reward in $R$.
 See~\cite{Spivak2023lotteries} for its monad structure.
-} and other mode-dependent dynamics in a single framework. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment. %
+} and other mode-dependent dynamics in a single framework. It is a special case of the general theory of coalgebras for endofunctors; see~\cite{jacobs2017introduction} for a comprehensive treatment.
 
 There is a connection between $p$-coalgebras and the $\Store$ comonad from \cref{def.store}.
 
@@ -1267,8 +1256,7 @@ We first recall the category $\defineTerm{Lens}_{\cat{C}}$ of lenses in a symmet
 
 An \emph{interface} in $\cat C$ is a pair $\lensob c$ whose output part $\outp c$ carries a comonoid structure $(\outp c,\varepsilon,\delta)$.%
 \footnote{
-%When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism.
-When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism; this is one direction of Fox's theorem~\cite{nlab:cartesian_monoidal}. %
+When $(\cat{C},1,\times)$ is cartesian monoidal, every object has a unique comonoid structure and every morphism is automatically a comonoid homomorphism; this is one direction of Fox's theorem~\cite{nlab:cartesian_monoidal}.
 } 
 A \emph{lens} $f\colon\lensob c\to\lensob d$ consists of a forward map $\outp f\colon\outp c\to\outp d$ (a comonoid homomorphism) and a backward map $\inpt f\colon\outp c\otimes\inpt d\to\inpt c$ (any map in $\cat{C}$). Such a morphism can be depicted as follows:
 \begin{equation}\label{eqn.lens_map}
@@ -1857,7 +1845,7 @@ In fact, the composite functor $(\Lens{\blank\yon}\then\Theta)\colon\Lens{\smset
 \[
 \Theta\binom{A\yon}{B\yon}=[A\yon,\yon]\otimes B\yon\cong B\yon^A.
 \]
-A coalgebra on $B\yon^A$ is a function of the form $S\to B\times S^A$, which is equivalently a pair of functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine. %
+A coalgebra on $B\yon^A$ is a function of the form $S\to B\times S^A$, which is equivalently a pair of functions $S\to B$, $S\times A\to S$, i.e.\ an $A$-input, $B$-output Moore machine.
 \end{example}
 
 \begin{corollary}\label{cor.parameterized_representation}
@@ -2307,7 +2295,7 @@ Equivalently, $dU|_m(\dot m)=(T_mU)(\dot m)$ for $\dot m\in T_mM$. When $M=Q$ is
 
 For a smooth map $f\colon M\times N\to P$ and a point $(m,n)\in M\times N$, we write
 \begin{equation}\label{eqn.partial_differential}
-\partial_m f\coloneqq T_m\bigl(f(\blank,n)\bigr)\colon T_mM\to T_{f(m,n)}P %
+\partial_m f\coloneqq T_m\bigl(f(\blank,n)\bigr)\colon T_mM\to T_{f(m,n)}P
 \end{equation}
 for the differential at $m$ of the partial application $f(\blank,n)\colon M\to P$, and similarly in any factor of a finite product: the subscript names the point at which we differentiate, and all other arguments are held fixed. When $P=\rr$, we regard $\partial_m f$ as a covector in $T^*_mM$ under \eqref{eqn.tangent_vec}, so that $\partial_m f=d\bigl(f(\blank,n)\bigr)\big|_m$ in the sense of \eqref{eqn.differential}.
 
@@ -2493,7 +2481,7 @@ We say that $f\in\sarr(b_1,\dots,b_K; c)$, a smooth adaptive arrangement given b
   \item[static] if it is both stateless and potential-free;
   \item[quadratic] if its responsive parameter space $\rv Q$ is quadratic (\cref{def.rvect});
   \item[harmonic] if it is quadratic, $\outp M$ and $\inpt N$ are vector spaces, and its potential $U$ is a quadratic form;%
-  \footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.} %
+  \footnote{A \emph{quadratic form} on a vector space $W$ is a function $W\to\rr$ of the form $w\mapsto B(w\otimes w)$ for a symmetric linear map $B\colon W\otimes W\to\rr$. It is common to assume positive definiteness, but we will not need it. Bilinear forms, and hence quadratic forms, are closed under direct sum.}
   \item[linear] if it is harmonic, its other interfaces $\inpt M$ and $\outp N$ are also vector spaces, and its maps $\outp f$ and $\inpt f$ are linear;
   \item[unilateral] if whenever $\outp f(q,\outp m)=\outp n$ and $\xi\in T^*_{\outp n}\outp N$, we have $\sharpR_q\bigl((\partial_q\outp f)^\top\xi\bigr)=0$ \eqref{eqn.partial_differential}, i.e.\ if the following diagram commutes
   \[
@@ -2523,12 +2511,10 @@ In fact, we may assume they are 1-ary $\lensob{M}\to\lensob{N}$ at the cost of a
 
 Under tensor product, everything adds: $Q_{f\ltens g}=Q\oplus R$, $U_{f\ltens g}=U+V$ by the productor \eqref{eqn.monoid_productor} of the monad $\rr\times\blank$, $\sharpR_{(q,r)}=\sharpR_q\oplus\sharpR_r$ by \eqref{eqn.directsum_sharp}, and $\outp{(f\ltens g)}=\outp f\times\outp g$.
 So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, potential-free is preserved because $0+0=0$,
-quadratic is preserved because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and $U+V$ is again a quadratic form, and unilateral is preserved because %
+quadratic is preserved because $\sharpR_q\oplus\sharpR_r$ is again constant and symmetric, linear is preserved because $\outp{(f\ltens g)}$ and $\inpt{(f\ltens g)}$ are products of linear maps and $U+V$ is again a quadratic form, and unilateral is preserved because
 \[
-%\sharpR_{(q,r)}\left(\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top\right)
-%=\sharpR_q\Bigl((\partial_q\outp f)^\top\Bigr)\oplus\sharpR_r\Bigl((\partial_r\outp g)^\top\Bigr)
-\sharpR_{(q,r)}\circ\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top %
-=\Bigl(\sharpR_q\circ(\partial_q\outp f)^\top\Bigr)\oplus\Bigl(\sharpR_r\circ(\partial_r\outp g)^\top\Bigr) %
+\sharpR_{(q,r)}\circ\bigl(\partial_{(q,r)}\outp{(f\ltens g)}\bigr)^\top
+=\Bigl(\sharpR_q\circ(\partial_q\outp f)^\top\Bigr)\oplus\Bigl(\sharpR_r\circ(\partial_r\outp g)^\top\Bigr)
 \]
 is a direct sum of maps that each vanish by unilaterality of $f$ and $g$.
 
@@ -2538,10 +2524,8 @@ U_{f\then g}(r,q,\outp m,\inpt o)=U\bigl(q,\outp m,\inpt g(r,\outp n,\inpt o)\bi
 \qquad\outp n\coloneqq\outp f(q,\outp m),
 \]
 coming from the multiplication of the writer monad $\rr\times\blank$ in the coKleisli composition of \cref{prop.backward_comonad}. So stateless is preserved because $\rr^0\oplus\rr^0=\rr^0$, and potential-free is preserved because $0+0=0$.
-Quadratic is preserved because the sharp $\sharpR_r\oplus\sharpR_q$ of the composite is again constant and symmetric. %
-Linearity is preserved as well: the maps $\outp{(f\then g)}$ and $\inpt{(f\then g)}$ are each composites of linear maps,
-the composite is quadratic as above, %
-and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too.%
+Quadratic is preserved because the sharp $\sharpR_r\oplus\sharpR_q$ of the composite is again constant and symmetric.
+Linearity is preserved as well: the maps $\outp{(f\then g)}$ and $\inpt{(f\then g)}$ are each composites of linear maps, the composite is quadratic as above, and each summand of the displayed potential is a quadratic form precomposed with a linear map, hence a quadratic form; thus their sum is too.%
 \footnote{
 The linearity of $\inpt g$ is what keeps this potential quadratic, which is why linear arrangements form a suboperad but harmonic ones don't.
 }
@@ -2562,7 +2546,7 @@ Applying the sharp $\sharpR_{(r,q)}=\sharpR_r\oplus\sharpR_q$ of the composite, 
 each component vanishing by unilaterality.
 \end{proof}
 
-\section{Examples: tanks, electricity, and predator--prey}\label{sec.arrangement_examples} %
+\section{Examples: tanks, electricity, and predator--prey}\label{sec.arrangement_examples}
 \begin{example}\label{ex.tank_system}
 Recall the weirdly-shaped water tank from \cref{ex.tank_sharp}, with cross-sectional area $A\colon\rr\to\rr_{>0}$ as a function of height. Assume that the cumulative-volume map $h\mapsto\int_0^h A(s)\,ds$ is a diffeomorphism, write $h(v)$ for its inverse, and take the tank's state to be its water volume $v\in\rr$. We consider it as a system
 $
@@ -2737,10 +2721,7 @@ An LC circuit is a system that resonates with incoming signals, e.g.\ radio, for
 \[
 \lensunit\To{\fun{ind}\ltens\fun{cap}}\binom{1}{\rr}\ltens\binom{1}{\rr}\To{f}\binom{1}{\rr}
 \]
-The inductor has responsive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance $L>0$ and potential $-\tfrac{R}{2}i^2$ for a small resistance $R>0$, the sign matching that of $\sharpR_{\fun{ind}}$; its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is an oscillation as in the predator-prey model (\cref{ex.lotka_volterra})---caused by the opposite-signed sharps---with period roughly $2\pi\sqrt{LC}$ ticks, decaying whenever $1/C<R<2\sqrt{L/C}$. A radio signal enters as a covector---a current drive---returned at the terminal; the
-%response
-oscillation %
-is strongest when the drive frequency matches the circuit's own, tuning to the signal from the matching radio station.%
+The inductor has responsive vector space $(\rr,\sharpR_{\fun{ind}})$, $\sharpR_{\fun{ind}}(\xi)\coloneqq-\xi/L$ for an inductance $L>0$ and potential $-\tfrac{R}{2}i^2$ for a small resistance $R>0$, the sign matching that of $\sharpR_{\fun{ind}}$; its output map reports the state $i\in\rr$. The capacitor is as in \cref{rmk.tank_electrical} reporting a state $v\in\rr$. The arrangement $f$ is stateless with potential $U(i,v)\coloneqq iv$ and output map $(i,v)\mapsto v$: the result is an oscillation as in the predator-prey model (\cref{ex.lotka_volterra})---caused by the opposite-signed sharps---with period roughly $2\pi\sqrt{LC}$ ticks, decaying whenever $1/C<R<2\sqrt{L/C}$. A radio signal enters as a covector---a current drive---returned at the terminal; the oscillation is strongest when the drive frequency matches the circuit's own, tuning to the signal from the matching radio station.%
 \footnote{
 LC circuits can also be integrated using the phase integrator, if we replace the two systems above with a single one whose state is the charge $q\coloneqq Cv$, responsive vector space $(\rr,\xi\mapsto\xi/L)$, and potential $q^2/2C$. Doing so keeps the energy bounded whenever $4LC>1$.
 }
@@ -3259,11 +3240,7 @@ so the update is
 \begin{equation}\label{eqn.phase_update}
 \absval{T^*Q}\times Q^*\to\absval{T^*Q},\qquad ((q,\xi),\xi')\mapsto(q+\sharpR_q(\xi),\,\xi-\xi').
 \end{equation}
-This
-%is
-has %
-one step of Hamilton's equations
-as a special case%
+This has one step of Hamilton's equations as a special case%
 : the position moves by the velocity $\sharpR_q\xi$, landing on $\tilde q$, and the momentum moves by $-\xi'$, the incoming gradient at $\tilde q$. See \cref{sec.closed_conservation}.
 
 %--------------------------------------------------------------------
@@ -3608,10 +3585,7 @@ If \textbf{the sharp is constant}, $\sharpR_q=\sharpR_0$, then the presented pos
 \[
 (q,\xi)\longmapsto\bigl(q+\sharpR_0(\xi),\,\xi-dU|_{\tilde q}\bigr)=\bigl(\tilde q,\,\xi-dU|_{\tilde q}\bigr).
 \]
-This is
-%the \emph{symplectic} Euler step~\cite[\S 2.1]{gauckler2017dynamics}
-one Euler step %
-of the vector field
+This is one Euler step of the vector field
 \[
 \dot q\coloneqq \sharpR_0(\xi),
 \qquad
@@ -3628,7 +3602,7 @@ When $\sharpR_0$ is positive-definite---as for $\sharpR_0(\xi)=\xi/m$ above---th
 \sharpS_S(dH|_{(q,\xi)})=(\sharpR_0(\xi),-dU|_q)=(\dot{q},\dot{\xi}).
 \]
 In particular the continuous flow conserves $H$, by \cref{rmk.symplectic_perpendicular}.
-The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}. %
+The step above is then the \emph{symplectic} Euler step of this Hamiltonian system~\cite[\S 2.1]{gauckler2017dynamics}.
 
 The discrete step \eqref{eqn.closed_update} need not conserve $H$ exactly.
 However, when the arrangement is \emph{harmonic} (\cref{def.arrangement_terminology})---quadratic response, \textbf{quadratic potential}---it does preserve the canonical symplectic pairing.
@@ -3746,8 +3720,7 @@ This is genuinely different from gradient descent: there the response structure 
 \section{Gradient descent and backpropagation}\label{sec.dl_warmup}
 %--------------------------------------------------------------------
 
-By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation~\cite{rumelhart1986learning}. Applying %
- \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{1}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf$ yields a normal lax symmetric monoidal functor
+By \emph{deep learning} we mean the training of an artificial neural network by gradient descent with backpropagation~\cite{rumelhart1986learning}. Applying \cref{prop.lens_inclusion} with $\cat C=\mfd$ and $\Fun T=\rr\times\blank$ gives a strong symmetric monoidal functor $\inc\colon\mfd\to\plmfd$, $M\mapsto\binom{1}{M}$. Whiskering with $\para\rvect{\blank}$ and composing with $\Phiconf$ yields a normal lax symmetric monoidal functor
 \[\para{\rvect}{\mfd}\To{\para{\rvect}{\inc}}\sarr\To{\Phiconf}\pc,\]
 whose composite we denote by
 \begin{equation}\label{eqn.lrn}
@@ -3861,7 +3834,7 @@ A \emph{regularizing potential} on a map $f\colon\binom{1}{\rr^m}\to\binom{1}{\r
 The simplest weight-only potential recovers a standard ingredient of training. 
 
 \begin{proposition}[Weight decay]\label{prop.weight_decay}
-Switching the potential of the arrangement \eqref{eqn.learning_lens} from $0$ to the weight-only $R(q)\coloneqq\tfrac\gamma2\lVert q\rVert^2$, on a Euclidean parameter space with $\sharpR_q=\etaLR\,\sharpEuc{}$ (\cref{ex.euclidean_sharp}, \eqref{eqn.learning_sharp}), changes the gradient-descent update \eqref{eqn.gradient_descent} to %
+Switching the potential of the arrangement \eqref{eqn.learning_lens} from $0$ to the weight-only $R(q)\coloneqq\tfrac\gamma2\lVert q\rVert^2$, on a Euclidean parameter space with $\sharpR_q=\etaLR\,\sharpEuc{}$ (\cref{ex.euclidean_sharp}, \eqref{eqn.learning_sharp}), changes the gradient-descent update \eqref{eqn.gradient_descent} to
 \[
 q\longmapsto (1-\etaLR\gamma)\,q-\etaLR\,\bigl(T_qF(\blank,x)\bigr)^\top\xi, 
 \]
@@ -3926,8 +3899,7 @@ where for $t\geq1$ we use $\ddot q_i(t)$ to denote
 
 We will work in the full suboperad of $\sarr$ spanned by a single object $\boxob\coloneqq\binom{\rr}{\rr}$, corresponding to a box whose input port and output port are both $\rr$. That is, we'll consider arrangements of the form
 \[
-%\varphi\in\sarr(\boxob\ltpow{K},\boxob)
-f\in\sarr(\boxob\ltpow{K},\boxob) %
+f\in\sarr(\boxob\ltpow{K},\boxob)
 \]
 for varying $K$. Note that $\boxob\ltpow{0}=\lensunit$ is the monoidal unit.
 
@@ -4020,7 +3992,7 @@ acting per-particle on each $\rr$-summand (the inverse-mass pairing), independen
 \qqand
 U\bigl((q_1,\ldots,q_K),\,q_0\bigr)\coloneqq\sum_{i=1}^{K}\tfrac{\kappa}{2}(q_i-q_{i-1})^2.
 \]
-Here, the sum in the above formula for $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\mfd$. Composition with $\fun{wire}_K$ then substitutes $q'_i\mapsto q_{i-1}$ via $\inpt f$ (with $q_0$ the external input). %
+Here, the sum in the above formula for $U$ comes from the productor \eqref{eqn.monoid_productor} of the monoidal monad $\rr\times\blank$ on $\mfd$. Composition with $\fun{wire}_K$ then substitutes $q'_i\mapsto q_{i-1}$ via $\inpt f$ (with $q_0$ the external input).
 
 \paragraph{The discrete dynamics.}
 
@@ -4322,10 +4294,7 @@ M\,\dot{\vec q}\;=\;-L_G\,\vec q,
 \]
 diffusion on $G$ with the masses $m_v$ serving as heat capacities.
 
-Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, symplectic regime and the first-order,
-%dissipative
-descent %
-regime are two semantics of one syntactic object.
+Thus a single smooth adaptive arrangement gives wave dynamics under the phase integrator and heat dynamics under the configuration integrator: the second-order, symplectic regime and the first-order, descent regime are two semantics of one syntactic object.
 \end{remark}
 
 \begin{remark}[Predicting a closed system]\label{rmk.graph_environment}
@@ -4335,23 +4304,12 @@ The environment of \cref{ex.training_data} need not be a dataset; it can be a cl
 \qqand
 c\colon S\to S
 \]
-is a $\cotof X\otimes\cotof X$-coalgebra---an environment $\yon\to\Phiconf(\tbinom1X\ltens\tbinom1X)$ in $\pc$---presenting the observation now, $o(s)$, as input and one step ahead, $o(c(s))$, as label, then advancing by $c$. Closing the learner \eqref{eqn.dl_composite} (with $\rr^m=\Lambda=X$) with it descends the weights \eqref{eqn.dl_gradient_update} toward predicting $o\circ c$
-%from $o$, the system's one-step map.
-from $o$. %
-If $o\circ c=\bar c\circ o$ for some $\bar c\colon X\to X$, the target is the system's one-step map $\bar c$; %
-in general no such $\bar c$ exists, and the learner is trained only on the observed transition pairs $\bigl(o(s),\,o(c(s))\bigr)$. %
+is a $\cotof X\otimes\cotof X$-coalgebra---an environment $\yon\to\Phiconf(\tbinom1X\ltens\tbinom1X)$ in $\pc$---presenting the observation now, $o(s)$, as input and one step ahead, $o(c(s))$, as label, then advancing by $c$. Closing the learner \eqref{eqn.dl_composite} (with $\rr^m=\Lambda=X$) with it descends the weights \eqref{eqn.dl_gradient_update} toward predicting $o\circ c$ from $o$. If $o\circ c=\bar c\circ o$ for some $\bar c\colon X\to X$, the target is the system's one-step map $\bar c$; in general no such $\bar c$ exists, and the learner is trained only on the observed transition pairs $\bigl(o(s),\,o(c(s))\bigr)$.
 
-For the graph, take the closed system to be $c\coloneqq\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ \eqref{eqn.graph_state_update}%
-%and $o\coloneqq\pi\colon T^*\rr^V\to\rr^V$ the bundle projection (\cref{lem.TT_projection_diagonal_monoidal}), $X\coloneqq\rr^V$; then $\langle\pi,\pi\circ c\rangle(q,\xi)=\bigl(q,\ q+\sharpR_q\xi\bigr)$ is the current and next configuration, and the network is fit to the graph's propagator, here linear in $L_G$.
-. %
+For the graph, take the closed system to be $c\coloneqq\Phiphase(\fun{wire}_{\mathbf G})\colon T^*\rr^V\to T^*\rr^V$ \eqref{eqn.graph_state_update}.
 With the bundle projection $\pi\colon T^*\rr^V\to\rr^V$ (\cref{lem.TT_projection_diagonal_monoidal}), no $\bar c$ as above exists: only positions are observed, but states with the same position and different momenta have different next positions. 
 However, if we instead take $X\coloneqq\rr^V\times\rr^V$ and observe two consecutive configurations, $o\coloneqq\langle\pi,\,\pi\circ c\rangle\colon T^*\rr^V\to X$, sending $(q,\xi)$ to $\bigl(q,\ q+\sharpR_q\xi\bigr)$, then $o\circ c=\bar c\circ o$ for some $\bar c\colon X\to X$.
-%, where $\bar c(x,x')\coloneqq\bigl(x',\ 2x'-x-M^{-1}L_G\,x'\bigr)$, the recurrence \eqref{eqn.graph_laplacian_dynamics} in first-order form.
-%Indeed, starting from \eqref{eqn.graph_laplacian_dynamics}, unfold $\ddot q_v(t)$ as in \eqref{eqn.doubledot} and collect components into vector form: $M\bigl(\vec q(t+1)-2\vec q(t)+\vec q(t-1)\bigr)=-L_G\,\vec q(t)$. %
-%Solving for $\vec q(t+1)$ gives $\vec q(t+1)=2\,\vec q(t)-\vec q(t-1)-M^{-1}L_G\,\vec q(t)$, i.e.\ $\bar c\bigl(\vec q(t-1),\vec q(t)\bigr)=\bigl(\vec q(t),\vec q(t+1)\bigr)$: $\bar c$ carries each consecutive pair of configurations to the next. Since the position update of \eqref{eqn.graph_state_update} gives $o\bigl(\vec q(t),\vec\xi(t)\bigr)=\bigl(\vec q(t),\vec q(t+1)\bigr)$, this says exactly that $o\circ c=\bar c\circ o$ at every state. 
-In this case, the network is fit to the graph's propagator $\bar c$%
-%and is linear in $L_G$.
-, which is linear in $L_G$. %
+In this case, the network is fit to the graph's propagator $\bar c$, which is linear in $L_G$.
 Any other closed system $c$ in its place---Newton's method, gradient descent---trains a predictor of that one instead.
 \end{remark}
 
